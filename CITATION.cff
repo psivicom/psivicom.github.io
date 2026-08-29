@@ -1,10 +1,11 @@
 cff-version: 1.2.0
-message: "If you use this work, please cite it as below."
-title: "psivicom.github.io - Open Science Hub"
-type: website
+message: "If you use this software, please cite it as below."
 authors:
-    - family-names: Audette
-    given-names: Louis-Philippe
+    - family-names: "Audette"
+    given-names: "Louis-Philippe"
+title: "psivicom.github.io - Open Science Hub"
+version: 1.0.0
+date-released: 2026-08-29
 url: "https://psivi.com"
 repository-code: "https://github.com/psivicom/psivicom.github.io"
 license: Apache-2.0
@@ -16,7 +17,3 @@ keywords:
     - reproducibility
     - esa
     - csa
-date-released: 2026-01-15
-version: 1.0.0
-# When you get your Zenodo DOI, add it below:
-# doi: 10.5281/zenodo.1234567
