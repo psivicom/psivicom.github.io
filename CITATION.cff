@@ -3,6 +3,9 @@ message: "If you use this software, please cite it as below."
 authors:
     - family-names: Audette
     given-names: Louis-Philippe
+    ### TODO: Add real ORCID after you register
+    # orcid: https://orcid.org/0000-0000-0000-0000
+    # affiliation: Independent Researcher, Langford, BC, Canada
 title: "Civilian Scientist — Open Science Hub"
 version: 1.0.0
 date-released: 2026-08-29
