@@ -74,23 +74,26 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.
 - DOIs: Zenodo + OSF
 - Standard: FAIR, Reproducible, Open by Default
 
-## Repository Structure (NASA SPD-41a / REUSE Compliant)
+## Repository Structure (NASA SPD-41a / REUSE / CSA / ESA / EOSC Compliant)
 
 ```
 /
-├── CITATION.cff           # Citation metadata (GitHub parses this)
+├── .zenodo.json           # Zenodo/EOSC metadata - ORCID TODO - Verified
+├── CITATION.cff           # Citation metadata (651 bytes, ORCID ### commented) - GitHub 
 ├── CODE_OF_CONDUCT.md     # Contributor Covenant
 ├── CONTRIBUTING.md        # How to contribute
-├── CNAME                  # Custom domain
+├── CNAME                  # Custom domain psivi.com
 ├── LICENSE                # Apache-2.0 full text (code)
 ├── NOTICE                 # Attribution notices
 ├── README.md              # This file (CC-BY-4.0)
-├── index.html             # Website entry
+├── codemeta.json          # EU Software Heritage / EOSC - Verified ✅
+├── index.html             # Website entry (your current - keep it)
+├── docs/
+│   └── osdmp.md           # Open Science DMP source
 └── LICENSES/
-    ├── Apache-2.0.txt     # Code license - Verified
-    └── CC-BY-4.0.txt      # Content license - Verified
+    ├── Apache-2.0.txt     # Code license - Verified ✅
+    └── CC-BY-4.0.txt      # Content license - Verified ✅
 ```
-
 ## Topics
 
 `open-science` `fair-data` `open-data` `open-access` `reproducibility` `esa` `nasa-tops` `csa` `ai` `zenodo` `osf` `apache-2.0` `civilian-scientist`
