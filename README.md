@@ -5,7 +5,10 @@ Copyright 2026 Louis-Philippe Audette
 
 # psivicom.github.io — Open Science Hub
 
-Personal site → https://psivi.com
+# Civilian Scientist — Louis-Philippe Audette
+Independent researcher, Open Science Hub — Langford, BC
+Not a personal site — civilian-led open research, NASA SPD-41a compliant.
+Live: https://psivi.com
 
 [![License: Apache-2.0](https://img.shields.io/badge/Code-Apache--2.0-blue.svg)](LICENSE)
 [![License: CC-BY-4.0](https://img.shields.io/badge/Content-CC--BY--4.0-lightgrey.svg)](LICENSES/CC-BY-4.0.txt)
