@@ -1,7 +1,7 @@
 # psivicom.github.io — Open Science Hub
 **Personal site → https://psivi.com**
 
-[![Code: MIT](https://img.shields.io/badge/Code-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code: Apache 2.0](https://img.shields.io/badge/Code-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Content: CC BY 4.0](https://img.shields.io/badge/Content-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![DOI: Zenodo](https://img.shields.io/badge/DOI-Zenodo-blue.svg)](https://zenodo.org)
 [![FAIR](https://img.shields.io/badge/FAIR-R1.1_Compliant-green.svg)](https://www.go-fair.org/)
@@ -14,19 +14,23 @@
 Built with AI-assisted workflows (Meta AI) to draft, validate, and improve OSDMPs following FAIR principles.
 > No AI-generated content is published without human review.
 
-### 📜 License (FAIR R1.1) - NASA SPD-41a Compliant
+### 📜 License (FAIR R1.1) — NASA SPD-41a Compliant
 
-This repo contains both code and content, licensed separately per NASA TOPS guidance:
+**This repository contains both software and open science content, licensed separately per NASA TOPS / SPD-41a guidance:**
 
-- **Software** (`/src`, scripts, notebooks): **MIT License** - SPD-41a allows MIT, Apache-2.0, BSD-3. See `LICENSE` and `LICENSES/MIT.txt`
-- **Content** (docs, text, figures, data, OSDMP): **CC BY 4.0** - See `LICENSES/CC-BY-4.0.txt`
+- **Software** (`/src`, scripts, notebooks, `*.py`, `*.js`): **Apache License 2.0**
+    - SPDX: `Apache-2.0`
+    - File: `LICENSE` and `LICENSES/Apache-2.0.txt`
+    - Why Apache-2.0: Includes explicit patent grant, required for NASA gold-standard, fully compatible with MIT/BSD.
 
-SPDX: `MIT` for code, `CC-BY-4.0` for content. This satisfies FAIR R1.1 - clear and accessible license.
+- **Content** (README, docs, OSDMP, figures, data, text in `/docs`): **CC BY 4.0**
+    - SPDX: `CC-BY-4.0`
+    - File: `LICENSES/CC-BY-4.0.txt`
 
-NASA prefers Apache-2.0 for code, but MIT is explicitly allowed under SPD-41a. If you want full NASA gold-standard, I can switch code to Apache-2.0.
+This split satisfies FAIR R1.1 (clear, accessible license) and NASA SPD-41a: data under CC0/CC-BY, software under Apache-2.0/MIT/BSD.
 
 ### 🇨🇦🇺🇸🇪🇺🌐 Compliance
-- **NASA:** TOPS / SPD-41a — Software under permissive license (MIT / Apache-2.0 / BSD), Data under CC-BY-4.0 / CC0
+- **NASA:** TOPS / SPD-41a — Software Apache-2.0, Data CC-BY-4.0, open access with DOIs
 - **CSA:** Canadian Space Agency Open Science & FAIR Data
 - **ESA:** ESA Open Science Policy [covers CNES, ASI, UKSA, DTU Space, DLR]
 - **EU:** Reg 2021/695, HE MGA Art.14/17, Dir 2019/1024, Plan S, EOSC
@@ -39,4 +43,4 @@ NASA prefers Apache-2.0 for code, but MIT is explicitly allowed under SPD-41a. I
 - Standard: FAIR, Reproducible, Open by Default
 
 ### Topics
-`open-science` `fair-data` `open-data` `open-access` `reproducibility` `esa` `nasa-tops` `csa` `ai` `zenodo` `osf`
+`open-science` `fair-data` `open-data` `open-access` `reproducibility` `esa` `nasa-tops` `csa` `ai` `zenodo` `osf` `apache-2.0`
