@@ -78,21 +78,24 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.
 
 ```
 /
-├── .zenodo.json           # Zenodo/EOSC metadata - ORCID TODO - Verified
-├── CITATION.cff           # Citation metadata (651 bytes, ORCID ### commented) - GitHub 
-├── CODE_OF_CONDUCT.md     # Contributor Covenant
-├── CONTRIBUTING.md        # How to contribute
-├── CNAME                  # Custom domain psivi.com
-├── LICENSE                # Apache-2.0 full text (code)
-├── NOTICE                 # Attribution notices
-├── README.md              # This file (CC-BY-4.0)
-├── codemeta.json          # EU Software Heritage / EOSC - Verified ✅
-├── index.html             # Website entry (your current - keep it)
+├── .zenodo.json           # Zenodo/EOSC - ORCID TODO - Verified
+├── CITATION.cff           # 651 bytes, ORCID ### commented - GitHub parses
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── CNAME                  # psivi.com
+├── LICENSE                # Apache-2.0
+├── NOTICE
+├── README.md              # CC-BY-4.0 with 13 badges
+├── REUSE.toml             # ← NEW for EU REUSE compliance
+├── SECURITY.md            # ← NEW for EU CRA + GDPR
+├── codemeta.json          # EU Software Heritage - Verified ✅
+├── index.html             # your current - keep it
 ├── docs/
-│   └── osdmp.md           # Open Science DMP source
+│   └── osdmp.md
 └── LICENSES/
-    ├── Apache-2.0.txt     # Code license - Verified ✅
-    └── CC-BY-4.0.txt      # Content license - Verified ✅
+    ├── Apache-2.0.txt     # Verified ✅
+    └── CC-BY-4.0.txt      # Verified ✅
+
 ```
 ## Topics
 
