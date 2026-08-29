@@ -1,22 +1,22 @@
 cff-version: 1.2.0
-message: "If you use this work, please cite it using these metadata."
-title: "psivicom — Open Science Hub"
+message: "If you use this work, please cite it as below."
+title: "psivicom.github.io - Open Science Hub"
+type: website
 authors:
     - family-names: Audette
     given-names: Louis-Philippe
-    orcid: https://orcid.org/0009-0000-0000-0000
-    website: https://psivicom.github.io
-version: 1.0.0
-date-released: 2026-08-28
-license: CC-BY-4.0
-repository-code: https://github.com/psivicom/psivicom.github.io
-url: https://psivicom.github.io
+url: "https://psivi.com"
+repository-code: "https://github.com/psivicom/psivicom.github.io"
+license: Apache-2.0
 keywords:
     - open-science
-    - beekeeping
-    - pollinators
-    - FAIR
-    - OSDMP
-    - NASA-TOPS
-    - ESA
-abstract: "Open science hub for beekeeping, pollinators, and space data — FAIR, open, EU Code 2025 and NASA TOPS aligned."
+    - fair-data
+    - nasa-tops
+    - spd-41a
+    - reproducibility
+    - esa
+    - csa
+date-released: 2026-01-15
+version: 1.0.0
+# When you get your Zenodo DOI, add it below:
+# doi: 10.5281/zenodo.1234567
