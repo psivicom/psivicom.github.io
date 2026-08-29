@@ -29,6 +29,21 @@ Built with AI-assisted workflows (Meta AI) to draft, validate, and improve OSDMP
 
 This split satisfies FAIR R1.1 (clear, accessible license) and NASA SPD-41a: data under CC0/CC-BY, software under Apache-2.0/MIT/BSD.
 
+## License
+
+Code: Apache-2.0 - see [LICENSE](LICENSE) and [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)
+Content/docs/figures/data: CC-BY-4.0 - see [LICENSES/CC-BY-4.0.txt](LICENSES/CC-BY-4.0.txt)
+
+SPDX: `Apache-2.0` for code, `CC-BY-4.0` for content.
+
+## Citation
+
+If you use this work, please cite it as in [CITATION.cff](CITATION.cff).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+
 ### 🇨🇦🇺🇸🇪🇺🌐 Compliance
 - **NASA:** TOPS / SPD-41a — Software Apache-2.0, Data CC-BY-4.0, open access with DOIs
 - **CSA:** Canadian Space Agency Open Science & FAIR Data
@@ -44,3 +59,23 @@ This split satisfies FAIR R1.1 (clear, accessible license) and NASA SPD-41a: dat
 
 ### Topics
 `open-science` `fair-data` `open-data` `open-access` `reproducibility` `esa` `nasa-tops` `csa` `ai` `zenodo` `osf` `apache-2.0`
+
+## Repository Structure (NASA SPD-41a / REUSE Compliant)
+
+```
+/
+├── CITATION.cff           # 347 bytes - Citation metadata (GitHub parses this)
+├── CODE_OF_CONDUCT.md     # Contributor Covenant
+├── CONTRIBUTING.md        # How to contribute (Apache-2.0 / CC-BY-4.0)
+├── CNAME                  # Custom domain
+├── LICENSE                # Apache-2.0 full text (code)
+├── NOTICE                 # Attribution notices
+├── README.md              # This file
+├── index.html             # Website entry
+└── LICENSES/
+    ├── Apache-2.0.txt     # Code license
+    └── CC-BY-4.0.txt      # Content/docs/data license
+```
+
+- **Code:** Apache-2.0 - see `LICENSES/Apache-2.0.txt` - Verified ✅
+- **Content:** CC-BY-4.0 - see `LICENSES/CC-BY-4.0.txt` - Verified ✅
