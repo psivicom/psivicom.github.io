@@ -1,0 +1,55 @@
+name: build-docs-styled
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # v5 = Node 24 (fixes deprecation warning)
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: pandoc/actions/setup@v1
+
+      - name: Normalize filename (fix uppercase OSDMP.md)
+        run: |
+          ls -la docs/
+          if [ -f "docs/OSDMP.md" ] && [ -f "docs/osdmp.md" ]; then
+            if [ "docs/OSDMP.md" -nt "docs/osdmp.md" ]; then
+              cat docs/OSDMP.md > docs/osdmp.md
+            fi
+            rm docs/OSDMP.md
+          elif [ -f "docs/OSDMP.md" ]; then
+            mv docs/OSDMP.md docs/osdmp.md
+          fi
+
+      - name: Build styled osdmp.html
+        run: |
+          pandoc docs/osdmp.md -f gfm -t html5 --no-highlight -o /tmp/body.html
+          python3 << 'PY'
+          with open('docs/template.html','r', encoding='utf-8') as f:
+              template = f.read()
+          with open('/tmp/body.html','r', encoding='utf-8') as f:
+              body = f.read()
+          out = template.replace('<!-- PANDOC_BODY -->', body) if '<!-- PANDOC_BODY -->' in template else template.replace('</body>', body + '\n</body>')
+          if 'SPDX-License-Identifier' not in out[:600]:
+              out = "<!-- SPDX-License-Identifier: CC-BY-4.0 -->\n" + out
+          with open('docs/osdmp.html','w', encoding='utf-8') as f:
+              f.write(out)
+          PY
+
+      # v6 = Node 24 (fixes deprecation warning)
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "docs: auto-build styled osdmp.html + normalize case [skip ci]"
+          file_pattern: |
+            docs/osdmp.md
+            docs/osdmp.html
