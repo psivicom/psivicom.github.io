@@ -1,0 +1,49 @@
+name: build-docs-styled
+on:
+  push:
+    branches: [main]
+    paths: 
+      - 'docs/osdmp.md'
+      - 'docs/template.html'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pandoc/actions/setup@v1
+
+      - name: Build styled osdmp.html
+        run: |
+          echo "Converting md to html fragment..."
+          pandoc docs/osdmp.md -f gfm -t html5 --no-highlight -o /tmp/body.html
+          
+          echo "Injecting into template..."
+          python3 << 'PY'
+          with open('docs/template.html','r', encoding='utf-8') as f:
+              template = f.read()
+          with open('/tmp/body.html','r', encoding='utf-8') as f:
+              body = f.read()
+          # inject body where marker is
+          if '<!-- PANDOC_BODY -->' in template:
+              out = template.replace('<!-- PANDOC_BODY -->', body)
+          else:
+              out = template + "\n" + body
+
+          # ensure SPDX header on top
+          if 'SPDX-License-Identifier' not in out[:500]:
+              out = "<!-- SPDX-License-Identifier: CC-BY-4.0 -->\n" + out
+          
+          with open('docs/osdmp.html','w', encoding='utf-8') as f:
+              f.write(out)
+          print("Built docs/osdmp.html with styled template")
+          PY
+
+      - name: Commit styled html
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: auto-build styled osdmp.html from md [skip ci]"
+          file_pattern: docs/osdmp.html
