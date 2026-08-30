@@ -1,0 +1,71 @@
+Creative Commons Attribution 4.0 International Public License (CC BY 4.0)
+
+By exercising the Licensed Rights (defined below), You accept and agree
+to be bound by the terms and conditions of this Creative Commons
+Attribution 4.0 International Public License ("Public License").
+
+Section 1 – Definitions.
+
+a. Adapted Material means material subject to Copyright and Similar Rights that is derived from or based upon the Licensed Material.
+b. Adapter's License means the license You apply to Your Copyright and Similar Rights in Your contributions to Adapted Material.
+c. Copyright and Similar Rights means copyright and/or similar rights closely related to copyright.
+d. Effective Technological Measures means those measures that, in the absence of proper authority, may not be circumvented.
+e. Exceptions and Limitations means fair use, fair dealing, and/or any other exception.
+f. Licensed Material means the artistic or literary work, database, or other material to which the Licensor applied this Public License.
+g. Licensed Rights means the rights granted to You subject to the terms of this Public License.
+h. Licensor means the individual(s) or entity(ies) granting rights under this Public License.
+i. Share means to provide material to the public by any means or process.
+j. Sui Generis Database Rights means rights other than copyright.
+k. You means the individual or entity exercising the Licensed Rights.
+
+Section 2 – Scope.
+
+a. License grant.
+  1. Subject to terms, Licensor grants You worldwide, royalty-free, non-sublicensable, non-exclusive, irrevocable license to exercise Licensed Rights in Licensed Material to reproduce and Share, in whole or in part, and produce, reproduce, and Share Adapted Material.
+b. Other rights – Moral rights not licensed, patent and trademark not licensed.
+
+Section 3 – License Conditions.
+
+Your exercise of the Licensed Rights is subject to:
+
+a. Attribution.
+  1. If You Share the Licensed Material (including in modified form), You must:
+     A. retain identification of creator(s) and others designated to receive attribution, in any reasonable manner;
+     B. retain copyright notice, notice that refers to this Public License, disclaimer, URI or hyperlink to Licensed Material;
+     C. indicate if You modified the Licensed Material and retain indication of previous modifications;
+     D. indicate the Licensed Material is licensed under this Public License, and include text of, or URI or hyperlink to, this Public License.
+  2. You may satisfy attribution in any reasonable manner based on medium, means, and context.
+  3. If requested by Licensor, You must remove any attribution to extent reasonably practicable.
+  4. If You Share Adapted Material, Adapter's License You apply must not prevent recipients from complying with this Public License.
+
+Section 4 – Sui Generis Database Rights.
+
+Where Licensed Rights includes Sui Generis Database Rights that apply to Your use, You have right to extract, reuse, reproduce, Share all or substantial portion of contents.
+
+Section 5 – Disclaimer of Warranties and Limitation of Liability.
+
+a. Unless otherwise agreed, Licensor offers Licensed Material as-is and as-available, makes no representations or warranties.
+b. In no event will Licensor be liable for damages arising out of this Public License or use of Licensed Material.
+
+Section 6 – Term and Termination.
+
+a. This Public License applies for term of Copyright and Similar Rights licensed.
+b. If You fail to comply, Your rights terminate automatically.
+c. Sections 1,5,6,7,8 survive termination.
+
+Section 7 – Other Terms and Conditions.
+
+a. Licensor shall not be bound by additional or different terms communicated by You.
+b. Any arrangements supplemental to this Public License are separate and independent.
+
+Section 8 – Interpretation.
+
+a. For avoidance of doubt, this Public License does not reduce, limit, restrict, or impose conditions on any use that could lawfully be made without permission under this Public License.
+b. To extent possible, if any provision is unenforceable, it shall be automatically reformed to minimum extent necessary.
+
+Creative Commons is not a party to its public licenses. Notwithstanding, CC may elect to apply to its public licenses a law.
+
+Full legalcode: https://creativecommons.org/licenses/by/4.0/legalcode
+Deed: https://creativecommons.org/licenses/by/4.0/
+Attribution: Louis-Philippe Audette — https://psivi.com — https://psivicom.github.io
+SPDX: CC-BY-4.0
