@@ -1,0 +1,65 @@
+{
+  "name": "sample-pollinator-data",
+  "title": "Sample Pollinator Monitoring \u2014 CC-BY-4.0",
+  "description": "Example FAIR dataset for NASA TOPS demonstration \u2014 CC-BY-4.0 \u2014 Louis-Philippe Audette psivi.com",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/",
+      "title": "CC-BY-4.0"
+    }
+  ],
+  "keywords": [
+    "pollinators",
+    "beekeeping",
+    "FAIR",
+    "open-data",
+    "CC-BY-4.0"
+  ],
+  "resources": [
+    {
+      "name": "data",
+      "path": "data.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "date",
+            "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "hive_id",
+            "type": "string"
+          },
+          {
+            "name": "bee_count",
+            "type": "integer"
+          },
+          {
+            "name": "temperature_c",
+            "type": "number"
+          },
+          {
+            "name": "humidity_percent",
+            "type": "integer"
+          },
+          {
+            "name": "notes",
+            "type": "string"
+          },
+          {
+            "name": "license",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "author": "Louis-Philippe Audette \u2014 https://psivi.com \u2014 CC-BY-4.0"
+}

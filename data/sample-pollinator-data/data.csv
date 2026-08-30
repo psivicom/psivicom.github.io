@@ -1,0 +1,4 @@
+date,location,hive_id,bee_count,temperature_c,humidity_percent,notes,license
+2026-08-01,Langford BC V9B,hive-01,45200,22.5,65,Example pollinator monitoring — open data — CC-BY-4.0,CC-BY-4.0
+2026-08-02,Langford BC V9B,hive-01,44800,23.1,62,Example — CC-BY-4.0,CC-BY-4.0
+2026-08-03,Langford BC V9B,hive-02,52100,21.8,70,Example — CC-BY-4.0,CC-BY-4.0
