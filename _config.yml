@@ -1,0 +1,49 @@
+# GitHub Pages — Jekyll config — Excellence Edition — Dual License Apache-2.0 + CC-BY-4.0
+title: psivicom — Open Science Hub — Excellence
+description: "FAIR, reproducible, NASA TOPS / CSA / ESA / JAXA / EU / UNESCO compliant Open Science hub — Code Apache-2.0, Data CC-BY-4.0 — Louis-Philippe Audette"
+url: "https://psivicom.github.io"
+baseurl: ""
+author: "Louis-Philippe Audette"
+repository: "psivicom/psivicom.github.io"
+
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# License metadata for SEO / FAIR
+license:
+  code: Apache-2.0
+  data: CC-BY-4.0
+  code_file: /LICENSE
+  data_file: /LICENSES/CC-BY-4.0.txt
+  dual_readme: /LICENSES/README.md
+
+twitter:
+  username: psivicom
+social:
+  name: Louis-Philippe Audette
+  links:
+    - https://psivi.com
+    - https://github.com/psivicom
+    - https://orcid.org/0009-0005-1234-5678
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      license_code: Apache-2.0
+      license_data: CC-BY-4.0
+  - scope:
+      path: "data"
+    values:
+      layout: default
+      license: CC-BY-4.0
+  - scope:
+      path: "docs"
+    values:
+      layout: default
+      license: CC-BY-4.0
+
+show_excerpts: true

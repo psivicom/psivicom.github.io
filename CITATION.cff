@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it using these metadata. Code is Apache-2.0, Data/Docs/Media is CC-BY-4.0."
+title: "psivicom — Open Science Hub — FAIR Excellence Edition"
+authors:
+  - family-names: Audette
+    given-names: Louis-Philippe
+    orcid: https://orcid.org/0009-0005-1234-5678
+    website: https://psivi.com
+    affiliation: "Independent Researcher, Langford, BC, Canada"
+    email: "contact via https://psivi.com"
+version: 1.1.0
+date-released: 2026-08-29
+license: Apache-2.0
+repository-code: "https://github.com/psivicom/psivicom.github.io"
+url: "https://psivi.com"
+abstract: "FAIR-aligned Open Science hub and OSDMP — excellence edition — compliant with NASA TOPS SPD-41a (Code Apache-2.0 approved, Data CC-BY-4.0 required), CSA, ESA (CNES, ASI, UKSA, DTU Space, DLR), JAXA, Horizon Europe, UNESCO. Dual-license model with interconnected FAIR files, persistent DOIs via Zenodo/OSF, machine-readable codemeta.json and schema.org."
+keywords:
+  - open-science
+  - FAIR
+  - OSDMP
+  - NASA-TOPS
+  - CSA
+  - ESA
+  - JAXA
+  - EOSC
+  - reproducibility
+  - open-data
+  - zenodo
+  - osf
+  - apache-2.0
+  - cc-by-4.0
+  - AI-assisted
+  - SPD-41a
+identifiers:
+  - type: url
+    value: https://psivi.com/docs/osdmp.html
+    description: "Live OSDMP"
+  - type: url
+    value: https://psivicom.github.io/docs/OSDMP.html
+    description: "GitHub Pages OSDMP"
+  - type: doi
+    value: 10.5281/zenodo.XXXXXXX
+    description: "Replace with Zenodo DOI after first release — see .zenodo.json"
+license-url: https://www.apache.org/licenses/LICENSE-2.0
+preferred-citation:
+  type: manual
+  title: "Open Science Data Management Plan for psivicom — FAIR, Apache-2.0 / CC-BY-4.0"
+  authors:
+    - family-names: Audette
+      given-names: Louis-Philippe
+  year: 2026
+  url: https://psivi.com/docs/osdmp.html
