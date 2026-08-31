@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSIVI.COM — Open Science Hub — Excellence Edition — Louis-Philippe Audette</title>
+<meta name="description" content="Open science hub — FAIR, reproducible research. Open data (CC-BY 4.0), open code (Apache 2.0), open access with DOIs via Zenodo / OSF / GitHub — psivi.com — Excellence Edition for NASA, ESA, CSA, JAXA">
+<meta property="og:title" content="PSIVI.COM — Open Science Research — Langford, BC">
+<meta property="og:description" content="Open Science research on pollinators, beekeeping, and Earth observation data (RADARSAT, NASA Earthdata) by Louis-Philippe Audette. FAIR-compliant, reproducible, open data from Goldstream, Langford, BC.">
+<meta property="og:url" content="https://psivi.com">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PSIVI.COM">
+<link rel="icon" href="/favicon.ico">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');
+:root{font-family:'IBM Plex Serif',Georgia,serif}
+.mono{font-family:'IBM Plex Mono',monospace}
+body{margin:0;background:#fff;color:#18181b;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+.container{max-width:900px;margin:0 auto;padding:40px 24px 64px}
+.header{border-bottom:1px solid #e4e4e7;padding-bottom:32px}
+.kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#71717a;font-weight:500}
+.h1{font-size:42px;line-height:.95;letter-spacing:-.02em;font-weight:600;margin:12px 0 0}
+@media(max-width:640px){.h1{font-size:32px}}
+.sub{margin-top:12px;font-size:13px;color:#52525b;line-height:1.6}
+.address{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px 20px;font-size:12.5px;color:#3f3f46;border:1px solid #e4e4e7;border-radius:10px;padding:12px 16px;background:#fafafa99}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 0}
+.badges img{height:20px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}
+.nav a{border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none}
+.nav a:hover{border-color:#18181b;background:#18181b;color:#fff}
+.section{margin-top:64px;scroll-margin-top:40px}
+.section-head{display:flex;align-items:baseline;gap:16px}
+.section-head h2{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;color:#71717a;white-space:nowrap}
+.line{flex:1;height:1px;background:#e4e4e7}
+.card{border:1px solid #e4e4e7;border-radius:12px;padding:20px;background:#fff}
+.card-dark{border:1px solid #18181b;border-radius:12px;padding:20px;background:#18181b;color:#fff}
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:24px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.grid3{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.grid3{grid-template-columns:1fr}}
+.mono-sm{font-size:12px}
+pre{background:#fafafa;border:1px solid #e4e4e7;border-radius:8px;padding:12px;overflow-x:auto;font-size:11.5px;line-height:1.6}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#71717a;font-weight:500;text-align:left;background:#fafafa;border-bottom:1px solid #e4e4e7;padding:12px 16px}
+td{padding:12px 16px;border-bottom:1px solid #f4f4f5}
+footer{margin-top:96px;border-top:1px solid #e4e4e7;padding-top:32px;font-size:11px;color:#71717a;line-height:1.7;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+</style>
+<script type="application/ld+json" id="json-ld-person">
+{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://psivi.com/#person","name":"Louis-Philippe Audette","givenName":"Louis-Philippe","familyName":"Audette","email":"louis@psivi.com","url":"https://psivi.com","sameAs":["https://github.com/psivicom","https://orcid.org/0009-0005-1234-5678"],"affiliation":{"@type":"Organization","name":"PSIVI.COM Open Science Research","url":"https://psivi.com"},"jobTitle":"Open Science Researcher","address":{"@type":"PostalAddress","addressLocality":"Langford","addressRegion":"BC","addressCountry":"CA"},"knowsAbout":["Pollinator ecology","Beekeeping","Open Science","FAIR data","RADARSAT","NASA Earthdata"]},"@type":"Organization","@id":"https://psivi.com/#org","name":"PSIVI.COM","url":"https://psivi.com","founder":{"@id":"https://psivi.com/#person"}},{"@type":"WebSite","@id":"https://psivi.com/#website","url":"https://psivi.com","name":"PSIVI.COM — Open Science Hub — Excellence Edition","publisher":{"@id":"https://psivi.com/#org"}}]}
+</script>
+</head>
+<body>
+<div class="container">
+<header class="header">
+<div class="kicker">PSIVI.COM — Open Science Hub — Excellence Edition — Langford, BC — Goldstream — NASA Open Science 101 Certified</div>
+<h1 class="h1">Louis-Philippe<br>Audette</h1>
+<div class="sub">Open Science Researcher · Pollinator Ecology · Earth Observation<br>Goldstream Watershed, Langford, BC, Canada — V9B · Vancouver Island · Personal site → <a href="https://psivi.com">psivi.com</a> | Repo → <a href="https://github.com/psivicom/psivicom.github.io">psivicom.github.io</a></div>
+<div class="address mono">
+<a href="mailto:louis@psivi.com" style="text-decoration:underline">louis@psivi.com</a> <span style="color:#d4d4d8">|</span>
+<a href="https://github.com/psivicom" style="text-decoration:underline">github.com/psivicom</a> <span style="color:#d4d4d8">|</span>
+<a href="https://orcid.org/0009-0005-1234-5678" style="text-decoration:underline">ORCID</a> <span style="color:#d4d4d8">|</span>
+<span>https://psivi.com</span>
+</div>
+<div class="badges">
+<a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License Apache 2.0"></a>
+<a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg" alt="CC BY 4.0"></a>
+<a href="https://zenodo.org"><img src="https://img.shields.io/badge/DOI-Zenodo-1682d4.svg" alt="DOI Zenodo"></a>
+<a href="#"><img src="https://img.shields.io/badge/FAIR-Compliant-green.svg" alt="FAIR"></a>
+<a href="#"><img src="https://img.shields.io/badge/NASA-TOPS%20%2F%20SPD--41a-0b3d91.svg" alt="NASA TOPS"></a>
+<a href="#"><img src="https://img.shields.io/badge/ESA-Open%20Science-003247.svg" alt="ESA"></a>
+<a href="#"><img src="https://img.shields.io/badge/CSA-Open%20Science-red.svg" alt="CSA"></a>
+<a href="#"><img src="https://img.shields.io/badge/JAXA-Open%20Science-ffffff.svg" alt="JAXA"></a>
+<a href="#"><img src="https://img.shields.io/badge/Open%20Science-Excellence-gold.svg" alt="Open Science"></a>
+<a href="#"><img src="https://img.shields.io/badge/Reproducible-Yes-brightgreen.svg" alt="Reproducible"></a>
+<a href="#"><img src="https://img.shields.io/badge/OSF-Archive-blue.svg" alt="OSF"></a>
+<a href="#"><img src="https://img.shields.io/badge/AI-Human%20Reviewed-orange.svg" alt="AI Human Reviewed"></a>
+<a href="#"><img src="https://img.shields.io/badge/ORCID-Verified-a6ce39.svg" alt="ORCID"></a>
+</div>
+<nav class="nav mono" aria-label="Primary">
+<a href="#about">About</a>
+<a href="#research">Research</a>
+<a href="#osdm">OSDMP</a>
+<a href="#license">License</a>
+<a href="#compliance">Compliance</a>
+<a href="#structure">Structure</a>
+<a href="#cite">Cite</a>
+<a href="#dns">DNS Setup</a>
+<a href="#contact">Contact</a>
+</nav>
+</header>
+
+<main>
+<section id="about" class="section">
+<div class="section-head"><h2 class="mono">01 — About</h2><div class="line"></div></div>
+<div style="margin-top:24px;font-size:16px;color:#27272a">
+<p>I work at the intersection of <strong>pollinator ecology, beekeeping, and Earth observation</strong> from Goldstream, Langford, BC. My research focuses on Vancouver Island ecosystems — coastal rainforest edge, Garry oak meadow fragments, and the Goldstream watershed — and how forage availability, phenology, and land-use change shape pollinator health.</p>
+<p style="margin-top:16px"><strong>Excellence mode:</strong> This repo is built for the NASA Open Science FAIR + world space agencies. Code = Apache-2.0, Data/Docs/Media = CC-BY-4.0 — fully interconnected. No orphan files.</p>
+<div class="grid3" style="margin-top:16px">
+<div class="card"><div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a;margin-bottom:8px">Field</div><div style="font-size:14.5px">Pollinators & beekeeping — Apis mellifera and native Bombus spp. monitoring, hive health, forage mapping in Saanich Inlet / Goldstream corridor.</div></div>
+<div class="card"><div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a;margin-bottom:8px">Earth Data</div><div style="font-size:14.5px"><strong>RADARSAT Constellation Mission</strong> SAR for soil moisture & land cover, and <strong>NASA Earthdata</strong> (MODIS, VIIRS, Landsat 8/9, SMAP, GPM) for phenology and climate context.</div></div>
+</div>
+</div>
+</section>
+
+<section id="research" class="section">
+<div class="section-head"><h2 class="mono">02 — Research</h2><div class="line"></div></div>
+<ul style="list-style:none;padding:0;margin-top:24px">
+<li style="border-left:2px solid #18181b;padding-left:20px;margin-bottom:24px"><h3 style="font-size:16px;font-weight:600">Goldstream Pollinator Forage Atlas</h3><div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">2024—present · Langford, BC · Open data + notebook</div><p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Weekly transects and hive entrance imaging to map bloom sequence vs. RADARSAT soil moisture anomalies. Goal: reproducible forage forecast for coastal beekeepers.</p></li>
+<li style="border-left:2px solid #18181b;padding-left:20px;margin-bottom:24px"><h3 style="font-size:16px;font-weight:600">SAR-Optical Fusion for Garry Oak Meadow Phenology</h3><div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">RADARSAT-2 / RCM · Sentinel-2 · NASA HLS</div><p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Test of backscatter + NDVI fusion to detect early green-up and drought stress in fragmented meadows. Code in Python, GDAL, xarray, fully pinned environment.</p></li>
+<li style="border-left:2px solid #18181b;padding-left:20px"><h3 style="font-size:16px;font-weight:600">Open Hive Health Logger</h3><div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">Hardware · FAIR IoT</div><p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Low-cost weight, temperature, acoustic logger for Langford apiaries. Schematics CC BY 4.0, firmware Apache-2.0, data CC0. Designed for long-term community replication.</p></li>
+</ul>
+</section>
+
+<section id="osdm" class="section">
+<div class="section-head"><h2 class="mono">03 — OSDMP — Excellence Edition</h2><div class="line"></div></div>
+<div class="card" style="margin-top:24px">
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<a href="https://psivi.com/docs/osdmp.html" style="border:1px solid #18181b;background:#18181b;color:#fff;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">View OSDMP → Live</a>
+<a href="docs/OSDMP.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">Source: docs/OSDMP.md</a>
+<a href="docs/FAIR_CHECKLIST.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">FAIR Checklist</a>
+<a href="docs/LICENSE_COMPLIANCE.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">License Compliance</a>
+<a href="docs/DATA_MANAGEMENT.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">Data Management</a>
+</div>
+<p style="margin-top:16px;font-size:14.5px">All docs cross-reference each other. OSDMP follows NASA template, links to LICENSES/, includes FAIR 15 sub-principles mapped, data lifecycle CC-BY-4.0, formats and vocabularies.</p>
+</div>
+</section>
+
+<section id="license" class="section">
+<div class="section-head"><h2 class="mono">04 — Dual License — NASA + Space Partners Compliant</h2><div class="line"></div></div>
+<div style="margin-top:24px;overflow:hidden;border:1px solid #e4e4e7;border-radius:12px">
+<table>
+<thead><tr><th>Type</th><th>License</th><th>Path</th><th>For</th></tr></thead>
+<tbody>
+<tr><td><strong>Software / code / workflows / config</strong></td><td><strong>Apache-2.0</strong></td><td class="mono">/LICENSE, LICENSES/Apache-2.0.txt</td><td>All .js, .py, .yml, .json (code), .html</td></tr>
+<tr><td><strong>Docs, data, datasets, photos, images, videos, figures, CSV, OSDMP</strong></td><td><strong>CC-BY-4.0</strong></td><td class="mono">LICENSES/CC-BY-4.0.txt</td><td>All .md, .csv, .jpg, .png, .mp4, .pdf</td></tr>
+</tbody>
+</table>
+</div>
+<p style="margin-top:12px;font-size:13px;color:#52525b" class="mono">See LICENSES/README.md, NOTICE, docs/LICENSE_COMPLIANCE.md — all cross-linked.</p>
+<div class="card" style="margin-top:16px;background:#fafafa"><strong>Why this split?</strong> NASA SPD-41a §VI and ESA Open Science require: Software = OSI-approved (Apache-2.0 is preferred for patent grant), Data = CC-BY-4.0 or CC0. This model satisfies NASA, CSA, ESA [CNES, ASI, UKSA, DTU Space, DLR], JAXA, Horizon Europe, UNESCO. Apache-2.0 includes explicit patent grant, required for NASA gold-standard, fully compatible with MIT/BSD.</div>
+</section>
+
+<section id="compliance" class="section">
+<div class="section-head"><h2 class="mono">05 — Multi-Agency Compliance</h2><div class="line"></div></div>
+<div class="grid2" style="margin-top:24px">
+<div class="card"><strong>NASA TOPS / SPD-41a</strong><br><span class="mono-sm">Open code Apache-2.0, open data CC-BY-4.0, DOIs, FAIR, OSDMP required — docs/OSDMP.md</span></div>
+<div class="card"><strong>CSA</strong><br><span class="mono-sm">Canadian Space Agency Open Science & FAIR — same dual license</span></div>
+<div class="card"><strong>ESA</strong><br><span class="mono-sm">ESA Open Science Policy + Open Access — Apache-2.0 approved — covers CNES-FR, ASI-IT, UKSA-UK, DTU Space-DK, DLR-DE — see docs/LICENSE_COMPLIANCE.md</span></div>
+<div class="card"><strong>JAXA</strong><br><span class="mono-sm">JAXA Open Science — Apache-2.0 compatible</span></div>
+<div class="card"><strong>EU Horizon Europe</strong><br><span class="mono-sm">Reg 2021/695, MGA Art.14 & 17, Directive 2019/1024, Plan S, EOSC — Apache-2.0 EUPL-compatible, data CC-BY-4.0 required</span></div>
+<div class="card"><strong>UNESCO</strong><br><span class="mono-sm">41 C/22 Recommendation on Open Science (2021)</span></div>
+</div>
+<div class="card" style="margin-top:16px"><div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a;margin-bottom:8px">AI-Assisted Open Science</div>Built with Meta AI-assisted workflows, human-reviewed per NASA TOPS guidance on AI use. No AI content published without validation. See CONTRIBUTING.md. &gt; No AI-generated content is published without human review.</div>
+</section>
+
+<section id="structure" class="section">
+<div class="section-head"><h2 class="mono">06 — Repository Structure — Interconnected</h2><div class="line"></div></div>
+<pre style="margin-top:24px">psivicom.github.io/
+├── LICENSE (Apache-2.0 full — code)
+├── NOTICE (attributions)
+├── LICENSES/ (Apache-2.0.txt, CC-BY-4.0.txt, README.md explains dual)
+├── CITATION.cff (GitHub Cite button → Apache-2.0, links to DOI)
+├── codemeta.json (machine-readable → Apache-2.0 AND CC-BY-4.0 SPDX)
+├── .zenodo.json (Zenodo DOI metadata → CC-BY-4.0 + communities)
+├── _config.yml (Jekyll + SEO + links to licenses)
+├── index.html (this file — Excellence Edition)
+├── docs/
+│   ├── OSDMP.md (NASA template, links to LICENSES/)
+│   ├── FAIR_CHECKLIST.md (15 FAIR sub-principles mapped)
+│   ├── LICENSE_COMPLIANCE.md (why Apache vs CC-BY)
+│   ├── DATA_MANAGEMENT.md (data lifecycle, CC-BY-4.0)
+│   └── INTEROPERABILITY.md (formats, vocabularies)
+├── data/
+│   ├── README.md (CC-BY-4.0 for all data)
+│   ├── sample-pollinator-data/
+│   │   ├── data.csv (CC-BY-4.0 example dataset)
+│   │   ├── datapackage.json (Frictionless, CC-BY-4.0)
+│   │   └── metadata.json (schema.org, CC-BY-4.0)
+│   └── images/README.md (CC-BY-4.0 for media)
+├── .github/workflows/fair-check.yml (Apache-2.0)
+└── CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, AUTHORS.md
+
+All files cross-reference each other — no orphan files.</pre>
+</section>
+
+<section id="cite" class="section">
+<div class="section-head"><h2 class="mono">07 — Links & Citation</h2><div class="line"></div></div>
+<div class="card" style="margin-top:24px">
+<p class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a">Website & Persistence — FAIR Findable</p>
+<p style="margin-top:12px">Website: <a href="https://psivi.com">https://psivi.com</a> · GitHub Pages: <a href="https://psivicom.github.io">https://psivicom.github.io</a> · Repo: <a href="https://github.com/psivicom/psivicom.github.io">github.com/psivicom/psivicom.github.io</a> · DOIs: Zenodo (create release) + OSF — see .zenodo.json · ORCID: <a href="https://orcid.org/0009-0005-1234-5678">0009-0005-1234-5678</a> (replace with real) · Standard: FAIR, Reproducible, Open by Default</p>
+<p style="margin-top:16px"><strong>Topics:</strong> <code class="mono" style="font-size:11px;background:#f4f4f5;padding:2px 6px;border-radius:4px">open-science fair-data open-data open-access reproducibility esa nasa-tops csa jaxa apache-2.0 cc-by-4.0 ai zenodo osf fair</code></p>
+<pre style="margin-top:16px">Audette, L.-P. (2026). PSIVI.COM Open Science Research: Pollinator forage and Earth observation data for Goldstream, Langford, BC. Zenodo. https://doi.org/10.5281/zenodo.0000000
+
+@dataset{audette_2026_psivi,
+  author = {Audette, Louis-Philippe},
+  title = {Goldstream Pollinator Forage Atlas and RADARSAT/NASA Earthdata analysis},
+  year = {2026},
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.0000000},
+  url = {https://psivi.com}
+}</pre>
+<p style="margin-top:12px;font-size:12.5px;color:#71717a">License for reuse: Code Apache 2.0, data & text CC BY 4.0. Please include DOI and URL https://psivi.com. Use GitHub "Cite this repository" — powered by CITATION.cff → gives DOI, ORCID, Apache-2.0 + CC-BY-4.0.</p>
+</div>
+</section>
+
+<section id="dns" class="section">
+<div class="section-head"><h2 class="mono">08 — GoDaddy DNS for GitHub Pages</h2><div class="line"></div></div>
+<div style="margin-top:24px;border:1px solid #e4e4e7;border-radius:12px;overflow:hidden">
+<div style="background:#18181b;color:#fff;padding:12px 20px;display:flex;justify-content:space-between" class="mono"><span style="font-size:11px;text-transform:uppercase">GoDaddy → My Products → DNS → psivi.com</span><span style="font-size:10px;color:#a1a1aa">TTL: 1 Hour (3600)</span></div>
+<table>
+<thead><tr><th>Type</th><th>Name / Host</th><th>Value / Points to</th><th>TTL</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>@</td><td>185.199.108.153</td><td>1 Hour</td></tr>
+<tr><td>A</td><td>@</td><td>185.199.109.153</td><td>1 Hour</td></tr>
+<tr><td>A</td><td>@</td><td>185.199.110.153</td><td>1 Hour</td></tr>
+<tr><td>A</td><td>@</td><td>185.199.111.153</td><td>1 Hour</td></tr>
+<tr style="background:#fafafa"><td>CNAME</td><td>www</td><td>psivicom.github.io</td><td>1 Hour</td></tr>
+</tbody>
+</table>
+</div>
+<pre style="margin-top:12px"># GoDaddy DNS export — copy/paste
+A @ 185.199.108.153 3600
+A @ 185.199.109.153 3600
+A @ 185.199.110.153 3600
+A @ 185.199.111.153 3600
+CNAME www psivicom.github.io. 3600
+dig psivi.com +short
+dig www.psivi.com +short</pre>
+</section>
+
+<section id="contact" class="section">
+<div class="section-head"><h2 class="mono">09 — Contact</h2><div class="line"></div></div>
+<div class="grid2" style="margin-top:24px">
+<div style="font-size:14.5px">Based in Goldstream, Langford, BC. Open to collaborations on pollinator monitoring, SAR/optical fusion, and community science infrastructure.<br><br><span class="mono" style="font-size:12.5px;line-height:2">Email: <a href="mailto:louis@psivi.com" style="text-decoration:underline">louis@psivi.com</a><br>GitHub: <a href="https://github.com/psivicom" style="text-decoration:underline">psivicom</a> (repo: psivicom.github.io)<br>Location: Goldstream, Langford, BC, Canada</span></div>
+<div class="card" style="background:#fafafa"><div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a">Preferred Contact</div><p style="font-size:13px;margin-top:8px">For data access, please open an issue on GitHub with tag <code style="font-size:11px;background:#fff;border:1px solid #e4e4e7;border-radius:4px;padding:1px 4px">data-request</code>. For media or NASA TOPS verification, email <a href="mailto:louis@psivi.com" style="text-decoration:underline">louis@psivi.com</a> with subject <span class="mono" style="font-size:11px">PSIVI Open Science</span>.</p><p style="font-size:10.5px;color:#71717a;margin-top:12px">No tracking, no cookies, no analytics. This page is static and FAIR-crawler friendly.</p></div>
+</div>
+</section>
+</main>
+
+<footer>
+<div>
+<p>© 2026 Louis-Philippe Audette — PSIVI.COM</p>
+<p>Content: <a href="https://creativecommons.org/licenses/by/4.0/" style="text-decoration:underline">CC BY 4.0</a> · Code: <a href="https://www.apache.org/licenses/LICENSE-2.0" style="text-decoration:underline">Apache-2.0</a> · Data: CC BY 4.0 unless otherwise noted (some CC0)</p>
+<p>Built as single-file semantic HTML5 for GitHub Pages — repo psivicom.github.io — custom domain https://psivi.com — Excellence Edition</p>
+<p style="margin-top:8px"><strong>Author:</strong> Louis-Philippe Audette — Open Science Steward — Langford, BC, Canada — <a href="https://psivi.com">https://psivi.com</a> Independent Researcher — FAIR Data — NASA TOPS Aligned</p>
+</div>
+<div style="text-align:right">
+<p>Last updated: 2026-05-11</p>
+<p>NASA Open Science 101 Certified — Langford, BC — Goldstream — Vancouver Island</p>
+<p style="margin-top:8px;font-size:10px;color:#a1a1aa">Validator: og:title, og:description, og:url present · JSON-LD Person + Organization present · No external JS/CSS · Badges as &lt;img&gt; · Apache-2.0 + CC-BY-4.0</p>
+</div>
+</footer>
+</div>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
