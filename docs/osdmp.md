@@ -1,5 +1,5 @@
-   ⭐ Test from mobile - automation works!
-# ⭐️Open Science Data Management Plan (OSDMP) — Excellence — NASA SPD-41a — Dual License Apache-2.0 + CC-BY-4.0
+\\   ⭐ Test from mobile - automation works!
+# Open Science Data Management Plan (OSDMP) — Excellence — NASA SPD-41a — Dual License Apache-2.0 + CC-BY-4.0
 
 **Author:** Louis-Philippe Audette — https://psivi.com — https://psivicom.github.io
 **Version:** 1.1 — 2026-08-29
