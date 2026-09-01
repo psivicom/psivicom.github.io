@@ -38,9 +38,9 @@ By contributing, you agree that:
 - Documentation/data contributions (MD, CSV, JSON data, JPG, PNG, MP4, PDF, OSDMP, MORE…) are licensed under CC-BY-4.0 see LICENSES/CC-BY-4.0.txt
 - Full explanation: LICENSES/README.md and docs/LICENSE_COMPLIANCE.md
 
-Add SPDX header to every new file:
+Add SPDX header to every new file: <br>
 
-Code: `// SPDX-License-Identifier: Apache-2.0`
-Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->`
+Code: `// SPDX-License-Identifier: Apache-2.0` <br>
+Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 
 
