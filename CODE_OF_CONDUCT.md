@@ -1,4 +1,4 @@
-# Contributor Covenant Code of Conduct — psivicom.github.io 
+# Contributor Covenant Code of Conduct — psivicom.github.io — PSIVI.COM
 
 Our Pledge
 
