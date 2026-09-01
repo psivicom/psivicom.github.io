@@ -10,7 +10,7 @@ NASA SPD-41a §VI requires:
 - Software: Open source, OSI-approved license — lists Apache-2.0, MIT, BSD
 - Data, docs, media: Open license CC-BY-4.0 or CC0
 
-Supplemented requirements for Artificial Intelligence 
+Supplemented requirements for Artificial Intelligence by PSIVI.COM :
 - AI approval registry: /teamai.md (CC-BY-4.0 doc, lists elected AIs)
 
 Single license fails: Apache-2.0 is not ideal for photos/videos, CC-BY-4.0 is not ideal for software (no patent grant). Dual model is NASA-recommended best practice.
