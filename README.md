@@ -7,7 +7,7 @@
 
 Open Science Researcher · Pollinator Ecology · Earth Observation  
 Goldstream Watershed, Langford, BC, Canada — V9B · Vancouver Island  
-Personal site → [https://psivi.com](https://psivi.com) | Repo → [psivicom.github.io](https://github.com/psivicom/psivicom.github.io)
+Organization site → [https://psivi.com](https://psivi.com) | Repo → [psivicom.github.io](https://github.com/psivicom/psivicom.github.io)
 
 **Contact:** [louis@psivi.com](mailto:louis@psivi.com) | [github.com/psivicom](https://github.com/psivicom) | [ORCID 0009-0005-1234-5678](https://orcid.org/0009-0005-1234-5678) | https://psivi.com
 
