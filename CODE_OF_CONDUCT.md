@@ -8,18 +8,21 @@ Our Standards
 
 Examples of behavior that contributes to a positive environment:
 
-Using welcoming and inclusive language
-Being respectful of differing viewpoints
-Gracefully accepting constructive criticism
+Using welcoming and inclusive language <br>
+Being respectful of differing viewpoints <br>
+Gracefully accepting constructive criticism <br>
 
 Enforcement
 
-Instances of abusive behavior may be reported to louis@psivi.com
+Instances of abusive behavior may be reported to louis@psivi.com <br>
 Enforcement: Louis-Philippe Audette — via https://psivi.com contact
 
 Attribution
 
-This Code of Conduct is adapted from the Contributor Covenant, version 2.1 https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
+MAKE SURE TO READ THIS IMPORTANT CODE OF CONDUCT BELOW; 
+WE FOLLOW ON PSIVI.COM 
+
+This Code of Conduct includes the Contributor Covenant, version 2.1 https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
 
 Required by NASA SPD-41a for publicly funded software.
 
