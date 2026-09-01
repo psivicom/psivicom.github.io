@@ -1,19 +1,19 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it using these metadata. Code is Apache-2.0, Data/Docs/Media is CC-BY-4.0."
-title: "psivicom — Open Science Hub — FAIR Excellence Edition"
+title: "PSIVI.COM — Open Science Hub — FAIR EXCELLENCE Edition"
 authors:
   - family-names: Audette
     given-names: Louis-Philippe
     orcid: https://orcid.org/0009-0005-1234-5678
     website: https://psivi.com
     affiliation: "Independent Researcher, Langford, BC, Canada"
-    email: "contact via https://psivi.com"
+    email: "louis@psivi.com"
 version: 1.1.0
 date-released: 2026-08-29
 license: Apache-2.0
 repository-code: "https://github.com/psivicom/psivicom.github.io"
 url: "https://psivi.com"
-abstract: "FAIR-aligned Open Science hub and OSDMP — excellence edition — compliant with NASA TOPS SPD-41a (Code Apache-2.0 approved, Data CC-BY-4.0 required), CSA, ESA (CNES, ASI, UKSA, DTU Space, DLR), JAXA, Horizon Europe, UNESCO. Dual-license model with interconnected FAIR files, persistent DOIs via Zenodo/OSF, machine-readable codemeta.json and schema.org."
+abstract: "FAIR-aligned Open Science hub and OSDMP — EXCELLENCE edition — compliant with NASA TOPS SPD-41a (Code Apache-2.0 approved, Data CC-BY-4.0 required), CSA, ESA (CNES, ASI, UKSA, DTU Space, DLR), JAXA, Horizon Europe, UNESCO. Dual-license model with interconnected FAIR files, persistent DOIs via Zenodo/OSF, machine-readable codemeta.json and schema.org."
 keywords:
   - open-science
   - FAIR
@@ -36,7 +36,7 @@ identifiers:
     value: https://psivi.com/docs/osdmp.html
     description: "Live OSDMP"
   - type: url
-    value: https://psivicom.github.io/docs/OSDMP.html
+    value: https://psivicom.github.io/docs/osdmp.html
     description: "GitHub Pages OSDMP"
   - type: doi
     value: 10.5281/zenodo.XXXXXXX
