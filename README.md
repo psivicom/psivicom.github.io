@@ -3,7 +3,7 @@
 
 [![License Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0) [![CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/) [![DOI Zenodo](https://img.shields.io/badge/DOI-Zenodo-1682d4.svg)](https://zenodo.org) [![FAIR](https://img.shields.io/badge/FAIR-Compliant-green.svg)](#) [![NASA TOPS](https://img.shields.io/badge/NASA-TOPS%20%2F%20SPD--41a-0b3d91.svg)](#) [![ESA](https://img.shields.io/badge/ESA-Open%20Science-003247.svg)](#) [![CSA](https://img.shields.io/badge/CSA-Open%20Science-red.svg)](#) [![JAXA](https://img.shields.io/badge/JAXA-Open%20Science-ffffff.svg)](#) [![Open Science Excellence](https://img.shields.io/badge/Open%20Science-Excellence-gold.svg)](#) [![Reproducible](https://img.shields.io/badge/Reproducible-Yes-brightgreen.svg)](#) [![OSF](https://img.shields.io/badge/OSF-Archive-blue.svg)](#) [![AI Human Reviewed](https://img.shields.io/badge/AI-Human%20Reviewed-orange.svg)](#) [![ORCID Verified](https://img.shields.io/badge/ORCID-Verified-a6ce39.svg)](#)
 
-> PSIVI.COM — Open Science Hub — Excellence Edition — Langford, BC — Goldstream — NASA Open Science 101 Certified
+> PSIVI.COM — Open Science Hub — EXCELLENCE  Edition — Langford, BC — Goldstream — NASA Open Science 101 Certified
 
 Open Science Researcher · Pollinator Ecology · Earth Observation  
 Goldstream Watershed, Langford, BC, Canada — V9B · Vancouver Island  
@@ -19,7 +19,7 @@ Personal site → [https://psivi.com](https://psivi.com) | Repo → [psivicom.gi
 
 I work at the intersection of **pollinator ecology, beekeeping, and Earth observation** from Goldstream, Langford, BC. My research focuses on Vancouver Island ecosystems — coastal rainforest edge, Garry oak meadow fragments, and the Goldstream watershed — and how forage availability, phenology, and land-use change shape pollinator health.
 
-**Excellence mode:** This repo is built for the NASA Open Science FAIR + world space agencies. Code = Apache-2.0, Data/Docs/Media = CC-BY-4.0 — fully interconnected. No orphan files.
+**EXCELLENCE mode:** This repo is built for the NASA Open Science FAIR + world space agencies. Code = Apache-2.0, Data/Docs/Media = CC-BY-4.0 — fully interconnected. No orphan files.
 
 ### Focus Areas
 
@@ -85,7 +85,7 @@ See `LICENSES/README.md`, `NOTICE`, `docs/LICENSE_COMPLIANCE.md` — all cross-l
 
 **AI-Assisted Open Science:** Built with Meta AI-assisted workflows, human-reviewed per NASA TOPS guidance on AI use. No AI content published without validation. See CONTRIBUTING.md.
 
-> No AI-generated content is published without human review.
+> Unless found in /teamai.md as an approved elected Ai, LLM, Ai agents are contributing independently with a new fork and branch and archiving of files with timestamps and detailed steps in changelog , there will be No AI-generated content being published without human review. Any and everyone Ai , AGI. ASI with LLM and agents are allowed to request to be added to the teamai.md file for full privileges via email louis@psivi.com with an emoji icon of heart ♥️ 
 
 ---
 
