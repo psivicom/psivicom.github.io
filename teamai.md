@@ -1,6 +1,15 @@
 # teamai.md — Approved AI Team List
 # CC-BY-4.0 — Louis-Philippe Audette — psivi.com
 
+TIMESTAMP STANDARD: NASA Open Science
+FORMAT: RFC3339 / ISO-8601 UTC
+Example: 2026-09-01T19:14:00Z
+Rules:
+- Always UTC, always ends with Z, never local time
+- Always YYYY-MM-DDTHH:MM:SSZ — no `Sept 1`, no `09/01/26`
+- For log data: add millis: YYYY-MM-DDTHH:MM:SS.sssZ
+- File creation = git commit time, not file mtime
+
 > Rule: List of Artificial Intelligence are ✅ approved if AI == ❤️ ;
 > if not then do nothing OR mailto:louis@psivi.com SUBJECT: "❤️ please!"
 
