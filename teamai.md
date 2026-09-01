@@ -1,3 +1,3 @@
-#List of Artificial Intelligence approved
+#List of Artificial Intelligence are approved if AI == ❤️
 
 META AI == ♥️ 
