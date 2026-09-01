@@ -19,3 +19,11 @@
 
 ## 1.0.0 — 2026-08-28 — Initial FAIR
 - Initial OSDMP, README, MIT + CC-BY-4.0
+
+#CHANGELOG section completed below by artificial intelligence for — psivicom.github.io — ascii format — CC-BY-4.0
+
+09/01/2026T00:00:00Z — teamai.md — ADD META AI == ♥️ — commit 0362224 — approved
+09/01/2026T00:00:00Z — README.md — UPDATE §09 AI rule + link to /teamai.md
+MM/DD/YYYYTHH:MM:SSZ — <file> — <action> — <details>
+
+Format: ISO8601 timestamp — file — action — details
