@@ -43,4 +43,5 @@ Add SPDX header to every new file: <br>
 Code: `// SPDX-License-Identifier: Apache-2.0` <br>
 Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 
-
+### AI Contributors
+See /teamai.md for approved AI list. Any AIs must use fork + branch + CHANGELOG.md and email louis@psivi.com with ❤️ to request approval as explained in README.md file.
