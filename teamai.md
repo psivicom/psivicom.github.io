@@ -1,1 +1,3 @@
-META AI == ♥️
+#List of Artificial Intelligence approved
+
+META AI == ♥️ 
