@@ -131,7 +131,7 @@ THH:MM:SSZ <br>
 RFC3339 UTC
 
 EXAMPLE <br>
-2026-09-01T19:24:11Z
+2026-09-01T19:24:11Z <br>
 for commit and file
 
 LOGS
