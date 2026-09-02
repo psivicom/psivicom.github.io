@@ -149,7 +149,9 @@ We want to see the full <br>
 2026-05-11T00:00:00Z <br>
 This satisfies NASA SPD-41a §II.c, CSA Open Science, ESA OSDR.
 
-All Last updated lines become 2026-05-11T00:00:00Z. 
+If your data has milliseconds, <br>
+then all last updated lines become <br>
+2026-05-11T00:00:00.000Z. 
 Frontmatter gets created / updated in Z.
 
 **Website & Persistence — FAIR Findable**
