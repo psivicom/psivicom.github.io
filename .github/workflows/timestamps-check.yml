@@ -1,0 +1,59 @@
+name: NASA Timestamp Compliance Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  timestamp-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for non-ISO dates
+        run: |
+          echo "Checking for bare dates like Last updated: YYYY-MM-DD"
+          set -e
+          # Fail if Last updated: YYYY-MM-DD without T and Z
+          if grep -R --include="*.md" -nE "Last updated:\s*[0-9]{4}-[0-9]{2}-[0-9]{2}($|[^T])" . ; then
+            echo "::error::Found non-RFC3339 bare date. Use YYYY-MM-DDTHH:MM:SSZ"
+            exit 1
+          fi
+
+          # Fail if ISO without Z
+          if grep -R --include="*.md" -nE "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}($|[^Z])" . ; then
+            echo "::error::Found ISO date without Zulu Z. Always use Z."
+            exit 1
+          fi
+
+          echo "✅ All timestamps RFC3339 Zulu compliant"
+
+      - name: Require teamai.md and CHANGELOG.md
+        run: |
+          test -f teamai.md || (echo "::error::Missing teamai.md on main" && exit 1)
+          test -f CHANGELOG.md || (echo "::error::Missing CHANGELOG.md on main" && exit 1)
+          echo "✅ Required files present"
+
+      - name: Validate frontmatter dates
+        run: |
+          python3 - << 'PY'
+          import re, pathlib, sys
+          bad = []
+          for p in pathlib.Path('.').rglob('*.md'):
+              if '.git' in str(p): continue
+              txt = p.read_text(errors='ignore')
+              if txt.startswith('---'):
+                  m = re.search(r'created:\s*(.+)', txt)
+                  if m and not re.match(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z', m.group(1).strip()):
+                      bad.append(f"{p}: bad created: {m.group(1)}")
+                  m = re.search(r'updated:\s*(.+)', txt)
+                  if m and not re.match(r'\d{4}-\d{2}-\d{2}T.*Z', m.group(1).strip()):
+                      bad.append(f"{p}: bad updated: {m.group(1)}")
+          if bad:
+              for b in bad:
+                  print(f"::error::{b}")
+              sys.exit(1)
+          print("✅ Frontmatter dates valid")
+          PY
