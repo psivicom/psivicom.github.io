@@ -130,7 +130,7 @@ YYYY-MM-DD
 THH:MM:SSZ <br>
 RFC3339 UTC
 
-EXAMPLE
+EXAMPLE <br>
 2026-09-01T19:24:11Z
 for commit and file
 
