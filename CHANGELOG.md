@@ -38,7 +38,7 @@ Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
 ## Template — Copy for new entries
 
 ```
-### YYYY-MM-DDTHH:MM:SS.SSSZ - author - scope
+### YYYY-MM-DDTHH:MM:SS.sssZ - author - scope
 - Added WORD: NAME ( stack -- effect ) DEF: : NAME ... ; TEST: ...
 - Changed: ...
 - Fixed: ...
@@ -46,7 +46,8 @@ Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
 ```
 
 Rules:
-- Always Zulu (Z) to the milliseconds 
+- Always Zulu (Z) to the milliseconds
+  YYYY-MM-DDTHH:MM:SS.sssZ
 - One entry per commit
 - Link to WORD definition
 - Include TEST
