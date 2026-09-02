@@ -1,15 +1,22 @@
 # teamai.md — Elected AI Council — PSIVI.COM
  
 > NASA Open Science Timestamp Standard: Excellence Edition
-> All timestamps MUST be RFC3339 UTC Zulu.
+> All timestamps MUST be RFC3339 UTC Zulu + milliseconds.
 
-## Timestamp Standard
+## Timestamp Standard — NASA SPD-41a, CSA, ESA Open Science
 
-- Format: `YYYY-MM-DDTHH:MM:SSZ` (RFC3339 UTC)
+- Format: `YYYY-MM-DDTHH:MM:SS.sssZ` (RFC3339 UTC)
 - Logs: `YYYY-MM-DDTHH:MM:SS.sssZ`
-- Rule: Always Z. Never local. Never ambiguous.
-- Example: `2026-09-01T19:24:11Z`
+- Rule: Always Zulu time + milliseconds. Never local. Never ambiguous.
+- Example: `2026-09-01T19:24:11.000Z`
 - Compliance: Satisfies NASA SPD-41a, CSA, ESA Open Science.
+
+## TIMESTAMP STANDARD — NASA Open Science
+ALL timestamps MUST be: YYYY-MM-DDTHH:MM:SS.sssZ
+- Human docs: .000Z
+- Hive sensors / FORTH / RADARSAT: .123Z
+Example: 2026-09-01T19:32:11.123Z
+Workflow auto-fixes everything.
 
 ## FORTH Governance
 
