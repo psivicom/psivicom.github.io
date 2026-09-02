@@ -134,17 +134,22 @@ EXAMPLE <br>
 2026-09-01T19:24:11Z <br>
 for commit and file
 
-LOGS
-YYYY-MM-DD
-THH:MM:SS.sssZ
-millis
+LOGS <br>
+YYYY-MM-DD <br>
+THH:MM:SS.sssZ <br>
+millis <br>
+
 RULE:
-Always Zulu time (Z). Never local time. 
-Never only 2026-05-11. No timezone offsets. 
-Zulu is law. We want to see the full 2026-05-11T00:00:00Z
+Always Zulu time (Z). <br>
+Never local time. <br>
+Never only 2026-05-11, you need the Zulu time toghether after the date. <br>
+No timezone offsets. <br>
+Zulu is law. <br>
+We want to see the full <br>
+2026-05-11T00:00:00Z <br>
 This satisfies NASA SPD-41a §II.c, CSA Open Science, ESA OSDR.
 
-All Last updated: lines become 2026-05-11T00:00:00Z. 
+All Last updated lines become 2026-05-11T00:00:00Z. 
 Frontmatter gets created / updated in Z.
 
 **Website & Persistence — FAIR Findable**
