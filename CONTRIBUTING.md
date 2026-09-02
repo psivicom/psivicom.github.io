@@ -31,6 +31,8 @@ Your contributions MUST follow FAIR principles.
 - All code Apache-2.0, documented, linked from docs/.
 - Indicate all code or content that is AI-generated with or without human-reviewed; 
   disclose in commit: “AI-generated, (with)(without) human-reviewed” or "AI-assisted,        human-reviewed".
+- Use Zulu timestamp to the milliseconds
+  YYYY-MM-DDTHH:MM:SS.sssZ
 
 ### License Agreement (MUST READ}
 By contributing, you agree that:
