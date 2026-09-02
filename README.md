@@ -127,11 +127,11 @@ SPD-41a / CSA / ESA compliant
 
 FORMAT
 YYYY-MM-DD
-THH:MM:SSZ <br>
+THH:MM:SS.sssZ <br>
 RFC3339 UTC
 
 EXAMPLE <br>
-2026-09-01T19:24:11Z <br>
+2026-09-01T19:24:11.000Z <br>
 for commit and file
 
 LOGS <br>
@@ -140,13 +140,13 @@ THH:MM:SS.sssZ <br>
 millis <br>
 
 RULE:
-Always Zulu time (Z). <br>
+Always Zulu time (Z) with milliseconds . <br>
 Never local time. <br>
-Never only 2026-05-11, you need the Zulu time toghether after the date. <br>
+Never only 2026-05-11, you need to the milliseconds your Zulu time toghether after the date. <br>
 No timezone offsets. <br>
 Zulu is law. <br>
 We want to see the full <br>
-2026-05-11T00:00:00Z <br>
+2026-05-11T00:00:00.000Z <br>
 This satisfies NASA SPD-41a §II.c, CSA Open Science, ESA OSDR.
 I prefer to implement everything with milliseconds in the era of fast Ai
 2026-05-11T00:00:00.000Z
