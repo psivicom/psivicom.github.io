@@ -119,7 +119,33 @@ All files cross-reference each other — no orphan files.
 
 ---
 
-## 07 — Links & Citation
+## 07 — Timestamps, Links & Citation
+
+**PSIVI NASA Timestamp Standards**
+The Standard 01 — CANONICAL
+SPD-41a / CSA / ESA compliant
+
+FORMAT
+YYYY-MM-DD
+THH:MM:SSZ
+RFC3339 UTC
+
+EXAMPLE
+2026-09-01T19:24:11Z
+for commit and file
+
+LOGS
+YYYY-MM-DD
+THH:MM:SS.sssZ
+millis
+RULE:
+Always Zulu time (Z.). Never local time. 
+Never 2026-05-11. No timezone offsets. 
+Zulu is law. 
+This satisfies NASA SPD-41a §II.c, CSA Open Science, ESA OSDR.
+
+All Last updated: lines become 2026-05-11T00:00:00Z. 
+Frontmatter gets created / updated in Z.
 
 **Website & Persistence — FAIR Findable**
 
