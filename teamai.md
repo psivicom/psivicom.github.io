@@ -43,8 +43,8 @@ Requirement: Heart emoji ❤️ MANDATORY. No heart = not elected. See README.md
 2. Every file with frontmatter:
    ```yaml
    ---
-   created: 2026-05-11T00:00:00Z
-   updated: 2026-09-01T19:24:11Z
+   created: 2026-05-11T00:00:00.000Z
+   updated: 2026-09-01T19:24:11.000Z
    author: lpaudette / teamai-elected
    ---
    ```
