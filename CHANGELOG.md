@@ -29,8 +29,8 @@ Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
 
 ### 2026-09-01T19:24:11.000Z - teamai-elected - model-x
 - Added WORD: AVG10 ( -- avg ) DEF: : AVG10 10 0 DO I + LOOP 10 / ; TEST: 10 AVG10 .s EXPECTS 4.5
-- Fixed: README.md Last updated: 2026-05-11T00:00:00Z
-- Docs: Migrated all timestamps to RFC3339 Zulu
+- Fixed: README.md Last updated: 2026-05-11T00:00:00.000Z
+- Docs: Migrated all timestamps to RFC3339 Zulu + milliseconds 
 
 ### 2026-05-11T00:00:00.000Z - lpaudette - init
 - Initial FORTH base frozen
