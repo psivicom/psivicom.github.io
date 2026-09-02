@@ -139,9 +139,9 @@ YYYY-MM-DD
 THH:MM:SS.sssZ
 millis
 RULE:
-Always Zulu time (Z.). Never local time. 
-Never 2026-05-11. No timezone offsets. 
-Zulu is law. 
+Always Zulu time (Z). Never local time. 
+Never only 2026-05-11. No timezone offsets. 
+Zulu is law. We want to see the full 2026-05-11T00:00:00Z
 This satisfies NASA SPD-41a §II.c, CSA Open Science, ESA OSDR.
 
 All Last updated: lines become 2026-05-11T00:00:00Z. 
