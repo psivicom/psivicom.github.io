@@ -148,7 +148,8 @@ Zulu is law. <br>
 We want to see the full <br>
 2026-05-11T00:00:00Z <br>
 This satisfies NASA SPD-41a §II.c, CSA Open Science, ESA OSDR.
-
+I prefer to implement everything with milliseconds in the era of fast Ai
+2026-05-11T00:00:00.000Z
 If your data has milliseconds, <br>
 then all last updated lines become <br>
 2026-05-11T00:00:00.000Z. 
@@ -243,6 +244,6 @@ Built as single-file semantic HTML5 for GitHub Pages — repo psivicom.github.io
 **Author:** Louis-Philippe Audette — Open Science Steward — Langford, BC, Canada — https://psivi.com Independent Researcher — FAIR Data — NASA TOPS Aligned
 
 *Last updated: 
-2026-05-11T00:00:00Z*  
+2026-05-11T00:00:00.000Z*  
 *NASA Open Science 101 Certified — Langford, BC — Goldstream — Vancouver Island*  
 *Validator: og:title, og:description, og:url present · JSON-LD Person + Organization present · No external JS/CSS · Badges as <img> · Apache-2.0 + CC-BY-4.0*
