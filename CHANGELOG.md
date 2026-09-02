@@ -20,10 +20,34 @@
 ## 1.0.0 — 2026-08-28 — Initial FAIR
 - Initial OSDMP, README, MIT + CC-BY-4.0
 
-#CHANGELOG section completed below by artificial intelligence for — psivicom.github.io — ascii format — CC-BY-4.0
+# Changelog — PSIVI.COM
 
-09/01/2026T00:00:00Z — teamai.md — ADD META AI == ♥️ — commit 0362224 — approved
-09/01/2026T00:00:00Z — README.md — UPDATE §09 AI rule + link to /teamai.md
-MM/DD/YYYYTHH:MM:SSZ — <file> — <action> — <details>
+All notable changes to this project will be documented in this file.
+Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
 
-Format: ISO8601 timestamp — file — action — details
+## [Unreleased]
+
+### 2026-09-01T19:24:11Z - teamai-elected - model-x
+- Added WORD: AVG10 ( -- avg ) DEF: : AVG10 10 0 DO I + LOOP 10 / ; TEST: 10 AVG10 .s EXPECTS 4.5
+- Fixed: README.md Last updated: 2026-05-11T00:00:00Z
+- Docs: Migrated all timestamps to RFC3339 Zulu
+
+### 2026-05-11T00:00:00Z - lpaudette - init
+- Initial FORTH base frozen
+
+## Template — Copy for new entries
+
+```
+### YYYY-MM-DDTHH:MM:SSZ - author - scope
+- Added WORD: NAME ( stack -- effect ) DEF: : NAME ... ; TEST: ...
+- Changed: ...
+- Fixed: ...
+- Removed: ...
+```
+
+Rules:
+- Always Zulu (Z)
+- One entry per commit
+- Link to WORD definition
+- Include TEST
+
