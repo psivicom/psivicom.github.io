@@ -243,7 +243,7 @@ Built as single-file semantic HTML5 for GitHub Pages — repo psivicom.github.io
 
 **Author:** Louis-Philippe Audette — Open Science Steward — Langford, BC, Canada — https://psivi.com Independent Researcher — FAIR Data — NASA TOPS Aligned
 
-*Last updated: 
+*Last updated: 2026-09-02T05:27:03.000Z*
 2026-05-11T00:00:00.000Z*  
 *NASA Open Science 101 Certified — Langford, BC — Goldstream — Vancouver Island*  
 *Validator: og:title, og:description, og:url present · JSON-LD Person + Organization present · No external JS/CSS · Badges as <img> · Apache-2.0 + CC-BY-4.0*
