@@ -48,3 +48,7 @@ git push
 - AI invitation: you can now say "AI may contribute PRs with provenance hashes, human-reviewed per NASA TOPS and CIS Control 14" — exactly what ESA Open Science Policy wants for AI transparency.
 
 Questions: louis@psivi.com or open issue with tag data-request
+
+# Added /docs/SECURITY_PLAN/psivi-cis-harden/
+ToDo: README.md, CONTRIBUTING.md,SECURITY.md, /scripts/generate-manifest.sh
+package files suggested by Meta Ai to harden psivi.com with open science and CIS harden security with space agencies 
