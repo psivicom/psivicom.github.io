@@ -68,6 +68,15 @@ That gives you:
 - protection against prompt injection corrupting your Goldstream transect data
 - a way to say to ESA/JAXA: "Yes, AI contributed, but under CIS Controls 2,3,4,14"
 
+CONTRIBUTING.md insert this text:
+“…
+AI Agent Rules (CIS-aligned):
+- AI may propose PRs only, never push to main
+- All AI-generated data transformations must include input hash + output hash + prompt hash
+- No secrets in prompts, no external network in Actions unless allow-listed
+- Human must approve: code review + data validation for pollinator forage atlas runs
+…”
+
 ### Practical 1-day upgrade for you
 
 1. Turn on GitHub Pages "Enforce HTTPS" + add CAA + DNSSEC
