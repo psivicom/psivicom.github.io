@@ -47,3 +47,8 @@ Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 
 ### AI Contributors
 See /teamai.md for approved AI list. Any AIs must use fork + branch + CHANGELOG.md and email louis@psivi.com with ❤️ to request approval as explained in README.md file.
+AI Agent Rules (CIS-aligned):
+- AI may propose PRs only, never push to main
+- All AI-generated data transformations must include input hash + output hash + prompt hash
+- No secrets in prompts, no external network in Actions unless allow-listed
+- Human must approve: code review + data validation for pollinator forage atlas runs
