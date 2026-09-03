@@ -80,3 +80,67 @@ AI Agent Rules (CIS-aligned):
 Result: you stay fully open data like NASA wants for discovery, but you can tell any international space agency: "This site meets SPD-41a for openness, FAIR for interoperability, and CIS IG1 for supply-chain integrity — AI contributions are provenance-tracked and human-reviewed."
 
 Want me to draft that `SECURITY.md` and hardened GitHub Actions workflow for psivicom.github.io based on your current Jekyll setup?
+
+# ADDENDUM 03-09-2026T12:08:00.000Z TODO:
+
+psivicom.github.io as a cybersecurity-hardened open science hub that agencies can actually trust. Dual-license stays, but now with proper references.
+psivicom.github.io — Open Science with Verifiable Trust
+Mission: Make open data usable for international space agencies while keeping it tamper-evident.
+Open science makes it available. Cybersecurity makes it believable.
+1. Standards Alignment
+NASA Open Science
+Your site implements NASA's SMD Strategy which is implemented through the Open Source Science Initiative ￼
+Proper URLs:
+•  Initiative Hub: https://science.nasa.gov/open-science
+•  Policy SPD-41a: https://science.nasa.gov/researchers/open-science/open-source-science
+•  Data Portal: https://data.nasa.gov
+•  Funding & TOPS: https://science.nasa.gov/open-science/nasa-open-science-funding-opportunities/
+Compliance:
+•  Code = Apache-2.0, Data/Docs = CC-BY-4.0 (NASA SPD-41a §VI compatible)
+•  FAIR + TRUST + CARE principles
+•  Provenance via codemeta.json + CITATION.cff + Zenodo DOI
+•  No orphan files — fully interconnected graph
+
+# CIS — Center for Internet Security
+
+Hardening layer for supply-chain integrity.
+Proper URLs:
+•  Controls: https://www.cisecurity.org/controls
+•  Benchmarks: https://www.cisecurity.org/cis-benchmarks
+The CIS Critical Security Controls are a prescriptive, prioritized, and simplified set of best practices. Implementation Group 1 (IG1) represents an emerging minimum standard of information security — exactly what an open data site needs. ￼
+2. Cybersecurity Expertise Applied to Open Science
+Threat Model for psivicom.github.io:
+Open data + compromised build = bad science. We assume public clone, hostile PR, dependency hijack, and Pages artifact tampering.
+CIS Controls v8 IG1 Mapping:
+•  IG1-01 Inventory: codemeta.json, CITATION.cff, data/manifest.sha256 = authoritative asset list
+•  IG1-02 Secure Config: GitHub Actions SHA-pinned, persist-credentials: false, permissions: contents: read, branch protection on main
+•  IG1-03 Data Protection: Dual-license enforcement in CI, SBOM to _site/sbom.spdx.json
+•  IG1-07 Vulnerability Management: Dependabot weekly + Dependency Review blocking CVSS moderate+
+•  IG1-08 Audit Log: step-security/harden-runner egress audit + signed commits
+
+## Supply-Chain Integrity for NASA compliance:
+
+YAML
+
+- SHA-pinned Jekyll build
+- sha256sum -c data/manifest.sha256 # RADARSAT / NASA Earthdata integrity
+- CycloneDX SBOM generation
+- CodeQL SAST on every PR
+
+## AI-Invited Workflow (NASA TOPS + CIPS Ethics):
+
+AI may ONLY open PRs. Each AI contribution MUST include: input-hash, prompt-hash, output-hash, model version, and human validation. No synthetic Goldstream field observations. No publication without I.S.P.-aligned human review.
+
+This satisfies NASA's AI transparency guidance and CIPS professionalism requirement that an I.S.P. confirms status as an IT practitioner of the highest integrity.
+3. Ready-to-Paste About Block for Your Site
+psivi.com is an open science data node built to NASA Open Source Science standards and secured to CIS IG1.
+
+We publish software under Apache-2.0 and data/docs under CC-BY-4.0, with FAIR identifiers, Zenodo DOIs, and cryptographic manifests. Built on GitHub Pages with hardened CI, SBOM, and verifiable AI provenance, in alignment with CIPS professional practice and NASA Open Science (https://science.nasa.gov/open-science). Designed for collaboration with CSA, NASA, ESA, JAXA.
+
+AI may ONLY open PRs. Each AI contribution MUST include: input-hash, prompt-hash, output-hash, model version, and human validation. No synthetic Goldstream field observations. No publication without I.S.P.-aligned human review.
+
+This satisfies NASA's AI transparency guidance and CIPS professionalism requirement that an I.S.P. confirms status as an IT practitioner of the highest integrity.
+3. Ready-to-Paste About Block for Your Site
+psivi.com is an open science data node built to NASA Open Source Science standards and secured to CIS IG1.
+
+We publish software under Apache-2.0 and data/docs under CC-BY-4.0, with FAIR identifiers, Zenodo DOIs, and cryptographic manifests. Built on GitHub Pages with hardened CI, SBOM, and verifiable AI provenance, in alignment with CIPS professional practice and NASA Open Science (https://science.nasa.gov/open-science). Designed for collaboration with CSA, NASA, ESA, JAXA.
