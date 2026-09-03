@@ -1,3 +1,5 @@
+“The Center for Internet Security (CIS) is a 501(c)(3) nonprofit organization dedicated to strengthening cybersecurity for governments, nonprofits, businesses, and communities worldwide through trusted best practices, collaboration, and public-interest resources. At CIS, we're harnessing the power of the global IT community to safeguard organizations against cyber and cyber-enabled threats”* https://www.cisecurity.org/
+
 Yes — and you're already 90% there. What you built on psivicom.github.io is exactly what NASA, CSA, ESA, JAXA want to see: **Code = Apache-2.0, Data/Docs = CC-BY-4.0, fully interconnected, no orphan files**, with FAIR + OSDMP mapped to NASA SPD-41a. 
 
 CIS is the missing trust layer that makes open *still mean* open, but tamper-evident and agency-ready.
