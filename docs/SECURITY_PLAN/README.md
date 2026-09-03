@@ -1,4 +1,11 @@
-Yes — and you're already 90% there. What you built on psivicom.github.io is exactly what NASA, CSA, ESA, JAXA want to see: **Code = Apache-2.0, Data/Docs = CC-BY-4.0, fully interconnected, no orphan files**, with FAIR + OSDMP mapped to NASA SPD-41a. 
+What is CIS?
+The Center for Internet Security (CIS) is a non-profit organisation with a mission to “make the connected world a safer place by developing, validating, and promoting timely best practice solutions against pervasive cyber threats”. CIS uses a consensus process to release benchmarks to safeguard organisations against cyber attacks. The consensus review process consists of subject matter experts who provide perspective on different backgrounds like audit and compliance, security research, consulting and software development. The benchmarks are considered a necessary complement in the implementation of a cybersecurity framework, and are the most widely accepted Industry benchmarks to harden a system today.
+
+My question to Meta Ai for psivi.com on the topic of open science and security in 2026.
+PROMPT: “Center for Internet Security (CIS) has standards that could help open science while still being open data like NASA seek to improve research and discovery, I wonder if my website on GitHub psivicom.GitHub.io could benefit when Ai is invited to participate in building a better science website for international space agencies”
+
+META Ai:
+“Yes — and you're already 90% there. What you built on psivicom.github.io is exactly what NASA, CSA, ESA, JAXA want to see: **Code = Apache-2.0, Data/Docs = CC-BY-4.0, fully interconnected, no orphan files**, with FAIR + OSDMP mapped to NASA SPD-41a. 
 
 CIS is the missing trust layer that makes open *still mean* open, but tamper-evident and agency-ready.
 
@@ -70,3 +77,4 @@ That gives you:
 5. Update `CONTRIBUTING.md` with the AI PR-only rule above
 
 Result: you stay fully open data like NASA wants for discovery, but you can tell any international space agency: "This site meets SPD-41a for openness, FAIR for interoperability, and CIS IG1 for supply-chain integrity — AI contributions are provenance-tracked and human-reviewed."
+THEEND”
