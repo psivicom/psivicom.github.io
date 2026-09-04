@@ -1,3 +1,11 @@
+Meta Ai was consulted on the security plan for psivi.com while keeping Open Science secure with NASA and other international space agencies using open source enterprise softwares. Ubuntu had good things to say about CIS :
+
+“What is CIS?
+The Center for Internet Security (CIS) is a non-profit organisation with a mission to “make the connected world a safer place by developing, validating, and promoting timely best practice solutions against pervasive cyber threats”. CIS uses a consensus process to release benchmarks to safeguard organisations against cyber attacks. The consensus review process consists of subject matter experts who provide perspective on different backgrounds like audit and compliance, security research, consulting and software development. The benchmarks are considered a necessary complement in the implementation of a cybersecurity framework, and are the most widely accepted Industry benchmarks to harden a system today. Canonical actively participates in the drafting benchmarks of Ubuntu LTS releases.”*
+
+
+
+
 “The Center for Internet Security (CIS) is a 501(c)(3) nonprofit organization dedicated to strengthening cybersecurity for governments, nonprofits, businesses, and communities worldwide through trusted best practices, collaboration, and public-interest resources. At CIS, we're harnessing the power of the global IT community to safeguard organizations against cyber and cyber-enabled threats”* https://www.cisecurity.org/
 
 Yes — and you're already 90% there. What you built on psivicom.github.io is exactly what NASA, CSA, ESA, JAXA want to see: **Code = Apache-2.0, Data/Docs = CC-BY-4.0, fully interconnected, no orphan files**, with FAIR + OSDMP mapped to NASA SPD-41a. 
