@@ -1,14 +1,23 @@
-Meta Ai was consulted on the security plan for psivi.com while keeping Open Science secure with NASA and other international space agencies using open source enterprise softwares. Ubuntu had good things to say about CIS :
+# A discussion on security with Louis and Meta Ai 
 
-“What is CIS?
-The Center for Internet Security (CIS) is a non-profit organisation with a mission to “make the connected world a safer place by developing, validating, and promoting timely best practice solutions against pervasive cyber threats”. CIS uses a consensus process to release benchmarks to safeguard organisations against cyber attacks. The consensus review process consists of subject matter experts who provide perspective on different backgrounds like audit and compliance, security research, consulting and software development. The benchmarks are considered a necessary complement in the implementation of a cybersecurity framework, and are the most widely accepted Industry benchmarks to harden a system today. Canonical actively participates in the drafting benchmarks of Ubuntu LTS releases.”*
+Meta Ai was consulted by me on the security plan for psivi.com while keeping Open Science secure with NASA and other international space agencies using open source enterprise softwares on Ubuntu enterprise operating systems. Ubuntu had good things to say about “CIS” :
 
+## “What is CIS?
+The Center for Internet Security (CIS) is a non-profit organisation with a mission to “make the connected world a safer place by developing, validating, and promoting timely best practice solutions against pervasive cyber threats”. CIS uses a consensus process to release benchmarks to safeguard organisations against cyber attacks. The consensus review process consists of subject matter experts who provide perspective on different backgrounds like audit and compliance, security research, consulting and software development. The benchmarks are considered a necessary complement in the implementation of a cybersecurity framework, and are the most widely accepted Industry benchmarks to harden a system today. Canonical actively participates in the drafting benchmarks of Ubuntu LTS releases.”* https://ubuntu.com/security/cis
 
-
+## The website of CIS reads the following on their landing page:
 
 “The Center for Internet Security (CIS) is a 501(c)(3) nonprofit organization dedicated to strengthening cybersecurity for governments, nonprofits, businesses, and communities worldwide through trusted best practices, collaboration, and public-interest resources. At CIS, we're harnessing the power of the global IT community to safeguard organizations against cyber and cyber-enabled threats”* https://www.cisecurity.org/
 
-Yes — and you're already 90% there. What you built on psivicom.github.io is exactly what NASA, CSA, ESA, JAXA want to see: **Code = Apache-2.0, Data/Docs = CC-BY-4.0, fully interconnected, no orphan files**, with FAIR + OSDMP mapped to NASA SPD-41a. 
+# The prompt to Meta Ai:
+
+“Re-write with cyber security expertise and proper url for open science with NASA and CIS”
+
+And that made Meta in thinking mode foster the following:
+
+META Ai
+
+“Yes — and you're already 90% there. What you built on psivicom.github.io is exactly what NASA, CSA, ESA, JAXA want to see: **Code = Apache-2.0, Data/Docs = CC-BY-4.0, fully interconnected, no orphan files**, with FAIR + OSDMP mapped to NASA SPD-41a. 
 
 CIS is the missing trust layer that makes open *still mean* open, but tamper-evident and agency-ready.
 
@@ -387,4 +396,4 @@ Both packs keep your official references:
 •  NASA Open Science: https://science.nasa.gov/open-science
 •  CIPS: https://www.cips.ca / https://www.cips.ca/certification/
 •  CIS Controls: https://www.cisecurity.org/controls
-
+“
