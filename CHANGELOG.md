@@ -1,5 +1,25 @@
 # Changelog — Excellence Edition
 
+## Timestamps Template for keeping records 
+## of committed changes to keep compliance — 
+## Here is a Copy to use for new entries:
+
+```
+### YYYY-MM-DDTHH:MM:SS.sssZ - author - scope
+- Added WORD: NAME ( stack -- effect ) DEF: : NAME ... ; TEST: ...
+- Changed: ...
+- Fixed: ...
+- Removed: ...
+```
+
+Rules:
+- Always Zulu (Z) to the milliseconds
+  YYYY-MM-DDTHH:MM:SS.sssZ
+- One entry per commit
+- Link to WORD definition
+- Include TEST
+
+
 ## 1.1.0 — 2026-08-29T00:00:00.000Z — Excellence — Apache-2.0 + CC-BY-4.0 Interconnected
 
 - Migrated code license from MIT to **Apache-2.0** per author request — full Apache 2.0 text in LICENSE and LICENSES/APACHE-2.0.txt
@@ -25,30 +45,9 @@
 All notable changes to this project will be documented in this file.
 Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
 
-## [Unreleased]
-
-### 2026-09-01T19:24:11.000Z - teamai-elected - model-x
+### 2026-09-01T19:24:11.000Z - reviewed by Louis-Philippe Audette
 - Added WORD: AVG10 ( -- avg ) DEF: : AVG10 10 0 DO I + LOOP 10 / ; TEST: 10 AVG10 .s EXPECTS 4.5
 - Fixed: README.md Last updated: 2026-05-11T00:00:00.000Z
 - Docs: Migrated all timestamps to RFC3339 Zulu + milliseconds 
 
-### 2026-05-11T00:00:00.000Z - lpaudette - init
-- Initial FORTH base frozen
-
-## Template — Copy for new entries
-
-```
-### YYYY-MM-DDTHH:MM:SS.sssZ - author - scope
-- Added WORD: NAME ( stack -- effect ) DEF: : NAME ... ; TEST: ...
-- Changed: ...
-- Fixed: ...
-- Removed: ...
-```
-
-Rules:
-- Always Zulu (Z) to the milliseconds
-  YYYY-MM-DDTHH:MM:SS.sssZ
-- One entry per commit
-- Link to WORD definition
-- Include TEST
 
