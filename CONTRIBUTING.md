@@ -21,7 +21,7 @@ Contributing to psivicom.github.io — NASA TOPS / CSA / ESA / JAXA / UNESCO ali
 
 Your contributions MUST follow FAIR principles.
 
-### FAIR Requirements
+### FAIR Requirements — Aligned
 - Use Zulu timestamp to the milliseconds
   YYYY-MM-DDTHH:MM:SS.sssZ
 - Cite sources using CITATION.cff format.
