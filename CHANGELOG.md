@@ -1,5 +1,9 @@
 # Changelog — Excellence Edition
+All notable changes to this repository will be documented in this file.
 
+All changes reported in “Changelog” are with the newest date kept at the top.
+
+# Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
 We include at the top a Timestamps Template for keeping records 
 of committed changes to keep compliance with time keeping.
 Here is a Copy to use:
@@ -19,7 +23,7 @@ Rules:
 - Link to WORD definition
 - Include TEST
 
-
+# TOP
 ## 1.1.0 — 2026-08-29T00:00:00.000Z — Excellence — Apache-2.0 + CC-BY-4.0 Interconnected
 
 - Migrated code license from MIT to **Apache-2.0** per author request — full Apache 2.0 text in LICENSE and LICENSES/APACHE-2.0.txt
