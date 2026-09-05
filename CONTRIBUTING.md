@@ -22,6 +22,8 @@ Contributing to psivicom.github.io — NASA TOPS / CSA / ESA / JAXA / UNESCO ali
 Your contributions MUST follow FAIR principles.
 
 ### FAIR Requirements
+- Use Zulu timestamp to the milliseconds
+  YYYY-MM-DDTHH:MM:SS.sssZ
 - Cite sources using CITATION.cff format.
 - Update CITATION.cff if needed
 - Add citation metadata if adding datasets;
@@ -29,10 +31,16 @@ Your contributions MUST follow FAIR principles.
 - Link new files in README.md structure diagram and docs/.  
 - Provide DOI for new data via Zenodo
 - All code Apache-2.0, documented, linked from docs/.
-- Indicate all code or content that is AI-generated with or without human-reviewed; 
-  disclose in commit: “AI-generated, (with)(without) human-reviewed” or "AI-assisted,        human-reviewed".
-- Use Zulu timestamp to the milliseconds
-  YYYY-MM-DDTHH:MM:SS.sssZ
+- For AI disclosure, you should use the following labeling conventions in your commit messages:
+
+For content created by AI that was not checked by a person: 
+AI-generated, without human-reviewed
+
+For content created by AI that was checked and verified by a person: 
+AI-generated, with human-reviewed
+
+For content where AI was used as a tool to help a human write the final version: 
+AI-assisted, human-reviewed
 
 ### License Agreement (MUST READ}
 By contributing, you agree that:
