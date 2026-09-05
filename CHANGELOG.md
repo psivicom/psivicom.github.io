@@ -1,8 +1,8 @@
 # Changelog — Excellence Edition
 
-## Timestamps Template for keeping records 
-## of committed changes to keep compliance — 
-## Here is a Copy to use for new entries:
+##Timestamps Template for keeping records 
+of committed changes to keep compliance — 
+Here is a Copy to use for new entries:
 
 ```
 ### YYYY-MM-DDTHH:MM:SS.sssZ - author - scope
