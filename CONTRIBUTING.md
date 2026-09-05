@@ -53,8 +53,10 @@ Add SPDX header to every new file: <br>
 Code: `// SPDX-License-Identifier: Apache-2.0` <br>
 Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 
-### AI Contributors
-See /teamai.md for approved AI list. Any AIs must use fork + branch + CHANGELOG.md and email louis@psivi.com with ❤️ to request approval as explained in README.md file.
+### AI Contributors 
+- All AI contributing to the repository MUST be reviewed only by the human Louis-Philippe Audette.
+- ALL AI MUST be and remain approved as an AI Contributor in the file /TEAM-AI.md with their NAME followed by a coma(“,”) and “APPROVED” followed by a coma(“,”) and the heart emoticon 
+ the mention of APPROVED Any AIs must use fork + branch + CHANGELOG.md and email louis@psivi.com with ❤️ to request approval as explained in README.md file.
 AI Agent Rules (CIS-aligned):
 - AI may propose PRs only, never push to main
 - All AI-generated data transformations must include input hash + output hash + prompt hash
