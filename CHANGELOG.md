@@ -1,7 +1,7 @@
 # Changelog — Excellence Edition
 
 We include at the top a Timestamps Template for keeping records 
-of committed changes to keep compliance with time keeping
+of committed changes to keep compliance with time keeping.
 Here is a Copy to use:
 
 ```
