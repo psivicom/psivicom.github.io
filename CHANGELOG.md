@@ -1,4 +1,4 @@
-# Changelog — Excellence Edition 
+# CHANGELOG — Excellence Edition 
 All notable changes to this repository will be documented in this file.
 
 All changes reported in “Changelog” are with the newest date kept at the top.
