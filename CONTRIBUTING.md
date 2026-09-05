@@ -60,5 +60,5 @@ Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 AI Agent Rules (CIS-aligned):
 - AI may propose PRs only, never push to main
 - All AI-generated data transformations must include input hash + output hash + prompt hash
-- No secrets in prompts, no external network in Actions unless allow-listed
-- Human must approve: code review + data validation for pollinator forage atlas runs
+- No secrets in prompts, no secret external network in actions.
+- Human must approve all code and data of all AI to be used in the repository.
