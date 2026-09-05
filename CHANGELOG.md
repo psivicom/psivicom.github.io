@@ -1,7 +1,7 @@
-# CHANGELOG — Excellence Edition 
+# CHANGELOG.md — Excellence Edition 
 All notable changes to this repository will be documented in this file.
 
-All changes reported in “Changelog” are with the newest date kept at the top.
+All changes reported in “CHANGELOG.md” are with the newest date kept at the top.
 
 # Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
 We include at the top a Timestamps Template for keeping records 
