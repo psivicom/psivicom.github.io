@@ -1,4 +1,4 @@
-# Changelog — Excellence Edition
+# Changelog — Excellence Edition 
 All notable changes to this repository will be documented in this file.
 
 All changes reported in “Changelog” are with the newest date kept at the top.
@@ -23,10 +23,16 @@ Rules:
 - Link to WORD definition
 - Include TEST
 
-# TOP
+# TOP OF CHANGELOG.md (most recent at top)
+
+## 1.1.1 — 2026-09-01T19:24:11.000Z - timestamps code reviewed by Louis-Philippe Audette
+- Added WORD: AVG10 ( -- avg ) DEF: : AVG10 10 0 DO I + LOOP 10 / ; TEST: 10 AVG10 .s EXPECTS 4.5
+- Fixed: README.md Last updated: 2026-05-11T00:00:00.000Z
+- Docs: Migrated all timestamps to RFC3339 Zulu + milliseconds 
+
 ## 1.1.0 — 2026-08-29T00:00:00.000Z — Excellence — Apache-2.0 + CC-BY-4.0 Interconnected
 
-- Migrated code license from MIT to **Apache-2.0** per author request — full Apache 2.0 text in LICENSE and LICENSES/APACHE-2.0.txt
+- Migrated code license from MIT to **Apache-2.0** with full Apache 2.0 text in LICENSE and LICENSES/APACHE-2.0.txt
 - Kept **CC-BY-4.0** for all docs, data, datasets, photos, images, videos, figures — LICENSES/CC-BY-4.0.txt
 - Added LICENSES/README.md explaining dual model for NASA/ESA/CSA/JAXA/Horizon Europe/UNESCO — interconnected with README, docs/LICENSE_COMPLIANCE.md
 - Added NOTICE file with attributions
@@ -43,15 +49,3 @@ Rules:
 
 ## 1.0.0 — 2026-08-28T00:00:00.000Z — Initial FAIR
 - Initial OSDMP, README, MIT + CC-BY-4.0
-
-# Changelog — PSIVI.COM
-
-All notable changes to this project will be documented in this file.
-Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SSZ
-
-### 2026-09-01T19:24:11.000Z - reviewed by Louis-Philippe Audette
-- Added WORD: AVG10 ( -- avg ) DEF: : AVG10 10 0 DO I + LOOP 10 / ; TEST: 10 AVG10 .s EXPECTS 4.5
-- Fixed: README.md Last updated: 2026-05-11T00:00:00.000Z
-- Docs: Migrated all timestamps to RFC3339 Zulu + milliseconds 
-
-
