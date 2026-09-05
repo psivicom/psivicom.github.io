@@ -33,13 +33,13 @@ Your contributions MUST follow FAIR principles.
 - All code Apache-2.0, documented, linked from docs/.
 - For AI disclosure, you should use the following labeling conventions in your commit messages:
 
-For content created by AI that was not checked by a person: 
+For content created by AI that was not checked by a person: <br>
 AI-generated, without human-reviewed
 
-For content created by AI that was checked and verified by a person: 
+For content created by AI that was checked and verified by a person: <br>
 AI-generated, with human-reviewed
 
-For content where AI was used as a tool to help a human write the final version: 
+For content where AI was used as a tool to help a human write the final version: <br>
 AI-assisted, human-reviewed
 
 ### License Agreement (MUST READ}
