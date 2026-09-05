@@ -17,7 +17,7 @@ Contributing to psivicom.github.io — NASA TOPS / CSA / ESA / JAXA / UNESCO ali
 - .zenodo.json keywords updated?
 - codemeta.json hasPart updated?
 
-## How to Contribute - PRINCIPLES WITH ALIGNED NASA TOPS / FAIR
+## How to Contribute - FAIR principles. 
 
 Your contributions MUST follow FAIR principles.
 
