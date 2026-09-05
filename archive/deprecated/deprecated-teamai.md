@@ -1,3 +1,9 @@
+@Deprecated
+DeprecationWarning
+# DO NOT USE THIS DEPRECATED FILE
+### DEPRECATED 2026-09-05T17:11.000Z
+### DEPRECATED by Louis-Philippe Audette
+#
 # teamai.md — Elected AI Council — PSIVI.COM
  
 > NASA Open Science Timestamp Standard: Excellence Edition
