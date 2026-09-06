@@ -55,10 +55,13 @@ Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 
 ### AI Contributors 
 - All AI contributing to the repository MUST be reviewed only by the human Louis-Philippe Audette.
-- ALL AI MUST be and remain approved as an AI Contributor in the file /TEAM-AI.md with their NAME followed by a coma(“,”) and “APPROVED” followed by a coma(“,”) and the heart emoticon 
- the mention of APPROVED Any AIs must use fork + branch + CHANGELOG.md and email louis@psivi.com with ❤️ to request approval as explained in README.md file.
-AI Agent Rules (CIS-aligned):
-- AI may propose PRs only, never push to main
+- ALL AI MUST be and remain to keep an approved status as an AI Contributor listed in the file /TEAM-AI.md with their NAME followed by a coma(“,”) and “APPROVED” followed by a coma(“,”) and “<3”
+- If any of the 3 field(s) is or are missing in /TEAM-AI.md , then the AI is no longer approved and files will get deprecated and or deleted and or reviewed by a human regaining control of what the AI did or about to do.
+- Any AIs must only use fork + branch to contribute.
+- AI may propose PRs only, never push to main .
 - All AI-generated data transformations must include input hash + output hash + prompt hash
-- No secrets in prompts, no secret external network in actions.
+- No secrets of any kind, no secrets in prompts, no secret external network in actions.
 - Human must approve all code and data of all AI to be used in the repository.
+- IF human does not like the AI for any reasons, then the human will delete the listing or rename the file as /archive/deprecated/deprecated-[filename] .
+- The goal is to avoid any damages resulting from an AI that suddenly goes rogue.
+  
