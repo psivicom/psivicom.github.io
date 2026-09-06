@@ -1,8 +1,8 @@
-# A discussion on security with Louis and Meta Ai 
+# A discussion on security 
 
-Meta Ai was consulted by me on the security plan for psivi.com while keeping Open Science secure with NASA and other international space agencies using open source enterprise softwares on Ubuntu enterprise operating systems. Ubuntu had good things to say about “CIS” :
+The security plan for psivi.com is modeled to keep Open Science secure with NASA and other international space agencies. Open source enterprise softwares like Ubuntu enterprise operating systems introduce the importance of keeping your systems secure and at the same time participate by contributing to Open source. Ubuntu had good things to say on the topic of security and about “CIS” explained below.
 
-## “What is CIS?
+## “What is “CIS” ?
 The Center for Internet Security (CIS) is a non-profit organisation with a mission to “make the connected world a safer place by developing, validating, and promoting timely best practice solutions against pervasive cyber threats”. CIS uses a consensus process to release benchmarks to safeguard organisations against cyber attacks. The consensus review process consists of subject matter experts who provide perspective on different backgrounds like audit and compliance, security research, consulting and software development. The benchmarks are considered a necessary complement in the implementation of a cybersecurity framework, and are the most widely accepted Industry benchmarks to harden a system today. Canonical actively participates in the drafting benchmarks of Ubuntu LTS releases.”* https://ubuntu.com/security/cis
 
 ## The website of CIS reads the following on their landing page:
@@ -11,9 +11,13 @@ The Center for Internet Security (CIS) is a non-profit organisation with a missi
 
 # The prompt to Meta Ai:
 
+## As of 09-05-2026T00:00:00.000Z META AI was removed from advising and or contributing anymore to this repository due to various issues that put me in a position to no longer approve this AI here. And, I invite the reader to review with caution the following:
+
+PROMPT BY HUMAN:
 “Re-write with cyber security expertise and proper url for open science with NASA and CIS”
 
-And that made Meta in thinking mode foster the following:
+THE RESPONSE OF META AI:
+And that made Meta AI in thinking mode foster the following:
 
 META Ai
 
@@ -56,7 +60,7 @@ Add to your repo root:
 - `CODEOWNERS` — you as required reviewer for `/data/` and `/docs/OSDMP.md`
 - Pin GitHub Actions by SHA, not `@v4` — set `permissions: contents: read` minimal
 - Enable: Dependabot, CodeQL, Secret Scanning, Push Protection
-- Generate SBOM: your `codemeta.json` already declares SPDX, add `sbom.spdx.json` via GitHub Dependency Graph
+- Generate SBOM: your `codemeta.json` already declares SPDX, add `sbom.spdx.json` via    GitHub Dependency Graph
 
 **2. Pages / DNS / TLS — CIS Web & DNS**
 Your GoDaddy DNS already points to GitHub Pages A records 185.199.108-111.x and CNAME `psivicom.github.io`. CIS adds:
