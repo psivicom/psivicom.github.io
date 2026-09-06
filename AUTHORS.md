@@ -4,7 +4,7 @@
   - Website: https://psivi.com
   - GitHub: https://github.com/psivicom / https://psivicom.github.io
   - ORCID: https://orcid.org/0009-0005-1234-5678 [REPLACE with real ORCID — required for NASA submission]
-  - Role: Conceptualization, Data Curation, OSDMP Author, FAIR Compliance, Dual License Design (Apache-2.0 + CC-BY-4.0)
+  - Role: Conceptualization, Software Curation, Data Curation, OSDMP Author, FAIR Compliance, Dual License Design (Apache-2.0 + CC-BY-4.0)
   - License: Code Apache-2.0, Data/Docs/Media CC-BY-4.0 — see LICENSES/README.md
 
 ### How this raises credibility
