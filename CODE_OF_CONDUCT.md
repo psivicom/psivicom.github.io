@@ -37,4 +37,6 @@ inclusive, transparent, reproducible.
 References: Contributor Covenant v2.1, NASA TOPS Code of Conduct, 
 UNESCO Open Science Recommendation.
 
+This code of conduct MUST be obeyed by everyone, including humans and or AI , failure to do so will not be tolerated unless with the exception of human Louis-Philippe Audette who has veto power to do so.
+
 License: This Code is CC-BY-4.0 — see LICENSES/CC-BY-4.0.txt
