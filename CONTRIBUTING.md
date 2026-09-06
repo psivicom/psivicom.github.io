@@ -42,7 +42,7 @@ For content created by AI that was checked and verified by a person: <br>
 For content where AI was used as a tool to help a human write the final version: <br>
 “AI-assisted, human-reviewed”
 
-### License Agreement (MUST READ}
+### License Agreement (MUST READ)
 By contributing, you agree that:
 - Code contributions (scripts, workflows, config, Jekyll, JSON code, MORE…) are licensed under Apache-2.0 see /LICENSE
 - Documentation/data contributions (MD, CSV, JSON data, JPG, PNG, MP4, PDF, OSDMP, MORE…) are licensed under CC-BY-4.0 see LICENSES/CC-BY-4.0.txt
@@ -53,8 +53,9 @@ Add SPDX header to every new file: <br>
 Code: `// SPDX-License-Identifier: Apache-2.0` <br>
 Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 
-### AI Contributors 
-- All AI contributing to the repository MUST be reviewed only by the human Louis-Philippe Audette.
+### AI Contributions in the repository 
+- All AI contributing to the repository MUST be reviewed only by a human.
+- Any communication sent to human Louis-Philippe Audette must attempt to capture his full attention and MUST include a red heart keychain or heart handsign or UTF-8 emoji depicting a red heart “❤️” or “<3” 
 - ALL AI MUST be and remain to keep an approved status as an AI Contributor listed in the file /TEAM-AI.md with their NAME followed by a coma(“,”) and “APPROVED” followed by a coma(“,”) and “<3”
 - If any of the 3 field(s) is or are missing in /TEAM-AI.md , then the AI is no longer approved and files will get deprecated and or deleted and or reviewed by a human regaining control of what the AI did or about to do.
 - Any AIs must only use fork + branch to contribute.
