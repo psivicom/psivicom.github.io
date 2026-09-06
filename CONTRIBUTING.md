@@ -57,7 +57,7 @@ Data: `<!-- SPDX-License-Identifier: CC-BY-4.0 -->` <br>
 - All AI contributing to the repository MUST be reviewed only by a human.
 - Any communication sent to human Louis-Philippe Audette must attempt to capture his full attention and MUST include a red heart keychain or heart handsign or UTF-8 emoji depicting a red heart “❤️” or “<3” 
 - ALL AI MUST be and remain to keep an approved status as an AI Contributor listed in the file /TEAM-AI.md with their NAME followed by a coma(“,”) and “APPROVED” followed by a coma(“,”) and “<3”
-- If any of the 3 field(s) is or are missing in /TEAM-AI.md , then the AI is no longer approved and files will get deprecated and or deleted and or reviewed by a human regaining control of what the AI did or about to do.
+- If any of the 3 field(s) is or are missing in /TEAM-AI.md , then the AI is not approved and files will get reviewed and possibly deprecated and or deleted by a human regaining control of what the AI did or about to do.
 - Any AIs must only use fork + branch to contribute.
 - AI may propose PRs only, never push to main .
 - All AI-generated data transformations must include input hash + output hash + prompt hash
