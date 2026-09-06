@@ -67,7 +67,7 @@ This dual model satisfies all agencies simultaneously.
 
 ## 7. Roles
 
-- Louis-Philippe Audette — Data Steward — ORCID — see AUTHORS.md
+- Louis-Philippe Audette — Software Steward — Data Steward — ORCID — see AUTHORS.md
 
 ## 8. Costs
 
