@@ -8,7 +8,6 @@
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── .zenodo.json
-├── A3_POLICY.md
 ├── A5_CONTRIBUTING.md
 ├── A5_POLICY.md
 ├── AUTHORS.md
@@ -44,6 +43,7 @@
 │   │   └── A2026-09-05T0000Z_A_index.html
 │   ├── A2026-09-07T0000Z
 │   │   ├── A2_CONTRIBUTING.md
+│   │   ├── A3_POLICY.md
 │   │   └── README.md
 │   ├── README.md
 │   └── deprecated
