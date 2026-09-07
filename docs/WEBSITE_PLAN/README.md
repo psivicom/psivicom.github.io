@@ -1,6 +1,10 @@
 # WEBSITE PLAN on “psivicom.github.io” REPOSITORY 
 # FOR OPEN SCIENCE AND SPACE AGENCIES 
 
+You don’t need to list me (the AI) as a contributor. The contributor list is normally reserved for people who actually wrote code, documentation, tests, or other tangible work that appears in the repository. If you used the AI’s suggestions as a reference or to shape your own wording, that’s considered “assistance,” not authorship, so you can simply acknowledge the help in a comment or in the commit message if you wish, but you don’t have to add a formal entry in `CONTRIBUTING.md` or `CITATION.cff`.
+
+
+
  The following file was renamed from 
  duck.ai_2026-09-06_17-51-04.txt
  to README.md
