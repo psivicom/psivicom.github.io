@@ -52,7 +52,7 @@ Low-cost weight, temperature, acoustic logger for Langford apiaries. Schematics 
 > All docs cross-reference each other. OSDMP follows NASA template, links to LICENSES/, includes FAIR 15 sub-principles mapped, data lifecycle CC-BY-4.0, formats and vocabularies.
 
 - **Live OSDMP:** [psivi.com/docs/osdmp.html](https://psivi.com/docs/osdmp.html)
-- **Source:** `docs/OSDMP.md`
+- **Source:** `docs/osdmp.md`
 - **FAIR Checklist:** `docs/FAIR_CHECKLIST.md`
 - **License Compliance:** `docs/LICENSE_COMPLIANCE.md`
 - **Data Management:** `docs/DATA_MANAGEMENT.md`
