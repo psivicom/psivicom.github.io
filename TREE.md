@@ -8,6 +8,7 @@
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── .zenodo.json
+├── A2_CONTRIBUTING.md
 ├── AUTHORS.md
 ├── A_CONTRIBUTING.md
 ├── CHANGELOG.md
@@ -15,7 +16,6 @@
 ├── CNAME
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
 ├── LICENSE
 ├── LICENSES
 │   ├── APACHE-2.0.txt
