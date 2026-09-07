@@ -1,6 +1,7 @@
+# WEBSITE PLAN on “psivicom.github.io” REPOSITORY 
+# FOR OPEN SCIENCE AND SPACE AGENCIES 
 
-
-this file was renamed from 
+the following file was renamed from 
  duck.ai_2026-09-06_17-51-04.txt
  to README.md
  
