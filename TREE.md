@@ -10,6 +10,7 @@
 ├── .zenodo.json
 ├── A2_CONTRIBUTING.md
 ├── A3_POLICY.md
+├── A5_POLICY.md
 ├── AUTHORS.md
 ├── A_CONTRIBUTING.md
 ├── A_POLICY.md
@@ -25,7 +26,6 @@
 │   ├── CC-BY-4.0.txt
 │   └── README.md
 ├── NOTICE
-├── POLICY.md
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
