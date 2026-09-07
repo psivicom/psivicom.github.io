@@ -11,7 +11,6 @@
 ├── A5_CONTRIBUTING.md
 ├── A5_POLICY.md
 ├── AUTHORS.md
-├── A_POLICY.md
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -44,6 +43,7 @@
 │   │   ├──  A_CONTRIBUTING.md
 │   │   ├── A2_CONTRIBUTING.md
 │   │   ├── A3_POLICY.md
+│   │   ├── A_POLICY.md
 │   │   └── README.md
 │   ├── README.md
 │   └── deprecated
