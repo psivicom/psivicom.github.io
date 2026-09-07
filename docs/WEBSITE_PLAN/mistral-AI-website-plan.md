@@ -1,4 +1,5 @@
-
+# mistral-AI assist WEBSITE PLAN
+ 
  renamed duck.ai_2026-09-06_19-05-46.txt
  mistral-AI-website-plan.md
  
