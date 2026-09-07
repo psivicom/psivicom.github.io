@@ -11,12 +11,12 @@ Contributions to this repository must follow project licensing, documentation, a
 4. Submit a pull request with a clear description of the changes.
 
 ## Pre-Submission Checks
-- Update the README dual-license table if needed.
+- Update the README dual-license table when licensing metadata changes.
 - Verify `LICENSES/README.md` cross-links.
 - Check `docs/FAIR_CHECKLIST.md`.
-- Update `.zenodo.json` keywords if needed.
-- Update `codemeta.json` if needed.
-- Link new files in the README structure diagram and relevant docs.
+- Update `.zenodo.json` keywords when repository metadata changes.
+- Update `codemeta.json` when project metadata changes.
+- Link new files in the README structure diagram and relevant documentation.
 
 ## FAIR and Documentation Requirements
 - Use Zulu timestamps in ISO 8601 format to millisecond precision:
