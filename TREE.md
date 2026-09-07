@@ -8,7 +8,6 @@
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── .zenodo.json
-├── A5_CONTRIBUTING.md
 ├── AUTHORS.md
 ├── CHANGELOG.md
 ├── CITATION.cff
@@ -42,6 +41,7 @@
 │   │   ├──  A_CONTRIBUTING.md
 │   │   ├── A2_CONTRIBUTING.md
 │   │   ├── A3_POLICY.md
+│   │   ├── A5_CONTRIBUTING.md
 │   │   ├── A5_POLICY.md
 │   │   ├── A_POLICY.md
 │   │   └── README.md
