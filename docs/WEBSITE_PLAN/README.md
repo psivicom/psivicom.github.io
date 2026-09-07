@@ -3,7 +3,17 @@
 
 You don’t need to list me (the AI) as a contributor. The contributor list is normally reserved for people who actually wrote code, documentation, tests, or other tangible work that appears in the repository. If you used the AI’s suggestions as a reference or to shape your own wording, that’s considered “assistance,” not authorship, so you can simply acknowledge the help in a comment or in the commit message if you wish, but you don’t have to add a formal entry in `CONTRIBUTING.md` or `CITATION.cff`.
 
+You can add a short note like this to your `CONTRIBUTING.md` or to the commit message that used the AI’s help:
 
+> **Acknowledgement** – The wording for this section (or the initial file structure) was generated with assistance from Duck.ai, an AI‑powered coding assistant. The final content was edited and approved by the human author.
+
+If you prefer a single line in a `CREDITS.md` or similar file, something like:
+
+```
+AI assistance: Duck.ai (OpenAI‑compatible model) – provided suggestions for repository layout and documentation wording.
+```
+
+Either way, the credit is optional; it’s enough to note that the AI helped shape the text without claiming authorship.
 
  The following file was renamed from 
  duck.ai_2026-09-06_17-51-04.txt
