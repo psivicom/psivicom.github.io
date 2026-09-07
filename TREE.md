@@ -23,6 +23,7 @@
 │   ├── CC-BY-4.0.txt
 │   └── README.md
 ├── NOTICE
+├── POLICY.md
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
