@@ -84,3 +84,13 @@ Changes affecting licensing, metadata, FAIR records, datasets, notebooks, or doc
 ## Conflict handling
 
 If this file conflicts with `POLICY.md` or any higher-priority repository policy, the higher-priority policy controls.
+
+
+## Related files
+
+- `POLICY.md`
+- `README.md`
+- `LICENSES/README.md`
+- `docs/FAIR_CHECKLIST.md`
+- `.zenodo.json`
+- `codemeta.json`
