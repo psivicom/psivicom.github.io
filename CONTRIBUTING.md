@@ -83,4 +83,4 @@ Changes affecting licensing, metadata, FAIR records, datasets, notebooks, or doc
 
 ## Conflict handling
 
-If this file conflicts with a higher-priority policy, the higher-priority policy controls.
+If this file conflicts with `POLICY.md` or any higher-priority repository policy, the higher-priority policy controls.
