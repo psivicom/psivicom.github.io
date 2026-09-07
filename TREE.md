@@ -2,7 +2,7 @@
 /
 ├── .github
 │   └── workflows
-│       ├── Readme.md
+│       ├── README.md
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── timestamp-check.yml
