@@ -99,7 +99,7 @@ psivicom.github.io/
 ├── _config.yml (Jekyll + SEO + links to licenses)
 ├── index.html (this file — Excellence Edition)
 ├── docs/
-│   ├── OSDMP.md (NASA template, links to LICENSES/)
+│   ├── osdmp.md (NASA template, links to LICENSES/)
 │   ├── FAIR_CHECKLIST.md (15 FAIR sub-principles mapped)
 │   ├── LICENSE_COMPLIANCE.md (why Apache vs CC-BY)
 │   ├── DATA_MANAGEMENT.md (data lifecycle, CC-BY-4.0)
