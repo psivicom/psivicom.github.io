@@ -24,7 +24,7 @@ Contributions to this repository must follow project licensing, documentation, a
 - Add citation metadata when adding datasets.
 - Include metadata, provenance, licensing, and persistent identifiers for new data where applicable.
 - Provide a DOI for new data via Zenodo when applicable.
-- Code and documentation must be documented and consistently licensed.
+- Code and documentation must be accurate, maintainable, and consistently licensed.
 
 ## Licensing
 By contributing, you agree that:
