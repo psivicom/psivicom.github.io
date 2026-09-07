@@ -15,6 +15,7 @@
 ├── CNAME
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
 ├── LICENSE
 ├── LICENSES
 │   ├── APACHE-2.0.txt
