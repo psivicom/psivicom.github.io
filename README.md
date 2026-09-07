@@ -185,9 +185,10 @@ psivicom.github.io/
 ├── sitemap.xml
 └── tools
     └── fix_timestamps.py
-```
 
+---
 All files cross-reference each other — no orphan files.
+```
 ---
 
 ## 07 — Timestamps, Links & Citation
