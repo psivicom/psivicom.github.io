@@ -11,7 +11,6 @@
 ├── A5_CONTRIBUTING.md
 ├── A5_POLICY.md
 ├── AUTHORS.md
-├── A_CONTRIBUTING.md
 ├── A_POLICY.md
 ├── CHANGELOG.md
 ├── CITATION.cff
@@ -42,6 +41,7 @@
 │   ├── A2026-09-05T0000Z
 │   │   └── A2026-09-05T0000Z_A_index.html
 │   ├── A2026-09-07T0000Z
+│   │   ├──  A_CONTRIBUTING.md
 │   │   ├── A2_CONTRIBUTING.md
 │   │   ├── A3_POLICY.md
 │   │   └── README.md
