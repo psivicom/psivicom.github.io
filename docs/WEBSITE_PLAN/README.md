@@ -15,7 +15,7 @@ AI assistance: Duck.ai (OpenAI‑compatible model) – provided suggestions for 
 
 Either way, the credit is optional; it’s enough to note that the AI helped shape the text without claiming authorship.
 
- The following file was renamed from 
+ # The following file was renamed from 
  duck.ai_2026-09-06_17-51-04.txt
  to README.md
  
