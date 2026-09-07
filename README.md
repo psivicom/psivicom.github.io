@@ -88,31 +88,7 @@ See `LICENSES/README.md`, `NOTICE`, `docs/LICENSE_COMPLIANCE.md` — all cross-l
 
 ## 06 — Repository Structure — Interconnected
 
-```
-psivicom.github.io/
-├── LICENSE (Apache-2.0 full — code)
-├── NOTICE (attributions)
-├── LICENSES/ (Apache-2.0.txt, CC-BY-4.0.txt, README.md explains dual)
-├── CITATION.cff (GitHub Cite button → Apache-2.0, links to DOI)
-├── codemeta.json (machine-readable → Apache-2.0 AND CC-BY-4.0 SPDX)
-├── .zenodo.json (Zenodo DOI metadata → CC-BY-4.0 + communities)
-├── _config.yml (Jekyll + SEO + links to licenses)
-├── index.html (this file — Excellence Edition)
-├── docs/
-│   ├── osdmp.md (NASA template, links to LICENSES/)
-│   ├── FAIR_CHECKLIST.md (15 FAIR sub-principles mapped)
-│   ├── LICENSE_COMPLIANCE.md (why Apache vs CC-BY)
-│   ├── DATA_MANAGEMENT.md (data lifecycle, CC-BY-4.0)
-│   └── INTEROPERABILITY.md (formats, vocabularies)
-├── data/
-│   ├── README.md (CC-BY-4.0 for all data)
-│   ├── sample-pollinator-data/
-│   │   ├── data.csv (CC-BY-4.0 example dataset)
-│   │   ├── datapackage.json (Frictionless, CC-BY-4.0)
-│   │   └── metadata.json (schema.org, CC-BY-4.0)
-│   └── images/README.md (CC-BY-4.0 for media)
-├── .github/workflows/fair-check.yml (Apache-2.0)
-└── CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, AUTHORS.md
+`
 
 All files cross-reference each other — no orphan files.
 ```
