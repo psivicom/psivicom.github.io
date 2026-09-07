@@ -2,11 +2,11 @@
 /
 ├── .github
 │   └── workflows
+│       ├── A_update-tree.yml
 │       ├── Readme.md
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
-│       ├── timestamp-check.yml
-│       └── update-tree.yml
+│       └── timestamp-check.yml
 ├── .zenodo.json
 ├── AUTHORS.md
 ├── CHANGELOG.md
