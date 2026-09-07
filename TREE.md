@@ -11,6 +11,7 @@
 ├── A2_CONTRIBUTING.md
 ├── AUTHORS.md
 ├── A_CONTRIBUTING.md
+├── A_POLICY.md
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -23,7 +24,6 @@
 │   ├── CC-BY-4.0.txt
 │   └── README.md
 ├── NOTICE
-├── POLICY.md
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
