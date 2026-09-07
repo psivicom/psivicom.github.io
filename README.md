@@ -86,8 +86,7 @@ See `LICENSES/README.md`, `NOTICE`, `docs/LICENSE_COMPLIANCE.md` — all cross-l
 ---
 
 ## 06 — Repository Structure — Interconnected
-
-`
+```
 psivicom.github.io/
 ├── .github
 │   └── workflows
@@ -188,7 +187,6 @@ psivicom.github.io/
     └── fix_timestamps.py
 ```
 
----
 All files cross-reference each other — no orphan files.
 ---
 
