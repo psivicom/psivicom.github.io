@@ -10,6 +10,7 @@
 ├── .zenodo.json
 ├── A2_CONTRIBUTING.md
 ├── A3_POLICY.md
+├── A5_CONTRIBUTING.md
 ├── A5_POLICY.md
 ├── AUTHORS.md
 ├── A_CONTRIBUTING.md
@@ -19,7 +20,6 @@
 ├── CNAME
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
 ├── LICENSE
 ├── LICENSES
 │   ├── APACHE-2.0.txt
