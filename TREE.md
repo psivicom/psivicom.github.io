@@ -76,7 +76,9 @@
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── GO_TREE
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── update-tree
+│   │       └── main.go
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── README.md
