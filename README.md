@@ -11,7 +11,16 @@ Organization site → [https://psivi.com](https://psivi.com) | Repo → [psivico
 
 **Contact:** [louis@psivi.com](mailto:louis@psivi.com) | [github.com/psivicom](https://github.com/psivicom) | [ORCID 0009-0005-1234-5678](https://orcid.org/0009-0005-1234-5678) | https://psivi.com
 
+## Policies
+
+These documents define the project’s security, provenance, and archival rules:
+
+- [Trust and Provenance](TRUST_AND_PROVENANCE.md)
+- [Security Policy](SECURITY.md)
+- [Security Plan](SECURITY_PLAN.md)
+
 **Navigation:** [About](#01--about) · [Research](#02--research) · [OSDMP](#03--osdmp--excellence-edition) · [License](#04--dual-license--nasa--space-partners-compliant) · [Compliance](#05--multi-agency-compliance) · [Structure](#06--repository-structure--interconnected) · [Cite](#07--links--citation) · [DNS Setup](#08--godaddy-dns-for-github-pages) · [Contact](#09--contact)
+
 
 ---
 
