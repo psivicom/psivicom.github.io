@@ -13,11 +13,16 @@ Organization site → [https://psivi.com](https://psivi.com) | Repo → [psivico
 
 ## Policies
 
-These documents define the project’s security, provenance, and archival rules:
+These documents define the project’s security, provenance, and archival ## Policies
+
+These documents define the project’s security, provenance, authorship, and archival rules:
 
 - [Trust and Provenance](TRUST_AND_PROVENANCE.md)
 - [Security Policy](SECURITY.md)
 - [Security Plan](SECURITY_PLAN.md)
+- [Authors](AUTHORS.md)
+- [Open Science Policy](OPEN_SCIENCE_POLICY.md)
+
 
 **Navigation:** [About](#01--about) · [Research](#02--research) · [OSDMP](#03--osdmp--excellence-edition) · [License](#04--dual-license--nasa--space-partners-compliant) · [Compliance](#05--multi-agency-compliance) · [Structure](#06--repository-structure--interconnected) · [Cite](#07--links--citation) · [DNS Setup](#08--godaddy-dns-for-github-pages) · [Contact](#09--contact)
 
