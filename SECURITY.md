@@ -54,6 +54,10 @@ Security reports are kept private until a fix is prepared and released.
 - Publish only after reviewing traceability and attribution
 - Include release notes for significant changes
 
+## Related Documents
+- [Trust and Provenance](TRUST_AND_PROVENANCE.md)
+- [Security Plan](SECURITY_PLAN.md)
+
 ## Contact
 Use the psivi.com contact form for all security-related reports.
 ```
