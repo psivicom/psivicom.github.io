@@ -78,6 +78,7 @@
 │   ├── GO_TREE
 │   │   ├── README.md
 │   │   ├── Readmemarkerblocks.md
+│   │   ├── Smartertreerenderer.go
 │   │   ├── go.mod
 │   │   ├── render-readme
 │   │   │   └── main.go
