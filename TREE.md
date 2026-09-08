@@ -76,6 +76,7 @@
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── GO_TREE
+│   │   ├── MAKEFILE
 │   │   ├── README.md
 │   │   ├── Readmemarkerblocks.md
 │   │   ├── Smartertreerenderer.go
