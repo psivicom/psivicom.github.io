@@ -25,6 +25,7 @@
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
+├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── _config.yml
 ├── _techreports
