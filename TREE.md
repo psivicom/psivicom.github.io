@@ -79,8 +79,9 @@
 │   │   ├── README.md
 │   │   ├── render-readme
 │   │   │   └── main.go
-│   │   └── update-tree
-│   │       └── main.go
+│   │   ├── update-tree
+│   │   │   └── main.go
+│   │   └── update-tree.yml
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── README.md
