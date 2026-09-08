@@ -76,6 +76,7 @@
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── GO_TREE
+│   │   ├── Gitignore.md
 │   │   ├── MAKEFILE
 │   │   ├── README.md
 │   │   ├── Readmemarkerblocks.md
