@@ -75,6 +75,8 @@
 ├── docs
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
+│   ├── GO_TREE
+│   │   └── README.md
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── README.md
