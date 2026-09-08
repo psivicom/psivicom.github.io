@@ -28,6 +28,7 @@
 ├── SECURITY.md
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
+├── TRUST_AND_PROVENANCE.md
 ├── _config.yml
 ├── _techreports
 │   └── YYYY-MM-DD-templatezenodo.md
