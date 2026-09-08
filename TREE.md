@@ -21,6 +21,7 @@
 │   ├── CC-BY-4.0.txt
 │   └── README.md
 ├── NOTICE
+├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
 ├── README.md
 ├── REUSE.toml
