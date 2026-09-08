@@ -209,5 +209,6 @@ Preserve old versions rather than deleting history.
 
 If a file, notebook, or archive matters, it must be traceable, linked, dated, and preserved.
 
-
+## Related Policy
+This plan implements the requirements in [Trust and Provenance](TRUST_AND_PROVENANCE.md) and [Security Policy](SECURITY.md).
 
