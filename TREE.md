@@ -85,7 +85,8 @@
 │   │   │   └── main.go
 │   │   ├── update-tree
 │   │   │   └── main.go
-│   │   └── update-tree.yml
+│   │   ├── update-tree.yml
+│   │   └── usethisinreadme.md
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── README.md
