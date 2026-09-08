@@ -79,6 +79,7 @@
 │   │   ├── README.md
 │   │   ├── Readmemarkerblocks.md
 │   │   ├── Smartertreerenderer.go
+│   │   ├── bettertreeblockreadme.md
 │   │   ├── go.mod
 │   │   ├── render-readme
 │   │   │   └── main.go
