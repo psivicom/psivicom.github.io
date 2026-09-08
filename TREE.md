@@ -77,6 +77,7 @@
 │   ├── FAIR_CHECKLIST.md
 │   ├── GO_TREE
 │   │   ├── README.md
+│   │   ├── go.mod
 │   │   ├── render-readme
 │   │   │   └── main.go
 │   │   ├── update-tree
