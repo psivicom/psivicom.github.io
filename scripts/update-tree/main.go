@@ -32,7 +32,7 @@ func main() {
 	sum := sha256.Sum256([]byte(tree))
 	hash := hex.EncodeToString(sum[:])
 //&	timestamp := time.Now().UTC().Format(time.RFC3339)
-    timestamp := time.Now().UTC().Format("2026-09-09T0158.000")
+    timestamp := time.Now().UTC().Format("2006-01-02zT15:04:05.000Z”)
 	
 	// 3. Write TREE.md and .tree.hash
 	mustWrite(treePath, tree)
