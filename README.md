@@ -102,128 +102,133 @@ See `LICENSES/README.md`, `NOTICE`, `docs/LICENSE_COMPLIANCE.md` — all cross-l
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-09T03:33:21.570Z | Hash: f4e963242bd4476970f4869d2aa1926fd0d1ffb9260edb9d0e8458d1a9ea5bad -->
-
-# Repository Tree
+<!-- Last updated: 2026-09-09T03:52:23.483Z | Hash: b32c1b4ad5b8aee8e4bfbbeb3afd4d1edebe668ed7462a51fa460947fd18b5cf -->
 
 ```
 psivicom.github.io/
-  - LICENSES/
-  - _techreports/
-  - archive/
-  - archive/A2026-08-29T2240Z/
-  - archive/A2026-08-30T2240Z/
-  - archive/A2026-09-05T0000Z/
-  - archive/A2026-09-07T0000Z/
-  - archive/deprecated/
-  - archive/workflows/
-  - assets/
-  - assets/css/
-  - assets/icons/
-  - data/
-  - data/images/
-  - data/sample-pollinator-data/
-  - dist/
-  - docs/
-  - docs/GO_TREE/
-  - docs/GO_TREE/render-readme/
-  - docs/GO_TREE/update-tree/
-  - docs/SECURITY_PLAN/
-  - docs/SECURITY_PLAN/psivi-cis-hardened/
-  - docs/SECURITY_PLAN/psivi-cis-hardened/scripts/
-  - docs/WEBSITE_PLAN/
-  - scripts/
-  - scripts/update-tree/
-  - tools/
-  - .zenodo.json
-  - AUTHORS.md
-  - CHANGELOG.md
-  - CITATION.cff
-  - CNAME
-  - CODEOWNERS
-  - CODE_OF_CONDUCT.md
-  - CONTRIBUTING.md
-  - LICENSE
-  - LICENSES/APACHE-2.0.txt
-  - LICENSES/CC-BY-4.0.txt
-  - LICENSES/README.md
-  - NOTICE
-  - OPEN_SCIENCE_POLICY.md
-  - POLICY.md
-  - README.md
-  - REUSE.toml
-  - SECURITY.md
-  - SECURITY_PLAN.md
-  - TEAM-AI.md
-  - TRUST_AND_PROVENANCE.md
-  - _config.yml
-  - _techreports/YYYY-MM-DD-templatezenodo.md
-  - archive/A2026-08-29T2240Z/A2026-08-29T2240Z_README.md
-  - archive/A2026-08-30T2240Z/A2026-08-30T2240Z_README2.md
-  - archive/A2026-08-30T2240Z/Z.md
-  - archive/A2026-09-05T0000Z/A2026-09-05T0000Z_A_index.html
-  - archive/A2026-09-07T0000Z/ A_CONTRIBUTING.md
-  - archive/A2026-09-07T0000Z/A2_CONTRIBUTING.md
-  - archive/A2026-09-07T0000Z/A3_POLICY.md
-  - archive/A2026-09-07T0000Z/A5_CONTRIBUTING.md
-  - archive/A2026-09-07T0000Z/A5_POLICY.md
-  - archive/A2026-09-07T0000Z/A_POLICY.md
-  - archive/A2026-09-07T0000Z/README.md
-  - archive/README.md
-  - archive/deprecated/deprecated-LICENSE_COMPLIANCE2.md
-  - archive/deprecated/deprecated-teamai.html
-  - archive/deprecated/deprecated-teamai.md
-  - archive/workflows/A_update-tree.yml
-  - assets/README.md
-  - assets/css/README.md
-  - assets/icons/README.md
-  - assets/icons/globe.svg
-  - assets/icons/rocket.svg
-  - assets/icons/satellite.svg
-  - codemeta.json
-  - data/README.md
-  - data/images/README.md
-  - data/sample-pollinator-data/README.md
-  - data/sample-pollinator-data/data.csv
-  - data/sample-pollinator-data/datapackage.json
-  - data/sample-pollinator-data/metadata.json
-  - dist/README.md
-  - docs/DATA_MANAGEMENT.md
-  - docs/FAIR_CHECKLIST.md
-  - docs/GO_TREE/Gitignore.md
-  - docs/GO_TREE/MAKEFILE
-  - docs/GO_TREE/README.md
-  - docs/GO_TREE/Readmemarkerblocks.md
-  - docs/GO_TREE/Smartertreerenderer.go
-  - docs/GO_TREE/Treelayoutmap.md
-  - docs/GO_TREE/better_update-tree.yml
-  - docs/GO_TREE/bettertreeblockreadme.md
-  - docs/GO_TREE/go.mod
-  - docs/GO_TREE/render-readme/main.go
-  - docs/GO_TREE/update-tree.yml
-  - docs/GO_TREE/update-tree/main.go
-  - docs/GO_TREE/usethisinreadme.md
-  - docs/INTEROPERABILITY.md
-  - docs/LICENSE_COMPLIANCE.md
-  - docs/README.md
-  - docs/SECURITY_PLAN/README.md
-  - docs/SECURITY_PLAN/psivi-cis-hardened/CONTRIBUTING.md
-  - docs/SECURITY_PLAN/psivi-cis-hardened/README.md
-  - docs/SECURITY_PLAN/psivi-cis-hardened/SECURITY.md
-  - docs/SECURITY_PLAN/psivi-cis-hardened/scripts/generate-manifest.sh
-  - docs/WEBSITE_PLAN/README.md
-  - docs/WEBSITE_PLAN/mistral-AI-website-plan.md
-  - docs/osdmp.html
-  - docs/osdmp.md
-  - docs/template.html
-  - index.html
-  - robots.txt
-  - scripts/A_main.go
-  - scripts/README.md
-  - scripts/update-tree/main.go
-  - scripts/update_tree.py
-  - sitemap.xml
-  - tools/fix_timestamps.py
+├── .github/
+│   └── workflows/
+│       ├── README.md
+│       ├── docs.yml
+│       ├── fix-all-timestamps.yml
+│       ├── timestamp-check.yml
+│       └── update-tree.yml
+├── LICENSES/
+│   ├── APACHE-2.0.txt
+│   ├── CC-BY-4.0.txt
+│   └── README.md
+├── _techreports/
+│   └── YYYY-MM-DD-templatezenodo.md
+├── archive/
+│   ├── A2026-08-29T2240Z/
+│   │   └── A2026-08-29T2240Z_README.md
+│   ├── A2026-08-30T2240Z/
+│   │   ├── A2026-08-30T2240Z_README2.md
+│   │   └── Z.md
+│   ├── A2026-09-05T0000Z/
+│   │   └── A2026-09-05T0000Z_A_index.html
+│   ├── A2026-09-07T0000Z/
+│   │   ├──  A_CONTRIBUTING.md
+│   │   ├── A2_CONTRIBUTING.md
+│   │   ├── A3_POLICY.md
+│   │   ├── A5_CONTRIBUTING.md
+│   │   ├── A5_POLICY.md
+│   │   ├── A_POLICY.md
+│   │   └── README.md
+│   ├── deprecated/
+│   │   ├── deprecated-LICENSE_COMPLIANCE2.md
+│   │   ├── deprecated-teamai.html
+│   │   └── deprecated-teamai.md
+│   ├── workflows/
+│   │   └── A_update-tree.yml
+│   └── README.md
+├── assets/
+│   ├── css/
+│   │   └── README.md
+│   ├── icons/
+│   │   ├── README.md
+│   │   ├── globe.svg
+│   │   ├── rocket.svg
+│   │   └── satellite.svg
+│   └── README.md
+├── data/
+│   ├── images/
+│   │   └── README.md
+│   ├── sample-pollinator-data/
+│   │   ├── README.md
+│   │   ├── data.csv
+│   │   ├── datapackage.json
+│   │   └── metadata.json
+│   └── README.md
+├── dist/
+│   └── README.md
+├── docs/
+│   ├── GO_TREE/
+│   │   ├── render-readme/
+│   │   │   └── main.go
+│   │   ├── update-tree/
+│   │   │   └── main.go
+│   │   ├── Gitignore.md
+│   │   ├── MAKEFILE
+│   │   ├── README.md
+│   │   ├── Readmemarkerblocks.md
+│   │   ├── Smartertreerenderer.go
+│   │   ├── Treelayoutmap.md
+│   │   ├── better_update-tree.yml
+│   │   ├── bettertreeblockreadme.md
+│   │   ├── go.mod
+│   │   ├── update-tree.yml
+│   │   └── usethisinreadme.md
+│   ├── SECURITY_PLAN/
+│   │   ├── psivi-cis-hardened/
+│   │   │   ├── scripts/
+│   │   │   │   └── generate-manifest.sh
+│   │   │   ├── CONTRIBUTING.md
+│   │   │   ├── README.md
+│   │   │   └── SECURITY.md
+│   │   └── README.md
+│   ├── WEBSITE_PLAN/
+│   │   ├── README.md
+│   │   └── mistral-AI-website-plan.md
+│   ├── DATA_MANAGEMENT.md
+│   ├── FAIR_CHECKLIST.md
+│   ├── INTEROPERABILITY.md
+│   ├── LICENSE_COMPLIANCE.md
+│   ├── README.md
+│   ├── osdmp.html
+│   ├── osdmp.md
+│   └── template.html
+├── scripts/
+│   ├── update-tree/
+│   │   └── main.go
+│   ├── A_main.go
+│   ├── README.md
+│   └── update_tree.py
+├── tools/
+│   └── fix_timestamps.py
+├── .zenodo.json
+├── AUTHORS.md
+├── CHANGELOG.md
+├── CITATION.cff
+├── CNAME
+├── CODEOWNERS
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── NOTICE
+├── OPEN_SCIENCE_POLICY.md
+├── POLICY.md
+├── README.md
+├── REUSE.toml
+├── SECURITY.md
+├── SECURITY_PLAN.md
+├── TEAM-AI.md
+├── TRUST_AND_PROVENANCE.md
+├── _config.yml
+├── codemeta.json
+├── index.html
+├── robots.txt
+└── sitemap.xml
 ```
 <!-- AUTO_TREE_END -->
 
