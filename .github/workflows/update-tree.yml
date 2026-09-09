@@ -1,0 +1,44 @@
+name: Update Repository Tree
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-tree:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache: false # Explicitly disable cache to prevent go.sum warnings
+
+      - name: Debug directory structure
+        run: |
+          echo "📍 Current working directory:"
+          pwd
+          echo "📂 Contents of root:"
+          ls -la
+          echo "📂 Contents of scripts/:"
+          ls -la scripts/ || echo "scripts/ folder not found!"
+          echo "📂 Contents of scripts/update-tree/:"
+          ls -la scripts/update-tree/ || echo "scripts/update-tree/ folder not found!"
+
+      - name: Generate TREE.md and update README.md
+        run: go run ./scripts/update-tree/main.go
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add TREE.md README.md .tree.hash
+          git diff --cached --quiet || git commit -m "chore: auto-update tree and README [skip ci]"
+          git push
