@@ -102,7 +102,7 @@ See `LICENSES/README.md`, `NOTICE`, `docs/LICENSE_COMPLIANCE.md` — all cross-l
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-09T03:30:53.920Z | Hash: f4e963242bd4476970f4869d2aa1926fd0d1ffb9260edb9d0e8458d1a9ea5bad -->
+<!-- Last updated: 2026-09-09T03:33:21.570Z | Hash: f4e963242bd4476970f4869d2aa1926fd0d1ffb9260edb9d0e8458d1a9ea5bad -->
 
 # Repository Tree
 
