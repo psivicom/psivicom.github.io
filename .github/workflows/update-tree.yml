@@ -1,0 +1,35 @@
+name: Update Repository Tree
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allows you to run it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-tree:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Changed from v5 to v4 (current stable standard)
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache: true # Speeds up the workflow by caching Go dependencies
+
+      - name: Generate TREE.md and update README.md
+        # Changed path to match our agreed /scripts/ directory and main.go file
+        run: go run ./scripts/update-tree/main.go 
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add TREE.md README.md .tree.hash
+          # Added [skip ci] to prevent this commit from triggering the workflow again (infinite loop)
+          git diff --cached --quiet || git commit -m "chore: auto-update tree and README [skip ci]"
+          git push
