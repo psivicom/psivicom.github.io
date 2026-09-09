@@ -100,6 +100,15 @@ See `LICENSES/README.md`, `NOTICE`, `docs/LICENSE_COMPLIANCE.md` — all cross-l
 ---
 
 ## 06 — Repository Structure — Interconnected
+
+<!-- AUTO_TREE_START -->
+<!-- This section is automatically updated by .github/workflows/update-tree.yml -->
+<!-- Last updated: 2026-09-09T14:32:00Z | Hash: 8f4e2b... -->
+
+[The generated tree from TREE.md will be injected here]
+
+<!-- AUTO_TREE_END -->
+
 ```
 psivicom.github.io/
 ├── .github
