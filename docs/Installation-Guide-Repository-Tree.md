@@ -46,6 +46,8 @@ The core logic is written in Go for speed and reliability.
 2. Create a new file named `main.go` inside that directory: `scripts/update-tree/main.go`
 3. Paste the complete Go source code into this file. *(Ensure the code includes the `buildTree`, `renderTree`, and `updateREADME` functions with the `2006-01-02T15:04:05.000Z` millisecond timestamp formatting).*
 
+// /scripts/update-tree/main.go
+```GO
 package main
 
 import (
@@ -270,7 +272,7 @@ func shouldSkip(path string) bool {
 	}
 	return false
 }
-
+```
 ---
 
 ## Step 3: Add the GitHub Actions Workflow
@@ -280,6 +282,7 @@ This workflow triggers the Go script automatically on every push to the `main` b
 2. Create a new file named `update-tree.yml` inside that directory.
 3. Paste the following YAML configuration:
 
+// /.gitHub/workflows/update-tree.yml
 ```yaml
 name: Update Repository Tree
 
