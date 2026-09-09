@@ -33,7 +33,6 @@ psivicom.github.io/
   - AUTHORS.md
   - CHANGELOG.md
   - CITATION.cff
-  - CNAME
   - CODEOWNERS
   - CODE_OF_CONDUCT.md
   - CONTRIBUTING.md
