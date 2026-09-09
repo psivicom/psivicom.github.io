@@ -282,7 +282,7 @@ This workflow triggers the Go script automatically on every push to the `main` b
 2. Create a new file named `update-tree.yml` inside that directory.
 3. Paste the following YAML configuration:
 
-// /.gitHub/workflows/update-tree.yml
+// /.github/workflows/update-tree.yml
 ```yaml
 name: Update Repository Tree
 
