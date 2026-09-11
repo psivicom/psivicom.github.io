@@ -125,6 +125,7 @@ psivicom.github.io/
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE.md
+├── _config.yml
 ├── codemeta.json
 ├── deprecated_LICENSE
 ├── deprecated_NOTICE
