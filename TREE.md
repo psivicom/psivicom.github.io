@@ -90,6 +90,7 @@ psivicom.github.io/
 │   │   └── mistral-AI-website-plan.md
 │   ├── A_DATA_MANAGEMENT.md
 │   ├── A_LICENSE_COMPLIANCE.md
+│   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── INTEROPERABILITY.md
 │   ├── Installation-Guide-Repository-Tree.md
