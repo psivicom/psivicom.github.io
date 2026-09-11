@@ -101,7 +101,7 @@ See `LICENSES/README.md`, `NOTICE.md`, `docs/LICENSE_COMPLIANCE.md` — all cros
 <!-- AUTO_TREE_START -->
 <!-- Last updated: 2026-09-11T06:55:30.897Z | Hash: 6b2b3ee18c10b9b4f68327cdac29a73977c6f00c95f7fc91b5d1be263af57dcf -->
 
-```text
+```
 psivicom.github.io/
 ├── .github/
 │   └── workflows/
@@ -217,7 +217,7 @@ psivicom.github.io/
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── LICENSE
-├── NOTICE.md
+├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
 ├── README.md
@@ -233,3 +233,10 @@ psivicom.github.io/
 ├── index.html
 ├── robots.txt
 └── sitemap.xml
+```
+<!-- AUTO_TREE_END -->
+
+```
+All files cross-reference each other — no orphan files.
+```
+---
