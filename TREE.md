@@ -8,7 +8,7 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── LICENSES/
-│   ├── CC-BY-4.0.txt
+│   ├── LICENSE-CC-BY-4.0.txt
 │   ├── LICENSE-EUPL-1.2.txt
 │   ├── README.md
 │   └── deprecated_APACHE-2.0.txt
