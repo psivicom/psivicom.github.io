@@ -112,6 +112,7 @@ psivicom.github.io/
 ├── A_README.md
 ├── A_codemeta.json
 ├── A_config.yml
+├── A_index.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -132,7 +133,6 @@ psivicom.github.io/
 ├── codemeta.json
 ├── deprecated_LICENSE
 ├── deprecated_NOTICE
-├── index.html
 ├── robots.txt
 └── sitemap.xml
 ```
