@@ -1,0 +1,46 @@
+{
+  "upload_type": "software",
+  "publication_type": "other",
+  "title": "PSIVI.COM — Open Science Hub — Excellence Edition",
+  "creators": [
+    {
+      "name": "Audette, Louis-Philippe",
+      "affiliation": "Independent Researcher, Langford, BC, Canada",
+      "orcid": "0009-0005-1234-5678"
+    }
+  ],
+  "description": "FAIR open science, open-source software, and reproducible research aligned with NASA, ESA, and CSA. Code: EUPL 1.2. Data/Docs: CC BY-SA 4.0. DOIs via Zenodo/OSF. Researcher: Louis-Philippe Audette | psivi.com",
+  "license": "eupl-1.2",
+  "keywords": [
+    "open-science",
+    "FAIR",
+    "OSDMP",
+    "NASA",
+    "ESA",
+    "CSA",
+    "JAXA",
+    "EUPL-1.2",
+    "CC-BY-SA-4.0",
+    "reproducible-research"
+  ],
+  "notes": "Dual Licensing Framework: Source code and scripts are licensed under EUPL 1.2. Documentation, datasets, and media are licensed under CC BY-SA 4.0. Hardware designs, schematics, and physical implementations are All Rights Reserved and managed separately at w-1-n.com.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/psivicom/psivicom.github.io",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://psivi.com",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Center for Open Science (OSF)",
+      "type": "Other",
+      "affiliation": "Open Science Framework"
+    }
+  ]
+}
