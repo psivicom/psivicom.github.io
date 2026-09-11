@@ -105,8 +105,8 @@ psivicom.github.io/
 │   └── README.md
 ├── tools/
 │   └── fix_timestamps.py
-├── .zenodo.json
 ├── AUTHORS.md
+├── A_.zenodo.json
 ├── A_README.md
 ├── A_codemeta.json
 ├── A_config.yml
