@@ -264,3 +264,32 @@ For Hardware/Commercial Licensing: https://w-1-n.com
 
 This guide is a living document. It is updated as the repository structure evolves and new tools are added.
 Copy everything above and paste it into your `docs/installation-guide-repository-tree.md` file on GitHub.
+
+---
+
+## 10. Intellectual Property & Licensing
+
+**Copyright © 2026 Louis-Philippe Audette — Independent Researcher, Goldstream, Langford, BC, Canada**
+
+This installation guide is part of the PSIVI.COM Open Science Hub and is released under a domain-separated licensing framework:
+
+- **This document (and all documentation/data):** Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). You are free to share and adapt it, provided you give appropriate credit to Louis-Philippe Audette and distribute derivative works under the same license.
+- **Referenced code and scripts:** Licensed under [EUPL 1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12), ensuring strong copyleft protection for all executable software.
+- **Hardware designs and physical IP:** Managed separately under All Rights Reserved at [w-1-n.com](https://w-1-n.com). This guide covers software and documentation only.
+
+### The Audette Clause
+
+This architecture — including its distributed systems, telemetry design, and operational frameworks — was conceived, authored, and architected by **Louis-Philippe Audette**. Any deployment, publication, derivative work, or commercial application must prominently retain attribution and provide clear credit to the original architect.
+
+### Full License Texts
+
+- Code → [`/LICENSE-EUPL-1.2.txt`](/LICENSE-EUPL-1.2.txt)
+- Docs & Data → [`/LICENSE-CC-BY-SA-4.0.md`](/LICENSE-CC-BY-SA-4.0.md)
+- Attribution & Origin → [`/NOTICE.md`](/NOTICE.md)
+- Compliance Matrix → [`/LICENSES/README.md`](/LICENSES/README.md)
+
+---
+
+*Part of the PSIVI.COM Open Science Hub — Excellence Edition.*  
+*Aligned with NASA TOPS, ESA Open Science Policy, CSA, and Horizon Europe standards.*  
+*Last Updated: 2026-09-11T00:00:00.000Z*
