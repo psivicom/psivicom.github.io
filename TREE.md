@@ -9,6 +9,7 @@ psivicom.github.io/
 │       └── update-tree.yml
 ├── LICENSES/
 │   ├── CC-BY-4.0.txt
+│   ├── EUPL_v1.2
 │   ├── README.md
 │   └── deprecated_APACHE-2.0.txt
 ├── _techreports/
