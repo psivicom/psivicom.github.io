@@ -47,3 +47,15 @@ All new files must include the appropriate SPDX license identifier at the top of
 # Copyright 2026 Louis-Philippe Audette
 # SPDX-License-Identifier: EUPL-1.2
 # Licensed under the EUPL 1.2 — see /LICENSE-EUPL-1.2.txt
+```
+**For Data & Documentation (`.md`, `.csv`, `.json`, data, etc.):**
+```text
+# Copyright 2026 Louis-Philippe Audette
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Licensed under CC BY-SA 4.0 — see /LICENSE-CC-BY-SA-4.0.md
+```
+
+**For commercial hardware licensing or physical implementation inquiries, please visit: https://w-1-n.com
+```text
+WARNING! Hardware & Physical IP: All hardware designs, schematics, and physical implementations are All Rights Reserved and managed separately under the commercial entity at w-1-n.com. This repository contains architectural theory and software only.
+```
