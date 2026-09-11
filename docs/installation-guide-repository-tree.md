@@ -52,3 +52,18 @@ gh repo clone psivicom/psivicom.github.io
 cd psivicom.github.io
 ```
 3.2 Verify License Compliance after cloning, verify that all license files are present and correctly configured:
+
+BASH
+
+# Check for EUPL 1.2 license (code)
+ls -la LICENSE-EUPL-1.2.txt
+
+# Check for CC BY-SA 4.0 license (data/docs)
+ls -la LICENSE-CC-BY-SA-4.0.md
+
+# Check for NOTICE file (Audette Clause)
+ls -la NOTICE.md
+
+# Verify LICENSES directory
+ls -la LICENSES/
+
