@@ -99,7 +99,7 @@ See `LICENSES/README.md`, `NOTICE.md`, `docs/LICENSE_COMPLIANCE.md` — all cros
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-11T22:09:39.299Z | Hash: ad49f0f2d77914d0fe059b030265aaec62fe769c36583ba4917d9e2751824ff9 -->
+<!-- Last updated: 2026-09-11T22:14:07.081Z | Hash: be942cd96d6dd069052a885259c60b839a197969726509658c2755bd31dc370c -->
 
 ```
 psivicom.github.io/
@@ -192,9 +192,9 @@ psivicom.github.io/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
 │   ├── A_DATA_MANAGEMENT.md
+│   ├── A_FAIR_CHECKLIST.md
 │   ├── A_LICENSE_COMPLIANCE.md
 │   ├── DATA_MANAGEMENT.md
-│   ├── FAIR_CHECKLIST.md
 │   ├── INTEROPERABILITY.md
 │   ├── Installation-Guide-Repository-Tree.md
 │   ├── LICENSE_COMPLIANCE.md

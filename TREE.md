@@ -89,9 +89,9 @@ psivicom.github.io/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
 │   ├── A_DATA_MANAGEMENT.md
+│   ├── A_FAIR_CHECKLIST.md
 │   ├── A_LICENSE_COMPLIANCE.md
 │   ├── DATA_MANAGEMENT.md
-│   ├── FAIR_CHECKLIST.md
 │   ├── INTEROPERABILITY.md
 │   ├── Installation-Guide-Repository-Tree.md
 │   ├── LICENSE_COMPLIANCE.md
