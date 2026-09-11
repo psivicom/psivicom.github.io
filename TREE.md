@@ -108,6 +108,7 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── AUTHORS.md
 ├── A_README.md
+├── A_config.yml
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -124,7 +125,6 @@ psivicom.github.io/
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE.md
-├── _config.yml
 ├── codemeta.json
 ├── deprecated_LICENSE
 ├── deprecated_NOTICE
