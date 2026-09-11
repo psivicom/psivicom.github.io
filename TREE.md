@@ -108,6 +108,7 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── AUTHORS.md
 ├── A_README.md
+├── A_codemeta.json
 ├── A_config.yml
 ├── CHANGELOG.md
 ├── CITATION.cff
@@ -126,7 +127,6 @@ psivicom.github.io/
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE.md
 ├── _config.yml
-├── codemeta.json
 ├── deprecated_LICENSE
 ├── deprecated_NOTICE
 ├── index.html
