@@ -14,7 +14,7 @@ This repository implements a strict, domain-separated licensing model designed f
 
 Add the following header to the top of each file you create or modify:
 
-**Code files (`.sh`, `.yml`, `.json`, `.js`, `.py`, `.html`):**
+**Code files (`.sh`, `.yml`, `.json`, `.js`, `.py`, `.go`, `.html`):**
 ```text
 # Copyright 2026 Louis-Philippe Audette
 # SPDX-License-Identifier: EUPL-1.2
