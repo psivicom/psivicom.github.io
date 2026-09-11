@@ -50,4 +50,5 @@ gh repo clone psivicom/psivicom.github.io
 
 # Navigate into the repository
 cd psivicom.github.io
-
+```
+3.2 Verify License Compliance after cloning, verify that all license files are present and correctly configured:
