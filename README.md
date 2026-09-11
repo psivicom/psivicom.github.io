@@ -99,7 +99,7 @@ See `LICENSES/README.md`, `NOTICE.md`, `docs/LICENSE_COMPLIANCE.md` — all cros
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-11T21:54:22.609Z | Hash: cb4d1b6020892f7a5552354de7cececccf17bf5d756813400c6e36c6e714f5ab -->
+<!-- Last updated: 2026-09-11T22:03:26.495Z | Hash: bbe98a335503ab64a65c56213b8f4528e800d68b0386a67aac5e70a1abe0ccb2 -->
 
 ```
 psivicom.github.io/
@@ -197,6 +197,7 @@ psivicom.github.io/
 │   ├── INTEROPERABILITY.md
 │   ├── Installation-Guide-Repository-Tree.md
 │   ├── LICENSE_COMPLIANCE.md
+│   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── osdmp.html
 │   ├── osdmp.md

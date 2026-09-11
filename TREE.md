@@ -94,6 +94,7 @@ psivicom.github.io/
 │   ├── INTEROPERABILITY.md
 │   ├── Installation-Guide-Repository-Tree.md
 │   ├── LICENSE_COMPLIANCE.md
+│   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── osdmp.html
 │   ├── osdmp.md
