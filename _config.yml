@@ -1,0 +1,49 @@
+# GitHub Pages — Jekyll config — Excellence Edition — Dual License EUPL 1.2 + CC BY-SA 4.0
+title: PSIVI.COM
+description: "FAIR open science, open-source software, and reproducible research aligned with NASA, ESA, and CSA. Code: EUPL 1.2. Data/Docs: CC BY-SA 4.0. DOIs via Zenodo/OSF. Researcher: Louis-Philippe Audette | psivi.com"
+url: "https://psivi.com"
+baseurl: ""
+author: "Louis-Philippe Audette"
+repository: "psivicom/psivicom.github.io"
+
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# License metadata for SEO / FAIR
+license:
+  code: EUPL-1.2
+  data: CC-BY-SA-4.0
+  code_file: /LICENSE-EUPL-1.2.txt
+  data_file: /LICENSE-CC-BY-SA-4.0.md
+  dual_readme: /LICENSES/README.md
+
+twitter:
+  username: psivicom
+social:
+  name: Louis-Philippe Audette
+  links:
+    - https://psivi.com
+    - https://github.com/psivicom
+    - https://orcid.org/0009-0005-1234-5678
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      license_code: EUPL-1.2
+      license_data: CC-BY-SA-4.0
+  - scope:
+      path: "data"
+    values:
+      layout: default
+      license: CC-BY-SA-4.0
+  - scope:
+      path: "docs"
+    values:
+      layout: default
+      license: CC-BY-SA-4.0
+
+show_excerpts: true
