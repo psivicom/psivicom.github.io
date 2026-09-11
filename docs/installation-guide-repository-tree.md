@@ -247,13 +247,20 @@ git lfs install
 # Pull LFS files
 git lfs pull
 ```
-8. Compliance Cross-ReferenceFor licensing legalities, see: LICENSE_COMPLIANCE.md
+
+8.0 Compliance Cross-ReferenceFor licensing legalities, see: LICENSE_COMPLIANCE.md
 For overarching research policies, see: OPEN_SCIENCE_POLICY.md
 For data management details, see: DATA_MANAGEMENT.md
 For FAIR validation, see: FAIR_CHECKLIST.md
 For interoperability standards, see: INTEROPERABILITY.md
-9. Contact & Support Research Inquiries: louis@psivi.com
-GitHub Issues: github.com/psivicom/psivicom.github.io/issues
-Hardware/Commercial Licensing: w-1-n.com 
+
+9.0 Contact to Support Research: support@psivi.com
+
+For Research inquiries: louis@psivi.com
+
+For GitHub Issues: github.com/psivicom/psivicom.github.io/issues
+
+For Hardware/Commercial Licensing: https://w-1-n.com 
+
 This guide is a living document. It is updated as the repository structure evolves and new tools are added.
 Copy everything above and paste it into your `docs/installation-guide-repository-tree.md` file on GitHub.
