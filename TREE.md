@@ -109,7 +109,6 @@ psivicom.github.io/
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
-├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
@@ -121,6 +120,7 @@ psivicom.github.io/
 ├── TRUST_AND_PROVENANCE.md
 ├── _config.yml
 ├── codemeta.json
+├── deprecated_LICENSE
 ├── index.html
 ├── robots.txt
 └── sitemap.xml
