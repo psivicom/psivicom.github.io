@@ -93,6 +93,7 @@ psivicom.github.io/
 │   ├── FAIR_CHECKLIST.md
 │   ├── INTEROPERABILITY.md
 │   ├── Installation-Guide-Repository-Tree.md
+│   ├── LICENSE_COMPLIANCE.md
 │   ├── README.md
 │   ├── osdmp.html
 │   ├── osdmp.md
