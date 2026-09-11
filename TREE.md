@@ -8,9 +8,9 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── LICENSES/
-│   ├── APACHE-2.0.txt
 │   ├── CC-BY-4.0.txt
-│   └── README.md
+│   ├── README.md
+│   └── deprecated_APACHE-2.0.txt
 ├── _techreports/
 │   └── YYYY-MM-DD-templatezenodo.md
 ├── archive/
