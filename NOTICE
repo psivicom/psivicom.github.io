@@ -1,0 +1,44 @@
+# NOTICE OF ATTRIBUTION AND ORIGIN
+
+## Project Aether & psivicom.github.io Open Science Hub
+**Architect & Principal Investigator:** Louis-Philippe Audette  
+**Affiliation:** Independent Researcher, Goldstream, Langford, BC, Canada  
+**Open Research:** [psivi.com](https://psivi.com) | [psivicom.github.io](https://psivicom.github.io)  
+**Commercial & Hardware:** [w-1-n.com](https://w-1-n.com)  
+
+Copyright © 2026 Louis-Philippe Audette. All rights reserved, except as explicitly licensed below.
+
+---
+
+### ⚠️ The Audette Clause (Mandatory Attribution)
+This high-assurance AI cluster architecture, including its distributed Mixture-of-Experts (MoE) inference methodology, anomaly-driven telemetry design, and zero-trust operational framework, was conceived, authored, and architected by **Louis-Philippe Audette**. 
+
+Any deployment, publication, derivative work, or commercial application of this architecture, in whole or in part, must prominently retain this attribution and provide clear credit to the original architect. Failure to do so constitutes a violation of the respective intellectual property rights and open-source license agreements.
+
+---
+
+### Domain-Separated Licensing Framework
+To ensure maximum interoperability with global scientific institutions while preventing closed-source exploitation, this repository adheres to a strict, domain-separated licensing model:
+
+1. **Source Code & Scripts:** Licensed under the **European Union Public Licence v. 1.2 (EUPL 1.2)**.  
+   *(See `/LICENSE-EUPL-1.2.txt`)*
+2. **Documentation, Data, Images, and Media:** Licensed under **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)**.  
+   *(See `/LICENSE-CC-BY-SA-4.0.md`)*
+3. **Hardware Designs, Patents, and Physical Implementations:** **All Rights Reserved.**  
+   *(This repository contains architectural theory only. All physical designs, schematics, and commercial implementations are proprietary to the entity associated with [w-1-n.com](https://w-1-n.com). Future open-hardware releases, if any, will be governed by the CERN Open Hardware Licence framework).*
+
+---
+
+### Third-Party Attributions
+This product includes software and assets from third parties, used in compliance with their respective licenses:
+- **Jekyll Minima Theme:** MIT License — [https://github.com/jekyll/minima](https://github.com/jekyll/minima)
+- **Repository Badges:** Creative Commons Zero (CC0) via Shields.io — [https://shields.io](https://shields.io)
+- **Policy References:** Mentions of NASA TOPS, ESA Open Science Policy, and CSA Open Science are for compliance documentation and alignment purposes only, and do not imply official endorsement by these agencies.
+
+---
+
+### SPDX License Identifier
+For automated compliance scanning, the combined licensing of this repository is expressed as:  
+**SPDX: EUPL-1.2 AND CC-BY-SA-4.0**
+
+*Cryptographic proof of origin and architectural lineage is embedded within this repository.*
