@@ -96,6 +96,7 @@ psivicom.github.io/
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── INTEROPERABILITY.md
+│   ├── Installation-guide.md
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
