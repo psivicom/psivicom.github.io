@@ -10,7 +10,7 @@ psivicom.github.io/
 ├── LICENSES/
 │   ├── Deprecated_LICENSE-CC-BY-4.0.txt
 │   ├── LICENSE-CC-BY-SA-4.0.md
-│   ├── LICENSE-EUPL-1.2.txt
+│   ├── LICENSE-EUPL-1.2.md
 │   ├── README.md
 │   └── deprecated_APACHE-2.0.txt
 ├── _techreports/
