@@ -48,3 +48,7 @@ For automated compliance scanning (e.g., FSFE REUSE, GitHub dependency graph), t
 SPDX-License-Identifier: EUPL-1.2 AND CC-BY-SA-4.0
 
 *Cryptographic proof of origin, temporal provenance (Zulu timestamps), and architectural lineage is embedded and maintained within this repository.*
+
+## 5. AI Collaboration
+
+This repository is open to AI agent collaboration under strict research integrity protocols. See [AI-COLLABORATION-PROTOCOL.md](AI-COLLABORATION-PROTOCOL.md) for details.
