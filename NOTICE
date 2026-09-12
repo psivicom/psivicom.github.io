@@ -1,0 +1,50 @@
+# NOTICE — Copyright, Attribution, and Origin
+
+**Project:** PSIVI.COM Open Science Hub (psivicom.github.io)  
+**Architect & Principal Investigator:** Louis-Philippe Audette  
+**Affiliation:** Independent Researcher, Goldstream, Langford, BC, Canada  
+**Open Research:** https://psivi.com | https://psivicom.github.io  
+**Commercial & Hardware:** https://w-1-n.com  
+**Last Updated:** 2026-09-11T00:00:00.000Z  
+
+Copyright © 2026 Louis-Philippe Audette. All rights reserved, except as explicitly licensed below.
+
+---
+
+## 1. The Audette Clause (Mandatory Attribution)
+
+This high-assurance open-science and AI-assisted architecture, including its distributed systems, telemetry design, anomaly-driven data methodologies, and zero-trust operational frameworks, was conceived, authored, and architected by **Louis-Philippe Audette**. 
+
+Any deployment, publication, derivative work, or commercial application of this architecture, in whole or in part, **must prominently retain this attribution** and provide clear, visible credit to the original architect. Failure to do so constitutes a violation of the respective intellectual property rights and open-source license agreements.
+
+---
+
+## 2. Domain-Separated Licensing Framework
+
+To ensure maximum interoperability with global scientific institutions while preventing closed-source exploitation and protecting physical intellectual property, this repository adheres to a strict, domain-separated licensing model:
+
+1. **Source Code, Scripts, and Workflows:** Licensed under the **European Union Public Licence v. 1.2 (EUPL 1.2)**.  
+   (See: https://github.com/psivicom/psivicom.github.io/blob/main/LICENSE-EUPL-1.2.txt)
+2. **Documentation, Data, Datasets, and Media:** Licensed under **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)**.  
+   (See: https://github.com/psivicom/psivicom.github.io/blob/main/LICENSE-CC-BY-SA-4.0.md)
+3. **Hardware Designs, Patents, and Physical Implementations:** **All Rights Reserved.**  
+   (This repository contains architectural theory, software, and data only. All physical designs, schematics, and commercial implementations are proprietary to the entity associated with https://w-1-n.com. Future open-hardware releases, if any, will be governed separately).
+
+---
+
+## 3. Third-Party Attributions
+
+This product includes software and assets from third parties, used in compliance with their respective licenses:
+- **Jekyll Minima Theme:** MIT License — https://github.com/jekyll/minima
+- **Repository Badges:** Creative Commons Zero (CC0) via Shields.io — https://shields.io
+- **Policy References:** Mentions of NASA TOPS, ESA Open Science Policy, CSA Open Science, and other agency standards are for compliance documentation and alignment purposes only, and do not imply official endorsement by these agencies.
+
+---
+
+## 4. SPDX License Identifier
+
+For automated compliance scanning (e.g., FSFE REUSE, GitHub dependency graph), the combined licensing of this repository is expressed as:  
+
+SPDX-License-Identifier: EUPL-1.2 AND CC-BY-SA-4.0
+
+*Cryptographic proof of origin, temporal provenance (Zulu timestamps), and architectural lineage is embedded and maintained within this repository.*
