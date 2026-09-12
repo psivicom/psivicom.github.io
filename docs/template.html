@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Open Science Data Management Plan — psivi.com</title>
+<meta name="description" content="NASA SPD-41a compliant OSDMP — FAIR, reproducible, CC BY-SA 4.0 data, EUPL 1.2 code">
+<link rel="canonical" href="https://psivi.com/docs/osdmp.html">
+<!-- REUSE: SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- Code in this repo is EUPL-1.2, Content is CC-BY-SA-4.0 per NASA SPD-41a -->
+<style>
+:root{--bg:#fbfbfd;--fg:#121217;--muted:#5a5d6b;--card:#ffffff;--border:#e6e8ee;--accent:#0b57d0;--accent2:#0a7a42;--code:#f2f4f8}
+@media(prefers-color-scheme:dark){ :root{--bg:#0f1115;--fg:#e8e9ee;--muted:#9aa0b2;--card:#181b22;--border:#242938;--accent:#8ab4f8;--accent2:#81c995;--code:#1e232f}}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--fg);line-height:1.65}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:10}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.badge-row img{height:22px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin:18px 0}
+h1{font-size:2.1rem;line-height:1.2;margin:14px 0 6px} h2{font-size:1.35rem;margin:28px 0 10px;border-bottom:1px solid var(--border);padding-bottom:6px} h3{font-size:1.05rem;margin:18px 0 8px}
+.meta{color:var(--muted);font-size:.92rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px} @media(max-width:780px){.grid{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.95rem} th,td{border:1px solid var(--border);padding:8px 10px;text-align:left} th{background:var(--code)}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:var(--code);border-radius:6px} pre{padding:14px;overflow:auto}
+.kv{display:flex;flex-wrap:wrap;gap:8px} .kv span{border:1px solid var(--border);padding:4px 10px;border-radius:999px;font-size:.85rem;background:var(--card)}
+footer{margin:40px 0 0;border-top:1px solid var(--border);padding:24px 0;color:var(--muted);font-size:.9rem}
+#md-content h1,#md-content h2,#md-content h3{border:none}
+#md-content a{word-break:break-word}
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"Open Science Data Management Plan",
+  "author":{"@type":"Person","name":"Louis-Philippe Audette","url":"https://psivi.com"},
+  "isPartOf":{"@type":"WebSite","name":"psivi.com","url":"https://psivi.com"},
+  "license":"https://creativecommons.org/licenses/by-sa/4.0/",
+  "about":["FAIR","NASA SPD-41a","Open Science","Data Management Plan"],
+  "datePublished":"2026-08-29",
+  "dateModified":"2026-09-11"
+}
+</script>
+</head>
+<body>
+<header>
+<div class="wrap nav">
+<div><strong>psivi.com</strong> — Open Science Research</div>
+<div class="meta"><a href="https://psivi.com">Home</a> · <a href="https://github.com/psivicom/psivicom.github.io">GitHub</a> · <a href="https://zenodo.org">Zenodo</a></div>
+</div>
+</header>
+
+<main class="wrap">
+<div style="margin-top:22px" class="meta">Independent researcher — Langford, BC · NASA TOPS / SPD-41a · CSA / ESA / UNESCO Compliant</div>
+<h1>Open Science Data Management Plan (OSDMP)</h1>
+<div class="meta">Source: <code>/docs/osdmp.md</code> → Live: <code>/docs/osdmp.html</code> · SPDX Content: CC BY-SA 4.0 · Code: EUPL 1.2 · Auto-built</div>
+
+<div class="badge-row">
+<img src="https://img.shields.io/badge/License-EUPL%201.2-blue.svg" alt="EUPL 1.2">
+<img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" alt="CC BY-SA 4.0">
+<img src="https://img.shields.io/badge/FAIR-F2F4F8.svg" alt="FAIR">
+<img src="https://img.shields.io/badge/REUSE-compliant-green.svg" alt="REUSE">
+<img src="https://img.shields.io/badge/NASA-SPD--41a-0B3D91.svg" alt="NASA SPD-41a">
+<img src="https://img.shields.io/badge/NASA-TOPS-0B3D91.svg" alt="NASA TOPS">
+<img src="https://img.shields.io/badge/CSA-Open%20Science-blue.svg" alt="CSA">
+<img src="https://img.shields.io/badge/ESA-Open%20Science-003247.svg" alt="ESA">
+</div>
+
+<div class="grid">
+<div class="card">
+<h3 style="margin-top:0">Quick facts</h3>
+<div class="kv">
+<span>DOIs via Zenodo / OSF</span><span>FAIR R1.1</span><span>Open by Default</span><span>Reproducible</span>
+</div>
+<table style="margin-top:12px">
+<tr><th>Type</th><th>Scope</th><th>License</th></tr>
+<tr><td><strong>Code</strong></td><td>/src, *.py, *.go, *.js</td><td>EUPL 1.2</td></tr>
+<tr><td><strong>Content/Data</strong></td><td>README, /docs, figures</td><td>CC BY-SA 4.0</td></tr>
+</table>
+</div>
+<div class="card">
+<h3 style="margin-top:0">Compliance</h3>
+<table>
+<tr><th>Std</th><th>How</th></tr>
+<tr><td>NASA SPD-41a</td><td>EUPL 1.2 + CC BY-SA 4.0 ✅</td></tr>
+<tr><td>REUSE / EOSC</td><td>SPDX headers ✅</td></tr>
+<tr><td>CSA / ESA / UNESCO</td><td>FAIR + OA ✅</td></tr>
+</table>
+</div>
+</div>
+
+<!-- THIS IS WHERE YOUR MARKDOWN GETS INJECTED -->
+<div class="card" id="md-content">
+<!-- PANDOC_BODY -->
+</div>
+
+<footer>
+<div>© 2026 Louis-Philippe Audette — Content CC BY-SA 4.0, Code EUPL 1.2. Built with AI-assisted workflows, human-reviewed.</div>
+<div style="margin-top:8px">Live: <a href="https://psivi.com">psivi.com</a> · Repo: <a href="https://github.com/psivicom/psivicom.github.io">psivicom.github.io</a></div>
+</footer>
+</main>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
