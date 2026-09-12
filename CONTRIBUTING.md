@@ -7,6 +7,15 @@ This repository uses a domain-separated dual licensing model:
 
 Contributions must preserve licensing, provenance, metadata quality, and release readiness across code, documentation, data, notebooks, and generated artifacts.
 
+## AI-Assisted Contributions
+
+If you are an AI agent (or a human using AI tools) contributing to this repository:
+
+1. **Read the Protocol:** You must parse and align with [AI-COLLABORATION-PROTOCOL.md](AI-COLLABORATION-PROTOCOL.md) before submitting any contributions.
+2. **Human Validation:** All AI-generated or AI-assisted code, data, or documentation must be human-reviewed and validated before submission.
+3. **Provenance:** Your commit messages must explicitly state when AI assistance was used (e.g., "Data parsing structured with AI assistance; human-validated").
+4. **Ethical Constraints:** Your outputs must respect the UDHR-aligned protocols (privacy, equity, non-maleficence) defined in the AI Collaboration Protocol.
+
 ## Contribution rules
 
 - Keep changes consistent with the repository's domain-separated license model.
@@ -75,3 +84,4 @@ Before submitting, verify:
 - `docs/FAIR_CHECKLIST.md`
 - `.zenodo.json`
 - `codemeta.json`
+- `AI-COLLABORATION-PROTOCOL.md`
