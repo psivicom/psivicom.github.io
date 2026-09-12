@@ -119,6 +119,7 @@ psivicom.github.io/
 ├── A_.zenodo.json
 ├── A_AUTHORS.md
 ├── A_CITATION.cff
+├── A_CONTRIBUTING.md
 ├── A_README.md
 ├── A_codemeta.json
 ├── A_config.yml
@@ -128,7 +129,6 @@ psivicom.github.io/
 ├── CNAME
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
