@@ -138,6 +138,7 @@ psivicom.github.io/
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── LICENSE
+├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
 ├── README.md
