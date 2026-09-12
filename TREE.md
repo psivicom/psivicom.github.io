@@ -130,6 +130,7 @@ psivicom.github.io/
 ├── A_codemeta.json
 ├── A_config.yml
 ├── A_index.html
+├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
 ├── CODEOWNERS
