@@ -118,7 +118,6 @@ psivicom.github.io/
 │   └── fix_timestamps.py
 ├── .zenodo.jason
 ├── A2_README.md
-├── AI-MORAL-Evolution.md
 ├── AUTHORS.md
 ├── A_.zenodo.json
 ├── A_AUTHORS.md
@@ -141,6 +140,7 @@ psivicom.github.io/
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
+├── Deprecated_AI-MORAL-Evolution.md
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
