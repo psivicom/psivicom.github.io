@@ -118,6 +118,7 @@ psivicom.github.io/
 │   └── fix_timestamps.py
 ├── .zenodo.jason
 ├── A2_README.md
+├── A2_codemeta.json
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_.zenodo.json
@@ -153,7 +154,6 @@ psivicom.github.io/
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
 ├── _config.yml
-├── codemeta.json
 ├── deprecated_LICENSE
 ├── deprecated_NOTICE
 ├── index.html
