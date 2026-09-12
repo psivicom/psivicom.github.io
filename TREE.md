@@ -139,6 +139,7 @@ psivicom.github.io/
 ├── A_config.yml
 ├── A_index.html
 ├── CHANGELOG.md
+├── CITATION.cff
 ├── CNAME
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md

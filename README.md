@@ -105,7 +105,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-12T06:27:20.878Z | Hash: b9d20dc7b957f90646a6d26a5da00c19e4de1b3f7010af4667e1bae45a2d0c41 -->
+<!-- Last updated: 2026-09-12T06:29:12.850Z | Hash: dd57299958439ab9e9bba21a3d38be89d071950cca9f31fcc2f88bfe8711757c -->
 
 ```
 psivicom.github.io/
@@ -248,6 +248,7 @@ psivicom.github.io/
 ├── A_config.yml
 ├── A_index.html
 ├── CHANGELOG.md
+├── CITATION.cff
 ├── CNAME
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
