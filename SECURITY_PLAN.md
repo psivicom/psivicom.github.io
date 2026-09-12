@@ -75,4 +75,16 @@ Use a simple provenance note at the top of major files:
 
 5. Zenodo DOI ArchivingZenodo is used for stable archival copies of finished or release-worthy artifacts.When to archiveA release is stable and citable.A notebook supports a published result.A dataset or analysis needs a persistent citation.A version must remain accessible for audit or reproducibility.What to archiveFinal notebooks and reportsRelease snapshotsImportant reference bundlesRelease metadata (.zenodo.json, codemeta.json, CITATION.cff)Archiving stepsPrepare a clean release folder.Confirm all linked files and SPDX headers are present and correct.Remove temporary scratch files.Freeze the version with a Git release tag.Upload the release package to Zenodo.Record the DOI in ARCHIVE/zenodo_metadata.md.Link the DOI from README.md, SECURITY.md, or the relevant release note.Keep the archived package unchanged after publication.Metadata to recordRelease versionZenodo DOIUpload date (Zulu time)Included filesChecksum or hash (SHA-256), if usedShort description of what was archived6. Supply-Chain IntegritySupply-chain integrity means verifying that the tools, dependencies, and artifacts you use are the ones you intended to use.Required checksPin dependencies where possible (e.g., requirements.txt, go.mod).Review dependency updates before merging.Prefer signed or trusted releases when available.Keep a record of exact versions used for important work.Verify notebook kernels, libraries, and build tools before release.Avoid pulling unknown code into active analysis without review.Record any manual override or exception.Operational checks (per release or major analysis)List dependency versions.Confirm source repository or package origin.Note integrity checks if available.Record any critical tool changes.Rerun important analysis after dependency changes when results matter.Example integrity record
 
+example integrity record
+
+Tool: Python
+Version: 3.11.x
+Notebook kernel: linked
+Dependency lockfile: present
+Notable changes: none
+Verification date: 2026-09-11T00:00:00.000Z
+
+
+
+
 
