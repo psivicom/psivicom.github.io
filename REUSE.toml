@@ -1,0 +1,59 @@
+# REUSE.toml - SPDX REUSE compliance for EU EOSC / FSFE
+# https://reuse.software/spec/
+# Note: Hardware designs and physical IP are All Rights Reserved and managed separately at w-1-n.com.
+# This file only covers the open-source software and open data/documentation in this repository.
+
+version = 1
+
+# ---------------------------------------------------------
+# 1. SOFTWARE / CODE (EUPL 1.2)
+# ---------------------------------------------------------
+[[annotations]]
+path = [
+  "**/*.py",
+  "**/*.go",
+  "**/*.js",
+  "**/*.sh",
+  "**/*.yml",
+  "**/*.yaml",
+  "scripts/**",
+  "tools/**",
+  ".github/**"
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Louis-Philippe Audette"
+SPDX-License-Identifier = "EUPL-1.2"
+
+# ---------------------------------------------------------
+# 2. DOCUMENTATION, DATA & MEDIA (CC BY-SA 4.0)
+# ---------------------------------------------------------
+[[annotations]]
+path = [
+  "README.md",
+  "docs/**",
+  "**/*.md",
+  "index.html",
+  "**/*.csv",
+  "**/*.json",
+  "**/*.png",
+  "**/*.jpg",
+  "**/*.svg",
+  "**/*.mp4",
+  "**/*.pdf"
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Louis-Philippe Audette"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+# ---------------------------------------------------------
+# 3. LICENSE FILES THEMSELVES
+# ---------------------------------------------------------
+[[annotations]]
+path = ["LICENSE-EUPL-1.2.txt", "LICENSE"]
+SPDX-FileCopyrightText = "2026 Louis-Philippe Audette"
+SPDX-License-Identifier = "EUPL-1.2"
+
+[[annotations]]
+path = ["LICENSE-CC-BY-SA-4.0.md"]
+SPDX-FileCopyrightText = "2026 Louis-Philippe Audette"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
