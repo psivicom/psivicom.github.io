@@ -120,6 +120,7 @@ psivicom.github.io/
 ├── A_AUTHORS.md
 ├── A_CITATION.cff
 ├── A_CONTRIBUTING.md
+├── A_POLICY.md
 ├── A_README.md
 ├── A_REUSE.toml
 ├── A_TRUST_AND_PROVENANCE.md
@@ -135,7 +136,6 @@ psivicom.github.io/
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
-├── POLICY.md
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
