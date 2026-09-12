@@ -120,6 +120,7 @@ psivicom.github.io/
 ├── A2_README.md
 ├── A2_codemeta.json
 ├── A3_.zenodo.jason
+├── A3_CITATION.cff
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_.zenodo.json
@@ -138,7 +139,6 @@ psivicom.github.io/
 ├── A_config.yml
 ├── A_index.html
 ├── CHANGELOG.md
-├── CITATION.cff
 ├── CNAME
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
