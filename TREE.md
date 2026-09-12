@@ -136,6 +136,7 @@ psivicom.github.io/
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
+├── POLICY.md
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
