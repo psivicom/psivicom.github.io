@@ -140,6 +140,7 @@ psivicom.github.io/
 ├── POLICY.md
 ├── README.md
 ├── REUSE.toml
+├── SECURITY.md
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
