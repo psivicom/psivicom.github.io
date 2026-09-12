@@ -122,6 +122,7 @@ psivicom.github.io/
 ├── A_CONTRIBUTING.md
 ├── A_README.md
 ├── A_REUSE.toml
+├── A_TRUST_AND_PROVENANCE.md
 ├── A_codemeta.json
 ├── A_config.yml
 ├── A_index.html
@@ -140,7 +141,6 @@ psivicom.github.io/
 ├── SECURITY.md
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
-├── TRUST_AND_PROVENANCE.md
 ├── _config.yml
 ├── codemeta.json
 ├── deprecated_LICENSE
