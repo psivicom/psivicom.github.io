@@ -108,7 +108,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-12T18:38:02.326Z | Hash: 6ab1d2f61b0a0fb6b78ee47b04ba4bd7a0b90785d02845f5391da2cc8c9e67b8 -->
+<!-- Last updated: 2026-09-12T18:38:57.235Z | Hash: 082d9a81bb4943861e6c16fd7d166bb7ab366aa03215273238366762f3dac19b -->
 
 ```
 psivicom.github.io/
@@ -220,6 +220,7 @@ psivicom.github.io/
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
+│   ├── README.md
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md

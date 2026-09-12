@@ -108,6 +108,7 @@ psivicom.github.io/
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
+│   ├── README.md
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
