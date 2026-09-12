@@ -28,7 +28,7 @@ This folder contains only active, validated documentation. (Archive and deprecat
 - **[template.html](template.html)** — Standardized HTML template for rendering live documentation pages.
 
 ### 🛠️ Technical Guides & Tools
-- **[Installation-Guide-Repository-Tree.md](Installation-Guide-Repository-Tree.md)** — Step-by-step setup, validation, and repository tree visualization.
+- **[installation-guide-repository-tree.md](installation-guide-repository-tree.md)** — Step-by-step setup, validation, and repository tree visualization.
 - **`GO_TREE/`** — Go-based automation tools for rendering the repository tree and updating README marker blocks (`update-tree/`, `render-readme/`).
 - **`SECURITY_PLAN/`** — CIS-hardened security configurations, scripts, and security policies for infrastructure.
 - **`WEBSITE_PLAN/`** — Architectural planning documents for the `psivi.com` website deployment.
