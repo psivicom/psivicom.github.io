@@ -118,6 +118,7 @@ psivicom.github.io/
 ├── AUTHORS.md
 ├── A_.zenodo.json
 ├── A_AUTHORS.md
+├── A_CHANGELOG.md
 ├── A_CITATION.cff
 ├── A_CONTRIBUTING.md
 ├── A_POLICY.md
@@ -129,7 +130,6 @@ psivicom.github.io/
 ├── A_codemeta.json
 ├── A_config.yml
 ├── A_index.html
-├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
 ├── CODEOWNERS
