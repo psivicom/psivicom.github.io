@@ -173,15 +173,22 @@ psivicom.github.io/
     └── YYYY-MM-DD-templatezenodo.md
 ```
 
-5. Understanding the License Boundaries
+5. Understanding the License Boundaries:
+   
 5.1 What is Open Source (EUPL 1.2 / CC BY-SA 4.0)
 ✅ You can:Use, modify, and distribute all code (EUPL 1.2)Use, modify, and distribute all data and documentation (CC BY-SA 4.0)
 Cite the research using the provided DOI and CITATION.cff
-Contribute improvements via pull requests❌ You must:Retain the "Audette Clause" attribution in NOTICE.md
-Keep derivative code under EUPL 1.2Keep derivative data/docs under CC BY-SA 4.0
-Clearly state any changes you make
-5.2 What is NOT Open Source (All Rights Reserved)🚫 Hardware & Physical IP:CAD files, PCB layouts, schematics, and Bill of Materials (BOM)Physical implementation designsProprietary sensor configurationsThese are managed separately at w-1-n.com and are available for commercial licensing only.
-6. Validation & Testing
+Contribute improvements via pull requests
+⚠️ You must:Retain the "Audette Clause" attribution in NOTICE.md
+Keep derivative code under EUPL 1.2 
+Keep derivative data/docs under CC BY-SA 4.0
+Clearly state any changes you make.
+
+5.2 What is NOT Open Source (All Rights Reserved)🚫 Hardware & Physical IP:CAD files, PCB layouts, schematics, and Bill of Materials (BOM)Physical implementation designs Proprietary sensor configurations 
+These are managed separately at https//w-1-n.com and are available for commercial licensing only.
+
+6.0 Validation & Testing
+
 6.1 Validate JSON Metadata
 
 ```bash
@@ -263,7 +270,6 @@ For GitHub Issues: github.com/psivicom/psivicom.github.io/issues
 For Hardware/Commercial Licensing: https://w-1-n.com 
 
 This guide is a living document. It is updated as the repository structure evolves and new tools are added.
-Copy everything above and paste it into your `docs/installation-guide-repository-tree.md` file on GitHub.
 
 ---
 
