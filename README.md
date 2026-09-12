@@ -37,6 +37,8 @@ I work at the intersection of **pollinator ecology, beekeeping, and Earth observ
 
 **EXCELLENCE mode:** This repo is built for the NASA Open Science FAIR + world space agencies. Code = EUPL-1.2, Data/Docs/Media = CC BY-SA 4.0 — fully interconnected. No orphan files. Hardware designs are strictly walled and proprietary.
 
+> **Institutional Compliance & Security:** This research software and data pipeline is fully compliant with the NIST Secure Software Development Framework (SP 800-218). It utilizes a domain-separated open-source architecture (EUPL 1.2 / CC BY-SA 4.0) to guarantee zero proprietary "black box" lock-in, with all AI-assisted workflows bound by strict, auditable human-in-the-loop provenance protocols. See [docs/NIST-SSDF-COMPLIANCE-MAPPING.md](docs/NIST-SSDF-COMPLIANCE-MAPPING.md) for full technical and legal verification.
+
 ### Focus Areas
 
 **Field — Pollinators & beekeeping**  
