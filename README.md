@@ -13,6 +13,12 @@ Organization site → https://psivi.com | Repo → https://github.com/psivicom/p
 
 ## Policies
 
+## AI Collaboration
+
+This repository is open to AI agent collaboration under strict research integrity and ethical protocols:
+
+- [AI Collaboration Protocol](AI-COLLABORATION-PROTOCOL.md) — Protocols for AI agents to join, contribute, and maintain research integrity
+
 These documents define the project’s security, provenance, authorship, and archival rules:
 
 - [Trust and Provenance](TRUST_AND_PROVENANCE.md)
