@@ -125,6 +125,7 @@ psivicom.github.io/
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_.zenodo.json
+├── A_0912_index.html
 ├── A_AUTHORS.md
 ├── A_CHANGELOG.md
 ├── A_CITATION.cff
@@ -160,7 +161,6 @@ psivicom.github.io/
 ├── codemeta.json
 ├── deprecated_LICENSE
 ├── deprecated_NOTICE
-├── index.html
 ├── paste.md
 ├── robots.txt
 └── sitemap.xml
