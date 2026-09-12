@@ -124,6 +124,7 @@ psivicom.github.io/
 ├── A_README.md
 ├── A_REUSE.toml
 ├── A_SECURITY.md
+├── A_SECURITY_PLAN.md
 ├── A_TRUST_AND_PROVENANCE.md
 ├── A_codemeta.json
 ├── A_config.yml
@@ -141,7 +142,6 @@ psivicom.github.io/
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
-├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
 ├── _config.yml
