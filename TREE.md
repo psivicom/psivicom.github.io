@@ -90,6 +90,7 @@ psivicom.github.io/
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
+│   ├── A_0912_osdmp.md
 │   ├── A_DATA_MANAGEMENT.md
 │   ├── A_FAIR_CHECKLIST.md
 │   ├── A_INTEROPERABILITY.md
@@ -107,7 +108,6 @@ psivicom.github.io/
 │   ├── README.md
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
-│   ├── osdmp.md
 │   └── template.html
 ├── scripts/
 │   ├── update-tree/
