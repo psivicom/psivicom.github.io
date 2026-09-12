@@ -154,7 +154,7 @@ psivicom.github.io/
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
 ├── _config.yml
-├── codemeta.jason
+├── codemeta.json
 ├── deprecated_LICENSE
 ├── deprecated_NOTICE
 ├── index.html
