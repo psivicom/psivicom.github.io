@@ -105,7 +105,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-12T06:22:55.058Z | Hash: c8b78225bbdcd43681398678c690305325db90e32279fce4ae9ec592d0f1aa89 -->
+<!-- Last updated: 2026-09-12T06:24:15.316Z | Hash: c6a6f2b8deb89ddc292d2cf4fcb5d2f8396a679a1792e365295c6ddd7ccde6e0 -->
 
 ```
 psivicom.github.io/
@@ -225,9 +225,9 @@ psivicom.github.io/
 │   └── README.md
 ├── tools/
 │   └── fix_timestamps.py
-├── .zenodo.jason
 ├── A2_README.md
 ├── A2_codemeta.json
+├── A3_.zenodo.jason
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_.zenodo.json
