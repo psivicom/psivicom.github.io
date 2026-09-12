@@ -102,6 +102,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 | **EU Horizon Europe** | Reg 2021/695, MGA Art.14 & 17, Directive 2019/1024, Plan S, EOSC — EUPL-1.2 native, data CC BY-SA 4.0 required |
 | **UNESCO** | 41 C/22 Recommendation on Open Science (2021) |
 
+- [NIST SSDF Compliance Mapping](docs/NIST-SSDF-COMPLIANCE-MAPPING.md) — Technical and legal verification of NIST SP 800-218 alignment, preventing proprietary "black box" lock-in.
 ---
 
 ## 06 — Repository Structure — Interconnected
