@@ -119,4 +119,29 @@
 }]
 
 === CITATION.cff ===
-[paste content]
+[cff-version: 1.2.0
+message: "If you use this open science research, software, or data, please cite it using the metadata below."
+title: "PSIVI.COM — Open Science Hub — Excellence Edition"
+abstract: "FAIR open science, open-source software, and reproducible research aligned with NASA, ESA, and CSA. Code: EUPL 1.2. Data/Docs: CC BY-SA 4.0. DOIs via Zenodo/OSF. Researcher: Louis-Philippe Audette | psivi.com"
+authors:
+  - family-names: "Audette"
+    given-names: "Louis-Philippe"
+    orcid: "https://orcid.org/0009-0005-1234-5678"
+    affiliation: "Independent Researcher, Langford, BC, Canada"
+version: "1.1.0"
+date-released: "2026-08-29"
+url: "https://psivi.com"
+repository-code: "https://github.com/psivicom/psivicom.github.io"
+license: "EUPL-1.2"
+keywords:
+  - "open-science"
+  - "FAIR"
+  - "OSDMP"
+  - "NASA"
+  - "ESA"
+  - "CSA"
+  - "JAXA"
+  - "EUPL-1.2"
+  - "CC-BY-SA-4.0"
+  - "reproducible-research"
+type: dataset # or "software" depending on primary focus; "dataset" is great for FAIR data hubs]
