@@ -102,7 +102,7 @@ psivicom.github.io/
 │   ├── FAIR_CHECKLIST.md
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
-│   ├── NOST-SSDF-COMPLIANCE-MAPPING.md
+│   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── installation-guide-repository-tree.md
