@@ -19,6 +19,8 @@ psivicom.github.io/
 ├── _techreports/
 │   └── YYYY-MM-DD-templatezenodo.md
 ├── archive/
+│   ├── 2026-00-11/
+│   │   └── A_REUSE.toml
 │   ├── 2026-08-29/
 │   │   └── A2026-08-29T2240Z_README.md
 │   ├── 2026-08-30/
@@ -147,7 +149,6 @@ psivicom.github.io/
 ├── A_NOTICE
 ├── A_POLICY.md
 ├── A_README.md
-├── A_REUSE.toml
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
