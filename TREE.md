@@ -36,6 +36,7 @@ psivicom.github.io/
 │   ├── 2026-09-10/
 │   │   └── A_update-tree.yml
 │   ├── 2026-09-11/
+│   │   ├── A_TRUST_AND_PROVENANCE.md
 │   │   ├── A_codemeta.json
 │   │   ├── A_config.yml
 │   │   └── A_index.html
@@ -147,7 +148,6 @@ psivicom.github.io/
 ├── A_REUSE.toml
 ├── A_SECURITY.md
 ├── A_SECURITY_PLAN.md
-├── A_TRUST_AND_PROVENANCE.md
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
