@@ -169,7 +169,6 @@ psivicom.github.io/
 ├── _config.yml
 ├── codemeta.json
 ├── index.html
-├── paste.md
 ├── robots.txt
 └── sitemap.xml
 ```
