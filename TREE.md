@@ -172,7 +172,6 @@ psivicom.github.io/
 ├── _config.yml
 ├── codemeta.json
 ├── deprecated_2mesh.go
-├── deprecated_mesh.go
 ├── index.html
 ├── mesh.go
 ├── mesh_state.json
