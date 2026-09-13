@@ -36,6 +36,7 @@ psivicom.github.io/
 │   ├── 2026-09-10/
 │   │   └── A_update-tree.yml
 │   ├── 2026-09-11/
+│   │   ├── A_config.yml
 │   │   └── A_index.html
 │   ├── deprecated/
 │   │   ├── Deprecated_AI-MORAL-Evolution.md
@@ -147,7 +148,6 @@ psivicom.github.io/
 ├── A_SECURITY_PLAN.md
 ├── A_TRUST_AND_PROVENANCE.md
 ├── A_codemeta.json
-├── A_config.yml
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
