@@ -143,9 +143,8 @@ psivicom.github.io/
 │   ├── osdmp.md
 │   └── template.html
 ├── scripts/
-│   ├── update-tree/
-│   │   └── main.go
-│   └── README.md
+│   └── update-tree/
+│       └── main.go
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
