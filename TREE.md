@@ -171,7 +171,6 @@ psivicom.github.io/
 ├── TRUST_AND_PROVENANCE
 ├── _config.yml
 ├── codemeta.json
-├── deprecated_2mesh.go
 ├── index.html
 ├── mesh.go
 ├── mesh_state.json
