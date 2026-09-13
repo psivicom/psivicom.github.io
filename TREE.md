@@ -14,7 +14,7 @@ psivicom.github.io/
 │   ├── README.md
 │   ├── deprecated_APACHE-2.0.txt
 │   ├── deprecated_LICENSE-CC-BY-4.0.txt
-│   └── deprecated_README.md
+│   └── deprecated_licenseREADME.md
 ├── _techreports/
 │   └── YYYY-MM-DD-templatezenodo.md
 ├── archive/
