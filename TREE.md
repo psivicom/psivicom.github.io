@@ -8,7 +8,6 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── LICENSES/
-│   ├── A_READMe.md
 │   ├── COPYRIGHT.md
 │   ├── Deprecated_LICENSE-CC-BY-4.0.txt
 │   ├── LICENSE-CC-BY-SA-4.0.md
@@ -51,6 +50,7 @@ psivicom.github.io/
 │   │   ├── A_codemeta.json
 │   │   ├── A_config.yml
 │   │   ├── A_index.html
+│   │   ├── A_licensesREADMe.md
 │   │   └── AdataREADME.md
 │   ├── 2026-09-12/
 │   │   ├── A2_README.md
