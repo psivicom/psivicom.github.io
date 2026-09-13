@@ -108,7 +108,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-13T02:07:40.647Z | Hash: 8e284684a39f8d21dc24fa1774dce0a0fd7fa2f20810ed8f5ed50dc9311b9840 -->
+<!-- Last updated: 2026-09-13T02:08:34.076Z | Hash: f8b0d63d964e7e6b8e04ed233f98eb732c6358cb7dcc7fcaaa85306c743ac4c6 -->
 
 ```
 psivicom.github.io/
@@ -121,11 +121,11 @@ psivicom.github.io/
 │       └── update-tree.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
-│   ├── Deprecated_LICENSE-CC-BY-4.0.txt
 │   ├── LICENSE-CC-BY-SA-4.0.md
 │   ├── LICENSE-EUPL-1.2.md
 │   ├── README.md
 │   ├── deprecated_APACHE-2.0.txt
+│   ├── deprecated_LICENSE-CC-BY-4.0.txt
 │   └── deprecated_README.md
 ├── _techreports/
 │   └── YYYY-MM-DD-templatezenodo.md
