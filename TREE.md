@@ -33,6 +33,7 @@ psivicom.github.io/
 │   │   ├── A_POLICY.md
 │   │   └── README.md
 │   ├── 2026-09-08/
+│   │   ├── A_0912_osdmp.md
 │   │   ├── A_DATA_MANAGEMENT.md
 │   │   ├── A_FAIR_CHECKLIST.md
 │   │   ├── A_GITHUB-ACTIONS-GUIDE.md
@@ -130,7 +131,6 @@ psivicom.github.io/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
 │   ├── A2_README.md
-│   ├── A_0912_osdmp.md
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── GITHUB-ACTIONS-GUIDE.md
