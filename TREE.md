@@ -13,8 +13,7 @@ psivicom.github.io/
 │   ├── LICENSE-EUPL-1.2.md
 │   ├── README.md
 │   ├── deprecated_APACHE-2.0.txt
-│   ├── deprecated_LICENSE-CC-BY-4.0.txt
-│   └── deprecated_licenseREADME.md
+│   └── deprecated_LICENSE-CC-BY-4.0.txt
 ├── _techreports/
 │   └── YYYY-MM-DD-templatezenodo.md
 ├── archive/
@@ -69,7 +68,8 @@ psivicom.github.io/
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
 │   │   ├── deprecated_LICENSE
-│   │   └── deprecated_NOTICE
+│   │   ├── deprecated_NOTICE
+│   │   └── deprecated_licenseREADME.md
 │   └── README.md
 ├── assets/
 │   ├── css/
