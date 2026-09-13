@@ -3,7 +3,6 @@ psivicom.github.io/
 ├── .github/
 │   └── workflows/
 │       ├── README.md
-│       ├── deprecated_mesh.yml
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── mesh.yml
