@@ -50,7 +50,8 @@ psivicom.github.io/
 │   │   ├── A_TRUST_AND_PROVENANCE.md
 │   │   ├── A_codemeta.json
 │   │   ├── A_config.yml
-│   │   └── A_index.html
+│   │   ├── A_index.html
+│   │   └── AdataREADME.md
 │   ├── 2026-09-12/
 │   │   ├── A2_README.md
 │   │   ├── A2_codemeta.json
@@ -87,7 +88,6 @@ psivicom.github.io/
 │   │   ├── data.csv
 │   │   ├── datapackage.json
 │   │   └── metadata.json
-│   ├── A_README.md
 │   └── README.md
 ├── dist/
 │   └── README.md
