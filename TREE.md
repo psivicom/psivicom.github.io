@@ -36,6 +36,7 @@ psivicom.github.io/
 │   ├── 2026-09-10/
 │   │   └── A_update-tree.yml
 │   ├── deprecated/
+│   │   ├── Deprecated_AI-MORAL-Evolution.md
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
@@ -152,7 +153,6 @@ psivicom.github.io/
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
-├── Deprecated_AI-MORAL-Evolution.md
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
