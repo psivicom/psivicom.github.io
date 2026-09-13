@@ -39,6 +39,7 @@ psivicom.github.io/
 │   ├── 2026-09-10/
 │   │   └── A_update-tree.yml
 │   ├── 2026-09-11/
+│   │   ├── A_CITATION.cff
 │   │   ├── A_CONTRIBUTING.md
 │   │   ├── A_NOTICE
 │   │   ├── A_README.md
@@ -148,7 +149,6 @@ psivicom.github.io/
 ├── A_0912_index.html
 ├── A_AUTHORS.md
 ├── A_CHANGELOG.md
-├── A_CITATION.cff
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
