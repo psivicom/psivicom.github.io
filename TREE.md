@@ -52,6 +52,7 @@ psivicom.github.io/
 │   │   ├── A_config.yml
 │   │   └── A_index.html
 │   ├── 2026-09-12/
+│   │   ├── A3_CITATION.cff
 │   │   ├── A_.zenodo.json
 │   │   ├── A_0912B_index.html
 │   │   └── A_0912_index.html
@@ -147,7 +148,6 @@ psivicom.github.io/
 ├── A2_README.md
 ├── A2_codemeta.json
 ├── A3_.zenodo.jason
-├── A3_CITATION.cff
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── CHANGELOG.md
