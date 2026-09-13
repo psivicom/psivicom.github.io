@@ -64,14 +64,13 @@ psivicom.github.io/
 │   ├── 2026-09-12/
 │   │   ├── A2_README.md
 │   │   ├── A2_codemeta.json
+│   │   ├── A3_.zenodo.json
 │   │   ├── A3_CITATION.cff
 │   │   ├── A_.zenodo.json
 │   │   ├── A_0912B_index.html
 │   │   ├── A_0912_index.html
 │   │   ├── A_main.go
 │   │   └── A_oldTREE_update_tree.py
-│   ├── 2026-09-13/
-│   │   └── A3_.zenodo.jason
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
