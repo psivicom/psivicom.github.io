@@ -51,6 +51,8 @@ psivicom.github.io/
 │   │   ├── A_codemeta.json
 │   │   ├── A_config.yml
 │   │   └── A_index.html
+│   ├── 2026-09-12/
+│   │   └── A_0912_index.html
 │   ├── deprecated/
 │   │   ├── Deprecated_AI-MORAL-Evolution.md
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -148,7 +150,6 @@ psivicom.github.io/
 ├── AUTHORS.md
 ├── A_.zenodo.json
 ├── A_0912B_index.html
-├── A_0912_index.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
