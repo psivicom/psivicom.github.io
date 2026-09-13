@@ -61,10 +61,10 @@ psivicom.github.io/
 │   ├── 2026-09-13/
 │   │   └── A3_.zenodo.jason
 │   ├── deprecated/
-│   │   ├── Deprecated_AI-MORAL-Evolution.md
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
+│   │   ├── deprecated_AI-MORAL-Evolution.md
 │   │   ├── deprecated_APACHE-2.0.txt
 │   │   ├── deprecated_LICENSE
 │   │   ├── deprecated_LICENSE-CC-BY-4.0.txt
