@@ -39,6 +39,7 @@ psivicom.github.io/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
+│   │   ├── deprecated_LICENSE
 │   │   └── deprecated_NOTICE
 │   └── README.md
 ├── assets/
@@ -164,7 +165,6 @@ psivicom.github.io/
 ├── TRUST_AND_PROVENANCE
 ├── _config.yml
 ├── codemeta.json
-├── deprecated_LICENSE
 ├── index.html
 ├── paste.md
 ├── robots.txt
