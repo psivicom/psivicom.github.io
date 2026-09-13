@@ -108,7 +108,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-13T22:33:43.496Z | Hash: 76c3694b85b4dfbe40dd6809920a0d7f2de24cb7376d1bb09d7911e5c8ed66e7 -->
+<!-- Last updated: 2026-09-13T22:34:30.740Z | Hash: b53399f14026ff392e0b8daf66de759d1135b93facc1463804d88bc4d2606fb1 -->
 
 ```
 psivicom.github.io/
@@ -118,6 +118,7 @@ psivicom.github.io/
 │       ├── deprecated_mesh.yml
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
+│       ├── mesh.yml
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── LICENSES/
