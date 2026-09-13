@@ -57,7 +57,8 @@ psivicom.github.io/
 │   │   ├── A3_CITATION.cff
 │   │   ├── A_.zenodo.json
 │   │   ├── A_0912B_index.html
-│   │   └── A_0912_index.html
+│   │   ├── A_0912_index.html
+│   │   └── A_main.go
 │   ├── 2026-09-13/
 │   │   └── A3_.zenodo.jason
 │   ├── deprecated/
@@ -143,7 +144,6 @@ psivicom.github.io/
 ├── scripts/
 │   ├── archive/
 │   │   └── 2026-09-12/
-│   │       ├── A_main.go
 │   │       └── A_oldTREE_update_tree.py
 │   ├── update-tree/
 │   │   └── main.go
