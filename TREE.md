@@ -56,6 +56,8 @@ psivicom.github.io/
 │   │   ├── A_.zenodo.json
 │   │   ├── A_0912B_index.html
 │   │   └── A_0912_index.html
+│   ├── 2026-09-13/
+│   │   └── A3_.zenodo.jason
 │   ├── deprecated/
 │   │   ├── Deprecated_AI-MORAL-Evolution.md
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -147,7 +149,6 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── A2_README.md
 ├── A2_codemeta.json
-├── A3_.zenodo.jason
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── CHANGELOG.md
