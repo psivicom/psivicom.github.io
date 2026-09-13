@@ -33,12 +33,12 @@ psivicom.github.io/
 │   │   ├── A_CONTRIBUTING.md
 │   │   ├── A_POLICY.md
 │   │   └── README.md
+│   ├── 2026-09-10/
+│   │   └── A_update-tree.yml
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   └── deprecated-teamai.md
-│   ├── workflows/
-│   │   └── A_update-tree.yml
 │   └── README.md
 ├── assets/
 │   ├── css/
