@@ -33,6 +33,7 @@ psivicom.github.io/
 │   │   ├── A_POLICY.md
 │   │   └── README.md
 │   ├── 2026-09-08/
+│   │   ├── A_GITHUB-ACTIONS-GUIDE.md
 │   │   ├── A_INTEROPERABILITY.md
 │   │   ├── A_Installation-Guide-Repository-Tree.md
 │   │   ├── A_LICENSE_COMPLIANCE.md
@@ -130,7 +131,6 @@ psivicom.github.io/
 │   ├── A_0912_osdmp.md
 │   ├── A_DATA_MANAGEMENT.md
 │   ├── A_FAIR_CHECKLIST.md
-│   ├── A_GITHUB-ACTIONS-GUIDE.md
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── GITHUB-ACTIONS-GUIDE.md
