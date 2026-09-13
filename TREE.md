@@ -52,6 +52,7 @@ psivicom.github.io/
 │   │   ├── A_config.yml
 │   │   └── A_index.html
 │   ├── 2026-09-12/
+│   │   ├── A_0912B_index.html
 │   │   └── A_0912_index.html
 │   ├── deprecated/
 │   │   ├── Deprecated_AI-MORAL-Evolution.md
@@ -149,7 +150,6 @@ psivicom.github.io/
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_.zenodo.json
-├── A_0912B_index.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
