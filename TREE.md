@@ -30,9 +30,9 @@ psivicom.github.io/
 │   │   ├── A3_POLICY.md
 │   │   ├── A5_CONTRIBUTING.md
 │   │   ├── A5_POLICY.md
-│   │   └── A_CONTRIBUTING.md
+│   │   ├── A_CONTRIBUTING.md
+│   │   └── A_POLICY.md
 │   ├── A2026-09-07T0000Z/
-│   │   ├── A_POLICY.md
 │   │   └── README.md
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
