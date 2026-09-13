@@ -20,9 +20,8 @@ psivicom.github.io/
 │   └── YYYY-MM-DD-templatezenodo.md
 ├── archive/
 │   ├── 2026-08-29/
+│   │   ├── A2026-08-29T2240Z_README.md
 │   │   └── Z.md
-│   ├── A2026-08-29T2240Z/
-│   │   └── A2026-08-29T2240Z_README.md
 │   ├── A2026-08-30T2240Z/
 │   │   ├── A2026-08-30T2240Z_README2.md
 │   │   └── Z.md
