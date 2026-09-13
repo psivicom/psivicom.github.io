@@ -25,8 +25,9 @@ psivicom.github.io/
 │   │   └── A2026-08-30T2240Z_README2.md
 │   ├── 2026-09-05/
 │   │   └── A2026-09-05T0000Z_A_index.html
+│   ├── 2026-09-07/
+│   │   └── A_CONTRIBUTING.md
 │   ├── A2026-09-07T0000Z/
-│   │   ├──  A_CONTRIBUTING.md
 │   │   ├── A2_CONTRIBUTING.md
 │   │   ├── A3_POLICY.md
 │   │   ├── A5_CONTRIBUTING.md
