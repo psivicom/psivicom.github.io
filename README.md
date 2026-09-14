@@ -110,7 +110,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-14T07:22:27.944Z | Hash: 9ddcede5330122351973517eb82c2fa9cb6fc9202925dd2a15ed83a1cf717a10 -->
+<!-- Last updated: 2026-09-14T07:26:04.711Z | Hash: 2dba2b143e8a10b648efebc4443fd71c70b533322dc8f94ecf83fb5d7abd1480 -->
 
 ```
 psivicom.github.io/
@@ -119,6 +119,7 @@ psivicom.github.io/
 │       ├── README.md
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
+│       ├── lidar-agent.yml
 │       ├── mesh.yml
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
