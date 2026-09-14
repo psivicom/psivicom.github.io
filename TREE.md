@@ -6,6 +6,7 @@ psivicom.github.io/
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── mesh.yml
+│       ├── setup.yml
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── LICENSES/
