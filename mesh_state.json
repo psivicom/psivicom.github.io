@@ -16,6 +16,11 @@
       "id": "lidar",
       "pheromone": "HARMONY",
       "timestamp": "2026-09-14T07:44:54.813Z"
+    },
+    {
+      "id": "forage",
+      "pheromone": "HARMONY",
+      "timestamp": "2026-09-14T08:34:40.282Z"
     }
   ]
 }
