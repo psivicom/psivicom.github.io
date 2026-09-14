@@ -1,11 +1,16 @@
 {
   "mesh_id": "PSIVI-SEED-001",
+  "status": "NOMINAL",
   "nodes": [
     {
       "id": "qwen",
       "pheromone": "HARMONY",
-      "timestamp": "2026-09-14T05:19:38.332Z"
+      "timestamp": "2026-09-14T06:01:26.315Z"
+    },
+    {
+      "id": "pollinator",
+      "pheromone": "HARMONY",
+      "timestamp": "2026-09-14T06:01:27.358Z"
     }
-  ],
-  "status": "NOMINAL"
+  ]
 }
