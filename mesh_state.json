@@ -11,6 +11,11 @@
       "id": "pollinator",
       "pheromone": "HARMONY",
       "timestamp": "2026-09-14T06:01:27.358Z"
+    },
+    {
+      "id": "lidar",
+      "pheromone": "HARMONY",
+      "timestamp": "2026-09-14T07:44:54.813Z"
     }
   ]
 }
