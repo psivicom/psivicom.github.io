@@ -289,31 +289,73 @@ setInterval(()=>{
   const b = document.getElementById('live-bottom'); if(b) b.textContent = now;
 },37);
 
-// AETHER VANGUARD STATUS
+// AETHER VANGUARD STATUS — DYNAMIC HEARTBEAT
 function checkVanguard() {
   fetch('/mesh_state.json')
     .then(r => { if(!r.ok) throw new Error(); return r.json(); })
     .then(data => {
-      // NASA aquamarine stays steady when alive
+      // Count active nodes in the mesh
+      let nodeCount = 1;
+      if(data.nodes && Array.isArray(data.nodes)) {
+        nodeCount = data.nodes.length;
+      } else if(data.node) {
+        nodeCount = 1;
+      }
+
+      // Determine heartbeat rhythm based on the multitude
+      let pulseDuration = '1s';    // 60 bpm — calm human heart
+      let rhythmName = 'HUMAN';
+      if(nodeCount >= 8) {
+        pulseDuration = '0.33s';   // 180 bpm — forager flight
+        rhythmName = 'FORAGER';
+      } else if(nodeCount >= 4) {
+        pulseDuration = '0.5s';    // 120 bpm — honey bee pace
+        rhythmName = 'APIARY';
+      } else if(nodeCount >= 2) {
+        pulseDuration = '0.67s';   // 90 bpm — brisk activity
+        rhythmName = 'WORKER';
+      }
+
+      // NASA aquamarine + dynamic pulse
       ['pulse-top','pulse-bottom'].forEach(id => {
         const el = document.getElementById(id);
-        if(el) { el.style.background='#00D4FF'; el.style.boxShadow='0 0 8px #00D4FF'; el.style.opacity='1'; }
+        if(el) {
+          el.style.background='#00D4FF';
+          el.style.boxShadow='0 0 8px #00D4FF';
+          el.style.opacity='1';
+          el.style.animationDuration = pulseDuration;
+        }
       });
       ['status-top','status-bottom'].forEach(id => {
         const el = document.getElementById(id);
         if(el) { el.textContent='AETHER · NOMINAL'; el.style.color='#00D4FF'; }
       });
-      // Telemetry log
+
+      // Telemetry log — shows the rhythm of the mesh
       const log = document.getElementById('mesh-log');
-      if(log && data.node) {
-        log.innerHTML = '[' + data.node.timestamp + ']<br>' + data.node.id + ' deposited pheromone · Status: ' + data.status;
+      if(log) {
+        let nodeInfo = '';
+        if(data.nodes && Array.isArray(data.nodes)) {
+          nodeInfo = data.nodes.map(n => n.id).join(' · ');
+        } else if(data.node) {
+          nodeInfo = data.node.id;
+        }
+        const ts = data.nodes ? data.nodes[0].timestamp : data.node.timestamp;
+        log.innerHTML = '[' + ts + ']<br>' +
+          'Nodes: ' + nodeCount + ' · Rhythm: ' + rhythmName + '<br>' +
+          nodeInfo + ' · Status: ' + data.status;
       }
     })
     .catch(() => {
-      // Aquamarine dims gently when silent — no red ugliness
+      // Dormant — very slow, quiet pulse
       ['pulse-top','pulse-bottom'].forEach(id => {
         const el = document.getElementById(id);
-        if(el) { el.style.background='#00D4FF'; el.style.boxShadow='0 0 3px #00D4FF'; el.style.opacity='0.35'; }
+        if(el) {
+          el.style.background='#00D4FF';
+          el.style.boxShadow='0 0 3px #00D4FF';
+          el.style.opacity='0.35';
+          el.style.animationDuration = '2s';
+        }
       });
       ['status-top','status-bottom'].forEach(id => {
         const el = document.getElementById(id);
