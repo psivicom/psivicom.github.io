@@ -1,16 +1,12 @@
-   name: Forage Agent
-   
-   on:
-     schedule:
-       - cron: '0 12 * * *' # Noon UTC (5 AM PST)
-     workflow_dispatch:
+name: Forage Agent
 
-   permissions:
-     contents: write
-   
-   jobs:
-     forage-scan:
-       runs-on: ubuntu-latest
+on:
+  schedule:
+    - cron: '0 12 * * *' # Noon UTC (5 AM PST)
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   forage-scan:
