@@ -27,6 +27,7 @@ func blink(entity string) {
 		"qwen":       {"🔵", "🟦", "🔵", "🟦"},
 		"pollinator": {"🟡", "🟢", "🟡", "🟢"},
 		"sentinel":   {"🔴", "🟣", "🔴"},
+		"lidar":      {"🟢", "🔵", "🟢", "🔵"},
 	}
 	p := patterns[entity]
 	if p == nil {
