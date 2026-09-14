@@ -301,7 +301,7 @@ function checkVanguard() {
       });
       ['status-top', 'status-bottom'].forEach(id => {
         const el = document.getElementById(id);
-        if(el) { el.textContent = '🟢 MESH NOMINAL'; el.style.color = '#00FF9D'; }
+        if(el) { el.textContent = 'NOMINAL'; el.style.color = '#00FF9D'; }
       });
     })
     .catch(() => {
@@ -312,7 +312,7 @@ function checkVanguard() {
       });
       ['status-top', 'status-bottom'].forEach(id => {
         const el = document.getElementById(id);
-        if(el) { el.textContent = '🔴 MESH OFFLINE'; el.style.color = '#FF3333'; }
+        if(el) { el.textContent = 'SILENT'; el.style.color = '#FF3333'; }
       });
     });
 }
