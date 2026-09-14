@@ -21,7 +21,9 @@ jobs:
       - name: Vanguard acts locally
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: go run mesh.go flow qwen
+        run: |
+          go run mesh.go flow qwen
+          go run mesh.go flow pollinator
 
       - name: Commit mutation to the realm
         run: |
