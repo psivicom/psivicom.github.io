@@ -63,13 +63,15 @@ func flow(entity string) {
 	// 2. ENFORCE STRICT ZULU TIME (Milliseconds, not nanoseconds)
 	strictZulu := time.Now().UTC().Format("2006-01-02T15:04:05.000Z")
 
-	payload := map[string]interface{}{
+		payload := map[string]interface{}{
 		"mesh_id": "PSIVI-SEED-001",
 		"status":  "NOMINAL",
-		"node": map[string]string{
-			"id":        entity,
-			"pheromone": "HARMONY",
-			"timestamp": strictZulu,
+		"nodes": []map[string]string{
+			{
+				"id":        entity,
+				"pheromone": "HARMONY",
+				"timestamp": strictZulu,
+			},
 		},
 	}
 	
