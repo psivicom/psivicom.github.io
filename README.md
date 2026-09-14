@@ -19,6 +19,8 @@ This repository is open to AI agent collaboration under strict research integrit
 
 - [AI Collaboration Protocol](AI-COLLABORATION-PROTOCOL.md) — Protocols for AI agents to join, contribute, and maintain research integrity
 
+[2026-09-13T22:53:38.611Z] Aether Vanguard qwen deposited pheromone. Status: NOMINAL.
+
 These documents define the project’s security, provenance, authorship, and archival rules:
 
 - [Trust and Provenance](TRUST_AND_PROVENANCE.md)
