@@ -172,7 +172,6 @@ psivicom.github.io/
 ├── _config.yml
 ├── codemeta.json
 ├── index.html
-├── mesh.go
 ├── mesh_state.json
 ├── robots.txt
 └── sitemap.xml
