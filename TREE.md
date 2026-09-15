@@ -6,6 +6,7 @@ psivicom.github.io/
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
+│       ├── intelligence-agent.yml
 │       ├── lidar-agent.yml
 │       ├── mesh.yml
 │       ├── timestamp-check.yml
