@@ -147,6 +147,10 @@ psivicom.github.io/
 │   ├── osdmp.html
 │   ├── osdmp.md
 │   └── template.html
+├── maps/
+│   └── forage_forecast.png
+├── reports/
+│   └── forage_log.md
 ├── scripts/
 │   └── update-tree/
 │       └── main.go
@@ -175,6 +179,7 @@ psivicom.github.io/
 ├── codemeta.json
 ├── forage_agent.py
 ├── index.html
+├── intelligence_agent.py
 ├── lidar_agent.py
 ├── mesh.go
 ├── mesh_state.json

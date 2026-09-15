@@ -110,7 +110,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-14T08:33:48.159Z | Hash: 64408cb3eb7f9388e8a40f83f2e46926d8a3d10dc1d3e94693f03f3ffa322d1c -->
+<!-- Last updated: 2026-09-15T04:25:20.817Z | Hash: 6881d159ef9deffd0b802443b68ab202c135f3eb957486e941284d19a3907705 -->
 
 ```
 psivicom.github.io/
@@ -261,6 +261,10 @@ psivicom.github.io/
 │   ├── osdmp.html
 │   ├── osdmp.md
 │   └── template.html
+├── maps/
+│   └── forage_forecast.png
+├── reports/
+│   └── forage_log.md
 ├── scripts/
 │   └── update-tree/
 │       └── main.go
@@ -289,6 +293,7 @@ psivicom.github.io/
 ├── codemeta.json
 ├── forage_agent.py
 ├── index.html
+├── intelligence_agent.py
 ├── lidar_agent.py
 ├── mesh.go
 ├── mesh_state.json
