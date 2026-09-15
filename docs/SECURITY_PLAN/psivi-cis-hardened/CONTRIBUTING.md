@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # Contributing — AI-Invited Open Science for International Agencies
 
 Welcome! This site is built for NASA Open Science FAIR + CSA / ESA / JAXA.

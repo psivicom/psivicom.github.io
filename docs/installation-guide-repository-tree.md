@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # # Installation Guide & Repository Tree — Excellence Edition
 
 **Architect & Principal Investigator:** Louis-Philippe Audette  

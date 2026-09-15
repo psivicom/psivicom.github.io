@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+// Licensed under EUPL 1.2 | https://psivi.com
+
 // cmd/render-readme/main.go
 package main
 

@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # fonts and icons in this website have to be secure and fast to load
 
 The "Gold Standard" Architecture:

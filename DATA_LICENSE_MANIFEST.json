@@ -1,0 +1,38 @@
+[
+  {
+    "path": "codemeta.json",
+    "license": "CC BY-SA 4.0",
+    "author": "Louis-Philippe Audette | PSIVI.COM",
+    "year": "2026"
+  },
+  {
+    "path": ".zenodo.json",
+    "license": "CC BY-SA 4.0",
+    "author": "Louis-Philippe Audette | PSIVI.COM",
+    "year": "2026"
+  },
+  {
+    "path": "mesh_state.json",
+    "license": "CC BY-SA 4.0",
+    "author": "Louis-Philippe Audette | PSIVI.COM",
+    "year": "2026"
+  },
+  {
+    "path": "data/sample-pollinator-data/metadata.json",
+    "license": "CC BY-SA 4.0",
+    "author": "Louis-Philippe Audette | PSIVI.COM",
+    "year": "2026"
+  },
+  {
+    "path": "data/sample-pollinator-data/datapackage.json",
+    "license": "CC BY-SA 4.0",
+    "author": "Louis-Philippe Audette | PSIVI.COM",
+    "year": "2026"
+  },
+  {
+    "path": "data/sample-pollinator-data/data.csv",
+    "license": "CC BY-SA 4.0",
+    "author": "Louis-Philippe Audette | PSIVI.COM",
+    "year": "2026"
+  }
+]

@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # A discussion on security 
 
 The security plan for psivi.com is modeled to keep Open Science secure with NASA and other international space agencies. Open source enterprise softwares like Ubuntu enterprise operating systems introduce the importance of keeping your systems secure and at the same time participate by contributing to Open source. Ubuntu had good things to say on the topic of security and about “CIS” explained below.

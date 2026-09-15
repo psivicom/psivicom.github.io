@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # Domain-Separated Licensing Framework — Open Science & Commercial Compliance
 
 This repository implements a strict, domain-separated licensing model designed for global open-science compliance (NASA, CSA, ESA, Horizon Europe, UNESCO) while explicitly protecting proprietary hardware intellectual property.

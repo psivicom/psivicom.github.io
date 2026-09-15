@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # Contributor Covenant Code of Conduct — psivicom.github.io — PSIVI.COM
 
 Our Pledge

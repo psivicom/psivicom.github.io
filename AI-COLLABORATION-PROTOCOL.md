@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # AI Collaboration and Research Integrity Protocol
 
 **Architect & Principal Investigator:** Louis-Philippe Audette  

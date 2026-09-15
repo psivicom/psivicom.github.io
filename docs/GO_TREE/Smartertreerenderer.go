@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+// Licensed under EUPL 1.2 | https://psivi.com
+
 
 Here’s a smarter tree renderer, with directories first and nicer output:
 

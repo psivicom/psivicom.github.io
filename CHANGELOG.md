@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # CHANGELOG.md — Excellence Edition 
 
 All notable changes to this repository will be documented in this file.

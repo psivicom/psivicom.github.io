@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # PSIVI.COM — Open Science Hub — EXCELLENCE Edition
 **Louis-Philippe Audette — Open Science Researcher · Pollinator Ecology · Earth Observation**
 

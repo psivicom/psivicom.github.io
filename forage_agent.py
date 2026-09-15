@@ -1,3 +1,4 @@
+# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
 import requests
 import matplotlib
 matplotlib.use('Agg')

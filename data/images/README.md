@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # Images / Photos / Videos / Figures — CC-BY-4.0 — Excellence
 
 **License:** All media in this folder is **CC-BY-4.0** — see ../../LICENSES/CC-BY-4.0.txt — SPDX: CC-BY-4.0

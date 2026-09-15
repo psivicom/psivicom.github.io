@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # mistral-AI assist WEBSITE PLAN
  
  renamed duck.ai_2026-09-06_19-05-46.txt

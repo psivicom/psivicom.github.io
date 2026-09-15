@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # PSIVI.COM — CIS Hardening Pack — README
 
 This pack adds CIS IG1 hardening to your existing Excellence Edition site without changing your open licenses.

@@ -1,3 +1,4 @@
+# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
 import os
 import re
 import json

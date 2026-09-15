@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
 # generate-manifest.sh — FAIR + CIS data integrity
 # Usage: ./scripts/generate-manifest.sh
 set -euo pipefail

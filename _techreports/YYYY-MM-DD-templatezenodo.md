@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 ---
 status: live
 pdf_link: https://doi.org/10.XXXX/zenodo.XXXXXXX <br> OR https://zenodo.org/records/XXXXXXX#.Y2odTuzP30o

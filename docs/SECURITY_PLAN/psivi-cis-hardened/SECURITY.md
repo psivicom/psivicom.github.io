@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # Security Policy — PSIVI.COM Open Science Hub
 
 **Owner:** Louis-Philippe Audette — Goldstream, Langford, BC

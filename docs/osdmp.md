@@ -1,3 +1,6 @@
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+-->
 # Open Science Data Management Plan (OSDMP) — Excellence Edition
 
 **Author:** Louis-Philippe Audette — https://psivi.com — https://psivicom.github.io  
