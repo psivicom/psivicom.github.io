@@ -151,6 +151,7 @@ psivicom.github.io/
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
+│   ├── ai_audit.md
 │   └── forage_log.md
 ├── scripts/
 │   └── update-tree/
@@ -181,6 +182,7 @@ psivicom.github.io/
 ├── forage_agent.py
 ├── index.html
 ├── intelligence_agent.py
+├── license_agent.py
 ├── lidar_agent.py
 ├── mesh.go
 ├── mesh_state.json
