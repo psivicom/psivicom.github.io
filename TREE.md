@@ -152,6 +152,7 @@ psivicom.github.io/
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
+│   ├── 2026-09-16_memory.json
 │   ├── ai_audit.md
 │   ├── forage_log.md
 │   └── license_audit.md
@@ -192,5 +193,6 @@ psivicom.github.io/
 ├── mesh.go
 ├── mesh_state.json
 ├── robots.txt
-└── sitemap.xml
+├── sitemap.xml
+└── vector_mesh.py
 ```
