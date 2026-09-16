@@ -204,5 +204,6 @@ psivicom.github.io/
 ├── mesh_state.json
 ├── robots.txt
 ├── sitemap.xml
-└── synthesizer_agent.py
+├── synthesizer_agent.py
+└── vector_mesh.py
 ```
