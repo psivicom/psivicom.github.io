@@ -15,7 +15,8 @@ psivicom.github.io/
 │       ├── mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
-│       └── update-tree.yml
+│       ├── update-tree.yml
+│       └── volunteer-mesh.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
