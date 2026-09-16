@@ -113,7 +113,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-16T18:10:35.966Z | Hash: 5a46a87243319c47059887e492d5db6046801fe7606099559fffa63a8a4cc3d7 -->
+<!-- Last updated: 2026-09-16T22:31:03.049Z | Hash: 26efd4e5a7235c50595c787dca793c3134d717f78204c367891c3c64506183bb -->
 
 ```
 psivicom.github.io/
@@ -277,17 +277,19 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
-│   │   └── a16330272f3f.psvc
+│   │   └── state_0_6a236f59a9aa.psvc
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
 │   │   ├── 32c50e6b93c2.json
 │   │   └── 32c50e6b93c2.npy
 │   ├── 2026-09-16_memory.json
+│   ├── 2026-09-16_synthesizer_memory.json
 │   ├── ai_audit.md
 │   ├── forage_log.md
 │   ├── governor_log.md
-│   └── license_audit.md
+│   ├── license_audit.md
+│   └── synthesis_2026-09-16.md
 ├── scripts/
 │   └── update-tree/
 │       └── main.go
@@ -333,6 +335,7 @@ psivicom.github.io/
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
+├── literature_agent.py
 ├── mesh.go
 ├── mesh_governor.py
 ├── mesh_router.py
