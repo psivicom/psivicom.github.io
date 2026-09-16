@@ -28,12 +28,12 @@ jobs:
           pip install requests matplotlib
           python forage_agent.py
 
-      - name: Commit Map and Report
+      - name: Commit Map, Report, and Vector Memory
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Forage Agent"
           git config user.email "forage-agent@users.noreply.github.com"
-          git add maps/ reports/ mesh_state.json
-          git diff --staged --quiet || git commit -m "forage: generated forecast map and report"
+          git add maps/ reports/ mesh_state.json vector_mesh.py
+          git diff --staged --quiet || git commit -m "forage: generated forecast map, report, and vector memory"
           git push
