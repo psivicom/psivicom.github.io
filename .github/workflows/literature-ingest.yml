@@ -1,0 +1,34 @@
+name: Literature Ingestion
+
+on:
+  schedule:
+    - cron: '0 2 * * 1' # Every Monday at 7 PM PST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Literature Agent
+        run: |
+          pip install numpy requests
+          python literature_agent.py
+
+      - name: Commit literature vectors
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "PSIVI Literature Agent"
+          git config user.email "literature@psivi.com"
+          git add reports/pico_containers/
+          git diff --staged --quiet || git commit -m "literature: ingested scientific context vectors"
+          git push
