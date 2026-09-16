@@ -220,6 +220,7 @@ psivicom.github.io/
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
+├── literature_agent.py
 ├── mesh.go
 ├── mesh_governor.py
 ├── mesh_router.py
