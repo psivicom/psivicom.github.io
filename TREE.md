@@ -9,6 +9,7 @@ psivicom.github.io/
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
 │       ├── lidar-agent.yml
+│       ├── mesh-status.yml
 │       ├── mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
