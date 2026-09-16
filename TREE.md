@@ -1,6 +1,3 @@
-<!--
-  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
--->
 ```
 psivicom.github.io/
 ├── .github/
@@ -156,7 +153,8 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── ai_audit.md
-│   └── forage_log.md
+│   ├── forage_log.md
+│   └── license_audit.md
 ├── scripts/
 │   └── update-tree/
 │       └── main.go
@@ -171,6 +169,8 @@ psivicom.github.io/
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
+├── DATA_LICENSE_MANIFEST.json
+├── DISCLAIMER.md
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
