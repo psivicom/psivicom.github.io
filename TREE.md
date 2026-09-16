@@ -193,6 +193,7 @@ psivicom.github.io/
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
+├── VOLUNTEER_PROTOCOL.md
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json
