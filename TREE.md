@@ -10,6 +10,7 @@ psivicom.github.io/
 │       ├── license-agent.yml
 │       ├── lidar-agent.yml
 │       ├── mesh.yml
+│       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
 │       └── update-tree.yml
 ├── LICENSES/
