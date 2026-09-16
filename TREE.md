@@ -13,6 +13,7 @@ psivicom.github.io/
 │       ├── mesh-governor.yml
 │       ├── mesh-status.yml
 │       ├── mesh.yml
+│       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml

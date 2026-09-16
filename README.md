@@ -113,7 +113,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-16T08:00:07.111Z | Hash: 39e7e8b43b140a7aca953ae4b2f0af52e6e9b0668c893b8a412321d4332d224a -->
+<!-- Last updated: 2026-09-16T08:01:34.708Z | Hash: 2ceca6101ed5ca13dea21d98eeb551b8d0bb18bfb3726a83e280ee8252a47846 -->
 
 ```
 psivicom.github.io/
@@ -130,6 +130,7 @@ psivicom.github.io/
 │       ├── mesh-governor.yml
 │       ├── mesh-status.yml
 │       ├── mesh.yml
+│       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
