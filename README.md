@@ -113,7 +113,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-16T07:31:18.447Z | Hash: cb9ba016b0a2b55ddc427e8c9fe39b4fa0e3f5fc8ae3edeaa0bc7048c9f3fa63 -->
+<!-- Last updated: 2026-09-16T07:32:52.630Z | Hash: 1ae5c8528d1554c2d57608b8a9855796370a5997e02bd0e728c84bdcf17e372a -->
 
 ```
 psivicom.github.io/
@@ -330,6 +330,7 @@ psivicom.github.io/
 ├── sitemap.xml
 ├── synthesizer_agent.py
 ├── vector_mesh.py
+├── volunteer_worker.py
 └── vram_mesh.py
 ```
 <!-- AUTO_TREE_END -->
