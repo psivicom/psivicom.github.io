@@ -10,6 +10,7 @@ psivicom.github.io/
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
 │       ├── lidar-agent.yml
+│       ├── literature-ingest.yml
 │       ├── mesh-governor.yml
 │       ├── mesh-status.yml
 │       ├── mesh.yml
