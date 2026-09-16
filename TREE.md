@@ -158,9 +158,17 @@ psivicom.github.io/
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
+│   ├── pico_containers/
+│   │   └── a16330272f3f.psvc
+│   ├── vector_memory/
+│   │   ├── 2e034fc1b1be.json
+│   │   ├── 2e034fc1b1be.npy
+│   │   ├── 32c50e6b93c2.json
+│   │   └── 32c50e6b93c2.npy
 │   ├── 2026-09-16_memory.json
 │   ├── ai_audit.md
 │   ├── forage_log.md
+│   ├── governor_log.md
 │   └── license_audit.md
 ├── scripts/
 │   └── update-tree/
@@ -200,6 +208,7 @@ psivicom.github.io/
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json
+├── consolidator_agent.py
 ├── critic_agent.py
 ├── forage_agent.py
 ├── index.html
