@@ -171,6 +171,7 @@ psivicom.github.io/
 ├── AUTHORS.md
 ├── A_forage_agent.py
 ├── A_intelligence_agent.py
+├── A_vector_mesh.py
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -203,6 +204,5 @@ psivicom.github.io/
 ├── mesh_state.json
 ├── robots.txt
 ├── sitemap.xml
-├── synthesizer_agent.py
-└── vector_mesh.py
+└── synthesizer_agent.py
 ```
