@@ -186,6 +186,7 @@ psivicom.github.io/
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
 ├── _config.yml
+├── agent_config.yaml
 ├── codemeta.json
 ├── forage_agent.py
 ├── index.html
