@@ -165,6 +165,7 @@ psivicom.github.io/
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_forage_agent.py
+├── A_intelligence_agent.py
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -187,7 +188,6 @@ psivicom.github.io/
 ├── codemeta.json
 ├── forage_agent.py
 ├── index.html
-├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
 ├── mesh.go
