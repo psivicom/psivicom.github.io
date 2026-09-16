@@ -113,7 +113,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-16T07:01:47.010Z | Hash: 3b059ae6c0c8319f91b6ae4390b6d8c519017505b0ca897ee37440acc91aad58 -->
+<!-- Last updated: 2026-09-16T07:04:20.173Z | Hash: 4d5540f72e1133765225f0451a28574b02848ed402029a044ac86b82696eb59d -->
 
 ```
 psivicom.github.io/
@@ -127,6 +127,7 @@ psivicom.github.io/
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
 │       ├── lidar-agent.yml
+│       ├── mesh-governor.yml
 │       ├── mesh-status.yml
 │       ├── mesh.yml
 │       ├── synthesizer-agent.yml
