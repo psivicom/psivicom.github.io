@@ -1,0 +1,48 @@
+mesh:
+  name: "PSIVI AETHER"
+  version: "2.0"
+  repo: "psivicom/psivicom.github.io"
+
+agents:
+  forage:
+    role: "observer"
+    schedule: "0 12 * * *"
+    tools: ["weather", "map", "memory_write"]
+    precision: "float16"
+
+  lidar:
+    role: "surveyor"
+    schedule: "0 8 * * *"
+    tools: ["opentopography", "elevation", "memory_write"]
+    precision: "float16"
+
+  intelligence:
+    role: "auditor"
+    schedule: "0 */12 * * *"
+    tools: ["read_mesh", "stamp", "report"]
+    precision: "float32"
+
+  synthesizer:
+    role: "scientist"
+    schedule: "0 18 * * *"
+    tools: ["read_mesh", "query_external", "synthesize", "update_site"]
+    precision: "float32"
+
+  vanguard:
+    role: "guardian"
+    schedule: "0 */6 * * *"
+    tools: ["heartbeat", "ledger"]
+    precision: "float32"
+
+routing:
+  strategy: "semantic"
+  fallback: "broadcast"
+
+memory:
+  folder: "reports"
+  format: "json"
+  retention_days: 90
+
+consensus:
+  required_agents: 3
+  agreement_threshold: 0.7
