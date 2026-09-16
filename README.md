@@ -113,13 +113,14 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-16T06:07:54.968Z | Hash: 178528ab9c5b59bfd4423a33f282145a79cdb4062c103f3bdcb10d5f890de959 -->
+<!-- Last updated: 2026-09-16T06:09:34.172Z | Hash: 63b9e9722f1b6e9e7dcc2bca1fffbba65f5e27d51047ebc559ee6b6dd4d75df1 -->
 
 ```
 psivicom.github.io/
 ├── .github/
 │   └── workflows/
 │       ├── README.md
+│       ├── critic-agent.yml
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml

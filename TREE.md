@@ -3,6 +3,7 @@ psivicom.github.io/
 ├── .github/
 │   └── workflows/
 │       ├── README.md
+│       ├── critic-agent.yml
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
