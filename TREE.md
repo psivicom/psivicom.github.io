@@ -195,6 +195,7 @@ psivicom.github.io/
 ├── agent_config.yaml
 ├── codemeta.json
 ├── critic_agent.py
+├── forage_agent.py
 ├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
