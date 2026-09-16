@@ -163,6 +163,7 @@ psivicom.github.io/
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
+├── A2_forage_agent.py
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_forage_agent.py
@@ -188,7 +189,6 @@ psivicom.github.io/
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json
-├── forage_agent.py
 ├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
