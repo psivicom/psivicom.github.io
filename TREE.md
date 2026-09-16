@@ -167,6 +167,7 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── A2_forage_agent.py
 ├── A4_forage_agent.py
+├── A5_forage_agent.py
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_forage_agent.py
@@ -194,7 +195,6 @@ psivicom.github.io/
 ├── agent_config.yaml
 ├── codemeta.json
 ├── critic_agent.py
-├── forage_agent.py
 ├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
