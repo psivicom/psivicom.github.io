@@ -1,0 +1,35 @@
+name: Mesh Status
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # 11 PM PST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Mesh Router
+        run: |
+          pip install pyyaml
+          python mesh_router.py
+
+      - name: Commit status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "PSIVI Mesh Router"
+          git config user.email "mesh-router@users.noreply.github.com"
+          python mesh_router.py > reports/mesh_status.txt 2>&1
+          git add reports/mesh_status.txt
+          git diff --staged --quiet || git commit -m "mesh: updated status report"
+          git push
