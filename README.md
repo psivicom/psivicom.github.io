@@ -113,7 +113,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-16T05:03:56.296Z | Hash: f74c902786113bedd742f2e3c28e56c54ae02f2b45844578c6b190bc3f534090 -->
+<!-- Last updated: 2026-09-16T05:05:13.282Z | Hash: fc8896ef7e86cc9ae7d2f7d3fb79a36d127d8f8387b79085d5062d8ece67b8e0 -->
 
 ```
 psivicom.github.io/
@@ -305,6 +305,7 @@ psivicom.github.io/
 ├── codemeta.json
 ├── forage_agent.py
 ├── index.html
+├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
 ├── mesh.go
