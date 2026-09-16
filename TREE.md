@@ -165,6 +165,7 @@ psivicom.github.io/
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
+├── A2_critic_agent.py
 ├── A2_forage_agent.py
 ├── A4_forage_agent.py
 ├── A5_forage_agent.py
@@ -194,7 +195,6 @@ psivicom.github.io/
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json
-├── critic_agent.py
 ├── forage_agent.py
 ├── index.html
 ├── intelligence_agent.py
