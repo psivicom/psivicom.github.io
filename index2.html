@@ -10,7 +10,7 @@
    0. GLOBAL RESET & BORDER PROTECTION
    =================================================== */
 *, *::before, *::after {
-  box-sizing: border-box; /* CRITICAL: prevents out-of-border issues */
+  box-sizing: border-box;
 }
 
 @font-face {
@@ -109,21 +109,34 @@ a:hover { text-decoration-thickness: 2px; }
 .nav a:hover { border-color: #0A1931; background: #0A1931; color: #fff; }
 
 .section { margin-top: 64px; scroll-margin-top: 60px; }
-.section-head { display: flex; align-items: baseline; gap: 16px; }
+.section-head { 
+  display: flex; 
+  align-items: center; 
+  gap: 16px; 
+}
 
 /* ===================================================
-   UNIFIED TYPOGRAPHY SCALE (Fixes ALL title inconsistencies)
+   UNIFIED TYPOGRAPHY SCALE (Pixel-perfect match to "02")
    =================================================== */
 .section-head h2 {
-  font-size: 14px; /* Strict uniform size for ALL numbered titles */
-  letter-spacing: 0.12em;
+  font-family: 'IBM Plex Mono', monospace; /* Ensures exact font match */
+  font-size: 12px; /* EXACT original size */
+  letter-spacing: 0.18em; /* EXACT original spacing */
   text-transform: uppercase;
-  font-weight: 600;
-  color: #52525b;
-  white-space: normal; /* FIXED: Allows long titles (03-06) to wrap naturally */
-  flex-shrink: 0; /* Prevents the title from being squished by the gradient line */
-  margin: 0 0 4px 0; /* Breathing room if title wraps to a second line */
+  font-weight: 500; /* EXACT original weight */
+  color: #71717a; /* EXACT original color */
+  white-space: normal; /* Allows long titles to wrap safely */
+  word-break: break-word; /* Prevents any out-of-border overflow */
+  margin: 0;
   line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.line { 
+  flex: 1; 
+  height: 1px; 
+  background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); 
+  opacity: 0.5; 
 }
 
 h3 {
@@ -133,8 +146,6 @@ h3 {
   color: #18181b;
   margin: 0 0 8px 0;
 }
-
-.line { flex: 1; height: 1px; background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); opacity: .5; margin-top: 8px; }
 
 /* ===================================================
    CARD & YVES KLEIN BLUE DATA BOXES
@@ -160,7 +171,6 @@ h3 {
   overflow-wrap: break-word;
 }
 
-/* International Klein Blue (IKB) — The iconic 1960s French artist blue */
 .klein-box {
   background: #002FA7;
   color: #ffffff;
@@ -199,6 +209,47 @@ h3 {
   font-size: 14px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.klein-box-full {
+  background: #002FA7;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 8px 24px rgba(0, 47, 167, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.klein-box-full:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35);
+}
+.klein-box-full .label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-bottom: 8px;
+}
+.klein-box-full .value {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: #ffffff;
+  line-height: 1.2;
+}
+.klein-box-full .desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
 }
 
 .grid2 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; }
@@ -306,22 +357,21 @@ footer {
 <p>I work at the intersection of <strong>pollinator ecology, beekeeping, and Earth observation</strong> from Goldstream, Langford, BC. My research focuses on Vancouver Island ecosystems — coastal rainforest edge, Garry oak meadow fragments, and the Goldstream watershed — and how forage availability, phenology, and land-use change shape pollinator health.</p>
 <p style="margin-top:16px"><strong>Excellence mode:</strong> This repo is built for the NASA Open Science FAIR + world space agencies. Code = EUPL 1.2, Data/Docs/Media = CC BY-SA 4.0 — fully interconnected. No orphan files. Hardware designs are strictly walled and proprietary.</p>
 
-<!-- YVES KLEIN BLUE DATA BOXES -->
 <div class="grid3" style="margin-top:24px">
   <div class="klein-box">
-    <div class="label">Primary Field</div>
-    <div class="value">Pollinator Ecology</div>
-    <div class="desc">Apis mellifera and native Bombus spp. monitoring, hive health, and forage mapping in the Saanich Inlet / Goldstream corridor.</div>
+    <div class="label">Primary Focus</div>
+    <div class="value">Open Science</div>
+    <div class="desc">The core of PSIVI.COM. All code (EUPL 1.2) and data/docs (CC BY-SA 4.0) are strictly domain-separated, DOI-tracked via Zenodo, and aligned with NASA, ESA, and CSA mandates.</div>
   </div>
   <div class="klein-box">
-    <div class="label">Earth Observation</div>
-    <div class="value">SAR & Optical Fusion</div>
-    <div class="desc">RADARSAT Constellation Mission (RCM) for soil moisture, and NASA Earthdata (MODIS, VIIRS, Landsat, SMAP) for phenology.</div>
+    <div class="label">AI Infrastructure</div>
+    <div class="value">Mesh Pico AI</div>
+    <div class="desc">Edge-deployed, autonomous mesh network for space research data synthesis, enabling real-time telemetry with strict human-in-the-loop auditing.</div>
   </div>
   <div class="klein-box">
-    <div class="label">Open Science</div>
-    <div class="value">FAIR & Reproducible</div>
-    <div class="desc">Code under EUPL 1.2, data/docs under CC BY-SA 4.0. Fully interconnected, DOI-tracked via Zenodo, with zero black-box lock-in.</div>
+    <div class="label">Domain Expertise</div>
+    <div class="value">Ecology & EO</div>
+    <div class="desc">Monitoring Apis mellifera and Bombus spp. in the Goldstream watershed, correlated with RADARSAT soil moisture and NASA Earthdata phenology.</div>
   </div>
 </div>
 
@@ -330,7 +380,18 @@ footer {
 
 <section id="research" class="section">
 <div class="section-head"><h2 class="mono">02 — Research</h2><div class="line"></div></div>
-<ul style="list-style:none;padding:0;margin-top:24px">
+
+<div class="klein-box-full" style="margin-top: 24px;">
+  <div class="label">Space Research Engine</div>
+  <div class="value">Research Mesh Pico AI</div>
+  <div class="desc">
+    An autonomous, edge-deployed AI mesh network designed for real-time space research data synthesis. 
+    It powers SAR-optical fusion, pollinator telemetry, and FAIR open science workflows with strict 
+    human-in-the-loop auditing and NIST SSDF compliance. Zero black-box lock-in.
+  </div>
+</div>
+
+<ul style="list-style:none;padding:0;margin-top:32px">
 <li style="border-left:2px solid #0A1931;padding-left:20px;margin-bottom:24px">
   <h3>Goldstream Pollinator Forage Atlas</h3>
   <div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">2024—present · Langford, BC · Open data + notebook</div>
@@ -474,8 +535,10 @@ All files cross-reference each other — no orphan files.</pre>
 <div id="mesh-status" style="background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:18px;border-radius:12px;margin:24px 0 0">
   <div style="font-size:10px;letter-spacing:0.15em;opacity:0.7;margin-bottom:10px">AETHER VANGUARD · TELEMETRY LOG</div>
   <div id="mesh-log" style="font-size:12px;line-height:1.6;opacity:0.9">awaiting telemetry...</div>
-</div>  
-  
+</div>
+
+</main>
+
 <footer>
 <div>
 <p>© 2026 Louis-Philippe Audette — PSIVI.COM</p>
