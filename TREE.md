@@ -211,7 +211,6 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
-├── A_2_index.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -239,6 +238,7 @@ psivicom.github.io/
 ├── critic_agent.py
 ├── exploreopenspaceresearch.html
 ├── forage_agent.py
+├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
