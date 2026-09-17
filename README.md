@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T08:19:31.769Z | Hash: e32ce687f3efba52e79dcdb4b650186fc9d731bbbaec07836422933d4dc8ee57 -->
+<!-- Last updated: 2026-09-17T08:20:43.279Z | Hash: 5aa14fe9c71644f9dc8b063c6f4a67dbcddefea556d7d4a8d4d45fb64202c210 -->
 
 ```
 psivicom.github.io/
@@ -369,6 +369,7 @@ psivicom.github.io/
 ├── license_agent.py
 ├── lidar_agent.py
 ├── literature_agent.py
+├── mesh-ai.html
 ├── mesh.go
 ├── mesh_governor.py
 ├── mesh_router.py
