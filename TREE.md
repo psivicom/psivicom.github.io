@@ -93,8 +93,8 @@ psivicom.github.io/
 │   │   ├──  A6_literature_agent.py
 │   │   ├──  A_forage_agent.py
 │   │   ├──  A_intelligence_agent.py
-│   │   ├──  A_vector_mesh.py
-│   │   └── A2_critic_agent.py
+│   │   ├── A2_critic_agent.py
+│   │   └── A_vector_mesh.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
