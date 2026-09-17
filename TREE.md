@@ -192,6 +192,8 @@ psivicom.github.io/
 │   │   ├── 2e034fc1b1be.npy
 │   │   ├── 32c50e6b93c2.json
 │   │   ├── 32c50e6b93c2.npy
+│   │   ├── 3fe04d4954d1.json
+│   │   ├── 3fe04d4954d1.npy
 │   │   ├── 976a1ba42d85.json
 │   │   └── 976a1ba42d85.npy
 │   ├── volunteer_contributions/
@@ -239,7 +241,6 @@ psivicom.github.io/
 ├── critic_agent.py
 ├── exploreopenspaceresearch.html
 ├── forage_agent.py
-├── index.html
 ├── index3.html
 ├── intelligence_agent.py
 ├── license_agent.py
