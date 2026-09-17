@@ -180,17 +180,14 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
-│   │   ├── lit_86384eac0da0.json
-│   │   ├── lit_86384eac0da0.psvc
-│   │   ├── lit_a9495d14c878.json
-│   │   ├── lit_a9495d14c878.psvc
-│   │   ├── lit_b0af6a4e6cea.json
-│   │   ├── lit_b0af6a4e6cea.psvc
 │   │   ├── state_0_55b8f4d3e01f.psvc
 │   │   ├── state_0_6a236f59a9aa.psvc
+│   │   ├── state_0_8e8202755302.psvc
 │   │   ├── state_0_f816755d4086.psvc
 │   │   ├── state_1_1683fb8d99e1.psvc
+│   │   ├── state_1_c2d691e7b81c.psvc
 │   │   ├── state_1_e6bbae07a097.psvc
+│   │   ├── state_2_301afa57070e.psvc
 │   │   ├── state_2_9d3839e18eed.psvc
 │   │   └── state_2_c53c5acaffaf.psvc
 │   ├── vector_memory/
@@ -208,12 +205,14 @@ psivicom.github.io/
 │   │   └── 2026-09-17_external_volunteer_49b5fced.json
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
+│   ├── 2026-09-17_synthesizer_memory.json
 │   ├── ai_audit.md
 │   ├── forage_log.md
 │   ├── governor_log.md
 │   ├── license_audit.md
 │   ├── mesh_status.txt
-│   └── synthesis_2026-09-16.md
+│   ├── synthesis_2026-09-16.md
+│   └── synthesis_2026-09-17.md
 ├── scripts/
 │   ├── update-tree/
 │   │   └── main.go
@@ -260,6 +259,7 @@ psivicom.github.io/
 ├── mesh_governor.py
 ├── mesh_router.py
 ├── mesh_state.json
+├── open-science-guide.html
 ├── pico_containers.py
 ├── pico_mesh.py
 ├── robots.txt
