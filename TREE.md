@@ -93,6 +93,7 @@ psivicom.github.io/
 │   │   ├──  A6_literature_agent.py
 │   │   ├──  A_forage_agent.py
 │   │   ├──  A_intelligence_agent.py
+│   │   ├──  A_vector_mesh.py
 │   │   └── A2_critic_agent.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -204,7 +205,6 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
-├── A_vector_mesh.py
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
