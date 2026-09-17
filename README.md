@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T16:28:21.102Z | Hash: 4322edf74982438b24030638cb0441e1165695f139cf6c68dbe69c04cadd24ee -->
+<!-- Last updated: 2026-09-17T16:34:45.725Z | Hash: 328a94cabcd2c5b58f6b706d1b369836666fef8a6c98ccedb837383c1e5f3d96 -->
 
 ```
 psivicom.github.io/
@@ -288,6 +288,7 @@ psivicom.github.io/
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
+│   ├── exploreopenspaceresearch.html
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
@@ -363,7 +364,6 @@ psivicom.github.io/
 ├── codemeta.json
 ├── consolidator_agent.py
 ├── critic_agent.py
-├── exploreopenspaceresearch.html
 ├── forage_agent.py
 ├── index.html
 ├── intelligence_agent.py
