@@ -159,6 +159,8 @@ psivicom.github.io/
 │   │   └── README.md
 │   ├── SPACE_RESEARCH/
 │   │   └── unifiedopenspacehub.html
+│   ├── SPACE_RESEARH/
+│   │   └── exploreopenspaceresearch.html
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
@@ -171,7 +173,6 @@ psivicom.github.io/
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
-│   ├── exploreopenspaceresearch.html
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md

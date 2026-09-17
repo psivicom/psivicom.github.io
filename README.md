@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T16:51:19.338Z | Hash: f3acbfc7f5823822b2415a57aa5c04d0f3de191ba63215baee6a8facbbd1dd49 -->
+<!-- Last updated: 2026-09-17T16:52:01.463Z | Hash: 9ca8200ddae8fa17070da01494c1d453c6253f32a3698b5fc20da118875d23ea -->
 
 ```
 psivicom.github.io/
@@ -278,6 +278,8 @@ psivicom.github.io/
 │   │   └── README.md
 │   ├── SPACE_RESEARCH/
 │   │   └── unifiedopenspacehub.html
+│   ├── SPACE_RESEARH/
+│   │   └── exploreopenspaceresearch.html
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
@@ -290,7 +292,6 @@ psivicom.github.io/
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
-│   ├── exploreopenspaceresearch.html
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
