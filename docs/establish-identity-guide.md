@@ -224,6 +224,196 @@ Replace your current zenodo_agent.py with this version that supports DOI reserva
 PYTHON
 
 ```
+# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
+# Author: Louis-Philippe Audette
+# ORCID: https://orcid.org/XXXX-XXXX-XXXX-XXXX
+# Affiliation: PSIVI Research
+
+import os
+import json
+import requests
+from pathlib import Path
+
+CONTAINER_DIR = Path("reports/pico_containers")
+ZENODO_URL = os.environ.get("ZENODO_URL", "https://sandbox.zenodo.org/api/deposit/depositions")
+ZENODO_TOKEN = os.environ.get("ZENODO_SANDBOX_TOKEN")
+
+# Load CITATION.cff metadata
+def load_citation_metadata():
+    """Load metadata from CITATION.cff"""
+    try:
+        import yaml
+        with open("CITATION.cff", 'r') as f:
+            return yaml.safe_load(f)
+    except:
+        # Fallback if PyYAML not installed
+        return {
+            "title": "Mesh Pico AI",
+            "version": "1.0.0",
+            "authors": [{"family-names": "Audette", "given-names": "Louis-Philippe"}]
+        }
+
+def get_new_states():
+    """Find master states that have not yet been deposited."""
+    states = []
+    for psvc_file in CONTAINER_DIR.glob("state_*.psvc"):
+        meta_file = psvc_file.with_suffix('.json')
+        
+        if meta_file.exists():
+            with open(meta_file) as f:
+                meta = json.load(f)
+            if "doi" not in meta:
+                states.append((psvc_file, meta_file, meta))
+    return states
+
+def create_or_update_deposition(psvc_path, meta, token, citation_meta, existing_doi=None):
+    """Create new deposition or update existing reserved DOI."""
+    headers = {"Content-Type": "application/json"}
+    params = {"access_token": token}
+    
+    if existing_doi:
+        # Update existing reserved DOI
+        # First, get the deposition ID from the DOI
+        search_url = f"{ZENODO_URL}?q=doi:{existing_doi}"
+        resp = requests.get(search_url, params=params, headers=headers)
+        if resp.status_code == 200:
+            depositions = resp.json()
+            if depositions:
+                deposition_id = depositions[0]["id"]
+                update_url = f"{ZENODO_URL}/{deposition_id}"
+                
+                # Update metadata
+                data = {
+                    "metadata": {
+                        "title": f"{citation_meta.get('title', 'Mesh Pico AI')} - {psvc_path.stem}",
+                        "upload_type": "dataset",
+                        "description": f"Compressed 4096-dimensional vector representing ecological state: {psvc_path.stem}. Format: PSVC v1 (INT8). Version: {citation_meta.get('version', '1.0.0')}",
+                        "creators": [
+                            {
+                                "name": f"{citation_meta['authors'][0]['family-names']}, {citation_meta['authors'][0]['given-names']}",
+                                "affiliation": "PSIVI Research",
+                                "orcid": citation_meta['authors'][0].get('orcid', '').replace('https://orcid.org/', '')
+                            }
+                        ],
+                        "keywords": ["pollinator ecology", "pico vectors", "open science", "neuroplastic AI"],
+                        "related_identifiers": [
+                            {
+                                "identifier": citation_meta.get('repository-code', ''),
+                                "relation": "isSupplementTo",
+                                "scheme": "url"
+                            }
+                        ]
+                    }
+                }
+                
+                resp = requests.put(update_url, params=params, json=data, headers=headers)
+                if resp.status_code == 200:
+                    return existing_doi, deposition_id
+    
+    # Create new deposition
+    data = {
+        "metadata": {
+            "title": f"{citation_meta.get('title', 'Mesh Pico AI')} - {psvc_path.stem}",
+            "upload_type": "dataset",
+            "description": f"Compressed 4096-dimensional vector representing ecological state: {psvc_path.stem}. Format: PSVC v1 (INT8). Version: {citation_meta.get('version', '1.0.0')}",
+            "creators": [
+                {
+                    "name": f"{citation_meta['authors'][0]['family-names']}, {citation_meta['authors'][0]['given-names']}",
+                    "affiliation": "PSIVI Research",
+                    "orcid": citation_meta['authors'][0].get('orcid', '').replace('https://orcid.org/', '')
+                }
+            ],
+            "keywords": ["pollinator ecology", "pico vectors", "open science", "neuroplastic AI"],
+            "related_identifiers": [
+                {
+                    "identifier": citation_meta.get('repository-code', ''),
+                    "relation": "isSupplementTo",
+                    "scheme": "url"
+                }
+            ]
+        }
+    }
+    
+    resp = requests.post(ZENODO_URL, params=params, json=data, headers=headers)
+    if resp.status_code not in (200, 201):
+        print(f"[ZENODO] Failed to create deposition: {resp.text}")
+        return None, None
+        
+    deposition = resp.json()
+    bucket_url = deposition["links"]["bucket"]
+    deposition_id = deposition["id"]
+    doi = deposition.get("doi")
+    
+    # Upload the .psvc binary file
+    filename = psvc_path.name
+    upload_url = f"{bucket_url}/{filename}"
+    
+    with open(psvc_path, "rb") as fp:
+        resp = requests.put(upload_url, params=params, data=fp, headers={"Content-Type": "application/octet-stream"})
+        
+    if resp.status_code not in (200, 201):
+        print(f"[ZENODO] Failed to upload file: {resp.text}")
+        return None, None
+    
+    return doi, deposition_id
+
+def publish_deposition(deposition_id, token):
+    """Publish a reserved DOI to make it permanent."""
+    params = {"access_token": token}
+    publish_url = f"{ZENODO_URL}/{deposition_id}/actions/publish"
+    resp = requests.post(publish_url, params=params)
+    
+    if resp.status_code not in (200, 202):
+        print(f"[ZENODO] Failed to publish: {resp.text}")
+        return False
+    return True
+
+if __name__ == "__main__":
+    print("=== PSIVI ZENODO AGENT: DEPOSITING MASTER STATES ===")
+    
+    if not ZENODO_TOKEN:
+        print("[ZENODO] ZENODO_SANDBOX_TOKEN environment variable not set. Skipping deposit.")
+        exit(0)
+    
+    citation_meta = load_citation_metadata()
+    new_states = get_new_states()
+    
+    if not new_states:
+        print("[ZENODO] No new master states to deposit.")
+        exit(0)
+    
+    # Check for reserved DOI
+    reserved_doi = os.environ.get("ZENODO_RESERVED_DOI")
+    
+    for psvc_path, meta_path, meta in new_states:
+        print(f"[ZENODO] Depositing {psvc_path.name}...")
+        
+        doi, deposition_id = create_or_update_deposition(
+            psvc_path, meta, ZENODO_TOKEN, citation_meta, reserved_doi
+        )
+        
+        if doi:
+            # Check if we should publish or keep reserved
+            auto_publish = os.environ.get("ZENODO_AUTO_PUBLISH", "false").lower() == "true"
+            
+            if auto_publish:
+                if publish_deposition(deposition_id, ZENODO_TOKEN):
+                    print(f"[ZENODO] Published. DOI: {doi}")
+                else:
+                    print(f"[ZENODO] Upload complete but publication failed. DOI: {doi}")
+            else:
+                print(f"[ZENODO] Reserved (not published). DOI: {doi}")
+                print(f"[ZENODO] To publish manually: https://sandbox.zenodo.org/deposit/{deposition_id}")
+            
+            meta["doi"] = doi
+            meta["zenodo_url"] = f"https://sandbox.zenodo.org/record/{deposition_id}"
+            meta["deposition_id"] = deposition_id
+            
+            with open(meta_path, 'w') as f:
+                json.dump(meta, f, indent=2)
+        else:
+            print(f"[ZENODO] Failed to deposit {psvc_path.name}.")
+```
 
 
 
