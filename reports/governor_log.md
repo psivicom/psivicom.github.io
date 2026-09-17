@@ -1,14 +1,14 @@
 # Mesh Governor Enforcement Report
 
-**Timestamp:** 2026-09-17T01:54:01.335987
-**Available RAM:** 14947 MB
+**Timestamp:** 2026-09-17T10:30:07.472646
+**Available RAM:** 14553 MB
 
 ## Mode Decision
 - **Selected Mode:** `vram`
-- **Reason:** 14947MB available. Sufficient for shared memory bus.
+- **Reason:** 14553MB available. Sufficient for shared memory bus.
 
 ## Enforcement Scan
-- **Vectors in storage:** 2
+- **Vectors in storage:** 4
 - **Text violations found:** 1
 - **Format violations found:** 0
 
