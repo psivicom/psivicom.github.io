@@ -87,6 +87,7 @@ psivicom.github.io/
 │   ├── 2026-09-13/
 │   │   └── index.html
 │   ├── 2026-09-16/
+│   │   ├──  A2_forage_agent.py
 │   │   └── A2_critic_agent.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -196,7 +197,6 @@ psivicom.github.io/
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
-├── A2_forage_agent.py
 ├── A4_forage_agent.py
 ├── A5_forage_agent.py
 ├── A6_literature_agent.py

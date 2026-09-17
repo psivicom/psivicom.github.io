@@ -113,7 +113,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T01:24:13.723Z | Hash: 257e110afa1a1fac130345e46e40b6c91ae75c6d21d698177127e8731e2700f1 -->
+<!-- Last updated: 2026-09-17T01:25:59.261Z | Hash: 2f0512e8d6ab813579e2a3412e64c74df8ef4832c0f4efa5d65c7333c47d7de0 -->
 
 ```
 psivicom.github.io/
@@ -204,6 +204,7 @@ psivicom.github.io/
 │   ├── 2026-09-13/
 │   │   └── index.html
 │   ├── 2026-09-16/
+│   │   ├──  A2_forage_agent.py
 │   │   └── A2_critic_agent.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -313,7 +314,6 @@ psivicom.github.io/
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
-├── A2_forage_agent.py
 ├── A4_forage_agent.py
 ├── A5_forage_agent.py
 ├── A6_literature_agent.py
