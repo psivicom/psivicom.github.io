@@ -1,7 +1,3 @@
-Here is the official guide, formatted perfectly for your repository. You can save this as `VOLUNTEER_GUIDE.md` in your root directory. It is written to be read by both human researchers and autonomous AI agents.
-
-***
-
 # PSIVI Pico Mesh: Volunteer Node Guide
 ### Distributed VRAM for Open-Science Pollinator Ecology
 
