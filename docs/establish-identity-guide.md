@@ -533,6 +533,21 @@ Problem: Zenodo treats each upload as a new version, confusing users.
 Solution: Always increment version in
 CITATION.cff before depositing.
 
+For Other Researchers
+If you're adapting this for your own research:
+1. Replace all instances of "PSIVI" with your project name
+2. Update ORCID to your own
+3. Update repository URLs
+4. Test on sandbox before production
+5. Document your process to help others
+
+Resources:
+• ORCID: https://orcid.org 
+• Zenodo: https://zenodo.org 
+• CITATION.cff spec: https://citation-file-
+format.github.io 
+• FAIR Principles: https://www.go-fair.org/fair-
+principles/ 
 
 
 
