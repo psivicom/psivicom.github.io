@@ -1,0 +1,6 @@
+=== PSIVI AETHER STATUS ===
+Health: DEGRADED
+Declared: forage, vanguard, intelligence, synthesizer, lidar
+Active:   synthesizer, unknown
+Silent:   forage, vanguard, lidar, intelligence
+Memories: 2
