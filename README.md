@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T16:52:01.463Z | Hash: 9ca8200ddae8fa17070da01494c1d453c6253f32a3698b5fc20da118875d23ea -->
+<!-- Last updated: 2026-09-17T16:54:16.545Z | Hash: a19c890777a9abf4a896e033ebb82026caa5348f3db5b87844d23be41965be64 -->
 
 ```
 psivicom.github.io/
@@ -277,9 +277,8 @@ psivicom.github.io/
 │   │   │   └── SECURITY.md
 │   │   └── README.md
 │   ├── SPACE_RESEARCH/
+│   │   ├── exploreopenspaceresearch.html
 │   │   └── unifiedopenspacehub.html
-│   ├── SPACE_RESEARH/
-│   │   └── exploreopenspaceresearch.html
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md

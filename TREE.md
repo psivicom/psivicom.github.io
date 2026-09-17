@@ -158,9 +158,8 @@ psivicom.github.io/
 │   │   │   └── SECURITY.md
 │   │   └── README.md
 │   ├── SPACE_RESEARCH/
+│   │   ├── exploreopenspaceresearch.html
 │   │   └── unifiedopenspacehub.html
-│   ├── SPACE_RESEARH/
-│   │   └── exploreopenspaceresearch.html
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
