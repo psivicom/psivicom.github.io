@@ -489,6 +489,22 @@ Step 4: Add Token to GitHub
 5. Value: Paste your token
 6. Click "Add secret"
 
+Step 5: Reserve a DOI (Recommended for Testing)
+1. Go to https://sandbox.zenodo.org/deposit/new
+2. Click "Reserve DOI"
+3. Save the DOI (e.g., 10.5072/zenodo. 123456 )
+4. Add to GitHub Secrets:
+• Name: ZENODO_RESERVED_DOI
+• Value: Your reserved DOI
+5. Add to GitHub Secrets:
+• Name: ZENODO_AUTO_PUBLISH
+• Value: false (keeps DOl reserved, not published)
+Step 6: Test the Pipeline
+1. Run your deposit workflow manually
+2. Check that files are uploaded to Zenodo
+3. Verify metadata is correct
+4. Repeat 3 times before moving to production
+
 
 
 
