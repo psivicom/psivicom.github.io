@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T16:39:15.578Z | Hash: 328a94cabcd2c5b58f6b706d1b369836666fef8a6c98ccedb837383c1e5f3d96 -->
+<!-- Last updated: 2026-09-17T16:44:37.603Z | Hash: 741c042b2379c3aa34d034be108d292e51f6e133fc2b59e2acbbb131270178d1 -->
 
 ```
 psivicom.github.io/
@@ -292,7 +292,8 @@ psivicom.github.io/
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
-│   └── template.html
+│   ├── template.html
+│   └── unifiedopenspacehub.html
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
@@ -381,7 +382,6 @@ psivicom.github.io/
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── synthesizer_agent.py
-├── unifiedopenspacehub.html
 ├── vector_mesh.py
 ├── volunteer_node.py
 ├── volunteer_worker.py

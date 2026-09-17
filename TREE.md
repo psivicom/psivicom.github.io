@@ -173,7 +173,8 @@ psivicom.github.io/
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
-│   └── template.html
+│   ├── template.html
+│   └── unifiedopenspacehub.html
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
@@ -262,7 +263,6 @@ psivicom.github.io/
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── synthesizer_agent.py
-├── unifiedopenspacehub.html
 ├── vector_mesh.py
 ├── volunteer_node.py
 ├── volunteer_worker.py
