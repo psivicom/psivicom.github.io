@@ -1,0 +1,9 @@
+{
+  "text": "SELF-CORRECTION: Model overestimated forage window by 86 hours. Future predictions must apply a negative adjustment.",
+  "agent": "critic",
+  "hash": "3fe04d4954d1",
+  "dim": 4096,
+  "precision": "float16",
+  "scale": null,
+  "timestamp": "2026-09-17T07:11:22.258815"
+}
