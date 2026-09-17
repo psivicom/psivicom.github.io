@@ -15,6 +15,7 @@ psivicom.github.io/
 │       ├── mesh-status.yml
 │       ├── mesh.yml
 │       ├── neuroplasticity.yml
+│       ├── normalize-archive-names.yml
 │       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
