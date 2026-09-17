@@ -157,6 +157,8 @@ psivicom.github.io/
 │   │   │   ├── README.md
 │   │   │   └── SECURITY.md
 │   │   └── README.md
+│   ├── SPACE_RESEARCH/
+│   │   └── unifiedopenspacehub.html
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
@@ -173,8 +175,7 @@ psivicom.github.io/
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
-│   ├── template.html
-│   └── unifiedopenspacehub.html
+│   └── template.html
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
@@ -195,6 +196,8 @@ psivicom.github.io/
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
+│   │   ├── 2fd673a34e0d.json
+│   │   ├── 2fd673a34e0d.npy
 │   │   ├── 32c50e6b93c2.json
 │   │   ├── 32c50e6b93c2.npy
 │   │   ├── 3fe04d4954d1.json

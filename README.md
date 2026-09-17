@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T16:44:37.603Z | Hash: 741c042b2379c3aa34d034be108d292e51f6e133fc2b59e2acbbb131270178d1 -->
+<!-- Last updated: 2026-09-17T16:51:19.338Z | Hash: f3acbfc7f5823822b2415a57aa5c04d0f3de191ba63215baee6a8facbbd1dd49 -->
 
 ```
 psivicom.github.io/
@@ -276,6 +276,8 @@ psivicom.github.io/
 │   │   │   ├── README.md
 │   │   │   └── SECURITY.md
 │   │   └── README.md
+│   ├── SPACE_RESEARCH/
+│   │   └── unifiedopenspacehub.html
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
@@ -292,8 +294,7 @@ psivicom.github.io/
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
-│   ├── template.html
-│   └── unifiedopenspacehub.html
+│   └── template.html
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
@@ -314,6 +315,8 @@ psivicom.github.io/
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
+│   │   ├── 2fd673a34e0d.json
+│   │   ├── 2fd673a34e0d.npy
 │   │   ├── 32c50e6b93c2.json
 │   │   ├── 32c50e6b93c2.npy
 │   │   ├── 3fe04d4954d1.json
