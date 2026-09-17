@@ -1,0 +1,9 @@
+{
+  "text": "Governor decision at 2026-09-17: Mode=vram. Violations=1.",
+  "agent": "governor",
+  "hash": "976a1ba42d85",
+  "dim": 4096,
+  "precision": "float16",
+  "scale": null,
+  "timestamp": "2026-09-17T01:54:01.341296"
+}
