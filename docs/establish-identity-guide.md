@@ -554,6 +554,35 @@ Author: Louis-Philippe Audette
 ORCID: https://orcid.org/YOUR-ORCID-HERE
 
 
+---
+
+## Step 7: Update Your README.md
+
+Add this section to your README:
+
+```markdown
+## Scientific Identity & Citation
+
+**Author:** Louis-Philippe Audette  
+**ORCID:** [0000-000X-XXXX-XXXX](https://orcid.org/XXXX-XXXX-XXXX-XXXX)  
+**Affiliation:** PSIVI Research
+
+### Citation
+
+If you use this software in your research, please cite:
+
+```bibtex
+@software{audette2026meshpicoai,
+  author = {Audette, Louis-Philippe},
+  title = {Mesh Pico AI: A Neuroplastic Intelligence Framework for Decentralized Open Science},
+  year = {2026},
+  publisher = {Zenodo},
+  version = {1.0.0},
+  doi = {10.5281/zenodo.XXXXXXX},
+  url = {https://github.com/psivicom/psivicom.github.io}
+}
+```
+
 
 
 
