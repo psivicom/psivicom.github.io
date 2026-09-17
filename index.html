@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstroResearch Hub — Zenodo & Space Agencies</title>
+
+  <!-- Google Fonts: single family for total uniformity -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ============================================================
+       0. CSS CUSTOM PROPERTIES — single source of truth
+       ============================================================ */
+    :root {
+      /* ---- colour palette ---- */
+      --clr-bg:            #0b0e17;
+      --clr-surface:       #131829;
+      --clr-surface-hover: #1a2035;
+      --clr-border:        #1e2740;
+      --clr-accent:        #4f8cff;
+      --clr-accent-glow:   rgba(79, 140, 255, .25);
+      --clr-text:          #e2e8f0;
+      --clr-text-muted:    #8892a8;
+      --clr-tag-bg:        rgba(79, 140, 255, .12);
+      --clr-tag-text:      #7aadff;
+      --clr-success:       #34d399;
+      --clr-warning:       #fbbf24;
+
+      /* ---- strict type scale (ratio 1.25) ---- */
+      --fs-xs:   0.64rem;   /* 10.2 px */
+      --fs-sm:   0.80rem;   /* 12.8 px */
+      --fs-base: 1.00rem;   /* 16   px */
+      --fs-md:   1.125rem;  /* 18   px */
+      --fs-lg:   1.25rem;   /* 20   px */
+      --fs-xl:   1.563rem;  /* 25   px */
+      --fs-2xl:  1.953rem;  /* 31.2 px */
+      --fs-3xl:  2.441rem;  /* 39   px */
+
+      /* ---- spacing ---- */
+      --sp-xs:  0.25rem;
+      --sp-sm:  0.5rem;
+      --sp-md:  1rem;
+      --sp-lg:  1.5rem;
+      --sp-xl:  2rem;
+      --sp-2xl: 3rem;
+      --sp-3xl: 4rem;
+
+      /* ---- radii ---- */
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+
+      /* ---- shadows ---- */
+      --shadow-card: 0 2px 12px rgba(0,0,0,.35);
+      --shadow-glow: 0 0 20px var(--clr-accent-glow);
+
+      /* ---- layout ---- */
+      --max-w: 1280px;
+      --header-h: 64px;
+    }
+
+    /* ============================================================
+       1. RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;                 /* anchor for rem */
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: var(--fs-base);
+      line-height: 1.6;
+      color: var(--clr-text);
+      background: var(--clr-bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--clr-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    img { max-width: 100%; display: block; }
+
+    /* ============================================================
+       2. UTILITY
+       ============================================================ */
+    .container { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 var(--sp-lg); }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); border: 0;
+    }
+
+    /* ============================================================
+       3. HEADER / NAV
+       ============================================================ */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--header-h);
+      background: rgba(11, 14, 23, .85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .site-header .container {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 100%;
+    }
+    .logo {
+      display: flex; align-items: center; gap: var(--sp-sm);
+      font-size: var(--fs-lg); font-weight: 700; color: var(--clr-text);
+    }
+    .logo svg { width: 28px; height: 28px; fill: var(--clr-accent); }
+
+    .main-nav { display: flex; gap: var(--sp-lg); }
+    .main-nav a {
+      font-size: var(--fs-sm); font-weight: 500;
+      color: var(--clr-text-muted); transition: color .2s;
+    }
+    .main-nav a:hover,
+    .main-nav a.active { color: var(--clr-accent); text-decoration: none; }
+
+    /* ============================================================
+       4. HERO
+       ============================================================ */
+    .hero {
+      padding: var(--sp-3xl) 0;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(79,140,255,.08) 0%, transparent 60%),
+        var(--clr-bg);
+    }
+    .hero h1 {
+      font-size: var(--fs-3xl); font-weight: 700;
+      line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: var(--sp-md);
+    }
+    .hero h1 span { color: var(--clr-accent); }
+    .hero p {
+      font-size: var(--fs-md); color: var(--clr-text-muted);
+      max-width: 640px; margin: 0 auto var(--sp-xl);
+    }
+
+    /* search bar */
+    .search-bar {
+      display: flex; max-width: 560px; margin: 0 auto;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-bar:focus-within {
+      border-color: var(--clr-accent);
+      box-shadow: var(--shadow-glow);
+    }
+    .search-bar input {
+      flex: 1; padding: var(--sp-md) var(--sp-lg);
+      background: transparent; border: none; outline: none;
+      font-family: inherit; font-size: var(--fs-base); color: var(--clr-text);
+    }
+    .search-bar input::placeholder { color: var(--clr-text-muted); }
+    .search-bar button {
+      padding: var(--sp-md) var(--sp-xl);
+      background: var(--clr-accent); color: #fff;
+      border: none; cursor: pointer;
+      font-family: inherit; font-size: var(--fs-sm); font-weight: 600;
+      transition: background .2s;
+    }
+    .search-bar button:hover { background: #3a74e0; }
+
+    /* ============================================================
+       5. SECTION TITLES
+       ============================================================ */
+    .section-title {
+      font-size: var(--fs-xl); font-weight: 700;
+      margin-bottom: var(--sp-xs);
+    }
+    .section-subtitle {
+      font-size: var(--fs-sm); color: var(--clr-text-muted);
+      margin-bottom: var(--sp-xl);
+    }
+
+    /* ============================================================
+       6. STATS BAR
+       ============================================================ */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--sp-lg);
+      padding: var(--sp-2xl) 0;
+    }
+    .stat-card {
+      text-align: center;
+      padding: var(--sp-lg);
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+    }
+    .stat-card .number {
+      font-size: var(--fs-2xl); font-weight: 700; color: var(--clr-accent);
+    }
+    .stat-card .label {
+      font-size: var(--fs-sm); color: var(--clr-text-muted); margin-top: var(--sp-xs);
+    }
+
+    /* ============================================================
+       7. TILE / CARD GRID  ← the critical fix
+       ============================================================ */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--sp-lg);
+      padding-bottom: var(--sp-3xl);
+    }
+
+    .card {
+      display: flex; flex-direction: column;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;                 /* ← keeps everything inside */
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-glow);
+      border-color: var(--clr-accent);
+    }
+
+    /* thumbnail */
+    .card-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      object-fit: cover;
+      background: var(--clr-border);
+    }
+
+    /* body */
+    .card-body {
+      display: flex; flex-direction: column; flex: 1;
+      padding: var(--sp-lg);
+      gap: var(--sp-sm);
+    }
+
+    .card-body .tag {
+      display: inline-block; align-self: flex-start;
+      font-size: var(--fs-xs); font-weight: 600;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: 2px 8px;
+      background: var(--clr-tag-bg); color: var(--clr-tag-text);
+      border-radius: 4px;
+    }
+
+    .card-body h3 {
+      font-size: var(--fs-md); font-weight: 600; line-height: 1.35;
+      /* ---- overflow guard ---- */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-body p {
+      font-size: var(--fs-sm); color: var(--clr-text-muted); line-height: 1.55;
+      /* ---- overflow guard ---- */
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .card-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: var(--fs-xs); color: var(--clr-text-muted);
+      padding: var(--sp-md) var(--sp-lg);
+      border-top: 1px solid var(--clr-border);
+    }
+    .card-meta .doi {
+      font-family: 'Inter', monospace;
+      color: var(--clr-accent);
+      max-width: 60%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ============================================================
+       8. AGENCY LOGOS
+       ============================================================ */
+    .agencies {
+      padding: var(--sp-2xl) 0;
+      text-align: center;
+    }
+    .agency-row {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: var(--sp-xl); margin-top: var(--sp-lg);
+    }
+    .agency-logo {
+      width: 80px; height: 80px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      font-size: var(--fs-xs); font-weight: 600;
+      color: var(--clr-text-muted);
+      transition: border-color .2s, color .2s;
+    }
+    .agency-logo:hover { border-color: var(--clr-accent); color: var(--clr-accent); }
+
+    /* ============================================================
+       9. FOOTER
+       ============================================================ */
+    .site-footer {
+      padding: var(--sp-2xl) 0;
+      border-top: 1px solid var(--clr-border);
+      text-align: center;
+      font-size: var(--fs-sm); color: var(--clr-text-muted);
+    }
+    .site-footer a { color: var(--clr-accent); }
+
+    /* ============================================================
+       10. RESPONSIVE
+       ============================================================ */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: var(--fs-2xl); }
+      .card-grid { grid-template-columns: 1fr; }
+      .main-nav { gap: var(--sp-md); }
+      .main-nav a { font-size: var(--fs-xs); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======================== HEADER ======================== -->
+  <header class="site-header">
+    <div class="container">
+      <a href="#" class="logo">
+        <!-- simple star / orbit icon -->
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" opacity=".3"/><path d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" opacity=".15"/></svg>
+        AstroResearch Hub
+      </a>
+      <nav class="main-nav">
+        <a href="#" class="active">Datasets</a>
+        <a href="#">Publications</a>
+        <a href="#">Agencies</a>
+        <a href="#">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======================== HERO ======================== -->
+  <section class="hero">
+    <div class="container">
+      <h1>Explore Open <span>Space Research</span> Data</h1>
+      <p>
+        A unified portal for discovering datasets, publications, and software
+        deposited on Zenodo by leading space agencies worldwide.
+      </p>
+      <form class="search-bar" onsubmit="return false;">
+        <input type="search" placeholder="Search by keyword, DOI, author, mission…" aria-label="Search" />
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ======================== STATS ======================== -->
+  <section class="container">
+    <div class="stats">
+      <div class="stat-card"><div class="number">12,480</div><div class="label">Datasets</div></div>
+      <div class="stat-card"><div class="number">3,215</div><div class="label">Publications</div></div>
+      <div class="stat-card"><div class="number">47</div><div class="label">Space Agencies</div></div>
+      <div class="stat-card"><div class="number">890</div><div class="label">Software Repos</div></div>
+    </div>
+  </section>
+
+  <!-- ======================== FEATURED CARDS ======================== -->
+  <section class="container">
+    <h2 class="section-title">Featured Research</h2>
+    <p class="section-subtitle">Latest deposits from Zenodo linked to space-agency missions</p>
+
+    <div class="card-grid">
+
+      <!-- card 1 -->
+      <article class="card">
+        <img class="card-thumb" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=600&q=80" alt="Hubble deep field" />
+        <div class="card-body">
+          <span class="tag">ESA / Hubble</span>
+          <h3>Ultra-Deep Field Photometric Catalogue DR3 — Multi-band Source Extraction and Validation</h3>
+          <p>This data release provides calibrated photometry for 1.2 million sources across UV, optical, and near-IR bands observed by the Hubble Space Telescope as part of the Frontier Fields programme.</p>
+        </div>
+        <div class="card-meta">
+          <span>2026-08-14</span>
+          <span class="doi">10.5281/zenodo.14001234</span>
+        </div>
+      </article>
+
+      <!-- card 2 -->
+      <article class="card">
+        <img class="card-thumb" src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=600&q=80" alt="Mars surface" />
+        <div class="card-body">
+          <span class="tag">NASA / JPL</span>
+          <h3>Perseverance Rover — Jezero Crater Mineralogy Maps v2.1</h3>
+          <p>High-resolution mineralogical maps derived from SuperCam LIBS and Raman spectroscopy covering sols 1–1200 of the Mars 2020 mission.</p>
+        </div>
+        <div class="card-meta">
+          <span>2026-07-30</span>
+          <span class="doi">10.5281/zenodo.13998765</span>
+        </div>
+      </article>
+
+      <!-- card 3 -->
+      <article class="card">
+        <img class="card-thumb" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" alt="Earth from space" />
+        <div class="card-body">
+          <span class="tag">JAXA</span>
+          <h3>GCOM-W / AMSR2 Global Sea-Surface Temperature Monthly Grid — 2025 Annual Archive</h3>
+          <p>Gridded monthly SST products at 0.25° resolution processed with the updated GSST algorithm including diurnal warming correction.</p>
+        </div>
+        <div class="card-meta">
+          <span>2026-06-12</span>
+          <span class="doi">10.5281/zenodo.13887432</span>
+        </div>
+      </article>
+
+      <!-- card 4 -->
+      <article class="card">
+        <img class="card-thumb" src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?auto=format&fit=crop&w=600&q=80" alt="Nebula" />
+        <div class="card-body">
+          <span class="tag">ESA / Gaia</span>
+          <h3>Gaia DR4 — Astrometric and Spectroscopic Binary Orbital Solutions</h3>
+          <p>Orbital parameters for 2.8 million non-single-star systems derived from 34 months of scanning-law observations with full covariance matrices.</p>
+        </div>
+        <div class="card-meta">
+          <span>2026-05-22</span>
+          <span class="doi">10.5281/zenodo.13776543</span>
+        </div>
+      </article>
+
+      <!-- card 5 -->
+      <article class="card">
+        <img class="card-thumb" src="https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=600&q=80" alt="ISS" />
+        <div class="card-body">
+          <span class="tag">CSA</span>
+          <h3>Canadarm2 Force-Torque Telemetry Dataset for On-Orbit Robotic Manipulation Research</h3>
+          <p>Annotated force/torque sensor logs from 140 capture and berthing operations on the ISS, released under CC-BY 4.0 for robotics research.</p>
+        </div>
+        <div class="card-meta">
+          <span>2026-04-10</span>
+          <span class="doi">10.5281/zenodo.13665210</span>
+        </div>
+      </article>
+
+      <!-- card 6 -->
+      <article class="card">
+        <img class="card-thumb" src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?auto=format&fit=crop&w=600&q=80" alt="Saturn" />
+        <div class="card-body">
+          <span class="tag">ISRO</span>
+          <h3>Chandrayaan-3 APXS & LIBS Elemental Abundance Tables — South Polar Region</h3>
+          <p>In-situ elemental composition measurements from the Pragyan rover traverse across 14 waypoints near the lunar south pole.</p>
+        </div>
+        <div class="card-meta">
+          <span>2026-03-05</span>
+          <span class="doi">10.5281/zenodo.13554987</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ======================== AGENCIES ======================== -->
+  <section class="agencies">
+    <div class="container">
+      <h2 class="section-title">Participating Space Agencies</h2>
+      <p class="section-subtitle">Data contributors from around the world</p>
+      <div class="agency-row">
+        <div class="agency-logo">NASA</div>
+        <div class="agency-logo">ESA</div>
+        <div class="agency-logo">JAXA</div>
+        <div class="agency-logo">ISRO</div>
+        <div class="agency-logo">CSA</div>
+        <div class="agency-logo">CNSA</div>
+        <div class="agency-logo">Roscosmos</div>
+        <div class="agency-logo">ASI</div>
+        <div class="agency-logo">DLR</div>
+        <div class="agency-logo">CNES</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== FOOTER ======================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 AstroResearch Hub — Powered by <a href="https://zenodo.org" target="_blank" rel="noopener">Zenodo</a> &amp; open space-science data.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
