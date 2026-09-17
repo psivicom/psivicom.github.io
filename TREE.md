@@ -98,7 +98,8 @@ psivicom.github.io/
 │   │   ├── A_intelligence_agent.py
 │   │   └── A_vector_mesh.py
 │   ├── 2026-09-17/
-│   │   └── A_backup_index,html
+│   │   ├── A_backup_index,html
+│   │   └── A_mesh-Ai.html
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
@@ -248,7 +249,6 @@ psivicom.github.io/
 ├── license_agent.py
 ├── lidar_agent.py
 ├── literature_agent.py
-├── mesh-Ai.html
 ├── mesh-ai.html
 ├── mesh.go
 ├── mesh_governor.py
