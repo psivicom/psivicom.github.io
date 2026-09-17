@@ -520,6 +520,18 @@ Pitfall #1: Using Temporary Email
 Problem: You lose access to the email, can't recover your ORCID.
 Solution: Use a stable email (Gmail, institutional, or custom domain).
 
+Pitfall #2: Publishing Before Testing
+Problem: You publish incorrect metadata to production, can't fix it.
+Solution: Always test 3+ times on sandbox first.
+
+Pitfall #3: Not Reserving DOI
+Problem: Each test run creates a new DOI, fragmenting your citations.
+Solution: Reserve one DOl and update it until you're ready to publish.
+
+Pitfall #4: Forgetting Version Numbers
+Problem: Zenodo treats each upload as a new version, confusing users.
+Solution: Always increment version in
+CITATION.cff before depositing.
 
 
 
