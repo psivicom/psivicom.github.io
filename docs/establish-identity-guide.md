@@ -165,7 +165,10 @@ python embed_identity.py
 Step 4: Zenodo DOI Reservation (The
 Safe Method)
 
-This is how you reserve a DOl before full publication, so you can test everything.
+This is how you reserve a DOI
+before full publication, 
+so you can test everything.
+
 4.1 Create Zenodo Account
 
 1. Go to https://sandbox.zenodo.org * (sandbox
@@ -173,6 +176,24 @@ first, not production)
 2. Click "Sign up"
 3. Use your ORCID to log in (Auth integration)
 4. This links your ORCID to Zenodo permanently
+
+4.2 Generate API Token (Sandbox)
+
+1. Go to
+https://sandbox.zenodo.org/account/settings/a
+pplications/tokens/new/7
+2. Name: "PSIVI Mesh Auto-Deposit"
+3. Scopes: Check deposit: actions and deposit: write
+4. Click "Create"
+5. Copy the token immediately - you won't see it again
+6. Save it in your password manager
+4.3 Add Token to GitHub Secrets
+1. Go to your repository on GitHub
+2. Settings → Secrets and variables → Actions
+3. Click "New repository secret"
+4. Name: ZENODO_SANDBOX_TOKEN
+5. Value: Paste the token
+6. Click "Add secret"
 
 
 
