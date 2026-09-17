@@ -67,6 +67,94 @@ File: embed_identity.py
 PYTHON
 
 ```
+#!/usr/bin/env python3
+# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
+"""Embeds ORCID and author identity into all agent files."""
+
+import os
+from pathlib import Path
+
+ORCID = "0000-000X-XXXX-XXXX"  # Replace with your actual ORCID
+AUTHOR_NAME = "Louis-Philippe Audette"
+AFFILIATION = "PSIVI Research"
+
+HEADER_TEMPLATE = f"""# Copyright (c) 2026 {AUTHOR_NAME} | PSIVI.COM | EUPL 1.2
+# Author: {AUTHOR_NAME}
+# ORCID: https://orcid.org/{ORCID}
+# Affiliation: {AFFILIATION}
+"""
+
+def embed_in_file(file_path):
+    """Embed identity header into a Python file."""
+    path = Path(file_path)
+    
+    if not path.suffix == '.py':
+        return False
+    
+    content = path.read_text(encoding='utf-8')
+    
+    # Check if already has ORCID
+    if f'ORCID: https://orcid.org/{ORCID}' in content:
+        print(f"[SKIP] {file_path} already has ORCID")
+        return False
+    
+    # Remove old copyright if exists
+    lines = content.split('\n')
+    new_lines = []
+    skip_next = 0
+    
+    for i, line in enumerate(lines):
+        if skip_next > 0:
+            skip_next -= 1
+            continue
+        
+        # Skip old copyright headers
+        if line.startswith('# Copyright (c)') and 'PSIVI.COM' in line:
+            # Skip this line and the next few if they're part of old header
+            j = i + 1
+            while j < len(lines) and lines[j].startswith('#'):
+                j += 1
+            skip_next = j - i - 1
+            continue
+        
+        new_lines.append(line)
+    
+    # Add new header
+    new_content = HEADER_TEMPLATE + '\n' + '\n'.join(new_lines)
+    path.write_text(new_content, encoding='utf-8')
+    
+    print(f"[UPDATED] {file_path}")
+    return True
+
+if __name__ == "__main__":
+    print("=== Embedding ORCID and Identity ===")
+    
+    # Find all Python files
+    agent_files = [
+        "forage_agent.py",
+        "critic_agent.py",
+        "mesh_governor.py",
+        "consolidator_agent.py",
+        "literature_agent.py",
+        "zenodo_agent.py",
+        "volunteer_node.py",
+        "volunteer_worker.py",
+        "vector_mesh.py",
+        "mesh_router.py",
+        "generate_api.py",
+        "seed_mesh.py",
+        "embed_identity.py"
+    ]
+    
+    updated_count = 0
+    for filename in agent_files:
+        if Path(filename).exists():
+            if embed_in_file(filename):
+                updated_count += 1
+    
+    print(f"\n[COMPLETE] Updated {updated_count} files with ORCID: {ORCID}")
+    print(f"[NEXT] Commit these changes to your repository")
+```
 
 
    
