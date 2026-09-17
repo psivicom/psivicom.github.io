@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T02:13:57.719Z | Hash: 3f39aec78ee9ce34f6ea4664b0acf6473101b362304e8e0dae76c9855018d326 -->
+<!-- Last updated: 2026-09-17T03:02:07.865Z | Hash: 1a724eddddf1df1486c1da8c726be64995d92d28a0f6cd7a6a7e4a568b23b8ca -->
 
 ```
 psivicom.github.io/
@@ -207,13 +207,13 @@ psivicom.github.io/
 │   ├── 2026-09-13/
 │   │   └── index.html
 │   ├── 2026-09-16/
-│   │   ├──  A2_forage_agent.py
-│   │   ├──  A4_forage_agent.py
-│   │   ├──  A5_forage_agent.py
-│   │   ├──  A6_literature_agent.py
-│   │   ├──  A_forage_agent.py
-│   │   ├──  A_intelligence_agent.py
 │   │   ├── A2_critic_agent.py
+│   │   ├── A2_forage_agent.py
+│   │   ├── A4_forage_agent.py
+│   │   ├── A5_forage_agent.py
+│   │   ├── A6_literature_agent.py
+│   │   ├── A_forage_agent.py
+│   │   ├── A_intelligence_agent.py
 │   │   └── A_vector_mesh.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -312,6 +312,8 @@ psivicom.github.io/
 │   │   ├── 32c50e6b93c2.npy
 │   │   ├── 976a1ba42d85.json
 │   │   └── 976a1ba42d85.npy
+│   ├── volunteer_contributions/
+│   │   └── 2026-09-17_external_volunteer_49b5fced.json
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
 │   ├── ai_audit.md

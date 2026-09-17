@@ -88,13 +88,13 @@ psivicom.github.io/
 │   ├── 2026-09-13/
 │   │   └── index.html
 │   ├── 2026-09-16/
-│   │   ├──  A2_forage_agent.py
-│   │   ├──  A4_forage_agent.py
-│   │   ├──  A5_forage_agent.py
-│   │   ├──  A6_literature_agent.py
-│   │   ├──  A_forage_agent.py
-│   │   ├──  A_intelligence_agent.py
 │   │   ├── A2_critic_agent.py
+│   │   ├── A2_forage_agent.py
+│   │   ├── A4_forage_agent.py
+│   │   ├── A5_forage_agent.py
+│   │   ├── A6_literature_agent.py
+│   │   ├── A_forage_agent.py
+│   │   ├── A_intelligence_agent.py
 │   │   └── A_vector_mesh.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -193,6 +193,8 @@ psivicom.github.io/
 │   │   ├── 32c50e6b93c2.npy
 │   │   ├── 976a1ba42d85.json
 │   │   └── 976a1ba42d85.npy
+│   ├── volunteer_contributions/
+│   │   └── 2026-09-17_external_volunteer_49b5fced.json
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
 │   ├── ai_audit.md
