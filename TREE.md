@@ -239,7 +239,6 @@ psivicom.github.io/
 ├── critic_agent.py
 ├── exploreopenspaceresearch.html
 ├── forage_agent.py
-├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
@@ -254,6 +253,7 @@ psivicom.github.io/
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── synthesizer_agent.py
+├── unifiedopenspacehub.html
 ├── vector_mesh.py
 ├── volunteer_node.py
 ├── volunteer_worker.py
