@@ -86,6 +86,8 @@ psivicom.github.io/
 │   │   └── A_oldTREE_update_tree.py
 │   ├── 2026-09-13/
 │   │   └── index.html
+│   ├── 2026-09-16/
+│   │   └── A2_critic_agent.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
@@ -161,6 +163,20 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
+│   │   ├── lit_23f0b8e674e6.json
+│   │   ├── lit_23f0b8e674e6.psvc
+│   │   ├── lit_6a8168162049.json
+│   │   ├── lit_6a8168162049.psvc
+│   │   ├── lit_86384eac0da0.json
+│   │   ├── lit_86384eac0da0.psvc
+│   │   ├── lit_a414f8df9e17.json
+│   │   ├── lit_a414f8df9e17.psvc
+│   │   ├── lit_a9495d14c878.json
+│   │   ├── lit_a9495d14c878.psvc
+│   │   ├── lit_b0af6a4e6cea.json
+│   │   ├── lit_b0af6a4e6cea.psvc
+│   │   ├── lit_eaa8e2829906.json
+│   │   ├── lit_eaa8e2829906.psvc
 │   │   └── state_0_6a236f59a9aa.psvc
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
@@ -180,7 +196,6 @@ psivicom.github.io/
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
-├── A2_critic_agent.py
 ├── A2_forage_agent.py
 ├── A4_forage_agent.py
 ├── A5_forage_agent.py
