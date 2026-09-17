@@ -237,8 +237,8 @@ psivicom.github.io/
 ├── codemeta.json
 ├── consolidator_agent.py
 ├── critic_agent.py
+├── exploreopenspaceresearch.html
 ├── forage_agent.py
-├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
