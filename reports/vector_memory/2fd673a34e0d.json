@@ -1,0 +1,9 @@
+{
+  "text": "Goldstream forage 2026-09-17: Peak 25.4C. Flight window 103h (adj -2h).",
+  "agent": "forage",
+  "hash": "2fd673a34e0d",
+  "dim": 4096,
+  "precision": "int8",
+  "scale": 0.0018689476419240236,
+  "timestamp": "2026-09-17T16:46:15.700451"
+}
