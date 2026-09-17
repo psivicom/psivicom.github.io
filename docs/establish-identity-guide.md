@@ -155,6 +155,12 @@ if __name__ == "__main__":
     print(f"\n[COMPLETE] Updated {updated_count} files with ORCID: {ORCID}")
     print(f"[NEXT] Commit these changes to your repository")
 ```
+RUN IT : in BASH
+
+BASH
+```
+python embed_identity.py
+```
 
 
    
