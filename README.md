@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T10:54:53.623Z | Hash: 1ca061d5f4674356a658b84accb0540abb06168bfbaff8731cf0854a577e5673 -->
+<!-- Last updated: 2026-09-17T11:03:28.438Z | Hash: 6d6acfc74fee23ca5484c07b85386be2058bf7f81ef09114d445b0104e814d74 -->
 
 ```
 psivicom.github.io/
@@ -296,21 +296,20 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
-│   │   ├── lit_23f0b8e674e6.json
-│   │   ├── lit_23f0b8e674e6.psvc
 │   │   ├── lit_6a8168162049.json
 │   │   ├── lit_6a8168162049.psvc
 │   │   ├── lit_86384eac0da0.json
 │   │   ├── lit_86384eac0da0.psvc
-│   │   ├── lit_a414f8df9e17.json
-│   │   ├── lit_a414f8df9e17.psvc
 │   │   ├── lit_a9495d14c878.json
 │   │   ├── lit_a9495d14c878.psvc
 │   │   ├── lit_b0af6a4e6cea.json
 │   │   ├── lit_b0af6a4e6cea.psvc
 │   │   ├── lit_eaa8e2829906.json
 │   │   ├── lit_eaa8e2829906.psvc
-│   │   └── state_0_6a236f59a9aa.psvc
+│   │   ├── state_0_55b8f4d3e01f.psvc
+│   │   ├── state_0_6a236f59a9aa.psvc
+│   │   ├── state_1_1683fb8d99e1.psvc
+│   │   └── state_2_c53c5acaffaf.psvc
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
@@ -352,6 +351,7 @@ psivicom.github.io/
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
 ├── README.md
+├── README2.md
 ├── REUSE.toml
 ├── RFC.md
 ├── SECURITY.md
