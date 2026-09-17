@@ -244,7 +244,6 @@ psivicom.github.io/
 ├── exploreopenspaceresearch.html
 ├── forage_agent.py
 ├── index.html
-├── index2.html
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
