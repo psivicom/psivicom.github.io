@@ -93,6 +93,7 @@ psivicom.github.io/
 │   │   ├── A4_forage_agent.py
 │   │   ├── A5_forage_agent.py
 │   │   ├── A6_literature_agent.py
+│   │   ├── A_3_index.html
 │   │   ├── A_forage_agent.py
 │   │   ├── A_intelligence_agent.py
 │   │   └── A_vector_mesh.py
@@ -211,7 +212,6 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
-├── A_3_index.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
