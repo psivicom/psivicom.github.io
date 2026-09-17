@@ -583,6 +583,9 @@ If you use this software in your research, please cite:
 }
 ```
 
+ORCID & Zenodo Integration
+This repository is configured for automatic DOI generation via Zenodo. See docs/ORCID_ZENODO_SETUP.md » for setup instructions.
+
 
 
 
