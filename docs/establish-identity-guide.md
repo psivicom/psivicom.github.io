@@ -588,5 +588,33 @@ This repository is configured for automatic DOI generation via Zenodo. See docs/
 
 
 
+---
+
+## Summary Checklist
+
+Before submitting to Zenodo:
+
+- [ ] Created ORCID account
+- [ ] Created CITATION.cff with your ORCID
+- [ ] Ran `embed_identity.py` to update all agent files
+- [ ] Created Zenodo Sandbox account
+- [ ] Generated API token
+- [ ] Added token to GitHub Secrets
+- [ ] Reserved a DOI on sandbox
+- [ ] Tested deposit workflow 3 times
+- [ ] Verified metadata is correct
+- [ ] Created ORCID_ZENODO_SETUP.md guide
+- [ ] Updated README.md with citation info
+
+**Then, when ready:**
+
+- [ ] Create production Zenodo account
+- [ ] Generate production API token
+- [ ] Update GitHub Secret with production token
+- [ ] Set ZENODO_AUTO_PUBLISH to true
+- [ ] Run final test
+- [ ] Publish to production
+
+This method ensures you never publish broken metadata to production Zenodo, and you have a complete guide to help other independent researchers follow the same process.
 
    
