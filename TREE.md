@@ -231,7 +231,6 @@ psivicom.github.io/
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
 ├── README.md
-├── README2.md
 ├── REUSE.toml
 ├── RFC.md
 ├── SECURITY.md
