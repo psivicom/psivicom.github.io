@@ -88,6 +88,7 @@ psivicom.github.io/
 │   │   └── index.html
 │   ├── 2026-09-16/
 │   │   ├──  A2_forage_agent.py
+│   │   ├──  A4_forage_agent.py
 │   │   └── A2_critic_agent.py
 │   ├── deprecated/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
@@ -197,7 +198,6 @@ psivicom.github.io/
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
-├── A4_forage_agent.py
 ├── A5_forage_agent.py
 ├── A6_literature_agent.py
 ├── AI-COLLABORATION-PROTOCOL.md
