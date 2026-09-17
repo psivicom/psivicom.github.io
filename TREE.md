@@ -172,6 +172,7 @@ psivicom.github.io/
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
+│   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html

@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T22:31:49.623Z | Hash: 54f3190ab0527b5b2b8f4b872d1966c4a015270bf0cf0dc037c901b775ca3e21 -->
+<!-- Last updated: 2026-09-17T22:43:06.302Z | Hash: 7b7e606d5ad8bd7bf37591a1f5f00b30024fb61c6838c87abed9085354219625 -->
 
 ```
 psivicom.github.io/
@@ -291,6 +291,7 @@ psivicom.github.io/
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
+│   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
