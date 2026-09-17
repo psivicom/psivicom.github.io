@@ -414,6 +414,15 @@ if __name__ == "__main__":
         else:
             print(f"[ZENODO] Failed to deposit {psvc_path.name}.")
 ```
+Step 6: Create the ORCID Setup Guide
+
+Create this file to document the process for other researchers:
+File: docs/ORCID_ZENODO_SETUP.md
+
+MARKDOWN 
+```
+
+
 
 
 
