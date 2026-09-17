@@ -112,16 +112,20 @@ a:hover { text-decoration-thickness: 2px; }
 .section-head { display: flex; align-items: baseline; gap: 16px; }
 
 /* ===================================================
-   UNIFIED TYPOGRAPHY SCALE (Fixes inconsistent sizes)
+   UNIFIED TYPOGRAPHY SCALE (Fixes ALL title inconsistencies)
    =================================================== */
 .section-head h2 {
-  font-size: 14px; /* Unified from 12px for better readability */
-  letter-spacing: 0.15em;
+  font-size: 14px; /* Strict uniform size for ALL numbered titles */
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 600;
   color: #52525b;
-  white-space: nowrap;
+  white-space: normal; /* FIXED: Allows long titles (03-06) to wrap naturally */
+  flex-shrink: 0; /* Prevents the title from being squished by the gradient line */
+  margin: 0 0 4px 0; /* Breathing room if title wraps to a second line */
+  line-height: 1.4;
 }
+
 h3 {
   font-size: 16px !important; /* Forces ALL h3 tags to be exactly 16px */
   font-weight: 600;
@@ -130,7 +134,7 @@ h3 {
   margin: 0 0 8px 0;
 }
 
-.line { flex: 1; height: 1px; background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); opacity: .5; }
+.line { flex: 1; height: 1px; background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); opacity: .5; margin-top: 8px; }
 
 /* ===================================================
    CARD & YVES KLEIN BLUE DATA BOXES
@@ -140,7 +144,7 @@ h3 {
   border-radius: 12px;
   padding: 20px;
   background: #fff;
-  overflow: hidden; /* Prevents text bleed */
+  overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -166,7 +170,7 @@ h3 {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow: hidden; /* CRITICAL: keeps text inside borders */
+  overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: break-word;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -449,7 +453,6 @@ All files cross-reference each other — no orphan files.</pre>
 
 <!-- LATEST MESH SYNTHESIS -->
 <section id="synthesis" class="section" style="margin-top:32px;padding:20px;background:#fafafa;border-radius:12px;border-left:4px solid #00D4FF">
-<!-- Removed inline font-size:18px to enforce global 16px h3 uniformity -->
 <h3 style="margin:0 0 12px 0; color:#0A1931">Latest Mesh Synthesis</h3>
 <p style="margin:0;font-size:13px;line-height:1.6">
 <strong>Date:</strong> 2026-09-16<br>
@@ -480,7 +483,6 @@ All files cross-reference each other — no orphan files.</pre>
 <p>Built as single-file semantic HTML5 for GitHub Pages — Excellence Edition — NASA blue</p>
 </div>
 <div style="text-align:right">
-<!-- Fixed missing opening <p> tag from original -->
 <p>P26-09-15T04:26:59Z</p>
 <p>NASA Open Science 101 Certified — Langford, BC — Goldstream — Vancouver Island</p>
 </div>
