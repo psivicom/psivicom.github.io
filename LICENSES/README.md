@@ -3,6 +3,14 @@
 -->
 # Domain-Separated Licensing Framework — Open Science & Commercial Compliance
 
+## License
+
+**Software:** EUPL-1.2 — European Union Public License 1.2  
+**Data & Documentation:** CC BY-SA 4.0 — Creative Commons Attribution-ShareAlike 4.0  
+**Hardware Designs:** Proprietary — All rights reserved
+
+Full license texts available in the `/licenses/` directory.
+
 This repository implements a strict, domain-separated licensing model designed for global open-science compliance (NASA, CSA, ESA, Horizon Europe, UNESCO) while explicitly protecting proprietary hardware intellectual property.
 
 | Content Type | License | File Location | SPDX Identifier | Rationale & Compliance |
