@@ -161,6 +161,7 @@ psivicom.github.io/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
 │   ├── DATA_MANAGEMENT.md
+│   ├── FAIR-mapping.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── GITHUB-ACTIONS-GUIDE.md
 │   ├── INTEROPERABILITY.md
@@ -208,6 +209,7 @@ psivicom.github.io/
 │   ├── forage_log.md
 │   ├── governor_log.md
 │   ├── license_audit.md
+│   ├── mesh_status.txt
 │   └── synthesis_2026-09-16.md
 ├── scripts/
 │   ├── update-tree/

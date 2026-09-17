@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T10:39:47.342Z | Hash: 8f13be67a1dcfbccf57209ba19f69e961b62f8c85de55cf5907252a0c31d746f -->
+<!-- Last updated: 2026-09-17T10:48:29.226Z | Hash: 1ca061d5f4674356a658b84accb0540abb06168bfbaff8731cf0854a577e5673 -->
 
 ```
 psivicom.github.io/
@@ -280,6 +280,7 @@ psivicom.github.io/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
 │   ├── DATA_MANAGEMENT.md
+│   ├── FAIR-mapping.md
 │   ├── FAIR_CHECKLIST.md
 │   ├── GITHUB-ACTIONS-GUIDE.md
 │   ├── INTEROPERABILITY.md
@@ -327,6 +328,7 @@ psivicom.github.io/
 │   ├── forage_log.md
 │   ├── governor_log.md
 │   ├── license_audit.md
+│   ├── mesh_status.txt
 │   └── synthesis_2026-09-16.md
 ├── scripts/
 │   ├── update-tree/
