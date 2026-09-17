@@ -505,7 +505,20 @@ Step 6: Test the Pipeline
 3. Verify metadata is correct
 4. Repeat 3 times before moving to production
 
+Step 7: Move to Production (When
+Ready)
+1. Create account at https://zenodo.org a (not sandbox)
+2. Generate new API token
+3. Update GitHub Secret:
+• Name: ZENODO_PRODUCTION_TOKEN
+• Value: Your production token
+4. Update workflow to use production URL
+5. Set ZENODO_AUTO_PUBLISH to true
 
+Common Pitfalls
+Pitfall #1: Using Temporary Email
+Problem: You lose access to the email, can't recover your ORCID.
+Solution: Use a stable email (Gmail, institutional, or custom domain).
 
 
 
