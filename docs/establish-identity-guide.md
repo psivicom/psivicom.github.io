@@ -421,6 +421,54 @@ File: docs/ORCID_ZENODO_SETUP.md
 
 MARKDOWN 
 ```
+# ORCID and Zenodo Setup Guide for Independent Researchers
+
+This guide documents the process of establishing your scientific identity and obtaining a DOI for your research via Zenodo, using ORCID as your persistent identifier.
+
+## Prerequisites
+
+- A stable email address you will control for 10+ years
+- Access to your GitHub repository
+- 30 minutes of time
+
+## Step 1: Create Your ORCID
+
+1. Visit https://orcid.org/register
+2. Fill in your details:
+   - **Given names:** Your first name(s)
+   - **Family name:** Your last name
+   - **Primary email:** Your stable professional email
+   - **Affiliation:** "Independent Researcher" or your organization
+3. Verify your email
+4. **Save your ORCID iD** (format: `0000-000X-XXXX-XXXX`)
+
+### Why ORCID?
+- Permanent identifier that never changes
+- Links all your research across platforms
+- Required by most journals and repositories
+- Free for life
+
+## Step 2: Create CITATION.cff
+
+Create a `CITATION.cff` file in your repository root:
+
+```yaml
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+title: "Your Project Title"
+authors:
+  - family-names: "Your Last Name"
+    given-names: "Your First Name"
+    orcid: "https://orcid.org/YOUR-ORCID-HERE"
+    affiliation: "Your Affiliation"
+version: "1.0.0"
+date-released: "2026-09-18"
+url: "https://your-username.github.io"
+repository-code: "https://github.com/your-username/your-repo"
+license: "EUPL-1.2"
+type: software
+```
+
 
 
 
