@@ -1,1 +1,541 @@
-in construction
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Space Research Portal — Zenodo & Space Agencies</title>
+
+  <!-- Google Fonts: one clean family for uniformity -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+  <style>
+    /* ===================================================
+       0. RESET & BASE — guarantees uniform sizing
+       =================================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;          /* ← FIXES out-of-border issue */
+    }
+
+    html {
+      font-size: 16px;                 /* single source of truth */
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: #e2e8f0;
+      background: #0b1120;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===================================================
+       1. TYPOGRAPHY SCALE — consistent, no surprises
+       =================================================== */
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.5rem;  font-weight: 600; line-height: 1.3; }
+    h3 { font-size: 1.125rem;font-weight: 600; line-height: 1.4; }
+    p, li, a, span, label {
+      font-size: 0.9375rem;            /* 15 px — uniform body text */
+      font-weight: 400;
+    }
+    small { font-size: 0.8125rem; }    /* 13 px — captions only */
+
+    /* ===================================================
+       2. LAYOUT SHELL
+       =================================================== */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ===================================================
+       3. HEADER / NAV
+       =================================================== */
+    header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #818cf8;
+      text-decoration: none;
+    }
+
+    .logo svg { width: 28px; height: 28px; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.75rem;
+    }
+
+    nav a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #e2e8f0; }
+
+    /* ===================================================
+       4. HERO
+       =================================================== */
+    .hero {
+      text-align: center;
+      padding: 5rem 0 3.5rem;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.15) 0%, transparent 70%);
+    }
+
+    .hero h1 { margin-bottom: 1rem; }
+    .hero h1 span { color: #818cf8; }
+    .hero p  { max-width: 640px; margin: 0 auto; color: #94a3b8; }
+
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.25);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8125rem;
+      color: #a5b4fc;
+    }
+
+    /* ===================================================
+       5. SECTION TITLES
+       =================================================== */
+    .section-title {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .section-title h2 { margin-bottom: 0.5rem; }
+    .section-title p  { color: #64748b; }
+
+    /* ===================================================
+       6. TILE / CARD GRID  ← FIXES inconsistent tile sizes
+       =================================================== */
+    .grid {
+      display: grid;
+      /* 3 equal columns on desktop, 2 on tablet, 1 on phone */
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      padding-bottom: 4rem;
+    }
+
+    .card {
+      background: #131c31;
+      border: 1px solid rgba(99,102,241,0.12);
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, border-color 0.2s;
+
+      /* ← CRITICAL: keeps text INSIDE the card */
+      overflow: hidden;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99,102,241,0.4);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .card-icon.blue   { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .card-icon.purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+    .card-icon.teal   { background: rgba(20,184,166,0.15); color: #2dd4bf; }
+    .card-icon.amber  { background: rgba(245,158,11,0.15); color: #fbbf24; }
+    .card-icon.rose   { background: rgba(244,63,94,0.15);  color: #fb7185; }
+    .card-icon.sky    { background: rgba(14,165,233,0.15);  color: #38bdf8; }
+
+    .card h3 { margin-bottom: 0.5rem; }
+
+    .card p {
+      color: #94a3b8;
+      flex: 1;                         /* pushes footer to bottom */
+    }
+
+    .card-footer {
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(99,102,241,0.1);
+      color: #818cf8;
+    }
+
+    .card-link {
+      font-size: 0.8125rem;
+      color: #818cf8;
+      text-decoration: none;
+    }
+    .card-link:hover { text-decoration: underline; }
+
+    /* ===================================================
+       7. ZENODO DATASETS TABLE
+       =================================================== */
+    .table-wrap {
+      overflow-x: auto;                /* ← prevents table blowout */
+      margin-bottom: 4rem;
+      border-radius: 12px;
+      border: 1px solid rgba(99,102,241,0.12);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #131c31;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.85rem 1.25rem;
+      white-space: nowrap;             /* ← keeps cells tidy */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 320px;
+    }
+
+    th {
+      background: #1a2540;
+      color: #a5b4fc;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td { border-top: 1px solid rgba(99,102,241,0.08); }
+
+    tr:hover td { background: rgba(99,102,241,0.04); }
+
+    .doi-link {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    .doi-link:hover { text-decoration: underline; }
+
+    /* ===================================================
+       8. STATS ROW
+       =================================================== */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      padding: 3rem 0;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 1.5rem;
+      background: #131c31;
+      border-radius: 12px;
+      border: 1px solid rgba(99,102,241,0.1);
+    }
+
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #818cf8;
+    }
+
+    .stat-card .label {
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    /* ===================================================
+       9. FOOTER
+       =================================================== */
+    footer {
+      border-top: 1px solid rgba(99,102,241,0.1);
+      padding: 2rem 0;
+      text-align: center;
+      color: #475569;
+    }
+
+    /* ===================================================
+       10. RESPONSIVE
+       =================================================== */
+    @media (max-width: 768px) {
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.25rem; }
+      .grid { grid-template-columns: 1fr; }
+      nav ul { gap: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ====== HEADER ====== -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#" class="logo">
+        <!-- simple rocket icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+          <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+          <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+          <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+        </svg>
+        SpaceResearch
+      </a>
+      <nav>
+        <ul>
+          <li><a href="#datasets">Datasets</a></li>
+          <li><a href="#agencies">Agencies</a></li>
+          <li><a href="#publications">Publications</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====== HERO ====== -->
+  <section class="hero">
+    <div class="container">
+      <h1>Open <span>Space Science</span> Research</h1>
+      <p>
+        A unified portal aggregating datasets, publications, and missions
+        from Zenodo and the world's leading space agencies.
+      </p>
+      <div class="hero-badges">
+        <span class="badge">Zenodo</span>
+        <span class="badge">NASA</span>
+        <span class="badge">ESA</span>
+        <span class="badge">JAXA</span>
+        <span class="badge">ISRO</span>
+        <span class="badge">CNSA</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== STATS ====== -->
+  <section class="container">
+    <div class="stats">
+      <div class="stat-card">
+        <div class="number">12,480</div>
+        <div class="label">Datasets</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">3,215</div>
+        <div class="label">Publications</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">47</div>
+        <div class="label">Missions</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">6</div>
+        <div class="label">Agencies</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== AGENCY TILES ====== -->
+  <section class="container" id="agencies">
+    <div class="section-title">
+      <h2>Partner Space Agencies</h2>
+      <p>Collaborating institutions providing open-access research data</p>
+    </div>
+
+    <div class="grid">
+      <!-- Card 1 -->
+      <div class="card">
+        <div class="card-icon blue">🛰️</div>
+        <h3>NASA</h3>
+        <p>
+          National Aeronautics and Space Administration — Earth science,
+          heliophysics, planetary exploration, and astrophysics datasets
+          available via Zenodo mirrors.
+        </p>
+        <div class="card-footer">
+          <span class="card-tag">4,210 datasets</span>
+          <a href="#" class="card-link">Browse →</a>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <div class="card-icon purple">🌍</div>
+        <h3>ESA</h3>
+        <p>
+          European Space Agency — Copernicus, Gaia, and Rosetta mission
+          archives with full DOI-tracked reproducibility on Zenodo.
+        </p>
+        <div class="card-footer">
+          <span class="card-tag">3,870 datasets</span>
+          <a href="#" class="card-link">Browse →</a>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <div class="card-icon teal">🚀</div>
+        <h3>JAXA</h3>
+        <p>
+          Japan Aerospace Exploration Agency — Hayabusa2 sample-return
+          data, Himawari meteorological imagery, and SLIM lunar records.
+        </p>
+        <div class="card-footer">
+          <span class="card-tag">1,540 datasets</span>
+          <a href="#" class="card-link">Browse →</a>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card">
+        <div class="card-icon amber">🔭</div>
+        <h3>ISRO</h3>
+        <p>
+          Indian Space Research Organisation — Chandrayaan, Mangalyaan,
+          and Astrosat open data releases with Zenodo integration.
+        </p>
+        <div class="card-footer">
+          <span class="card-tag">1,120 datasets</span>
+          <a href="#" class="card-link">Browse →</a>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="card">
+        <div class="card-icon rose">🌙</div>
+        <h3>CNSA</h3>
+        <p>
+          China National Space Administration — Chang'e lunar samples,
+          Tianwen Mars telemetry, and space-station experiment logs.
+        </p>
+        <div class="card-footer">
+          <span class="card-tag">980 datasets</span>
+          <a href="#" class="card-link">Browse →</a>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="card">
+        <div class="card-icon sky">📡</div>
+        <h3>Zenodo Hub</h3>
+        <p>
+          Central CERN-backed repository providing DOI minting, version
+          control, and long-term preservation for all partner datasets.
+        </p>
+        <div class="card-footer">
+          <span class="card-tag">12,480 total</span>
+          <a href="#" class="card-link">Browse →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== ZENODO DATASETS TABLE ====== -->
+  <section class="container" id="datasets">
+    <div class="section-title">
+      <h2>Recent Zenodo Datasets</h2>
+      <p>Latest uploads from space-mission archives</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Agency</th>
+            <th>DOI</th>
+            <th>Size</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gaia DR3 — Radial Velocity Spectra</td>
+            <td>ESA</td>
+            <td><a class="doi-link" href="#">10.5281/zenodo.6789012</a></td>
+            <td>1.2 TB</td>
+            <td>2026-08-14</td>
+          </tr>
+          <tr>
+            <td>Artemis III Surface Seismometer Raw</td>
+            <td>NASA</td>
+            <td><a class="doi-link" href="#">10.5281/zenodo.6789045</a></td>
+            <td>340 GB</td>
+            <td>2026-07-29</td>
+          </tr>
+          <tr>
+            <td>Hayabusa2 Ryugu Grain Isotope Maps</td>
+            <td>JAXA</td>
+            <td><a class="doi-link" href="#">10.5281/zenodo.6789078</a></td>
+            <td>85 GB</td>
+            <td>2026-07-11</td>
+          </tr>
+          <tr>
+            <td>Chandrayaan-3 South Pole Thermal IR</td>
+            <td>ISRO</td>
+            <td><a class="doi-link" href="#">10.5281/zenodo.6789101</a></td>
+            <td>210 GB</td>
+            <td>2026-06-22</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer>
+    <div class="container">
+      <small>© 2026 SpaceResearch Portal · Data hosted on
+        <a href="https://zenodo.org" style="color:#818cf8;">Zenodo</a>
+        · Built for open science
+      </small>
+    </div>
+  </footer>
+
+</body>
+</html>
