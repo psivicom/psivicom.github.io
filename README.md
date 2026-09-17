@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T04:58:32.402Z | Hash: f9ffe13611db230eb1eac552cca6d740e47a50ebeb5bcb04a735035f987ca154 -->
+<!-- Last updated: 2026-09-17T05:07:25.468Z | Hash: dc94d17768b61f95772a3a7ef317a33b4893bc108fba9dd1792ca4567c6623d8 -->
 
 ```
 psivicom.github.io/
@@ -330,6 +330,7 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
+├── A_3_index.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -357,7 +358,6 @@ psivicom.github.io/
 ├── critic_agent.py
 ├── exploreopenspaceresearch.html
 ├── forage_agent.py
-├── index.html
 ├── index2.html
 ├── index3.html
 ├── intelligence_agent.py
