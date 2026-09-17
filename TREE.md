@@ -177,19 +177,18 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
-│   │   ├── lit_6a8168162049.json
-│   │   ├── lit_6a8168162049.psvc
 │   │   ├── lit_86384eac0da0.json
 │   │   ├── lit_86384eac0da0.psvc
 │   │   ├── lit_a9495d14c878.json
 │   │   ├── lit_a9495d14c878.psvc
 │   │   ├── lit_b0af6a4e6cea.json
 │   │   ├── lit_b0af6a4e6cea.psvc
-│   │   ├── lit_eaa8e2829906.json
-│   │   ├── lit_eaa8e2829906.psvc
 │   │   ├── state_0_55b8f4d3e01f.psvc
 │   │   ├── state_0_6a236f59a9aa.psvc
+│   │   ├── state_0_f816755d4086.psvc
 │   │   ├── state_1_1683fb8d99e1.psvc
+│   │   ├── state_1_e6bbae07a097.psvc
+│   │   ├── state_2_9d3839e18eed.psvc
 │   │   └── state_2_c53c5acaffaf.psvc
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
@@ -249,7 +248,6 @@ psivicom.github.io/
 ├── exploreopenspaceresearch.html
 ├── forage_agent.py
 ├── index.html
-├── index2.html
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
