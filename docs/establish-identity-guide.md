@@ -217,6 +217,14 @@ Before automating, do a manual reservation to verify everything works:
    
 Pitfall #2 to avoid: Never publish to production Zenodo until you've tested the entire pipeline on sandbox at least 3 times.
 
+Step 5: Update Your zenodo_agent.py for Reservation Mode
+
+Replace your current zenodo_agent.py with this version that supports DOI reservation:
+
+PYTHON
+
+```
+
 
 
    
