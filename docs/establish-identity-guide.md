@@ -162,5 +162,18 @@ BASH
 python embed_identity.py
 ```
 
+Step 4: Zenodo DOI Reservation (The
+Safe Method)
+
+This is how you reserve a DOl before full publication, so you can test everything.
+4.1 Create Zenodo Account
+
+1. Go to https://sandbox.zenodo.org * (sandbox
+first, not production)
+2. Click "Sign up"
+3. Use your ORCID to log in (Auth integration)
+4. This links your ORCID to Zenodo permanently
+
+
 
    
