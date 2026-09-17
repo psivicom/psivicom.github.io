@@ -549,6 +549,10 @@ format.github.io
 • FAIR Principles: https://www.go-fair.org/fair-
 principles/ 
 
+Last Updated: 2026-09-18
+Author: Louis-Philippe Audette
+ORCID: https://orcid.org/YOUR-ORCID-HERE
+
 
 
 
