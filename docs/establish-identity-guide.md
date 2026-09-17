@@ -195,6 +195,28 @@ pplications/tokens/new/7
 5. Value: Paste the token
 6. Click "Add secret"
 
+4.3 Add Token to GitHub Secrets
+1. Go to your repository on GitHub
+2. Settings → Secrets and variables → Actions
+3. Click "New repository secret"
+4. Name: ZENODO_SANDBOX_TOKEN
+5. Value: Paste the token
+6. Click "Add secret"
+
+4.4 Reserve the DOI (Manual First Time)
+Before automating, do a manual reservation to verify everything works:
+1. Go to https://sandbox.zenodo.org/deposit/new
+2. Click "Reserve DOI" button
+3. You'll get a DOl like: 10.5072/zenodo.123456
+4. Save this DOI — you'll use it for testing
+5. Fill in minimal metadata:
+• Title: "Mesh Pico Al v1.0.0 (Reserved)"
+• Upload type: Software
+• Description: "Reserved DOI for testing"
+6. Click "Save" (don't publish yet)
+   
+Pitfall #2 to avoid: Never publish to production Zenodo until you've tested the entire pipeline on sandbox at least 3 times.
+
 
 
    
