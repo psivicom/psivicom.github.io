@@ -189,7 +189,9 @@ psivicom.github.io/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
 │   │   ├── 32c50e6b93c2.json
-│   │   └── 32c50e6b93c2.npy
+│   │   ├── 32c50e6b93c2.npy
+│   │   ├── 976a1ba42d85.json
+│   │   └── 976a1ba42d85.npy
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
 │   ├── ai_audit.md
@@ -198,8 +200,9 @@ psivicom.github.io/
 │   ├── license_audit.md
 │   └── synthesis_2026-09-16.md
 ├── scripts/
-│   └── update-tree/
-│       └── main.go
+│   ├── update-tree/
+│   │   └── main.go
+│   └── fix_archive_names.py
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
