@@ -82,7 +82,8 @@ Low-cost weight, temperature, acoustic logger for Langford apiaries. Hardware sc
 
 ---
 
-## 04 — Domain-Separated License — NASA + Space Partners Compliant
+## 04 — Domain-Separated License<br>
+      — NASA + Space Partners Compliant
 
 | Type | License | Path | For |
 | :--- | :--- | :--- | :--- |
@@ -110,7 +111,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 - [NIST SSDF Compliance Mapping](docs/NIST-SSDF-COMPLIANCE-MAPPING.md) — Technical and legal verification of NIST SP 800-218 alignment, preventing proprietary "black box" lock-in.
 ---
 
-## 06 — Repository Structure — Interconnected
+## 06 — Repository Structure <br>
+      — Interconnected
 
 <!-- AUTO_TREE_START -->
 <!-- Last updated: 2026-09-17T02:13:57.719Z | Hash: 3f39aec78ee9ce34f6ea4664b0acf6473101b362304e8e0dae76c9855018d326 -->
