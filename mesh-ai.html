@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+  Code: EUPL 1.2 | Docs: CC BY-SA 4.0 | Hardware: Proprietary (w-1-n.com)
+-->
+<html lang="en-CA">
+<head>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+@font-face { font-family: "Optimistic"; font-style: normal; font-weight: 400 600; font-display: swap; src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2"); }
+@font-face { font-family: "Optimistic Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2"); }
+:where(html) { font-family: "Optimistic", system-ui, sans-serif; }
+:where(code, pre, kbd, samp) { font-family: "Optimistic Mono", ui-monospace, monospace; }
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesh Pico AI — Neuroplastic Intelligence Framework — PSIVI.COM</title>
+<meta name="description" content="Technical documentation for the Research Mesh Pico AI: a distributed, neuroplastic intelligence framework utilizing .psvc containers, volunteer VRAM sharing, and FAIR open science principles.">
+<link rel="icon" href="/favicon.ico">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');
+:root { font-family: 'IBM Plex Serif', Georgia, serif; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+body { margin: 0; background: #f6f9ff; color: #18181b; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: radial-gradient(1200px 600px at 20% -10%, #dbeafe 0%, transparent 60%), radial-gradient(800px 400px at 90% 10%, #e0e7ff 0%, transparent 50%); pointer-events: none; }
+a { color: inherit; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+.container { max-width: 900px; margin: 0 auto; padding: 24px 24px 64px; background: #fff; border-radius: 0 0 16px 16px; box-shadow: 0 10px 40px #0A193133, 0 1px 0 #e4e4e7; }
+.header { border-bottom: 1px solid #e4e4e7; padding-bottom: 32px; }
+.kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #71717a; font-weight: 500; }
+.h1 { font-size: 36px; line-height: 1.1; letter-spacing: -.02em; font-weight: 600; margin: 12px 0 0; }
+.sub { margin-top: 12px; font-size: 15px; color: #52525b; line-height: 1.6; }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; }
+.nav a { border: 1px solid #e4e4e7; border-radius: 9999px; padding: 6px 14px; text-decoration: none; }
+.nav a:hover { border-color: #0A1931; background: #0A1931; color: #fff; }
+.section { margin-top: 64px; scroll-margin-top: 60px; }
+.section-head { display: flex; align-items: center; gap: 16px; }
+.section-head h2 { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: #71717a; white-space: normal; word-break: break-word; margin: 0; line-height: 1.4; min-width: 0; flex-shrink: 1; max-width: 100%; }
+.line { flex: 1; height: 1px; background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); opacity: 0.5; }
+h3 { font-size: 16px !important; font-weight: 600; line-height: 1.4; color: #18181b; margin: 0 0 8px 0; }
+
+/* YVES KLEIN BLUE BOXES */
+.klein-box-full {
+  background: #002FA7; color: #ffffff; border-radius: 12px; padding: 32px;
+  box-shadow: 0 8px 24px rgba(0, 47, 167, 0.2); display: flex; flex-direction: column;
+  overflow: hidden; word-wrap: break-word; transition: transform 0.2s ease;
+}
+.klein-box-full .label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.75); font-family: 'IBM Plex Mono', monospace; margin-bottom: 8px; }
+.klein-box-full .value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; color: #ffffff; line-height: 1.2; }
+.klein-box-full .desc { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.9); max-width: 700px; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media(max-width:640px) { .grid2 { grid-template-columns: 1fr; } }
+
+.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 20px; background: #fff; overflow: hidden; word-wrap: break-word; }
+pre { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 11.5px; line-height: 1.6; }
+code { font-family: 'IBM Plex Mono', monospace; font-size: 13px; background: #f4f4f5; padding: 2px 6px; border-radius: 4px; }
+
+footer { margin-top: 48px; border-top: 1px solid #e4e4e7; padding-top: 32px; font-size: 11px; color: #71717a; line-height: 1.7; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+
+<body>
+<div class="container">
+<header class="header">
+<div class="kicker">PSIVI.COM — Technical Documentation</div>
+<h1 class="h1">Research Mesh Pico AI</h1>
+<div class="sub">A distributed, neuroplastic intelligence framework. Documented for full reproducibility, FAIR compliance, and open scientific collaboration via decentralized volunteer compute.</div>
+<nav class="nav mono" aria-label="Primary">
+<a href="index.html">← Back to Main Hub</a>
+<a href="#architecture">Architecture</a>
+<a href="#containers">.psvc Containers</a>
+<a href="#vectors">Neuroplasticity</a>
+<a href="#volunteer">Volunteer Mesh</a>
+<a href="#reproduce">Reproduce</a>
+</nav>
+</header>
+
+<main>
+<section id="architecture" class="section">
+<div class="section-head"><h2 class="mono">01 — The Neuroplastic Mesh Architecture</h2><div class="line"></div></div>
+<div style="margin-top:24px; font-size:15px; color:#27272a">
+<p>The Research Mesh Pico AI is not a static, centralized model. It is a <strong>dynamic, neuroplastic mesh of intelligence</strong> composed of five autonomous agents that run continuously on decentralized infrastructure. By mimicking biological cognitive processes, the mesh learns, adapts, and routes computational tasks without human intervention.</p>
+<ul style="list-style:none; padding:0; margin-top:16px">
+  <li style="border-left:2px solid #002FA7; padding-left:16px; margin-bottom:12px"><strong>The Observer (Forage Agent):</strong> Gathers local environmental telemetry and encodes it into pure mathematical tensors.</li>
+  <li style="border-left:2px solid #002FA7; padding-left:16px; margin-bottom:12px"><strong>The Dopamine Signal (Critic Agent):</strong> Calculates prediction error (drift) against reality and applies self-corrections to the mesh.</li>
+  <li style="border-left:2px solid #002FA7; padding-left:16px; margin-bottom:12px"><strong>The Immune System (Governor Agent):</strong> Enforces Pico VRAM limits, monitors memory, and strictly prohibits plaintext passing between agents.</li>
+  <li style="border-left:2px solid #002FA7; padding-left:16px; margin-bottom:12px"><strong>The Neocortex (Cortex Agent):</strong> Performs K-Means clustering and entropy-based synaptic pruning to consolidate long-term ecological memory.</li>
+  <li style="border-left:2px solid #002FA7; padding-left:16px; margin-bottom:12px"><strong>The Scholar (Literature Agent):</strong> Ingests global scientific context via free open-science APIs, bridging local observation with peer-reviewed research.</li>
+</ul>
+</div>
+</section>
+
+<section id="containers" class="section">
+<div class="section-head"><h2 class="mono">02 — .psvc Containers (Pico Service Container)</h2><div class="line"></div></div>
+<div style="margin-top:24px; font-size:15px; color:#27272a">
+<p>To ensure secure, lightweight, and domain-separated deployment, all model weights, ecological observations, and literature contexts are packaged into <code>.psvc</code> binary files. These containers sleep dormant on disk (often &lt;4KB) and only decompress directly into active VRAM when explicitly called by the mesh router.</p>
+<pre><code>// .psvc Binary Specification (14-byte header + zlib payload)
+Bytes 0-3   : Magic Signature ('PSVI')
+Byte  4     : Protocol Version (v1)
+Byte  5     : Precision (0 = INT8, 1 = Float16, 2 = Float32)
+Bytes 6-9   : Vector Dimensions (e.g., 4096)
+Bytes 10-13 : Compressed Payload Size (uint32)
+Bytes 14+   : zlib Level-9 Compressed Vector Data</code></pre>
+<div class="grid2" style="margin-top:24px">
+  <div class="card">
+    <h3>Immutable & Auditable</h3>
+    <p style="font-size:14px; color:#3f3f46">Each .psvc file is cryptographically hashed (SHA-256). Any modification to the container breaks the hash, ensuring absolute integrity of the AI pipeline from developer to edge node.</p>
+  </div>
+  <div class="card">
+    <h3>Domain-Separated Execution</h3>
+    <p style="font-size:14px; color:#3f3f46">The container enforces strict boundaries between the EUPL 1.2 licensed inference engine and the CC BY-SA 4.0 licensed data payloads, satisfying NASA/ESA open science mandates.</p>
+  </div>
+</div>
+</div>
+</section>
+
+<section id="vectors" class="section">
+<div class="section-head"><h2 class="mono">03 — Vectors, K-Means & Synaptic Pruning</h2><div class="line"></div></div>
+<div style="margin-top:24px; font-size:15px; color:#27272a">
+<p>High-dimensional ecological and satellite data is compressed into highly optimized <strong>Pico Vectors</strong>. Using a 4096-dimensional hashing trick, text and telemetry are converted into pure mathematical tensors. The mesh never passes plaintext between agents; it only passes compressed binary containers.</p>
+<div class="grid2" style="margin-top:24px">
+  <div class="card">
+    <h3>Synaptic Strengthening (K-Means)</h3>
+    <p style="font-size:14px; color:#3f3f46">The Cortex Agent clusters daily observations into distinct "Ecological States" (e.g., Bloom, Drought) using pure numpy K-Means, creating permanent master vectors that represent the watershed's core patterns.</p>
+  </div>
+  <div class="card">
+    <h3>Synaptic Pruning (Entropy)</h3>
+    <p style="font-size:14px; color:#3f3f46">To maintain Pico-scale efficiency, the mesh calculates cosine similarity. Raw vectors >95% similar to a master state are deemed mathematically redundant and pruned, preserving only novel, high-entropy scientific events.</p>
+  </div>
+</div>
+</div>
+</section>
+
+<section id="volunteer" class="section">
+<div class="section-head"><h2 class="mono">04 — Zero-Cost Volunteer Mesh & Open APIs</h2><div class="line"></div></div>
+<div class="klein-box-full" style="margin-top: 24px;">
+  <div class="label">Distributed Computing</div>
+  <div class="value">Git as the Global Memory Bus</div>
+  <div class="desc">
+    Instead of relying on expensive cloud GPUs or heavy OCR models, the Mesh Pico AI uses <strong>Git as a content-addressed VRAM bus</strong>. 
+    Volunteers clone the repository, open sealed <code>.psvc</code> containers in their local idle VRAM, perform the heavy mathematical consensus, and push the results back. 
+    <br><br>
+    <strong>Global Science Context:</strong> The Literature Agent continuously ingests peer-reviewed pollinator ecology papers via free, open-access APIs (PubMed NCBI, Crossref), encoding global science into the mesh without requiring expensive API keys or GPU-heavy parsing.
+  </div>
+</div>
+<div style="margin-top:24px; font-size:15px; color:#27272a">
+<p>The system operates similarly to traditional volunteer computing (like BOINC), but is specifically optimized for <strong>low-latency AI inference and vector database operations</strong>, creating a truly decentralized "neuroplastic" brain that scales infinitely without cloud infrastructure costs.</p>
+</div>
+</section>
+
+<section id="reproduce" class="section">
+<div class="section-head"><h2 class="mono">05 — Reproducibility & Open Science (FAIR)</h2><div class="line"></div></div>
+<div style="margin-top:24px; font-size:15px; color:#27272a">
+<p>This framework is built to be replicated. To help independent researchers, space agencies, and developers reproduce this learning mesh, all components are documented under FAIR principles and automatically deposited to Zenodo for permanent DOI citation:</p>
+<div style="margin-top:24px; overflow:hidden; border:1px solid #e4e4e7; border-radius:12px;">
+<table style="width:100%; border-collapse:collapse; font-size:13px;">
+  <thead>
+    <tr>
+      <th style="text-align:left; padding:12px 16px; background:#fafafa; border-bottom:1px solid #e4e4e7;">Component</th>
+      <th style="text-align:left; padding:12px 16px; background:#fafafa; border-bottom:1px solid #e4e4e7;">Location / License</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;"><strong>Observer & Critic Agents</strong></td>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;" class="mono">/forage_agent.py, /critic_agent.py (EUPL 1.2)</td>
+    </tr>
+    <tr>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;"><strong>Neocortex & Governor</strong></td>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;" class="mono">/consolidator_agent.py, /mesh_governor.py (EUPL 1.2)</td>
+    </tr>
+    <tr>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;"><strong>Literature Ingestion</strong></td>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;" class="mono">/literature_agent.py (EUPL 1.2)</td>
+    </tr>
+    <tr>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;"><strong>Volunteer Protocol</strong></td>
+      <td style="padding:12px 16px; border-bottom:1px solid #f4f4f5;" class="mono">/VOLUNTEER_PROTOCOL.md, /volunteer_node.py (CC BY-SA 4.0 / EUPL 1.2)</td>
+    </tr>
+    <tr>
+      <td style="padding:12px 16px;"><strong>Zenodo DOI Depositor</strong></td>
+      <td style="padding:12px 16px;" class="mono">/zenodo_agent.py, /.github/workflows/ (EUPL 1.2)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p style="margin-top:16px">To spin up your own test node, clone the repository, install the dependencies listed in <code>README.md</code>, and run the local mesh simulator. Full step-by-step reproduction guides are available in the <code>/docs</code> directory.</p>
+</div>
+</section>
+
+</main>
+
+<footer>
+<div>
+<p>© 2026 Louis-Philippe Audette — PSIVI.COM</p>
+<p>Content: <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="text-decoration:underline">CC BY-SA 4.0</a> · Code: <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12" style="text-decoration:underline">EUPL 1.2</a></p>
+</div>
+<div style="text-align:right">
+<p>NASA Open Science 101 Certified — Langford, BC</p>
+</div>
+</footer>
+</div>
+</body>
+</html>
