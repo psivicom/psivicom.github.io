@@ -481,6 +481,14 @@ gs/applications/tokens/new/a
 • Click "Create"
 • Copy the token immediately
 
+Step 4: Add Token to GitHub
+1. Go to your repository on GitHub
+2. Settings → Secrets and variables → Actions
+3. Click "New repository secret"
+4. Name: ZENODO_SANDBOX_TOKEN
+5. Value: Paste your token
+6. Click "Add secret"
+
 
 
 
