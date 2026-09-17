@@ -468,6 +468,21 @@ repository-code: "https://github.com/your-username/your-repo"
 license: "EUPL-1.2"
 type: software
 ```
+Step 3: Set Up Zenodo Sandbox
+1. Visit https://sandbox.zenodo.org a
+2. Click "Log in" → "Log in with ORCID"
+3. Authorize Zenodo to access your ORCID
+4. Generate an API token:
+• Go to :
+https://sandbox.zenodo.org/account/settin
+gs/applications/tokens/new/a
+• Name: "Auto-Deposit"
+• Scopes: Check deposit:actions and deposit:write
+• Click "Create"
+• Copy the token immediately
+
+
+
 
 
 
