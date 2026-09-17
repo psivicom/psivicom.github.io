@@ -53,6 +53,20 @@ abstract: >
 type: software
 ```
 
+Replace xxxx-xxxx-xxXX-XXXX with your actual
+ORCID once you have it.
+
+Step 3: Embed ORCID Across All Agent
+Files
+
+Create this script to automatically embed your
+ORCID into every Python file's header.
+
+File: embed_identity.py
+
+PYTHON
+
+```
 
 
    
