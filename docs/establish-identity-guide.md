@@ -843,5 +843,3 @@ guide.html
 Because it uses the exact same CSS classes (
 •klein-box-full, •grid3, •danger-box) as your Mesh Pico Al page, it will look like it belongs in the same premium, professional documentation suite.
 You can now share this link with any independent researcher in the world, and they will have a beautiful, pitfall-free guide to establishing their scientific identity. <3 ❤️
-
-
