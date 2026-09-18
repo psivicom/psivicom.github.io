@@ -37,8 +37,17 @@ class MeshBrain:
         encoder = self.encoders.get(modality)
         latent_vector = encoder(raw_data)
         
-        # 2. Find the best volunteer node based on VRAM Dim
-        target_node = self._select_optimal_node(latent_vector.element_size() * latent_vector.nelement())
+               from src.orchestrator.psvc_provisioner import PSVCProvisioner
+        
+        # 1. Calculate required VRAM
+        required_vram = (latent_vector.element_size() * latent_vector.nelement()) / (1024 * 1024)
+        
+        # 2. Provision a secure .psvc container for this exact payload
+        provisioner = PSVCProvisioner()
+        provisioner.spawn_pico_node(node_id="GOLDSTREAM_01", target_vram_mb=int(required_vram * 1.5))
+        
+        # 3. Select the newly provisioned node
+        target_node = self._select_optimal_node(required_vram)
         if not target_node:
             print("Error: No volunteer nodes with sufficient VRAM available.")
             return
