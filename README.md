@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T01:32:50.784Z | Hash: 328075e69a56d2752c051f9da31d1c06f2ba104b02cb1340bc646c5fac307f0e -->
+<!-- Last updated: 2026-09-18T01:38:53.348Z | Hash: b06795e82b67c9d2025dd8943a19a19547f6f4879ed95745b06fbd29a7cc0bdf -->
 
 ```
 psivicom.github.io/
@@ -374,6 +374,7 @@ psivicom.github.io/
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
+├── PROVENANCE.json
 ├── README.md
 ├── REUSE.toml
 ├── RFC.md
