@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T01:14:26.538Z | Hash: 2589fca9d354d0bd2d2d8bc6ab9f5d0e475182f5530c1c83e942c10de8a5db92 -->
+<!-- Last updated: 2026-09-18T01:17:52.799Z | Hash: 9e1d599106e4289127e247911aa7fa1893b43a627bc007b81c40f21b330f937b -->
 
 ```
 psivicom.github.io/
@@ -346,8 +346,9 @@ psivicom.github.io/
 │   │   └── vector_pixelizer.py
 │   ├── nodes/
 │   │   └── pico_worker.py
-│   └── orchestrator/
-│       └── mesh_brain.py
+│   ├── orchestrator/
+│   │   └── mesh_brain.py
+│   └── __init__.py
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json

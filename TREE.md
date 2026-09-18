@@ -227,8 +227,9 @@ psivicom.github.io/
 │   │   └── vector_pixelizer.py
 │   ├── nodes/
 │   │   └── pico_worker.py
-│   └── orchestrator/
-│       └── mesh_brain.py
+│   ├── orchestrator/
+│   │   └── mesh_brain.py
+│   └── __init__.py
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
