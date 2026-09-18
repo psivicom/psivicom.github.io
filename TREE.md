@@ -17,6 +17,7 @@ psivicom.github.io/
 │       ├── mesh_evolution.yml
 │       ├── neuroplasticity.yml
 │       ├── normalize-archive-names.yml
+│       ├── rfc-compliance.yml
 │       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
