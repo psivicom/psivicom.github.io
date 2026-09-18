@@ -225,6 +225,8 @@ psivicom.github.io/
 │   ├── nodes/
 │   │   └── pico_worker.py
 │   └── orchestrator/
+│       ├── docker/
+│       │   └── dockerfile
 │       └── mesh_brain.py
 ├── tools/
 │   └── fix_timestamps.py
