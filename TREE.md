@@ -220,8 +220,10 @@ psivicom.github.io/
 │   │   └── main.go
 │   └── fix_archive_names.py
 ├── src/
-│   └── core/
-│       └── vector_pixelizer.py
+│   ├── core/
+│   │   └── vector_pixelizer.py
+│   └── nodes/
+│       └── pico_worker.py
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
