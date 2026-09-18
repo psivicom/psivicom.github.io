@@ -54,6 +54,9 @@ show_excerpts: true
 # This ensures fast build times and prevents Jekyll from trying 
 # to process Python/Docker files as web pages.
 # ==========================================
+# ==========================================
+# AETHER VANGUARD MESH INTEGRATION
+# ==========================================
 exclude:
   - src/
   - tests/
@@ -63,6 +66,8 @@ exclude:
   - docker-compose.yml
   - requirements.txt
   - PROVENANCE.json
+  - "*.psvc"          # <--- NEW: Ignores PSIVI Service manifests
+  - RFC/              # <--- NEW: Ignores your RFC documentation/specs
   - Gemfile
   - Gemfile.lock
   - node_modules
