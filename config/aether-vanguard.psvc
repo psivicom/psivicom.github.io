@@ -1,0 +1,31 @@
+# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
+# PSVC Manifest: AETHER VANGUARD Pico Worker
+# RFC Compliance: PSIVI-Edge-Compute-v1
+
+psvc_version: "1.0"
+metadata:
+  name: "aether-pico-worker"
+  namespace: "psivicom-research"
+  labels:
+    fair.license: "CC-BY-SA-4.0"
+    nist.ssdf: "true"
+    mesh.role: "vector-pixel-node"
+
+spec:
+  runtime: "pico-sandbox" # Uses your lightweight RFC-defined runtime
+  resources:
+    vram_limit_mb: 2048   # Strict VRAM Dim enforcement
+    cpu_shares: 512
+    network: "aether_mesh_bridge"
+  
+  environment:
+    ORCHESTRATOR_URL: "ws://mesh-brain.local:8765"
+    PSVC_MODE: "VOLUNTEER"
+    
+  volumes:
+    # Mount the vector pixelizer engine into the container
+    - host: "./src/core"
+      container: "/app/core"
+      readonly: true
+      
+  entrypoint: ["python", "-m", "src.nodes.pico_worker"]
