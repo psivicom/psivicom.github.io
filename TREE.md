@@ -136,8 +136,6 @@ psivicom.github.io/
 │   └── README.md
 ├── dist/
 │   └── README.md
-├── docker/
-│   └── dockerfile
 ├── docs/
 │   ├── GO_TREE/
 │   │   ├── render-readme/
@@ -245,6 +243,7 @@ psivicom.github.io/
 ├── CONTRIBUTING.md
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
+├── Dockerfile
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md

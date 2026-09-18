@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T00:56:14.839Z | Hash: 64eda8b7ca19df10df7ff80e1613b09d41107166ab5617eaf07d3eb1165e102f -->
+<!-- Last updated: 2026-09-18T01:06:03.412Z | Hash: 6eedaeb70a67eb29c0bbe35bedc58629786eee4cb5a33b89cbec2d4555adb15c -->
 
 ```
 psivicom.github.io/
@@ -255,8 +255,6 @@ psivicom.github.io/
 │   └── README.md
 ├── dist/
 │   └── README.md
-├── docker/
-│   └── dockerfile
 ├── docs/
 │   ├── GO_TREE/
 │   │   ├── render-readme/
@@ -364,6 +362,7 @@ psivicom.github.io/
 ├── CONTRIBUTING.md
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
+├── Dockerfile
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
