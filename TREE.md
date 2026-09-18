@@ -234,7 +234,8 @@ psivicom.github.io/
 │   │   └── pico_worker.py
 │   ├── orchestrator/
 │   │   ├── __init__.py
-│   │   └── mesh_brain.py
+│   │   ├── mesh_brain.py
+│   │   └── psvc_provisioner.py
 │   └── __init__.py
 ├── tests/
 │   ├── __init__.py
