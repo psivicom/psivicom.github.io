@@ -1,0 +1,44 @@
+name: RFC 1001 Compliance
+
+on:
+  push:
+    paths:
+      - 'psvc_reference.py'
+      - 'psvc_cli.py'
+      - 'test_rfc1001_compliance.py'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install numpy
+
+      - name: Run RFC 1001 Compliance Tests
+        run: python test_rfc1001_compliance.py
+
+      - name: Test CLI (create)
+        run: |
+          python psvc_cli.py create --text "RFC 1001 compliance test" --precision int8 --output test.psvc
+          python psvc_cli.py inspect test.psvc
+          python psvc_cli.py validate test.psvc
+
+      - name: Test CLI (all precisions)
+        run: |
+          python psvc_cli.py create --random --precision int8 --output test_int8.psvc
+          python psvc_cli.py create --random --precision float16 --output test_f16.psvc
+          python psvc_cli.py create --random --precision float32 --output test_f32.psvc
+          python psvc_cli.py validate test_int8.psvc
+          python psvc_cli.py validate test_f16.psvc
+          python psvc_cli.py validate test_f32.psvc
