@@ -1,0 +1,20 @@
+mesh_name: "AETHER VANGUARD - Goldstream Ecology"
+license: "EUPL 1.2"
+fair_compliance: "CC BY-SA 4.0"
+
+modalities:
+  RADARSAT_SAR:
+    target_dim: 4096
+    preferred_encoder: "ViT-SAR-Base"
+    min_vram_required_mb: 4096
+    priority: "HIGH"
+    
+  HIVE_AUDIO:
+    target_dim: 768
+    preferred_encoder: "AST-Base"
+    min_vram_required_mb: 1024
+    priority: "MEDIUM"
+
+sharding_rules:
+  holographic_redundancy_factor: 3 # Store 3 shards per pixel across different nodes
+  max_latency_ms: 250 # Drop nodes with ping > 250ms for real-time attention
