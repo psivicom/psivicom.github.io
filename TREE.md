@@ -234,7 +234,8 @@ psivicom.github.io/
 │   │   └── mesh_brain.py
 │   └── __init__.py
 ├── tests/
-│   └── __init__.py
+│   ├── __init__.py
+│   └── test_pixelizer_fidelity.py
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
