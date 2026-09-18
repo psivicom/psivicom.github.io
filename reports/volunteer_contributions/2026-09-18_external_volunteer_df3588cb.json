@@ -1,0 +1,43 @@
+{
+  "agent_id": "external_volunteer",
+  "timestamp": "2026-09-18T02:22:54.126476",
+  "containers_processed": 5,
+  "results": [
+    {
+      "container_id": "state_0_55b8f4d3e01f",
+      "content_hash": "55b8f4d3e01f",
+      "vector_norm": 0.9999999403953552,
+      "dimensions": 4096,
+      "status": "VERIFIED"
+    },
+    {
+      "container_id": "state_0_8e8202755302",
+      "content_hash": "8e8202755302",
+      "vector_norm": 1.006334662437439,
+      "dimensions": 4096,
+      "status": "VERIFIED"
+    },
+    {
+      "container_id": "state_2_9d3839e18eed",
+      "content_hash": "1532552c8b4c",
+      "vector_norm": 1.0009360313415527,
+      "dimensions": 4096,
+      "status": "VERIFIED"
+    },
+    {
+      "container_id": "state_0_6a236f59a9aa",
+      "content_hash": "6a236f59a9aa",
+      "vector_norm": 0.9942241311073303,
+      "dimensions": 4096,
+      "status": "VERIFIED"
+    },
+    {
+      "container_id": "state_1_e6bbae07a097",
+      "content_hash": "580690b3a258",
+      "vector_norm": 1.0,
+      "dimensions": 4096,
+      "status": "VERIFIED"
+    }
+  ],
+  "protocol_version": "1.0"
+}
