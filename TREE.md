@@ -238,6 +238,7 @@ psivicom.github.io/
 │   └── test_pixelizer_fidelity.py
 ├── tools/
 │   └── fix_timestamps.py
+├── .gitignore
 ├── .zenodo.json
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
