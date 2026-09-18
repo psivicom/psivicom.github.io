@@ -40,7 +40,10 @@ def cmd_create(args):
         out_path = f"{chash}.psvc"
     
     write_file(vector, out_path, precision)
-    size = Path(out_path).size
+    
+    # FIXED: Use .stat().st_size to get file size in bytes
+    size = Path(out_path).stat().st_size 
+    
     print(f"[CREATE] Sealed: {out_path}")
     print(f"[CREATE] Content hash: {chash}")
     print(f"[CREATE] Precision: {args.precision}")
