@@ -180,6 +180,7 @@ psivicom.github.io/
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── installation-guide-repository-tree.md
+│   ├── make-psvc-guide.md
 │   ├── osdmp.html
 │   ├── osdmp.md
 │   ├── rfc1001.txt
