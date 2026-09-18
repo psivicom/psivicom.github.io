@@ -1,14 +1,14 @@
 # Mesh Governor Enforcement Report
 
-**Timestamp:** 2026-09-18T15:14:48.166483
-**Available RAM:** 14976 MB
+**Timestamp:** 2026-09-18T20:02:16.949833
+**Available RAM:** 14561 MB
 
 ## Mode Decision
 - **Selected Mode:** `vram`
-- **Reason:** 14976MB available.
+- **Reason:** 14561MB available.
 
 ## Enforcement Scan
-- **Vectors in storage:** 11
+- **Vectors in storage:** 12
 - **Violations found:** 1
 
 ## Violations
