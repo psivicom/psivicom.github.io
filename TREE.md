@@ -132,6 +132,8 @@ psivicom.github.io/
 │   └── README.md
 ├── dist/
 │   └── README.md
+├── docker/
+│   └── dockerfile
 ├── docs/
 │   ├── GO_TREE/
 │   │   ├── render-readme/
@@ -225,8 +227,6 @@ psivicom.github.io/
 │   ├── nodes/
 │   │   └── pico_worker.py
 │   └── orchestrator/
-│       ├── docker/
-│       │   └── dockerfile
 │       └── mesh_brain.py
 ├── tools/
 │   └── fix_timestamps.py
