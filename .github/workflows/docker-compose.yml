@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  orchestrator:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python -m src.orchestrator.mesh_brain
+    ports:
+      - "8765:8765"
+    networks:
+      - aether_mesh
+
+  volunteer_node_1:
+    build: .
+    command: python -m src.nodes.pico_worker
+    environment:
+      - ORCHESTRATOR_URL=ws://orchestrator:8765
+    depends_on:
+      - orchestrator
+    networks:
+      - aether_mesh
+    deploy:
+      resources:
+        limits:
+          memory: 512M # Simulating strict VRAM Dim constraints
+
+networks:
+  aether_mesh:
+    driver: bridge
