@@ -210,7 +210,8 @@ psivicom.github.io/
 │   │   ├── 976a1ba42d85.json
 │   │   └── 976a1ba42d85.npy
 │   ├── volunteer_contributions/
-│   │   └── 2026-09-17_external_volunteer_49b5fced.json
+│   │   ├── 2026-09-17_external_volunteer_49b5fced.json
+│   │   └── 2026-09-18_external_volunteer_df3588cb.json
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
 │   ├── 2026-09-17_synthesizer_memory.json
@@ -276,6 +277,7 @@ psivicom.github.io/
 ├── critic_agent.py
 ├── docker-compose.yml
 ├── forage_agent.py
+├── how-psvc-works.html
 ├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
