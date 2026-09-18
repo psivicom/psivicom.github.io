@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T06:26:50.203Z | Hash: 6d67fe2e2023d9a9b5d3b89c766c44a7970dfdfa005ffeef16d4c2fbd9753340 -->
+<!-- Last updated: 2026-09-18T06:29:09.050Z | Hash: de662cab690fea6300b282d233e005ac71d4aaa3d4837fda05014f127d82acc5 -->
 
 ```
 psivicom.github.io/
@@ -411,6 +411,7 @@ psivicom.github.io/
 ├── open-science-guide.html
 ├── pico_containers.py
 ├── pico_mesh.py
+├── psvc_cli.py
 ├── psvc_reference.py
 ├── requirements.txt
 ├── robots.txt
