@@ -4,6 +4,7 @@ psivicom.github.io/
 │   └── workflows/
 │       ├── README.md
 │       ├── critic-agent.yml
+│       ├── docker-compose.yml
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
