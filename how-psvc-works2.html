@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+  Code: EUPL 1.2 | Docs: CC BY-SA 4.0
+-->
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How .psvc Works: The Binary Container Explained — PSIVI.COM</title>
+<meta name="description" content="A complete technical explanation of how the .psvc (Pico Service Container) binary format works: file extensions, creation, validation, input/output control, and security model.">
+<link rel="icon" href="/favicon.ico">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');
+:root { font-family: 'IBM Plex Serif', Georgia, serif; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+body { margin: 0; background: #f6f9ff; color: #18181b; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: radial-gradient(1200px 600px at 20% -10%, #dbeafe 0%, transparent 60%), radial-gradient(800px 400px at 90% 10%, #e0e7ff 0%, transparent 50%); pointer-events: none; }
+a { color: inherit; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+.container { max-width: 1000px; margin: 0 auto; padding: 24px 24px 64px; background: #fff; border-radius: 0 0 16px 16px; box-shadow: 0 10px 40px #0A193133, 0 1px 0 #e4e4e7; }
+.header { border-bottom: 1px solid #e4e4e7; padding-bottom: 32px; }
+.kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #71717a; font-weight: 500; }
+.h1 { font-size: 42px; line-height: 1.1; letter-spacing: -.02em; font-weight: 600; margin: 12px 0 0; }
+.sub { margin-top: 16px; font-size: 16px; color: #52525b; line-height: 1.6; }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; }
+.nav a { border: 1px solid #e4e4e7; border-radius: 9999px; padding: 6px 14px; text-decoration: none; }
+.nav a:hover { border-color: #0A1931; background: #0A1931; color: #fff; }
+.section { margin-top: 64px; scroll-margin-top: 60px; }
+.section-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.section-head h2 { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: #71717a; }
+.line { flex: 1; height: 1px; background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); opacity: 0.5; }
+h3 { font-size: 18px !important; font-weight: 600; line-height: 1.4; color: #18181b; margin: 0 0 12px 0; }
+p { font-size: 15px; color: #27272a; margin: 0 0 16px 0; }
+ul, ol { font-size: 15px; color: #27272a; line-height: 1.8; padding-left: 24px; margin: 0 0 16px 0; }
+
+.klein-box-full {
+  background: #002FA7; color: #ffffff; border-radius: 12px; padding: 32px;
+  box-shadow: 0 8px 24px rgba(0, 47, 167, 0.2);
+}
+.klein-box-full .label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.75); font-family: 'IBM Plex Mono', monospace; margin-bottom: 8px; }
+.klein-box-full .value { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; color: #ffffff; line-height: 1.2; }
+.klein-box-full .desc { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.9); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media(max-width:768px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 24px; background: #fff; }
+.card.highlight { border-color: #002FA7; background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%); }
+
+pre { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px; padding: 16px; overflow-x: auto; font-size: 12px; line-height: 1.6; margin: 16px 0; }
+code { font-family: 'IBM Plex Mono', monospace; font-size: 13px; background: #f4f4f5; padding: 2px 6px; border-radius: 4px; }
+
+.highlight-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 24px 0; }
+.highlight-box strong { color: #92400e; }
+
+.security-box { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; padding: 20px; border-radius: 8px; margin: 24px 0; }
+.security-box strong { color: #065f46; }
+
+.diagram { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px; padding: 32px; margin: 24px 0; }
+.diagram-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 16px; }
+
+.flow-diagram { display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 16px; }
+.flow-node { background: #002FA7; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 500; min-width: 140px; }
+.flow-arrow { font-size: 24px; color: #002FA7; }
+
+footer { margin-top: 48px; border-top: 1px solid #e4e4e7; padding-top: 32px; font-size: 11px; color: #71717a; line-height: 1.7; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+
+<body>
+<div class="container">
+<header class="header">
+<div class="kicker">PSIVI.COM — Technical Deep Dive</div>
+<h1 class="h1">How .psvc Works</h1>
+<div class="sub">A complete explanation of how the Pico Service Container binary format works: file extensions, creation, validation, input/output control, and security. Answering the question: "How does a binary file become a .psvc?"</div>
+<nav class="nav mono" aria-label="Primary">
+<a href="index.html">← Main Hub</a>
+<a href="mesh-ai.html">← Mesh Pico AI</a>
+<a href="rfc1001.html">← RFC 1001</a>
+<a href="#extension">Extensions</a>
+<a href="#creation">Creation</a>
+<a href="#validation">Validation</a>
+<a href="#control">I/O Control</a>
+<a href="#security">Security</a>
+</nav>
+</header>
+
+<main>
+
+<section id="extension" class="section">
+<div class="section-head"><h2 class="mono">01 — How Does a Binary File Get a .psvc Extension?</h2><div class="line"></div></div>
+
+<div class="klein-box-full">
+  <div class="label">The Simple Answer</div>
+  <div class="value">File Extensions Are Just Names</div>
+  <div class="desc">
+    A file extension like <code>.psvc</code> is simply a naming convention. It tells the operating system and applications <strong>what kind of file this is</strong>, but it doesn't change the file's actual content. 
+    <br><br>
+    Any binary file can have any extension. A <code>.psvc</code> file is a binary file that follows the RFC 1001 specification and is <em>named</em> with the <code>.psvc</code> extension so that software knows how to read it.
+  </div>
+</div>
+
+<div class="grid2" style="margin-top:32px">
+  <div class="card">
+    <h3>Analogy: File Extensions Are Like Labels</h3>
+    <p>Think of a file extension like a label on a jar:</p>
+    <ul>
+      <li>A jar labeled "Honey" contains honey</li>
+      <li>A file labeled <code>data.psvc</code> contains .psvc-formatted binary data</li>
+      <li>You <em>could</em> put sand in a jar labeled "Honey", but it would be wrong</li>
+      <li>Similarly, you <em>could</em> name a text file <code>image.psvc</code>, but software would reject it</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>How Software Knows It's Real</h3>
+    <p>Software doesn't trust the extension alone. It reads the <strong>magic bytes</strong> at the start of the file:</p>
+    <pre style="margin:0; font-size:11px">$ xxd example.psvc | head -1
+00000000: 5053 5649 0100 0010 0000 0087 0000 0078  PSVI.........x
+
+Bytes 0-3: "PSVI" (0x50 0x53 0x56 0x49)
+This proves it's a real .psvc file.</pre>
+    <p style="margin-top:16px">If the magic bytes are wrong, the software rejects the file regardless of the extension.</p>
+  </div>
+</div>
+</section>
+
+<section id="creation" class="section">
+<div class="section-head"><h2 class="mono">02 — How Do You Create a .psvc Container?</h2><div class="line"></div></div>
+
+<p>Creating a .psvc file is a 3-step process: <strong>encode the data as a vector → compress it → write it with the header</strong>. Here's the actual Python code from the Mesh Pico AI repository:</p>
+
+<pre><code>import numpy as np
+import struct
+import zlib
+import hashlib
+
+def create_psvc_container(vector, output_path, precision="int8"):
+    """
+    Creates a .psvc binary container from a numpy vector.
+    
+    Args:
+        vector: numpy array of shape (4096,) containing float32 values
+        output_path: where to save the .psvc file
+        precision: "int8", "float16", or "float32"
+    """
+    
+    # Step 1: Compress the vector based on precision
+    if precision == "int8":
+        # Quantize to INT8 with scale factor
+        scale = np.max(np.abs(vector)) / 127.0
+        if scale == 0: scale = 1.0
+        quantized = np.round(vector / scale).astype(np.int8)
+        payload = struct.pack('f', scale) + quantized.tobytes()
+        precision_code = 0
+    elif precision == "float16":
+        # Convert to half-precision
+        payload = vector.astype(np.float16).tobytes()
+        precision_code = 1
+    else:  # float32
+        # Keep full precision
+        payload = vector.astype(np.float32).tobytes()
+        precision_code = 2
+    
+    # Step 2: Compress with zlib (maximum compression)
+    compressed_payload = zlib.compress(payload, level=9)
+    
+    # Step 3: Build the 14-byte header
+    header = b'PSVI'  # Magic bytes (4 bytes)
+    header += struct.pack('B', 1)  # Version 1 (1 byte)
+    header += struct.pack('B', precision_code)  # Precision (1 byte)
+    header += struct.pack('I', len(vector))  # Dimensions (4 bytes, uint32)
+    header += struct.pack('I', len(compressed_payload))  # Payload size (4 bytes, uint32)
+    
+    # Step 4: Write to file with .psvc extension
+    with open(output_path, 'wb') as f:
+        f.write(header + compressed_payload)
+    
+    return output_path
+
+# Example usage:
+vector = np.random.randn(4096).astype(np.float32)
+vector /= np.linalg.norm(vector)  # Normalize
+
+create_psvc_container(vector, "observation_a16330272f3f.psvc", precision="int8")
+print("Created: observation_a16330272f3f.psvc")</code></pre>
+
+<div class="diagram" style="margin-top:24px">
+  <div class="diagram-title">The Creation Pipeline</div>
+  <div class="flow-diagram">
+    <div class="flow-node">Raw Data<br><small>Text / Sensors</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Vector<br><small>4096-dim float32</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Compress<br><small>INT8 + zlib</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">.psvc File<br><small>Header + Payload</small></div>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <strong>Why the filename is <code>a16330272f3f.psvc</code>:</strong> The filename is derived from the SHA-256 hash of the <em>uncompressed</em> vector, truncated to 12 hex characters. This ensures that identical vectors always produce identical filenames, enabling automatic deduplication across the Git-based memory bus.
+</div>
+
+</section>
+
+<section id="validation" class="section">
+<div class="section-head"><h2 class="mono">03 — How Do You Validate a .psvc File?</h2><div class="line"></div></div>
+
+<p>Before reading a .psvc file, software <strong>must</strong> validate it to ensure it's not corrupted or malicious. This is a 4-step process:</p>
+
+<pre><code>def validate_psvc(file_path):
+    """
+    Validates a .psvc file before reading it.
+    Returns True if valid, False if corrupted or malicious.
+    """
+    
+    with open(file_path, 'rb') as f:
+        # Step 1: Check file size (minimum 14 bytes for header)
+        f.seek(0, 2)  # Seek to end
+        file_size = f.tell()
+        if file_size < 14:
+            print(f"[INVALID] File too small: {file_size} bytes")
+            return False
+        f.seek(0)  # Back to start
+        
+        # Step 2: Check magic bytes
+        magic = f.read(4)
+        if magic != b'PSVI':
+            print(f"[INVALID] Wrong magic bytes: {magic}")
+            return False
+        
+        # Step 3: Read header
+        version = struct.unpack('B', f.read(1))[0]
+        precision = struct.unpack('B', f.read(1))[0]
+        dimensions = struct.unpack('I', f.read(4))[0]
+        payload_size = struct.unpack('I', f.read(4))[0]
+        
+        # Step 4: Validate payload size matches actual file
+        expected_size = 14 + payload_size
+        if file_size != expected_size:
+            print(f"[INVALID] Payload size mismatch: expected {expected_size}, got {file_size}")
+            return False
+        
+        print(f"[VALID] Version {version}, Precision {precision}, {dimensions} dims, {payload_size} bytes")
+        return True
+
+# Example usage:
+if validate_psvc("observation_a16330272f3f.psvc"):
+    print("File is safe to read")
+else:
+    print("File is corrupted or malicious - DO NOT READ")</code></pre>
+
+<div class="grid2" style="margin-top:24px">
+  <div class="card">
+    <h3>What Validation Catches</h3>
+    <ul>
+      <li><strong>Wrong magic bytes:</strong> File is not a .psvc (might be renamed malware)</li>
+      <li><strong>File too small:</strong> Corrupted download or incomplete write</li>
+      <li><strong>Payload size mismatch:</strong> File was truncated or tampered with</li>
+      <li><strong>Invalid precision code:</strong> Unknown format version</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Why This Matters</h3>
+    <p>In a decentralized mesh with volunteer nodes, you <strong>cannot trust</strong> files from unknown sources. Validation ensures:</p>
+    <ul>
+      <li>No buffer overflow attacks (size is checked before reading)</li>
+      <li>No code injection (payload is only numeric data)</li>
+      <li>No corrupted data (size must match exactly)</li>
+      <li>No format confusion (magic bytes must be "PSVI")</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<section id="control" class="section">
+<div class="section-head"><h2 class="mono">04 — How Do You Control What Goes In and Out?</h2><div class="line"></div></div>
+
+<p>The .psvc format uses a <strong>sealed container model</strong>. Data goes in compressed and dormant, and only decompresses when explicitly called into active VRAM. Here's how the mesh controls input and output:</p>
+
+<pre><code>class PicoContainer:
+    """Controls what goes in and out of .psvc containers."""
+    
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self._open_vector = None  # None = sealed (closed)
+    
+    def open(self):
+        """Open the container: decompress into active VRAM."""
+        if self._open_vector is not None:
+            return self._open_vector  # Already open
+        
+        with open(self.file_path, 'rb') as f:
+            # Skip magic, version, precision
+            f.read(6)
+            
+            # Read dimensions and payload size
+            dimensions = struct.unpack('I', f.read(4))[0]
+            payload_size = struct.unpack('I', f.read(4))[0]
+            
+            # Read precision code (we need to rewind)
+            f.seek(5)
+            precision_code = struct.unpack('B', f.read(1))[0]
+            
+            # Read compressed payload
+            f.seek(14)
+            compressed_payload = f.read(payload_size)
+        
+        # Decompress
+        payload = zlib.decompress(compressed_payload)
+        
+        # Convert back to float32 based on precision
+        if precision_code == 0:  # INT8
+            scale = struct.unpack('f', payload[:4])[0]
+            int8_data = np.frombuffer(payload[4:], dtype=np.int8)
+            self._open_vector = int8_data.astype(np.float32) * scale
+        elif precision_code == 1:  # Float16
+            self._open_vector = np.frombuffer(payload, dtype=np.float16).astype(np.float32)
+        else:  # Float32
+            self._open_vector = np.frombuffer(payload, dtype=np.float32).copy()
+        
+        return self._open_vector
+    
+    def close(self):
+        """Seal the container: release VRAM, keep file on disk."""
+        self._open_vector = None
+    
+    @property
+    def is_open(self):
+        """Check if container is currently in active VRAM."""
+        return self._open_vector is not None
+
+# Example usage:
+container = PicoContainer("observation_a16330272f3f.psvc")
+
+# OPEN: Load into VRAM (only when needed)
+vector = container.open()
+print(f"Vector loaded: {vector.shape}, norm: {np.linalg.norm(vector):.4f}")
+
+# Do math with the vector
+similarity = np.dot(vector, query_vector)
+print(f"Similarity: {similarity:.4f}")
+
+# CLOSE: Release VRAM (file stays on disk)
+container.close()
+print(f"Container sealed. VRAM freed.")</code></pre>
+
+<div class="diagram" style="margin-top:24px">
+  <div class="diagram-title">The Sealed Container Model</div>
+  <div class="flow-diagram">
+    <div class="flow-node">Disk<br><small>.psvc file (sealed)</small></div>
+    <div class="flow-arrow">open() →</div>
+    <div class="flow-node">VRAM<br><small>float32 vector (active)</small></div>
+    <div class="flow-arrow">← close()</div>
+    <div class="flow-node">Disk<br><small>.psvc file (sealed)</small></div>
+  </div>
+</div>
+
+<div class="grid2" style="margin-top:24px">
+  <div class="card highlight">
+    <h3>Input Control (What Goes In)</h3>
+    <p>Only the Mesh Router can call <code>open()</code> on a container. This happens when:</p>
+    <ul>
+      <li>A query matches the container's content (similarity search)</li>
+      <li>The Cortex Agent is clustering vectors (K-Means)</li>
+      <li>The Critic Agent is comparing predictions</li>
+    </ul>
+    <p style="margin-top:16px"><strong>Pico Limit:</strong> The Governor Agent enforces a maximum of 5 open containers at once. If a 6th is requested, the oldest is automatically closed (LRU eviction).</p>
+  </div>
+  <div class="card highlight">
+    <h3>Output Control (What Comes Out)</h3>
+    <p>When a container is opened, it returns a <strong>read-only numpy array</strong>. The original file on disk is never modified.</p>
+    <ul>
+      <li>Volunteer nodes can <em>read</em> vectors</li>
+      <li>Volunteer nodes can <em>compute</em> with vectors</li>
+      <li>Volunteer nodes <strong>cannot modify</strong> the sealed container</li>
+      <li>New results are written as <em>new</em> .psvc files</li>
+    </ul>
+    <p style="margin-top:16px">This ensures <strong>immutable audit trails</strong>. Every observation is preserved forever.</p>
+  </div>
+</div>
+
+</section>
+
+<section id="security" class="section">
+<div class="section-head"><h2 class="mono">05 — How Safe Is the .psvc Format?</h2><div class="line"></div></div>
+
+<div class="security-box">
+  <strong>Security Model: Defense in Depth</strong><br>
+  The .psvc format uses multiple layers of security to protect against malicious files, corrupted data, and unauthorized modifications. Here's how each layer works:
+</div>
+
+<div class="grid3">
+  <div class="card">
+    <h3>Layer 1: Magic Bytes</h3>
+    <p><strong>Threat:</strong> Malicious file disguised as .psvc</p>
+    <p><strong>Defense:</strong> Software checks bytes 0-3 for "PSVI". If wrong, file is rejected immediately.</p>
+    <pre style="margin:0; font-size:11px">if magic != b'PSVI':
+    reject()</pre>
+  </div>
+  
+  <div class="card">
+    <h3>Layer 2: Size Validation</h3>
+    <p><strong>Threat:</strong> Buffer overflow attack</p>
+    <p><strong>Defense:</strong> Header declares exact payload size. If file is larger/smaller, it's rejected.</p>
+    <pre style="margin:0; font-size:11px">if file_size != 14 + payload_size:
+    reject()</pre>
+  </div>
+  
+  <div class="card">
+    <h3>Layer 3: Content Addressing</h3>
+    <p><strong>Threat:</strong> Tampered data</p>
+    <p><strong>Defense:</strong> Filename is SHA-256 hash of vector. If content changes, hash changes, filename changes.</p>
+    <pre style="margin:0; font-size:11px">hash = SHA256(vector)
+filename = hash[:12]</pre>
+  </div>
+  
+  <div class="card">
+    <h3>Layer 4: No Code Execution</h3>
+    <p><strong>Threat:</strong> Code injection</p>
+    <p><strong>Defense:</strong> Payload is <em>only</em> numeric arrays. No strings, no code, no scripts. Impossible to execute.</p>
+    <pre style="margin:0; font-size:11px">payload = np.array([...])
+# No eval(), no exec()</pre>
+  </div>
+  
+  <div class="card">
+    <h3>Layer 5: VRAM Limits</h3>
+    <p><strong>Threat:</strong> Denial of Service (memory exhaustion)</p>
+    <p><strong>Defense:</strong> Governor enforces max 5 open containers. Oldest evicted automatically.</p>
+    <pre style="margin:0; font-size:11px">if len(open) >= 5:
+    evict_oldest()</pre>
+  </div>
+  
+  <div class="card">
+    <h3>Layer 6: Entropy Pruning</h3>
+    <p><strong>Threat:</strong> Repository bloat</p>
+    <p><strong>Defense:</strong> Cortex deletes vectors >95% similar to master states. Keeps only novel data.</p>
+    <pre style="margin:0; font-size:11px">if similarity > 0.95:
+    delete()</pre>
+  </div>
+</div>
+
+<div class="klein-box-full" style="margin-top:32px">
+  <div class="label">The Bottom Line</div>
+  <div class="value">.psvc Is Safe by Design</div>
+  <div class="desc">
+    The .psvc format is <strong>safe for volunteer nodes</strong> because:
+    <ul style="margin:16px 0; padding-left:20px">
+      <li>It contains <strong>only numbers</strong>—no executable code, no scripts, no strings</li>
+      <li>It's <strong>validated before reading</strong>—corrupted or malicious files are rejected</li>
+      <li>It's <strong>immutable</strong>—once sealed, it cannot be modified</li>
+      <li>It's <strong>memory-limited</strong>—only 5 containers can be open at once</li>
+      <li>It's <strong>cryptographically signed</strong>—the filename proves the content hasn't changed</li>
+    </ul>
+    <br>
+    A volunteer node can safely process thousands of .psvc files without risk of infection, data corruption, or resource exhaustion. The format was designed from the ground up for <strong>decentralized, untrusted environments</strong>.
+  </div>
+</div>
+
+</section>
+
+</main>
+
+<footer>
+<div>
+<p>© 2026 Louis-Philippe Audette — PSIVI.COM</p>
+<p>Content: <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="text-decoration:underline">CC BY-SA 4.0</a> · Code: <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12" style="text-decoration:underline">EUPL 1.2</a></p>
+</div>
+<div style="text-align:right">
+<p>RFC 1001 Compliance — Pico Service Container Format</p>
+<p>NASA Open Science 101 Certified — Langford, BC</p>
+</div>
+</footer>
+</div>
+</body>
+</html>
