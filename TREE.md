@@ -123,6 +123,7 @@ psivicom.github.io/
 │   │   └── satellite.svg
 │   └── README.md
 ├── config/
+│   ├── aether-vanguard.psvc
 │   └── mesh_topology.yaml
 ├── data/
 │   ├── images/
