@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T06:08:14.144Z | Hash: 62d894adcd2014859e88371f40e4ba3f0b99b891ffe625fa5e44f4e96f4f1d23 -->
+<!-- Last updated: 2026-09-18T06:13:26.142Z | Hash: bde41899747abce40622de1483b4cc51766d7ce1e258db4ee9641a27153d9ca3 -->
 
 ```
 psivicom.github.io/
@@ -397,6 +397,7 @@ psivicom.github.io/
 ├── docker-compose.yml
 ├── forage_agent.py
 ├── how-psvc-works.html
+├── how-psvc-works2.html
 ├── index.html
 ├── intelligence_agent.py
 ├── license_agent.py
