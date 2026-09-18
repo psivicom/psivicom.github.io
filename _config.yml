@@ -48,3 +48,23 @@ defaults:
       license: CC-BY-SA-4.0
 
 show_excerpts: true
+# ==========================================
+# AETHER VANGUARD MESH INTEGRATION
+# Excludes backend AI mesh files from Jekyll static site generation.
+# This ensures fast build times and prevents Jekyll from trying 
+# to process Python/Docker files as web pages.
+# ==========================================
+exclude:
+  - src/
+  - tests/
+  - config/
+  - .github/
+  - Dockerfile
+  - docker-compose.yml
+  - requirements.txt
+  - PROVENANCE.json
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .venv
