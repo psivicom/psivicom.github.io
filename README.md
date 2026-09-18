@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T06:32:06.253Z | Hash: e9c98bf76845f60afb3e3a24ab05a62d6cd19f1e02181287b1441738a7576062 -->
+<!-- Last updated: 2026-09-18T06:35:58.370Z | Hash: d65efef467fc0f88631ee7dfda6590dbe2705fa673b9bf99d3b250d8e047fb26 -->
 
 ```
 psivicom.github.io/
@@ -300,6 +300,7 @@ psivicom.github.io/
 │   ├── installation-guide-repository-tree.md
 │   ├── osdmp.html
 │   ├── osdmp.md
+│   ├── rfc1001.txt
 │   └── template.html
 ├── maps/
 │   └── forage_forecast.png
