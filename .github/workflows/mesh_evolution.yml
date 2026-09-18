@@ -2,14 +2,14 @@ name: AETHER VANGUARD Auto-Evolution
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight
-  workflow_dispatch:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allows you to click "Run workflow" manually in GitHub UI
 
 jobs:
   evolve-vector-pixelizer:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Allow auto-commit
+      contents: write # Required to auto-commit the PROVENANCE.json update
     
     steps:
       - name: Checkout Repository
@@ -22,26 +22,36 @@ jobs:
           
       - name: Install Dependencies
         run: |
-          pip install torch numpy pytest
+          python -m pip install --upgrade pip
+          pip install torch numpy pytest PyYAML websockets psutil
 
-      - name: Benchmark New Pixelization Logic
-        id: benchmark
+      - name: Run Fidelity Tests
+        run: pytest tests/
+
+      - name: Generate Provenance Hash & Update Ledger
         run: |
-          # Run tests to ensure new math doesn't break FAIR reproducibility
-          pytest tests/test_pixelizer_fidelity.py
+          # Hash the core algorithm
+          HASH=$(shasum -a 256 src/core/vector_pixelizer.py | awk '{print $1}')
+          TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
           
-          # If tests pass, generate new provenance hash
-          echo "PROVENANCE_HASH=$(shasum -a 256 src/core/vector_pixelizer.py | awk '{print $1}')" >> $GITHUB_ENV
+          # Write the new PROVENANCE.json
+          cat <<EOF > PROVENANCE.json
+          {
+            "status": "active",
+            "timestamp": "$TIMESTAMP",
+            "algorithm_hash": "$HASH",
+            "nist_compliance": true,
+            "fair_license": "CC-BY-SA-4.0",
+            "mesh_name": "AETHER VANGUARD - Goldstream Ecology",
+            "auto_generated": true
+          }
+          EOF
 
-      - name: Auto-Commit Evolution & FAIR Log
-        if: success()
+      - name: Commit and Push Evolution
         run: |
           git config user.name "AETHER VANGUARD Bot"
-          git config user.email "mesh@psivicom.github.io"
-          
-          # Update the immutable FAIR provenance log
-          echo "{\"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\", \"algorithm_hash\": \"$PROVENANCE_HASH\", \"nist_compliance\": true}" > PROVENANCE.json
-          
+          git config user.email "mesh-bot@psivicom.github.io"
           git add PROVENANCE.json
-          git commit -m "chore: Auto-evolve Vector Pixelizer [Hash: $PROVENANCE_HASH]" || echo "No changes to commit"
+          # Only commit if the hash actually changed
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: Auto-evolve Vector Pixelizer [Hash: $HASH]"
           git push
