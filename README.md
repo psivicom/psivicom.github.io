@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-17T22:43:06.302Z | Hash: 7b7e606d5ad8bd7bf37591a1f5f00b30024fb61c6838c87abed9085354219625 -->
+<!-- Last updated: 2026-09-18T00:27:35.291Z | Hash: bd317e2cd056edb57ef8e70c46ac58b5bf88cf5e03f513b75561cf3e60b83557 -->
 
 ```
 psivicom.github.io/
@@ -338,6 +338,9 @@ psivicom.github.io/
 │   ├── update-tree/
 │   │   └── main.go
 │   └── fix_archive_names.py
+├── src/
+│   └── core/
+│       └── vector_pixelizer.py
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
