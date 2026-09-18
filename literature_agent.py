@@ -1,63 +1,34 @@
 # Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
-# literature_agent.py - Ingests scientific literature as pico vectors via free APIs.
+# Author: Louis-Philippe Audette
+# ORCID: https://orcid.org/0000-000X-XXXX-XXXX
+#
+# Literature Agent (Scholar) - RFC 1001 Compliant
 
 import os
 import json
-import struct
-import zlib
-import hashlib
 import datetime
 import numpy as np
 import requests
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from psvc_reference import (
+    encode_text, write_file, content_hash,
+    PRECISION_INT8
+)
+
+print("=== PSIVI LITERATURE AGENT (RFC 1001 COMPLIANT) ===")
+
 CONTAINER_DIR = Path("reports/pico_containers")
-MAGIC = b'PSVI'
-DIM = 4096
-
-def encode_text(text, dim=DIM):
-    """Hashing trick to create a 4096-dim vector from text."""
-    vec = np.zeros(dim, dtype=np.float32)
-    text = text.lower().strip()
-    for i in range(max(1, len(text) - 2)):
-        trigram = text[i:i+3]
-        h = int(hashlib.md5(trigram.encode()).hexdigest(), 16)
-        idx = h % dim
-        sign = 1 if (h % 2) == 0 else -1
-        vec[idx] += sign
-    norm = np.linalg.norm(vec)
-    if norm > 0:
-        vec = vec / norm
-    return vec
-
-def seal_container(vector, container_id, precision="int8"):
-    """Compress and seal vector into a .psvc binary file."""
-    vec = vector.astype(np.float32)
-    scale = np.max(np.abs(vec)) / 127.0
-    if scale == 0: scale = 1.0
-    compressed = np.round(vec / scale).astype(np.int8).tobytes()
-    payload = struct.pack('f', scale) + compressed
-    zlibbed = zlib.compress(payload, level=9)
-    
-    header = MAGIC + struct.pack('B', 1) + struct.pack('B', 0) # Magic, v1, int8
-    header += struct.pack('I', DIM) + struct.pack('I', len(zlibbed))
-    
-    path = CONTAINER_DIR / f"{container_id}.psvc"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(header + zlibbed)
-    return path
+CONTAINER_DIR.mkdir(parents=True, exist_ok=True)
 
 def get_pubmed_abstracts(query="Bombus+terrestris+foraging", max_results=5):
-    """Fetch recent pollinator ecology papers from PubMed (free API)."""
+    """Fetch papers from PubMed (free API)."""
     abstracts = []
-    
     try:
         search_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query}&retmax={max_results}&retmode=json"
         search_resp = requests.get(search_url, timeout=10)
         ids = search_resp.json()['esearchresult']['idlist']
-        
-        print(f"[LITERATURE] Found {len(ids)} papers for query: {query}")
         
         for pmid in ids:
             fetch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pmid}&retmode=xml"
@@ -68,28 +39,23 @@ def get_pubmed_abstracts(query="Bombus+terrestris+foraging", max_results=5):
             abstract_elem = root.find('.//AbstractText')
             
             if title_elem is not None and abstract_elem is not None:
-                title = title_elem.text or ""
-                abstract = abstract_elem.text or ""
-                
                 abstracts.append({
                     "pmid": pmid,
-                    "title": title,
-                    "abstract": abstract,
-                    "source": "pubmed",
-                    "text": f"{title}. {abstract}"
+                    "title": title_elem.text or "",
+                    "abstract": abstract_elem.text or "",
+                    "source": "pubmed"
                 })
     except Exception as e:
-        print(f"[LITERATURE] PubMed API error: {e}")
+        print(f"[LITERATURE] PubMed error: {e}")
     
     return abstracts
 
-def get_crossref_metadata(query="pollinator foraging ecology", max_results=5):
-    """Fetch papers from Crossref API (free, no auth needed)."""
+def get_crossref_papers(query="pollinator+ecology", max_results=5):
+    """Fetch papers from Crossref (free API)."""
     papers = []
-    
     try:
         url = f"https://api.crossref.org/works?query={query}&rows={max_results}"
-        resp = requests.get(url, timeout=10, headers={'User-Agent': 'PSIVI-Mesh/1.0 (psivi.com)'})
+        resp = requests.get(url, timeout=10, headers={'User-Agent': 'PSIVI/1.0'})
         data = resp.json()
         
         for item in data.get('message', {}).get('items', []):
@@ -102,65 +68,55 @@ def get_crossref_metadata(query="pollinator foraging ecology", max_results=5):
                     "doi": doi,
                     "title": title,
                     "abstract": abstract,
-                    "source": "crossref",
-                    "text": f"{title}. {abstract}"
+                    "source": "crossref"
                 })
     except Exception as e:
-        print(f"[LITERATURE] Crossref API error: {e}")
+        print(f"[LITERATURE] Crossref error: {e}")
     
     return papers
 
-print("=== PSIVI LITERATURE AGENT: INGESTING SCIENTIFIC CONTEXT ===")
-CONTAINER_DIR.mkdir(parents=True, exist_ok=True)
+# 1. FETCH PAPERS
+pubmed_papers = get_pubmed_abstracts(max_results=5)
+crossref_papers = get_crossref_papers(max_results=5)
 
-# 1. Fetch from PubMed
-pubmed_papers = get_pubmed_abstracts(query="Bombus+foraging+temperature", max_results=5)
-
-# 2. Fetch from Crossref
-crossref_papers = get_crossref_metadata(query="pollinator+ecology+climate", max_results=5)
-
-# 3. Combine and deduplicate
 all_papers = pubmed_papers + crossref_papers
-seen_texts = set()
-unique_papers = []
 
+# 2. DEDUPLICATE
+seen = set()
+unique_papers = []
 for paper in all_papers:
-    text = paper.get("text", "")
-    if text and text not in seen_texts and len(text) > 50:
-        seen_texts.add(text)
+    text = f"{paper.get('title', '')} {paper.get('abstract', '')}"
+    if text not in seen and len(text) > 50:
+        seen.add(text)
         unique_papers.append(paper)
 
-print(f"[LITERATURE] Ingesting {len(unique_papers)} unique papers into mesh.")
+print(f"[LITERATURE] Ingesting {len(unique_papers)} unique papers.")
 
-# 4. Encode and seal
+# 3. ENCODE AND SEAL USING CANONICAL LIBRARY
 sealed_count = 0
 for paper in unique_papers:
-    text = paper["text"]
+    text = f"{paper.get('title', '')}. {paper.get('abstract', '')}"
     vector = encode_text(text)
     
-    content_hash = hashlib.sha256(vector.tobytes()).hexdigest()[:12]
-    container_id = f"lit_{content_hash}"
+    chash = content_hash(vector)
+    output_path = CONTAINER_DIR / f"lit_{chash}.psvc"
     
-    seal_container(vector, container_id)
+    write_file(vector, output_path, precision=PRECISION_INT8)
     
-    meta = {
-        "text": text,
-        "agent": "literature",
-        "hash": content_hash,
-        "dim": DIM,
-        "precision": "int8",
-        "timestamp": datetime.datetime.utcnow().isoformat(),
-        "source": paper.get("source"),
-        "pmid": paper.get("pmid"),
-        "doi": paper.get("doi"),
-        "title": paper.get("title")
-    }
-    
-    meta_path = CONTAINER_DIR / f"{container_id}.json"
-    with open(meta_path, 'w') as f:
-        json.dump(meta, f, indent=2)
+    # Write sidecar
+    sidecar_path = output_path.with_suffix('.json')
+    with open(sidecar_path, 'w') as f:
+        json.dump({
+            "text": text,
+            "agent": "literature",
+            "timestamp": datetime.datetime.utcnow().isoformat(),
+            "type": "literature",
+            "source": paper.get("source"),
+            "pmid": paper.get("pmid"),
+            "doi": paper.get("doi"),
+            "title": paper.get("title")
+        }, f, indent=2)
     
     sealed_count += 1
-    print(f"[LITERATURE] Sealed: {paper.get('title', 'Unknown')[:60]}...")
 
-print(f"[LITERATURE] Complete. Sealed {sealed_count} literature vectors.")
+print(f"[LITERATURE] Sealed {sealed_count} literature vectors.")
