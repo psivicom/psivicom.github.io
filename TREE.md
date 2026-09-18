@@ -276,6 +276,7 @@ psivicom.github.io/
 ├── open-science-guide.html
 ├── pico_containers.py
 ├── pico_mesh.py
+├── requirements.txt
 ├── robots.txt
 ├── seed_mesh.py
 ├── sitemap.xml
