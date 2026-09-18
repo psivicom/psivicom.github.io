@@ -1,0 +1,51 @@
+name: RFC 1001 Compliance Tests
+
+on:
+  push:
+    paths:
+      - 'psvc_reference.py'
+      - 'psvc_cli.py'
+      - 'test_rfc1001_compliance.py'
+      - '*_agent.py'
+  pull_request:
+  workflow_dispatch:  # Manual trigger from phone
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install numpy
+
+      - name: Run RFC 1001 Compliance Tests
+        run: |
+          echo "=== RFC 1001 COMPLIANCE TEST SUITE ==="
+          python test_rfc1001_compliance.py
+        continue-on-error: false
+
+      - name: Test CLI Commands
+        run: |
+          echo "=== Testing CLI ==="
+          python psvc_cli.py create --text "RFC 1001 compliance test" --precision int8 --output test.psvc
+          python psvc_cli.py inspect test.psvc
+          python psvc_cli.py validate test.psvc
+          echo "=== CLI Tests Passed ==="
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "✅ RFC 1001 COMPLIANCE: PASSED"
+          echo "All .psvc containers and agents comply with the specification."
+
+      - name: Summary
+        if: failure()
+        run: |
+          echo "❌ RFC 1001 COMPLIANCE: FAILED"
+          echo "See test output above for details."
+          exit 1
