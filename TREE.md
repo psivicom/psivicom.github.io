@@ -222,8 +222,10 @@ psivicom.github.io/
 ├── src/
 │   ├── core/
 │   │   └── vector_pixelizer.py
-│   └── nodes/
-│       └── pico_worker.py
+│   ├── nodes/
+│   │   └── pico_worker.py
+│   └── orchestrator/
+│       └── mesh_brain.py
 ├── tools/
 │   └── fix_timestamps.py
 ├── .zenodo.json
