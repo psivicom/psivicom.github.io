@@ -123,6 +123,8 @@ psivicom.github.io/
 │   │   ├── rocket.svg
 │   │   └── satellite.svg
 │   └── README.md
+├── config/
+│   └── mesh_topology.yaml
 ├── data/
 │   ├── images/
 │   │   └── README.md

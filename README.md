@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T00:53:00.608Z | Hash: 2a91b75161ba28fdfbdafffa319b1c324c215c6883ec81b71e9bfc65d1af8a47 -->
+<!-- Last updated: 2026-09-18T00:56:14.839Z | Hash: 64eda8b7ca19df10df7ff80e1613b09d41107166ab5617eaf07d3eb1165e102f -->
 
 ```
 psivicom.github.io/
@@ -242,6 +242,8 @@ psivicom.github.io/
 │   │   ├── rocket.svg
 │   │   └── satellite.svg
 │   └── README.md
+├── config/
+│   └── mesh_topology.yaml
 ├── data/
 │   ├── images/
 │   │   └── README.md
