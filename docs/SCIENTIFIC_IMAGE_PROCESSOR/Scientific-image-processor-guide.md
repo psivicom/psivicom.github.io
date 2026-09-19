@@ -7,6 +7,22 @@
 **Repository:** [psivicom.github.io](https://psivicom.github.io)  
 
 ---
+```
+./docs/SCIENTIFIC_IMAGE_PROCESSOR/scientific-image-processor.html
+```
+
+Why we built a FAIR-Compliant Scientific Image Processor that perfectly matches the visual identity, typography, and open-science ethos of psivicom.github.io. for Zenodo & Space Agency Compliance:
+
+1. FAIR Metadata Injection: Uses piexifjs to embed machine-readable and human-
+readable EXIF metadata (Creator, DOI,
+License, Institution, Description) directly into the JPEG. This is a strict requirement for NASA, ESA, and Zenodo archival.
+
+2. Domain-Separated Licensing UI: Preconfigured with your standard CC BY-SA 4.0 / EUPL 1.2 compliance badges and dropdowns.
+
+3. PSIVI Aesthetic: Adopts the ®Excellence
+Editioni styling: IBM Plex Mono/Serif typography, Yves Klein Blue (#002FA7) accents, "AETHER" telemetry headers, and clean, auditable Ul cards.
+
+4. Client-Side Privacy: All processing (EXIF injection, canvas compositing, watermarking) happens 100% in the browser. No data leaves the user's machine, ensuring NIST SP 800-218 compliance for sensitive research data.
 
 ## 1. Overview
 
