@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-19T09:28:39.700Z | Hash: b87764960f714866fcdda704f66b1d0818af12eb476873ecfbad5bb5803e2d3e -->
+<!-- Last updated: 2026-09-19T09:30:35.555Z | Hash: 82687255266f3c14c1c7a653e1e5119db40e98221ab589ba25e5b6ba2396c6f6 -->
 
 ```
 psivicom.github.io/
@@ -261,7 +261,8 @@ psivicom.github.io/
 │   ├── FAIR_IMAGE_PROCESSOR/
 │   │   ├── UserComment.json
 │   │   ├── fair-image-processor-guide.md
-│   │   └── fair-image-processor.html
+│   │   ├── fair-image-processor.html
+│   │   └── standardexiffield.txt
 │   ├── GO_TREE/
 │   │   ├── render-readme/
 │   │   │   └── main.go
@@ -278,8 +279,6 @@ psivicom.github.io/
 │   │   ├── go.mod
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
-│   ├── SCIENTIFIC_IMAGE_PROCESSOR/
-│   │   └── standardexiffield.txt
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
