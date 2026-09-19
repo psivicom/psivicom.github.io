@@ -140,6 +140,7 @@ psivicom.github.io/
 │   └── README.md
 ├── docs/
 │   ├── FAIR_IMAGE_PROCESSOR/
+│   │   ├── UserComment.json
 │   │   └── fair-image-processor-guide.md
 │   ├── GO_TREE/
 │   │   ├── render-readme/
@@ -158,7 +159,6 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── SCIENTIFIC_IMAGE_PROCESSOR/
-│   │   ├── UserComment.json
 │   │   ├── scientific-image-processor.html
 │   │   └── standardexiffield.txt
 │   ├── SECURITY_PLAN/
