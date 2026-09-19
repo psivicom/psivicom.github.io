@@ -197,6 +197,16 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
+│   │   ├── chain_20260919_112411_FINAL_3984ed5b9fb9.json
+│   │   ├── chain_20260919_112411_FINAL_3984ed5b9fb9.psvc
+│   │   ├── chain_20260919_112411_step0_forage_0a2ae013e8b2.json
+│   │   ├── chain_20260919_112411_step0_forage_0a2ae013e8b2.psvc
+│   │   ├── chain_20260919_112411_step1_literature_c48e3f55b1c1.json
+│   │   ├── chain_20260919_112411_step1_literature_c48e3f55b1c1.psvc
+│   │   ├── chain_20260919_112411_step2_critic_3984ed5b9fb9.json
+│   │   ├── chain_20260919_112411_step2_critic_3984ed5b9fb9.psvc
+│   │   ├── chain_20260919_112411_step3_intelligence_3984ed5b9fb9.json
+│   │   ├── chain_20260919_112411_step3_intelligence_3984ed5b9fb9.psvc
 │   │   ├── state_0_53cbcc22c4f1.psvc
 │   │   ├── state_0_55b8f4d3e01f.psvc
 │   │   ├── state_0_5f8ef627117b.psvc
@@ -275,6 +285,7 @@ psivicom.github.io/
 ├── CONTRIBUTING.md
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
+├── Deprecated_chain_orchestrator.py
 ├── Dockerfile
 ├── LICENSE
 ├── NOTICE
@@ -292,7 +303,6 @@ psivicom.github.io/
 ├── VOLUNTEER_PROTOCOL.md
 ├── _config.yml
 ├── agent_config.yaml
-├── chain_orchestrator.py
 ├── codemeta.json
 ├── consolidator_agent.py
 ├── critic_agent.py
