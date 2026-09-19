@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-18T08:24:04.283Z | Hash: 6827710a5861f1ffb6481df3cbec578374c79a4adb7ee5f735ad6bd99cc89390 -->
+<!-- Last updated: 2026-09-19T05:23:56.309Z | Hash: 19fc50d1b601dd1fa46cba320c59beadcd71f3a738d4307e416e5a24d3a8c71a -->
 
 ```
 psivicom.github.io/
@@ -310,11 +310,15 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
+│   │   ├── state_0_53cbcc22c4f1.psvc
 │   │   ├── state_0_55b8f4d3e01f.psvc
+│   │   ├── state_0_5f8ef627117b.psvc
 │   │   ├── state_0_6a236f59a9aa.psvc
 │   │   ├── state_0_8e8202755302.psvc
+│   │   ├── state_0_a6ac3bbbb34c.psvc
 │   │   ├── state_0_f816755d4086.psvc
 │   │   ├── state_1_1683fb8d99e1.psvc
+│   │   ├── state_1_5f8ef627117b.psvc
 │   │   ├── state_1_c2d691e7b81c.psvc
 │   │   ├── state_1_e6bbae07a097.psvc
 │   │   ├── state_2_301afa57070e.psvc
@@ -337,17 +341,20 @@ psivicom.github.io/
 │   │   └── 976a1ba42d85.npy
 │   ├── volunteer_contributions/
 │   │   ├── 2026-09-17_external_volunteer_49b5fced.json
-│   │   └── 2026-09-18_external_volunteer_df3588cb.json
+│   │   ├── 2026-09-18_external_volunteer_df3588cb.json
+│   │   └── 2026-09-19_external_volunteer.json
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
 │   ├── 2026-09-17_synthesizer_memory.json
+│   ├── 2026-09-18_synthesizer_memory.json
 │   ├── ai_audit.md
 │   ├── forage_log.md
 │   ├── governor_log.md
 │   ├── license_audit.md
 │   ├── mesh_status.txt
 │   ├── synthesis_2026-09-16.md
-│   └── synthesis_2026-09-17.md
+│   ├── synthesis_2026-09-17.md
+│   └── synthesis_2026-09-18.md
 ├── scripts/
 │   ├── update-tree/
 │   │   └── main.go
@@ -423,6 +430,7 @@ psivicom.github.io/
 ├── psvc_reference.py
 ├── requirements.txt
 ├── robots.txt
+├── scientific-image-processor.html
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── synthesizer_agent.py
