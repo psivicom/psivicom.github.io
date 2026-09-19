@@ -158,6 +158,7 @@ psivicom.github.io/
 │   ├── SCIENTIFIC_IMAGE_PROCESSOR/
 │   │   ├── Scientific-image-processor-guide.md
 │   │   ├── UserComment.json
+│   │   ├── scientific-image-processor.html
 │   │   └── standardexiffield.txt
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
@@ -315,7 +316,6 @@ psivicom.github.io/
 ├── psvc_reference.py
 ├── requirements.txt
 ├── robots.txt
-├── scientific-image-processor.html
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── synthesizer_agent.py

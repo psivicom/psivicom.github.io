@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-19T06:10:13.514Z | Hash: 4b46a522045877d668e706456498f247ee98b0bbc8dcd6c27eaee2e356392410 -->
+<!-- Last updated: 2026-09-19T06:14:27.591Z | Hash: e1df6b632b03e4f802e24c7390f0d74b013457f1f90767e07e8e711ed23e8614 -->
 
 ```
 psivicom.github.io/
@@ -277,6 +277,7 @@ psivicom.github.io/
 │   ├── SCIENTIFIC_IMAGE_PROCESSOR/
 │   │   ├── Scientific-image-processor-guide.md
 │   │   ├── UserComment.json
+│   │   ├── scientific-image-processor.html
 │   │   └── standardexiffield.txt
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
@@ -434,7 +435,6 @@ psivicom.github.io/
 ├── psvc_reference.py
 ├── requirements.txt
 ├── robots.txt
-├── scientific-image-processor.html
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── synthesizer_agent.py
