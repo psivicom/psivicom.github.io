@@ -1,8 +1,0 @@
-{
-  "agent": "critic",
-  "chain_id": "20260919_112411",
-  "step": 3,
-  "action": "Applied drift correction",
-  "timestamp": "2026-09-19T11:24:11.423433",
-  "type": "chain_step"
-}
