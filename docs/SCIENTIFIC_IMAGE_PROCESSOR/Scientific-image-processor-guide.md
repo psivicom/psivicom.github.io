@@ -24,6 +24,37 @@ Editioni styling: IBM Plex Mono/Serif typography, Yves Klein Blue (#002FA7) acce
 
 4. Client-Side Privacy: All processing (EXIF injection, canvas compositing, watermarking) happens 100% in the browser. No data leaves the user's machine, ensuring NIST SP 800-218 compliance for sensitive research data.
 
+## Here is exactly why this tool is needed in your research workflow, and why standard alternatives fall short:
+
+It Solves the "Metadata Drift" Problem
+When you upload an image to Zenodo, you fill out a web form with the DOI, license, and creator.
+Zenodo stores this in their database. However, the image file itself remains "dumb." If a researcher downloads your image from Zenodo and uses it in a paper, a presentation, or a secondary dataset, the Zenodo metadata is lost.
+
+## What this tool do: 
+
+1. It bakes the DOI, license, and creator directly into the EXIF data of the file itself. The image carries its own provenance, ensuring it remains FAIR (Findable and Reusable) even if it is separated from the Zenodo repository.
+
+2. It Protects Unpublished & Sensitive Data (Zero-Trust)There are dozens of free online watermarking tools, but using them requires uploading your research data to a third-party, unknown server.
+```  
+Example. For unpublished RADARSAT SAR data, proprietary hardware schematics, or sensitive ecological transect data, uploading to a random website is a massive security and IP risk. This tool runs 100% locally in the browser, satisfying NIST SP 800-218 and ensuring your data never leaves your machine.
+```
+3. It Enforces FAIR Compliance (Prevents Human Error)Standard image editors (Photoshop, GIMP, Affinity) allow you to add EXIF data, but they don't enforce it. You could easily forget to add the copyright or the DOI.
+
+The tool acts as a FAIR compliance gatekeeper. It literally will not let you export the final distribution image until you have provided a DOI, a license, a creator, and a scientific description. It automates the administrative burden of open science.
+  
+4. It Bridges Human and Machine ReadabilitySpace agencies (NASA, ESA) and automated repository ingestors need machine-readable data, while human readers need visual context.
+
+With a dual-layer solution, It applies a visual watermark (for human attribution and casual deterrence) while simultaneously injecting a structured JSON payload into the EXIF UserComment field (for machine parsing by automated pipelines, Python scripts, or AI mesh networks).
+
+5. It Standardizes the "PSIVI" Open Science Brand as an independent researcher building a reproducible framework, consistency is key. 
+
+```
+Example. Every single image I produce for my Goldstream pollinator atlas or SAR-optical fusion projects has the exact same metadata schema, the exact same license declaration (CC BY-SA 4.0), and the exact same visual treatment.
+```
+It turns your data products into a unified, professional, auditable corpus.
+
+Summary: You don't need this tool if you are just sharing casual photos. But if you are building a FAIR-compliant, NIST-secure, multi-agency-compliant open science repository (like PSIVI.COM), this tool is the necessary bridge between raw research data and publication-ready, legally protected, machine-readable scientific assets.
+
 ## 1. Overview
 
 The **PSIVI FAIR Image Processor** is a client-side, open-source utility designed to prepare scientific imagery for archival in trusted, open-access repositories (e.g., Zenodo, OSF) and for compliance with major space agency mandates (NASA, ESA, CSA, JAXA). 
