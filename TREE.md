@@ -156,7 +156,8 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── SCIENTIFIC_IMAGE_PROCESSOR/
-│   │   └── Scientific-image-processor-guide.md
+│   │   ├── Scientific-image-processor-guide.md
+│   │   └── UserComment.json
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
@@ -284,7 +285,6 @@ psivicom.github.io/
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
-├── UserComment.json
 ├── VOLUNTEER_GUIDE.md
 ├── VOLUNTEER_PROTOCOL.md
 ├── _config.yml

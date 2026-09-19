@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-19T05:57:57.647Z | Hash: f70bd259a3ecc93b005ba9383de3247dedfb3cd9860aa50361f5f5bd52be7ed8 -->
+<!-- Last updated: 2026-09-19T06:06:44.129Z | Hash: 59153f729bf166ac88896142f67b5789d5a060f35dfeda56b24e27d03941e310 -->
 
 ```
 psivicom.github.io/
@@ -275,7 +275,8 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── SCIENTIFIC_IMAGE_PROCESSOR/
-│   │   └── Scientific-image-processor-guide.md
+│   │   ├── Scientific-image-processor-guide.md
+│   │   └── UserComment.json
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
@@ -403,7 +404,6 @@ psivicom.github.io/
 ├── SECURITY_PLAN.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
-├── UserComment.json
 ├── VOLUNTEER_GUIDE.md
 ├── VOLUNTEER_PROTOCOL.md
 ├── _config.yml
