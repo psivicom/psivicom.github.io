@@ -8,7 +8,7 @@
 
 ---
 ```
-./docs/FAIR_IMAGE_PROCS&H9Sj!HQt3YEnxjxSd$hY7!#y5LQnHtio@XnM7iESSOR/fair-image-processor.html
+./docs/FAIR_IMAGE_PROCESSOR/fair-image-processor.html
 ```
 
 Why we built a FAIR-Compliant Scientific Image Processor that perfectly matches the visual identity, typography, and open-science ethos of psivicom.github.io. for Zenodo & Space Agency Compliance:
