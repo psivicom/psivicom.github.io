@@ -23,12 +23,13 @@ jobs:
           pip install numpy
           python chain_orchestrator.py
 
-      - name: Commit Chain Results
+      - name: Commit Chain Results and Spawned Agents
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Chain Orchestrator"
           git config user.email "chain@psivi.com"
-          git add reports/pico_containers/ reports/chains/
-          git diff --staged --quiet || git commit -m "chain: executed sequential multi-agent workflow"
+          # Add the new vectors AND any newly spawned agent Python files
+          git add reports/pico_containers/ *_agent.py
+          git diff --staged --quiet || git commit -m "chain: executed dynamic multi-agent workflow and spawned new agents"
           git push
