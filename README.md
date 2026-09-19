@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-19T11:40:16.372Z | Hash: 1e16761c4721b8d069018889da3a1ed3f679f0a9b5b2d812ec865ee35ed9fa2c -->
+<!-- Last updated: 2026-09-19T11:49:02.140Z | Hash: 92d168f2ae6b9541fc6afea2576c27def8add2dfdd68c848061950eac81d949e -->
 
 ```
 psivicom.github.io/
@@ -303,6 +303,7 @@ psivicom.github.io/
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
+│   ├── Synopsis_orchestrator_agent.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── installation-guide-repository-tree.md
@@ -326,6 +327,19 @@ psivicom.github.io/
 │   │   ├── chain_20260919_112411_step2_critic_3984ed5b9fb9.psvc
 │   │   ├── chain_20260919_112411_step3_intelligence_3984ed5b9fb9.json
 │   │   ├── chain_20260919_112411_step3_intelligence_3984ed5b9fb9.psvc
+│   │   ├── chain_20260919_114056_FINAL_82d57fa5f691.json
+│   │   ├── chain_20260919_114056_FINAL_82d57fa5f691.psvc
+│   │   ├── chain_20260919_114056_step0_forage_f24b939a0f8d.json
+│   │   ├── chain_20260919_114056_step0_forage_f24b939a0f8d.psvc
+│   │   ├── chain_20260919_114056_step1_literature_4f7fc7a4b513.json
+│   │   ├── chain_20260919_114056_step1_literature_4f7fc7a4b513.psvc
+│   │   ├── chain_20260919_114056_step2_satellite_98dc4091d0fa.json
+│   │   ├── chain_20260919_114056_step2_satellite_98dc4091d0fa.psvc
+│   │   ├── chain_20260919_114056_step3_critic_82d57fa5f691.json
+│   │   ├── chain_20260919_114056_step3_critic_82d57fa5f691.psvc
+│   │   ├── chain_20260919_114056_step4_intelligence_82d57fa5f691.json
+│   │   ├── chain_20260919_114056_step4_intelligence_82d57fa5f691.psvc
+│   │   ├── satellite_98dc4091d0fa.psvc
 │   │   ├── state_0_53cbcc22c4f1.psvc
 │   │   ├── state_0_55b8f4d3e01f.psvc
 │   │   ├── state_0_5f8ef627117b.psvc
@@ -448,6 +462,7 @@ psivicom.github.io/
 ├── psvc_reference.py
 ├── requirements.txt
 ├── robots.txt
+├── satellite_agent.py
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── synthesizer_agent.py
