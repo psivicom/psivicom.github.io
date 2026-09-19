@@ -155,6 +155,8 @@ psivicom.github.io/
 │   │   ├── go.mod
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
+│   ├── SCIENTIFIC_IMAGE_PROCESSOR/
+│   │   └── Scientific-image-processor-guide.md
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
