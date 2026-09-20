@@ -292,6 +292,7 @@ psivicom.github.io/
 │   │   ├── forage_agent.py
 │   │   └── literature_agent.py
 │   ├── automation/
+│   │   ├── __init__.py
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
 │   ├── base/
