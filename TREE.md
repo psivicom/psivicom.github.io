@@ -344,6 +344,7 @@ psivicom.github.io/
 ├── Deprecated_consolidator_agent.py
 ├── Deprecated_critic_agent.py
 ├── Deprecated_forage_agent.py
+├── Deprecated_intelligence_agent.py
 ├── Deprecated_lidar_agent.py
 ├── Deprecated_literature_agent.py
 ├── Deprecated_mesh_governor.py
@@ -352,7 +353,6 @@ psivicom.github.io/
 ├── Deprecated_satellite_agent.py
 ├── Deprecated_synthesizer_agent.py
 ├── Dockerfile
-├── Feprecated_intelligence_agent.py
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
