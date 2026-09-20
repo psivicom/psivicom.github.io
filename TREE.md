@@ -341,6 +341,7 @@ psivicom.github.io/
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
 ├── Deprecated_chain_orchestrator.py
+├── Deprecated_forage_agent.py
 ├── Deprecated_mesh_governor.py
 ├── Deprecated_mesh_router.py
 ├── Deprecated_pico_containers.py
@@ -368,7 +369,6 @@ psivicom.github.io/
 ├── consolidator_agent.py
 ├── critic_agent.py
 ├── docker-compose.yml
-├── forage_agent.py
 ├── generate_api.py
 ├── how-psvc-works.html
 ├── how-psvc-works2.html
