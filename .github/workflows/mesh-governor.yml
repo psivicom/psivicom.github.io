@@ -21,7 +21,7 @@ jobs:
       - name: Run Governor
         run: |
           pip install numpy requests
-          python mesh_governor.py
+          python src/orchestrator/mesh_governor.py
 
       - name: Commit enforcement
         env:
