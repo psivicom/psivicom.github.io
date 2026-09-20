@@ -337,6 +337,7 @@ psivicom.github.io/
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
 ├── Deprecated_chain_orchestrator.py
+├── Deprecated_mesh_governor.py
 ├── Deprecated_mesh_router.py
 ├── Dockerfile
 ├── LICENSE
@@ -373,7 +374,6 @@ psivicom.github.io/
 ├── literature_agent.py
 ├── mesh-ai.html
 ├── mesh.go
-├── mesh_governor.py
 ├── mesh_state.json
 ├── open-science-guide.html
 ├── pico_containers.py
