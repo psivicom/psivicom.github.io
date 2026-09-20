@@ -1,8 +1,8 @@
 # .github/workflows/auto-fix-paths.yml
-name: Auto-Fix Workflow Paths
+name: Auto-Fix Workflow Paths (v2)
 
 on:
-  workflow_dispatch: # Allows you to run this manually from the Actions tab
+  workflow_dispatch: # Run manually from Actions tab
 
 permissions:
   contents: write
@@ -13,53 +13,32 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Path Correction Script
+      - name: Debug and Fix Paths
         run: |
-          python3 << 'EOF'
-          import os
-          import re
-          import glob
-
-          # Mapping of old root paths to new src/ paths
-          replacements = [
-              (r'run:\s*python\s+forage_agent\.py', 'run: python src/agents/forage_agent.py'),
-              (r'run:\s*python\s+literature_agent\.py', 'run: python src/agents/literature_agent.py'),
-              (r'run:\s*python\s+critic_agent\.py', 'run: python src/agents/critic_agent.py'),
-              (r'run:\s*python\s+intelligence_agent\.py', 'run: python src/agents/intelligence_agent.py'),
-              (r'run:\s*python\s+synthesizer_agent\.py', 'run: python src/agents/synthesizer_agent.py'),
-              (r'run:\s*python\s+license_agent\.py', 'run: python src/agents/license_agent.py'),
-              (r'run:\s*python\s+mesh_router\.py', 'run: python src/orchestrator/mesh_router.py'),
-              (r'run:\s*python\s+mesh_governor\.py', 'run: python src/orchestrator/mesh_governor.py'),
-              (r'run:\s*python\s+pico_containers\.py', 'run: python psvc_containers.py'),
-          ]
-
-          workflow_dir = '.github/workflows'
-          changed_files = []
-
-          for filepath in glob.glob(os.path.join(workflow_dir, '*.yml')):
-              # Skip this very file to avoid loops
-              if 'auto-fix-paths.yml' in filepath:
-                  continue
-                  
-              with open(filepath, 'r', encoding='utf-8') as f:
-                  content = f.read()
-              
-              original_content = content
-              for old_pattern, new_string in replacements:
-                  content = re.sub(old_pattern, new_string, content)
-                  
-              if content != original_content:
-                  with open(filepath, 'w', encoding='utf-8') as f:
-                      f.write(content)
-                  changed_files.append(filepath)
-
-          print(f"✅ Successfully updated {len(changed_files)} workflow files.")
-          for f in changed_files:
-              print(f"   - {f}")
-          EOF
+          echo "=== Listing workflow files ==="
+          ls -la .github/workflows/
+          
+          echo "=== Searching for python execution ==="
+          grep -rn "python" .github/workflows/ || echo "No 'python' found"
+          
+          echo "=== Applying aggressive fixes ==="
+          for file in .github/workflows/*.yml; do
+            # Skip this very file to avoid loops
+            if [[ "$file" == *"auto-fix-paths.yml"* ]]; then continue; fi
+            
+            # Fix agent paths (handles 'python' or 'python3')
+            sed -i -E 's/(python3? +)(forage_agent\.py|literature_agent\.py|critic_agent\.py|intelligence_agent\.py|synthesizer_agent\.py|license_agent\.py|lidar_agent\.py|satellite_agent\.py)/\1src\/agents\/\2/g' "$file"
+            
+            # Fix orchestrator paths
+            sed -i -E 's/(python3? +)(mesh_router\.py|mesh_governor\.py)/\1src\/orchestrator\/\2/g' "$file"
+            
+            # Fix pico_containers to psvc_containers
+            sed -i -E 's/(python3? +)pico_containers\.py/\1psvc_containers.py/g' "$file"
+          done
+          
+          echo "=== Showing what changed ==="
+          git diff .github/workflows/
 
       - name: Commit and Push Fixes
         run: |
