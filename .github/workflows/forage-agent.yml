@@ -25,7 +25,9 @@ jobs:
 
       - name: Run Forage Agent
         run: |
-          pip install requests matplotlib
+          pip install -r
+          requirements.txt
+      
           python src/agents/forage_agent.py
 
       - name: Commit Map, Report, and Vector Memory
