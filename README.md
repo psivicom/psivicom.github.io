@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T09:27:47.408Z | Hash: ef0fa82d49914f6cd7f31f3a0bd7803b7064f286abad46bd85c440a9704923d0 -->
+<!-- Last updated: 2026-09-20T09:50:52.064Z | Hash: 0d980f01d5985392c6ea92bba6d4f802f6179df512d5b1b20a10b2651226b7b3 -->
 
 ```
 psivicom.github.io/
@@ -126,6 +126,7 @@ psivicom.github.io/
 │       ├── critic-agent.yml
 │       ├── docs.yml
 │       ├── fix-all-timestamps.yml
+│       ├── fix-all-workflow.yml
 │       ├── forage-agent.yml
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
@@ -319,6 +320,16 @@ psivicom.github.io/
 │   ├── pico_containers/
 │   │   ├── 12ffa2eeedf2.json
 │   │   ├── 12ffa2eeedf2.psvc
+│   │   ├── 172649a0ad33.json
+│   │   ├── 172649a0ad33.psvc
+│   │   ├── 5edbef3e115d.json
+│   │   ├── 5edbef3e115d.psvc
+│   │   ├── a16330272f3f.json
+│   │   ├── a16330272f3f.psvc
+│   │   ├── a5779be5ac42.json
+│   │   ├── a5779be5ac42.psvc
+│   │   ├── ab60b664eaa6.json
+│   │   ├── ab60b664eaa6.psvc
 │   │   ├── chain_20260919_112411_step0_forage_0a2ae013e8b2.json
 │   │   ├── chain_20260919_112411_step0_forage_0a2ae013e8b2.psvc
 │   │   ├── chain_20260919_112411_step1_literature_c48e3f55b1c1.json
@@ -341,6 +352,18 @@ psivicom.github.io/
 │   │   ├── chain_20260919_194635_step3_critic_d8970e1a7fc6.psvc
 │   │   ├── chain_20260919_194635_step4_intelligence_d8970e1a7fc6.json
 │   │   ├── chain_20260919_194635_step4_intelligence_d8970e1a7fc6.psvc
+│   │   ├── chain_20260920_094409_FINAL_1bab3e96c5be.json
+│   │   ├── chain_20260920_094409_FINAL_1bab3e96c5be.psvc
+│   │   ├── chain_20260920_094409_step0_forage_3dc8b739cc65.json
+│   │   ├── chain_20260920_094409_step0_forage_3dc8b739cc65.psvc
+│   │   ├── chain_20260920_094409_step1_literature_101108876363.json
+│   │   ├── chain_20260920_094409_step1_literature_101108876363.psvc
+│   │   ├── chain_20260920_094409_step2_satellite_98dc4091d0fa.json
+│   │   ├── chain_20260920_094409_step2_satellite_98dc4091d0fa.psvc
+│   │   ├── chain_20260920_094409_step3_critic_1bab3e96c5be.json
+│   │   ├── chain_20260920_094409_step3_critic_1bab3e96c5be.psvc
+│   │   ├── chain_20260920_094409_step4_intelligence_1bab3e96c5be.json
+│   │   ├── chain_20260920_094409_step4_intelligence_1bab3e96c5be.psvc
 │   │   ├── governor_53cbcc22c4f1.psvc
 │   │   ├── governor_a026c90e5bd0.psvc
 │   │   ├── satellite_98dc4091d0fa.psvc
@@ -509,6 +532,7 @@ psivicom.github.io/
 ├── requirements.txt
 ├── research_pipeline.py
 ├── robots.txt
+├── satellite_agent.py
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── test_rfc1001_compliance.py
