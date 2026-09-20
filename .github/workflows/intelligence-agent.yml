@@ -2,7 +2,7 @@ name: Intelligence Agent
 
 on:
   schedule:
-    - cron: '0 */12 * * *' # Runs every 12 hours
+    - cron: '0 */12 * * *'
   workflow_dispatch:
 
 permissions:
@@ -14,16 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch full history so the AI can read git logs
-
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
       - name: Run Intelligence Agent
-        run: |
-          python src/agents/intelligence_agent.py
-
+        run: python src/agents/intelligence_agent.py
       - name: Commit Intelligent Fixes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
