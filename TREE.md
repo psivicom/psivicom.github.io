@@ -344,7 +344,8 @@ psivicom.github.io/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
-│   │   └── psvc_provisioner.py
+│   │   ├── psvc_provisioner.py
+│   │   └── vram_mesh.py
 │   ├── __init__.py
 │   └── license_agent.py
 ├── tests/
