@@ -1,8 +1,8 @@
-name: Critic Agent (Self-Improvement)
+name: Critic Agent
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 7 PM PST (After the day's weather is finalized)
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 permissions:
@@ -13,17 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
       - name: Run Critic Agent
-        run: |
-          pip install -r
-          requirements.txt
-          python src/agents/critic_agent.py
-
+        run: python src/agents/critic_agent.py
       - name: Commit Corrections
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
