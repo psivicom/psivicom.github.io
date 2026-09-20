@@ -1,0 +1,40 @@
+# ==============================================================================
+# FILE: test-elastic-evolution.yml
+# PATH: .github/workflows/test-elastic-evolution.yml
+# DESCRIPTION: GitHub Actions workflow to run security tests in the cloud.
+# ==============================================================================
+
+name: Run Elastic Evolution Security Tests
+
+on:
+  # Allows you to trigger this manually from a button on your phone
+  workflow_dispatch:
+  # Also runs automatically when you update the test file
+  push:
+    paths:
+      - 'tests/test_elastic_evolution.py'
+
+jobs:
+  run-security-tests:
+    name: Security & Stress Tests
+    runs-on: ubuntu-latest  # Uses GitHub's cloud Linux server
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+
+      - name: Run Elastic Security Tests
+        run: |
+          echo "Starting security tests..."
+          python tests/test_elastic_evolution.py
+          echo "Tests completed successfully!"
