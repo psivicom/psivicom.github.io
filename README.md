@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T03:47:11.294Z | Hash: 2f82b8a36f3fcc40b7b6f81b1c178b03adaf9545a5757b9f4ea663a048b21a47 -->
+<!-- Last updated: 2026-09-20T03:56:46.715Z | Hash: 026fba8551922ab6a439a6c118ef337cdc53d1ccc83fba1c04a743cddd16cb0a -->
 
 ```
 psivicom.github.io/
@@ -406,6 +406,8 @@ psivicom.github.io/
 │   │   └── main.go
 │   └── fix_archive_names.py
 ├── src/
+│   ├── Base/
+│   │   └── base_agent.py
 │   ├── core/
 │   │   ├── __init__.py
 │   │   ├── psvc_builder.py
