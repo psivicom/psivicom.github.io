@@ -288,12 +288,14 @@ psivicom.github.io/
 │   └── fix_archive_names.py
 ├── src/
 │   ├── agents/
+│   │   ├── __init__.py
 │   │   ├── forage_agent.py
 │   │   └── literature_agent.py
 │   ├── automation/
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
 │   ├── base/
+│   │   ├── __init__.py
 │   │   └── base_agent.py
 │   ├── core/
 │   │   ├── Deprecated_psvc_builder.py
