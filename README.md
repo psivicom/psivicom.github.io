@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T20:39:30.124Z | Hash: b407563b34004e9f670cb091bf6dbc762af35cf776ccf1e2c0ab737b37ed3af1 -->
+<!-- Last updated: 2026-09-20T20:54:44.857Z | Hash: 166f897485b86e86d81f9698d508b7bf60e9c6df8ed637d999754960a3052ea0 -->
 
 ```
 psivicom.github.io/
@@ -261,6 +261,8 @@ psivicom.github.io/
 ├── dist/
 │   └── README.md
 ├── docs/
+│   ├── EXPERIMENTAL_RFC/
+│   │   └── RFC-ELASTIC-EXTENSION.md
 │   ├── FAIR_IMAGE_PROCESSOR/
 │   │   ├── UserComment.json
 │   │   ├── fair-image-processor-guide.md

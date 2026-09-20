@@ -142,6 +142,8 @@ psivicom.github.io/
 ├── dist/
 │   └── README.md
 ├── docs/
+│   ├── EXPERIMENTAL_RFC/
+│   │   └── RFC-ELASTIC-EXTENSION.md
 │   ├── FAIR_IMAGE_PROCESSOR/
 │   │   ├── UserComment.json
 │   │   ├── fair-image-processor-guide.md
