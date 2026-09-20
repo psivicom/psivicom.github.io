@@ -20,7 +20,9 @@ jobs:
 
       - name: Run Synthesizer
         run: |
-          pip install requests
+          pip install -r
+          requirements.txt
+
           python src/agents/synthesizer_agent.py
 
       - name: Commit synthesis
