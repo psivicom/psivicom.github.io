@@ -304,6 +304,8 @@ psivicom.github.io/
 │   │   ├── http_client.py
 │   │   ├── vector_math.py
 │   │   └── vector_pixelizer.py
+│   ├── math/
+│   │   └── __init__.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py
