@@ -21,7 +21,7 @@ jobs:
       - name: Run Mesh Router
         run: |
           pip install pyyaml
-          python mesh_router.py
+          python src/orchestrator/mesh_router.py
 
       - name: Commit status
         env:
@@ -29,7 +29,7 @@ jobs:
         run: |
           git config user.name "PSIVI Mesh Router"
           git config user.email "mesh-router@users.noreply.github.com"
-          python mesh_router.py > reports/mesh_status.txt 2>&1
+          python src/orchestrator/mesh_router.py > reports/mesh_status.txt 2>&1
           git add reports/mesh_status.txt
           git diff --staged --quiet || git commit -m "mesh: updated status report"
           git push
