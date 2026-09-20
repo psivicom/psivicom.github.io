@@ -3,6 +3,7 @@ psivicom.github.io/
 ├── .github/
 │   └── workflows/
 │       ├── README.md
+│       ├── auto-fix-paths.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── docs.yml
