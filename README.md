@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T06:37:32.040Z | Hash: 43bc77d044b1c5a553f908657bfbfa11fb55e7e2ad5501db0413d571362776a6 -->
+<!-- Last updated: 2026-09-20T06:38:22.719Z | Hash: b25f4022229f649dad47ccbe376e1c34dfefd7f374e6d9e94f8640cec0e9b3da -->
 
 ```
 psivicom.github.io/
@@ -460,6 +460,7 @@ psivicom.github.io/
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
 ├── Deprecated_chain_orchestrator.py
+├── Deprecated_consolidator_agent.py
 ├── Deprecated_critic_agent.py
 ├── Deprecated_forage_agent.py
 ├── Deprecated_literature_agent.py
@@ -490,7 +491,6 @@ psivicom.github.io/
 ├── codemeta.json
 ├── config.yaml
 ├── config_loader.py
-├── consolidator_agent.py
 ├── docker-compose.yml
 ├── generate_api.py
 ├── how-psvc-works.html
