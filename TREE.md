@@ -289,6 +289,8 @@ psivicom.github.io/
 ├── src/
 │   ├── Base/
 │   │   └── base_agent.py
+│   ├── agents/
+│   │   └── forage_agent.py
 │   ├── automation/
 │   │   └── capability_resolver.py
 │   ├── core/
