@@ -18,7 +18,7 @@ jobs:
 
       - name: Run License Stamper
         run: |
-          python license_agent.py
+          python src/agents/license_agent.py
 
       - name: Commit Uniformity
         env:
