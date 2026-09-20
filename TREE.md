@@ -290,7 +290,8 @@ psivicom.github.io/
 │   ├── Base/
 │   │   └── base_agent.py
 │   ├── agents/
-│   │   └── forage_agent.py
+│   │   ├── forage_agent.py
+│   │   └── literature_agent.py
 │   ├── automation/
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
