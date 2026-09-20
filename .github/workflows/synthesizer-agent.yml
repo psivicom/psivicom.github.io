@@ -21,7 +21,7 @@ jobs:
       - name: Run Synthesizer
         run: |
           pip install requests
-          python synthesizer_agent.py
+          python src/agents/synthesizer_agent.py
 
       - name: Commit synthesis
         env:
