@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T06:30:45.167Z | Hash: a37d6607a4b03e6837105df89250ab3b0e3f58fb7dc8d79734d4211e1a610e06 -->
+<!-- Last updated: 2026-09-20T06:32:22.433Z | Hash: 4bacc3a67bea5a427c710ac6c9a1a51f53f89928124a1bc781b49f1ad0257dc1 -->
 
 ```
 psivicom.github.io/
@@ -461,6 +461,7 @@ psivicom.github.io/
 ├── DISCLAIMER.md
 ├── Deprecated_chain_orchestrator.py
 ├── Deprecated_forage_agent.py
+├── Deprecated_literature_agent.py
 ├── Deprecated_mesh_governor.py
 ├── Deprecated_mesh_router.py
 ├── Deprecated_pico_containers.py
@@ -495,7 +496,6 @@ psivicom.github.io/
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
-├── literature_agent.py
 ├── mesh-ai.html
 ├── mesh.go
 ├── mesh_state.json

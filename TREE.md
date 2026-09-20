@@ -342,6 +342,7 @@ psivicom.github.io/
 ├── DISCLAIMER.md
 ├── Deprecated_chain_orchestrator.py
 ├── Deprecated_forage_agent.py
+├── Deprecated_literature_agent.py
 ├── Deprecated_mesh_governor.py
 ├── Deprecated_mesh_router.py
 ├── Deprecated_pico_containers.py
@@ -376,7 +377,6 @@ psivicom.github.io/
 ├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
-├── literature_agent.py
 ├── mesh-ai.html
 ├── mesh.go
 ├── mesh_state.json
