@@ -287,14 +287,14 @@ psivicom.github.io/
 │   │   └── main.go
 │   └── fix_archive_names.py
 ├── src/
-│   ├── Base/
-│   │   └── base_agent.py
 │   ├── agents/
 │   │   ├── forage_agent.py
 │   │   └── literature_agent.py
 │   ├── automation/
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
+│   ├── base/
+│   │   └── base_agent.py
 │   ├── core/
 │   │   ├── __init__.py
 │   │   ├── http_client.py
