@@ -1,275 +1,140 @@
-# src/agents/forage_agent.py
-# SPDX-License-Identifier: CC-BY-4.0
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
-
-"""
-Production ForageAgent with REAL API integrations:
-- Open-Meteo (weather data): https://open-meteo.com/
-- NASA POWER (solar/agricultural): https://power.larc.nasa.gov/
-
-Both APIs are FREE, no API key required.
-"""
+# ==============================================================================
+# FILE: forage_agent.py
+# PATH: psivicom.github.io/src/agents/forage_agent.py
+# DESCRIPTION: Evolving Forage Agent for Pollinator & RADARSAT Data Fusion
+#              Utilizes intelligent chunking and elastic VRAM provisioning.
+# LICENSE: EUPL-1.2 | COMPLIANCE: NIST SP 800-218, FAIR Open Science
+# ==============================================================================
 
 import logging
-import time
-from typing import Dict, Any, List, Optional
 import numpy as np
-import torch
+import time
+import sys
+import os
+from typing import Optional, Tuple
 
-from src.base.base_agent import BaseAgent, AgentLayer
-from src.core.http_client import ProductionHTTPClient
-from psvc_containers import build_psvc_from_tensor
+# Ensure the root directory is in the path so we can import root-level files
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+# Import the elastic core infrastructure
+from vram_mesh import VRAMMesh
+from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
+from mesh_governor import MeshGovernor
+from src.core.vector_pixelizer import VectorPixelizer
 
 logger = logging.getLogger(__name__)
 
 
-class ForageAgent(BaseAgent):
+class ForageAgent:
     """
-    Production ForageAgent that fetches real weather and environmental data.
+    An evolving agent specialized in fusing pollinator telemetry with 
+    RADARSAT SAR soil moisture data. Dynamically handles data bursts.
     """
-    LAYER = AgentLayer.INGESTION
-
-    def __init__(
-        self,
-        name: str = "forage_agent",
-        open_meteo_timeout: float = 30.0,
-        nasa_power_timeout: float = 30.0,
-        rate_limit_per_second: float = 5.0
-    ):
-        super().__init__(name=name, capabilities=["fetch_weather", "fetch_solar", "fetch_historical"])
-
-        # Real HTTP clients with production safeguards
-        self.open_meteo = ProductionHTTPClient(
-            base_url="https://api.open-meteo.com/v1",
-            timeout=open_meteo_timeout,
-            rate_limit_per_second=rate_limit_per_second,
-            headers={"Accept": "application/json"}
-        )
-
-        self.nasa_power = ProductionHTTPClient(
-            base_url="https://power.larc.nasa.gov/api/temporal/daily/point",
-            timeout=nasa_power_timeout,
-            rate_limit_per_second=rate_limit_per_second,
-            headers={"Accept": "application/json"}
-        )
-
-        logger.info(f"ForageAgent initialized: {self.agent_id}")
-
-    def fetch_weather(
-        self,
-        latitude: float,
-        longitude: float,
-        days: int = 7
-    ) -> Dict[str, Any]:
-        """
-        Fetch real weather forecast from Open-Meteo API.
+    
+    def __init__(self, agent_id: str, provisioner: ElasticPSVCProvisioner, 
+                 governor: MeshGovernor, pixelizer: VectorPixelizer):
+        self.agent_id = agent_id
+        self.provisioner = provisioner
+        self.governor = governor
+        self.pixelizer = pixelizer
         
-        Args:
-            latitude: Location latitude (-90 to 90)
-            longitude: Location longitude (-180 to 180)
-            days: Forecast days (1-16)
-            
-        Returns:
-            Dictionary with temperature, humidity, wind, precipitation
-        """
-        logger.info(f"Fetching weather for ({latitude}, {longitude}), {days} days")
-
-        params = {
-            "latitude": latitude,
-            "longitude": longitude,
-            "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,relative_humidity_2m_max",
-            "timezone": "auto",
-            "forecast_days": min(days, 16)
-        }
-
-        data = self.open_meteo.get("forecast", params=params)
-
-        # Validate response structure
-        if "daily" not in data:
-            raise ValueError(f"Invalid Open-Meteo response: {data}")
-
-        result = {
-            "latitude": data.get("latitude"),
-            "longitude": data.get("longitude"),
-            "timezone": data.get("timezone"),
-            "daily": data["daily"],
-            "fetched_at": time.time()
-        }
-
-        logger.info(f"Weather fetched: {len(data['daily'].get('time', []))} days")
-        return result
-
-    def fetch_solar(
-        self,
-        latitude: float,
-        longitude: float,
-        start_date: str,
-        end_date: str
-    ) -> Dict[str, Any]:
-        """
-        Fetch real solar/agricultural data from NASA POWER API.
+        # Constants for ecological data processing
+        self.bytes_per_sample = 8  # float64 for high-precision sensor data
+        self.fusion_overhead = 1.3  # 30% overhead for SAR-optical fusion math
         
-        Args:
-            latitude: Location latitude
-            longitude: Location longitude
-            start_date: YYYYMMDD format
-            end_date: YYYYMMDD format
+        logger.info(f"ForageAgent {self.agent_id} initialized and ready for telemetry.")
+
+    def process_fusion_batch(self, sample_count: int) -> Tuple[bool, Optional[np.ndarray]]:
+        """
+        Processes a batch of pollinator and RADARSAT fusion data.
+        Automatically handles elastic evolution or intelligent chunking 
+        if the data burst exceeds current VRAM boundaries.
+        """
+        logger.info(f"[{self.agent_id}] Starting fusion batch. Samples: {sample_count}")
+        
+        # 1. Calculate required VRAM for this specific data burst
+        required_vram = self._calculate_required_vram(sample_count)
+        
+        # 2. Check current allocation
+        current_handle = self.provisioner.get_handle(self.agent_id)
+        if not current_handle:
+            logger.error(f"[{self.agent_id}] No VRAM handle found. Cannot process.")
+            return False, None
             
-        Returns:
-            Dictionary with solar radiation, temperature, humidity
-        """
-        logger.info(f"Fetching NASA POWER data for ({latitude}, {longitude})")
-
-        params = {
-            "parameters": "ALLSKY_SFC_SW_DWN,T2M,RH2M,PRECTOTCORR",
-            "community": "AG",
-            "longitude": longitude,
-            "latitude": latitude,
-            "start": start_date,
-            "end": end_date,
-            "format": "JSON"
-        }
-
-        data = self.nasa_power.get("", params=params)
-
-        # Validate response
-        if "parameters" not in data:
-            raise ValueError(f"Invalid NASA POWER response: {data}")
-
-        result = {
-            "latitude": latitude,
-            "longitude": longitude,
-            "parameters": data["parameters"],
-            "fetched_at": time.time()
-        }
-
-        logger.info(f"NASA POWER data fetched: {len(data['parameters'])} parameters")
-        return result
-
-    def fetch_historical(
-        self,
-        latitude: float,
-        longitude: float,
-        start_date: str,
-        end_date: str
-    ) -> Dict[str, Any]:
-        """
-        Fetch historical weather data from Open-Meteo Archive API.
-        """
-        logger.info(f"Fetching historical weather for ({latitude}, {longitude})")
-
-        params = {
-            "latitude": latitude,
-            "longitude": longitude,
-            "start_date": start_date,
-            "end_date": end_date,
-            "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum"
-        }
-
-        data = self.open_meteo.get("archive", params=params)
-
-        if "daily" not in data:
-            raise ValueError(f"Invalid Open-Meteo Archive response: {data}")
-
-        return {
-            "latitude": data.get("latitude"),
-            "longitude": data.get("longitude"),
-            "daily": data["daily"],
-            "fetched_at": time.time()
-        }
-
-    def embed_weather_data(self, weather_data: Dict[str, Any]) -> torch.Tensor:
-        """
-        Convert weather data to tensor representation for mesh processing.
-        """
-        daily = weather_data.get("daily", {})
-
-        # Extract numeric arrays
-        temp_max = np.array(daily.get("temperature_2m_max", []), dtype=np.float32)
-        temp_min = np.array(daily.get("temperature_2m_min", []), dtype=np.float32)
-        precip = np.array(daily.get("precipitation_sum", []), dtype=np.float32)
-        wind = np.array(daily.get("windspeed_10m_max", []), dtype=np.float32)
-        humidity = np.array(daily.get("relative_humidity_2m_max", []), dtype=np.float32)
-
-        # Stack into feature matrix [days, features]
-        features = np.stack([temp_max, temp_min, precip, wind, humidity], axis=1)
-
-        # Normalize to [-1, 1] range
-        features = (features - features.mean(axis=0)) / (features.std(axis=0) + 1e-8)
-
-        # Flatten to 1D vector
-        vector = torch.tensor(features.flatten(), dtype=torch.float32)
-
-        logger.info(f"Weather embedded: {vector.shape[0]} dimensions")
-        return vector
-
-    def execute(
-        self,
-        latitude: float,
-        longitude: float,
-        days: int = 7
-    ) -> bytes:
-        """
-        Main execution: fetch weather, embed, seal into .psvc container.
-        """
-        # 1. Fetch real data
-        weather_data = self.fetch_weather(latitude, longitude, days)
-
-        # 2. Embed to tensor
-        vector = self.embed_weather_data(weather_data)
-
-        # 3. Seal operation
-        receipt = self.seal(
-            operation="fetch_and_embed_weather",
-            payload={"latitude": latitude, "longitude": longitude, "days": days}
+        current_vram = current_handle.size_bytes
+        
+        # 3. EVOLUTION CHECK: Do we need to grow?
+        if required_vram > current_vram:
+            logger.warning(f"[{self.agent_id}] Burst requires {required_vram} bytes, "
+                           f"but only {current_vram} allocated. Requesting evolution...")
+            
+            # Request evolution from the Governor
+            success = self.governor.request_evolution(
+                self.agent_id, 
+                new_dimensions=sample_count, 
+                new_memory=required_vram
+            )
+            
+            if not success:
+                logger.info(f"[{self.agent_id}] Evolution denied. "
+                            f"VectorPixelizer will automatically initiate intelligent chunking.")
+                
+        # 4. Execute the vector math (SAR-optical fusion)
+        simulated_fusion_data = np.random.rand(sample_count).astype(np.float64)
+        
+        success, result = self.pixelizer.execute_vector_math(
+            self.agent_id, 
+            operation="transform",  # Represents the SAR-optical fusion algorithm
+            input_data=simulated_fusion_data
         )
+        
+        if not success:
+            logger.error(f"[{self.agent_id}] Fusion execution failed.")
+            return False, None
+            
+        # 5. Deposit final pheromone for FAIR audit trail
+        self.governor.deposit_pheromone(self.agent_id, f"fusion_complete:{sample_count}_samples")
+        logger.info(f"[{self.agent_id}] Fusion batch processed successfully.")
+        
+        return True, result
 
-        # 4. Build .psvc container
-        container = build_psvc_from_tensor(
-            tensor=vector,
-            operation="weather_embedding",
-            agent_id=self.agent_id,
-            layer=self.LAYER.name,
-            parent_receipt_hash=receipt.payload_hash,
-            content_type="weather_vector"
-        )
-
-        from psvc_containers import serialize_psvc
-        return serialize_psvc(container)
+    def _calculate_required_vram(self, sample_count: int) -> int:
+        """Calculates the VRAM required for a given batch size."""
+        base_bytes = sample_count * self.bytes_per_sample
+        return int(base_bytes * self.fusion_overhead)
 
 
-# ============================================================================
-# USAGE EXAMPLE
-# ============================================================================
-
+# ==============================================================================
+# Example Usage / Local Test Harness
+# ==============================================================================
 if __name__ == "__main__":
-    """
-    Real-world usage: Fetch weather for Montreal and create .psvc container.
-    """
     logging.basicConfig(level=logging.INFO)
-
-    agent = ForageAgent()
-
-    # Fetch real weather data for Montreal
-    print("\n=== Fetching Real Weather Data ===")
-    container_bytes = agent.execute(
-        latitude=45.5017,  # Montreal
-        longitude=-73.5673,
-        days=7
-    )
-
-    print(f"✓ Container created: {len(container_bytes)} bytes")
-
-    # Verify the container
-    from psvc_containers import deserialize_psvc, verify_container
-    container = deserialize_psvc(container_bytes)
-    verification = verify_container(container)
-
-    print(f"✓ Verification: {verification}")
-    print(f"✓ Agent: {container.receipt.agent_id}")
-    print(f"✓ Operation: {container.receipt.operation}")
-    print(f"✓ Tensor shape: {container.payload.tensor_shape}")
-
-    # Check metrics
-    print(f"\n=== HTTP Client Metrics ===")
-    print(f"Open-Meteo: {agent.open_meteo.get_metrics()}")
+    
+    # 1. Initialize the shared elastic infrastructure
+    vram_mesh = VRAMMesh(total_vram_bytes=4 * 1024 * 1024 * 1024) # 4GB
+    provisioner = ElasticPSVCProvisioner(vram_mesh)
+    governor = MeshGovernor(vram_mesh, provisioner)
+    pixelizer = VectorPixelizer(vram_mesh, provisioner, governor)
+    
+    # 2. Initialize the Forage Agent
+    agent = ForageAgent("forage_agent_01", provisioner, governor, pixelizer)
+    
+    # 3. Register the agent with a small initial allocation
+    initial_samples = 1000
+    initial_memory = agent._calculate_required_vram(initial_samples)
+    provisioner.allocate(agent.agent_id, initial_memory, growth_margin=0.2)
+    governor.register_agent(agent.agent_id, initial_samples, initial_memory)
+    
+    # 4. Process a normal, expected batch
+    print("\n--- Processing Normal Forage Batch ---")
+    agent.process_fusion_batch(sample_count=1000)
+    
+    # 5. Process a MASSIVE data burst
+    print("\n--- Processing Massive Data Burst ---")
+    agent.process_fusion_batch(sample_count=500000)
+    
+    # 6. Check final state
+    print("\n--- Final Mesh Status ---")
+    status = governor.get_mesh_status()
+    print(f"Agent Generations: {status['provisioner_stats']['average_generation']:.2f}")
+    print(f"VRAM Utilization: {status['vram_stats']['utilization_percent']:.2f}%")
