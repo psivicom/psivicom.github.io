@@ -348,6 +348,7 @@ psivicom.github.io/
 ├── Deprecated_mesh_router.py
 ├── Deprecated_pico_containers.py
 ├── Dockerfile
+├── Feprecated_intelligence_agent.py
 ├── LICENSE
 ├── NOTICE
 ├── OPEN_SCIENCE_POLICY.md
@@ -374,7 +375,6 @@ psivicom.github.io/
 ├── how-psvc-works.html
 ├── how-psvc-works2.html
 ├── index.html
-├── intelligence_agent.py
 ├── license_agent.py
 ├── lidar_agent.py
 ├── mesh-ai.html
