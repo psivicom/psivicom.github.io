@@ -1,8 +1,16 @@
 {
   "agent_id": "external_volunteer",
-  "timestamp": "2026-09-20T02:33:19.881065",
+  "timestamp": "2026-09-20T09:46:13.187606",
   "containers_processed": 5,
   "results": [
+    {
+      "container": "5edbef3e115d.psvc",
+      "hash": "35ebd4fe32da",
+      "norm": 1.0070102214813232,
+      "dimensions": 4096,
+      "precision": "int8",
+      "status": "VALID"
+    },
     {
       "container": "state_0_55b8f4d3e01f.psvc",
       "hash": "f1a05ee63935",
@@ -20,27 +28,19 @@
       "status": "VALID"
     },
     {
+      "container": "chain_20260920_094409_step3_critic_1bab3e96c5be.psvc",
+      "hash": "24c946a2b860",
+      "norm": 1.000000238418579,
+      "dimensions": 4096,
+      "precision": "float16",
+      "status": "VALID"
+    },
+    {
       "container": "chain_20260919_194635_FINAL_d8970e1a7fc6.psvc",
-      "hash": "32943c754c81",
-      "norm": 1.000003695487976,
+      "hash": "7bda6cc455c8",
+      "norm": 1.0000038146972656,
       "dimensions": 4096,
       "precision": "float16",
-      "status": "VALID"
-    },
-    {
-      "container": "governor_53cbcc22c4f1.psvc",
-      "hash": "53cbcc22c4f1",
-      "norm": 1.0004616975784302,
-      "dimensions": 4096,
-      "precision": "float16",
-      "status": "VALID"
-    },
-    {
-      "container": "state_2_6e83993575d6.psvc",
-      "hash": "dd606ef1bafc",
-      "norm": 1.000651240348816,
-      "dimensions": 4096,
-      "precision": "int8",
       "status": "VALID"
     }
   ],
