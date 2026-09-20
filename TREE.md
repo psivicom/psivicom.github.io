@@ -198,43 +198,56 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── pico_containers/
-│   │   ├── chain_20260919_112411_FINAL_3984ed5b9fb9.json
-│   │   ├── chain_20260919_112411_FINAL_3984ed5b9fb9.psvc
+│   │   ├── 12ffa2eeedf2.json
+│   │   ├── 12ffa2eeedf2.psvc
 │   │   ├── chain_20260919_112411_step0_forage_0a2ae013e8b2.json
 │   │   ├── chain_20260919_112411_step0_forage_0a2ae013e8b2.psvc
 │   │   ├── chain_20260919_112411_step1_literature_c48e3f55b1c1.json
 │   │   ├── chain_20260919_112411_step1_literature_c48e3f55b1c1.psvc
-│   │   ├── chain_20260919_112411_step2_critic_3984ed5b9fb9.json
-│   │   ├── chain_20260919_112411_step2_critic_3984ed5b9fb9.psvc
-│   │   ├── chain_20260919_112411_step3_intelligence_3984ed5b9fb9.json
-│   │   ├── chain_20260919_112411_step3_intelligence_3984ed5b9fb9.psvc
-│   │   ├── chain_20260919_114056_FINAL_82d57fa5f691.json
-│   │   ├── chain_20260919_114056_FINAL_82d57fa5f691.psvc
 │   │   ├── chain_20260919_114056_step0_forage_f24b939a0f8d.json
 │   │   ├── chain_20260919_114056_step0_forage_f24b939a0f8d.psvc
 │   │   ├── chain_20260919_114056_step1_literature_4f7fc7a4b513.json
 │   │   ├── chain_20260919_114056_step1_literature_4f7fc7a4b513.psvc
 │   │   ├── chain_20260919_114056_step2_satellite_98dc4091d0fa.json
 │   │   ├── chain_20260919_114056_step2_satellite_98dc4091d0fa.psvc
-│   │   ├── chain_20260919_114056_step3_critic_82d57fa5f691.json
-│   │   ├── chain_20260919_114056_step3_critic_82d57fa5f691.psvc
-│   │   ├── chain_20260919_114056_step4_intelligence_82d57fa5f691.json
-│   │   ├── chain_20260919_114056_step4_intelligence_82d57fa5f691.psvc
+│   │   ├── chain_20260919_194635_FINAL_d8970e1a7fc6.json
+│   │   ├── chain_20260919_194635_FINAL_d8970e1a7fc6.psvc
+│   │   ├── chain_20260919_194635_step0_forage_205f1d2f22f9.json
+│   │   ├── chain_20260919_194635_step0_forage_205f1d2f22f9.psvc
+│   │   ├── chain_20260919_194635_step1_literature_f271cb11e3c0.json
+│   │   ├── chain_20260919_194635_step1_literature_f271cb11e3c0.psvc
+│   │   ├── chain_20260919_194635_step2_satellite_98dc4091d0fa.json
+│   │   ├── chain_20260919_194635_step2_satellite_98dc4091d0fa.psvc
+│   │   ├── chain_20260919_194635_step3_critic_d8970e1a7fc6.json
+│   │   ├── chain_20260919_194635_step3_critic_d8970e1a7fc6.psvc
+│   │   ├── chain_20260919_194635_step4_intelligence_d8970e1a7fc6.json
+│   │   ├── chain_20260919_194635_step4_intelligence_d8970e1a7fc6.psvc
+│   │   ├── governor_53cbcc22c4f1.psvc
+│   │   ├── governor_a026c90e5bd0.psvc
 │   │   ├── satellite_98dc4091d0fa.psvc
+│   │   ├── state_0_10b94c687294.psvc
 │   │   ├── state_0_53cbcc22c4f1.psvc
 │   │   ├── state_0_55b8f4d3e01f.psvc
 │   │   ├── state_0_5f8ef627117b.psvc
 │   │   ├── state_0_6a236f59a9aa.psvc
 │   │   ├── state_0_8e8202755302.psvc
 │   │   ├── state_0_a6ac3bbbb34c.psvc
+│   │   ├── state_0_a9a057376daa.psvc
+│   │   ├── state_0_b5d02274082c.psvc
 │   │   ├── state_0_f816755d4086.psvc
+│   │   ├── state_1_0846425817ac.psvc
 │   │   ├── state_1_1683fb8d99e1.psvc
+│   │   ├── state_1_2ef45efe8c2d.psvc
 │   │   ├── state_1_5f8ef627117b.psvc
 │   │   ├── state_1_c2d691e7b81c.psvc
 │   │   ├── state_1_e6bbae07a097.psvc
+│   │   ├── state_1_f5f71eb02a9f.psvc
 │   │   ├── state_2_301afa57070e.psvc
+│   │   ├── state_2_6e83993575d6.psvc
+│   │   ├── state_2_735f6654f593.psvc
 │   │   ├── state_2_9d3839e18eed.psvc
-│   │   └── state_2_c53c5acaffaf.psvc
+│   │   ├── state_2_c53c5acaffaf.psvc
+│   │   └── state_2_f8b95d782471.psvc
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
@@ -253,11 +266,13 @@ psivicom.github.io/
 │   ├── volunteer_contributions/
 │   │   ├── 2026-09-17_external_volunteer_49b5fced.json
 │   │   ├── 2026-09-18_external_volunteer_df3588cb.json
-│   │   └── 2026-09-19_external_volunteer.json
+│   │   ├── 2026-09-19_external_volunteer.json
+│   │   └── 2026-09-20_external_volunteer.json
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
 │   ├── 2026-09-17_synthesizer_memory.json
 │   ├── 2026-09-18_synthesizer_memory.json
+│   ├── 2026-09-19_synthesizer_memory.json
 │   ├── ai_audit.md
 │   ├── forage_log.md
 │   ├── governor_log.md
@@ -265,7 +280,8 @@ psivicom.github.io/
 │   ├── mesh_status.txt
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
-│   └── synthesis_2026-09-18.md
+│   ├── synthesis_2026-09-18.md
+│   └── synthesis_2026-09-19.md
 ├── scripts/
 │   ├── update-tree/
 │   │   └── main.go
@@ -273,6 +289,7 @@ psivicom.github.io/
 ├── src/
 │   ├── core/
 │   │   ├── __init__.py
+│   │   ├── vector_math.py
 │   │   └── vector_pixelizer.py
 │   ├── nodes/
 │   │   ├── __init__.py
