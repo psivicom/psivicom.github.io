@@ -318,6 +318,7 @@ psivicom.github.io/
 │   │   ├── forage_agent.py
 │   │   ├── intelligence_agent.py
 │   │   ├── literature_agent.py
+│   │   ├── satellite_agent.py
 │   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
@@ -417,7 +418,6 @@ psivicom.github.io/
 ├── requirements.txt
 ├── research_pipeline.py
 ├── robots.txt
-├── satellite_agent.py
 ├── seed_mesh.py
 ├── sitemap.xml
 ├── test_rfc1001_compliance.py
