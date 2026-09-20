@@ -1,0 +1,70 @@
+# .github/workflows/auto-fix-paths.yml
+name: Auto-Fix Workflow Paths
+
+on:
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  fix-paths:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Path Correction Script
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+          import glob
+
+          # Mapping of old root paths to new src/ paths
+          replacements = [
+              (r'run:\s*python\s+forage_agent\.py', 'run: python src/agents/forage_agent.py'),
+              (r'run:\s*python\s+literature_agent\.py', 'run: python src/agents/literature_agent.py'),
+              (r'run:\s*python\s+critic_agent\.py', 'run: python src/agents/critic_agent.py'),
+              (r'run:\s*python\s+intelligence_agent\.py', 'run: python src/agents/intelligence_agent.py'),
+              (r'run:\s*python\s+synthesizer_agent\.py', 'run: python src/agents/synthesizer_agent.py'),
+              (r'run:\s*python\s+license_agent\.py', 'run: python src/agents/license_agent.py'),
+              (r'run:\s*python\s+mesh_router\.py', 'run: python src/orchestrator/mesh_router.py'),
+              (r'run:\s*python\s+mesh_governor\.py', 'run: python src/orchestrator/mesh_governor.py'),
+              (r'run:\s*python\s+pico_containers\.py', 'run: python psvc_containers.py'),
+          ]
+
+          workflow_dir = '.github/workflows'
+          changed_files = []
+
+          for filepath in glob.glob(os.path.join(workflow_dir, '*.yml')):
+              # Skip this very file to avoid loops
+              if 'auto-fix-paths.yml' in filepath:
+                  continue
+                  
+              with open(filepath, 'r', encoding='utf-8') as f:
+                  content = f.read()
+              
+              original_content = content
+              for old_pattern, new_string in replacements:
+                  content = re.sub(old_pattern, new_string, content)
+                  
+              if content != original_content:
+                  with open(filepath, 'w', encoding='utf-8') as f:
+                      f.write(content)
+                  changed_files.append(filepath)
+
+          print(f"✅ Successfully updated {len(changed_files)} workflow files.")
+          for f in changed_files:
+              print(f"   - {f}")
+          EOF
+
+      - name: Commit and Push Fixes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/
+          git commit -m "chore: auto-fix agent paths to src/ directory [skip ci]" || echo "No changes to commit"
+          git push
