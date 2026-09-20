@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T04:28:48.086Z | Hash: ad499309b3b45d5ba752ab3bddf59735d412cfc426806bb875d31be247e7a139 -->
+<!-- Last updated: 2026-09-20T04:36:32.973Z | Hash: a396a5527b2475f58d90fe61ce5a808b13cb7e55e3931fa187bc10854f8d0999 -->
 
 ```
 psivicom.github.io/
@@ -425,6 +425,7 @@ psivicom.github.io/
 │   │   ├── __init__.py
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
+│   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
 │   └── __init__.py
 ├── tests/
