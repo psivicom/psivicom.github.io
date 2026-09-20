@@ -344,8 +344,7 @@ psivicom.github.io/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
-│   │   ├── psvc_provisioner.py
-│   │   └── vram_mesh.py
+│   │   └── psvc_provisioner.py
 │   ├── __init__.py
 │   └── license_agent.py
 ├── tests/
@@ -422,5 +421,6 @@ psivicom.github.io/
 ├── test_rfc1001_compliance.py
 ├── vector_mesh.py
 ├── volunteer_node.py
-└── volunteer_worker.py
+├── volunteer_worker.py
+└── vram_mesh.py
 ```
