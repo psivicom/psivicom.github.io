@@ -2,7 +2,7 @@ name: Mesh Status
 
 on:
   schedule:
-    - cron: '0 6 * * *' # 11 PM PST
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -13,16 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
       - name: Run Mesh Router
-        run: |
-          pip install pyyaml
-          python src/orchestrator/mesh_router.py
-
+        run: python src/orchestrator/mesh_router.py
       - name: Commit status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
