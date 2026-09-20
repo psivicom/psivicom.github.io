@@ -339,6 +339,7 @@ psivicom.github.io/
 ├── Deprecated_chain_orchestrator.py
 ├── Deprecated_mesh_governor.py
 ├── Deprecated_mesh_router.py
+├── Deprecated_pico_containers.py
 ├── Dockerfile
 ├── LICENSE
 ├── NOTICE
@@ -376,7 +377,6 @@ psivicom.github.io/
 ├── mesh.go
 ├── mesh_state.json
 ├── open-science-guide.html
-├── pico_containers.py
 ├── pico_mesh.py
 ├── psvc_cli.py
 ├── psvc_containers.py
