@@ -21,7 +21,7 @@ jobs:
       - name: Run Critic Agent
         run: |
           pip install requests numpy
-          python critic_agent.py
+          python src/agents/critic_agent.py
 
       - name: Commit Corrections
         env:
