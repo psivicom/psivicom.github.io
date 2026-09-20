@@ -1,12 +1,11 @@
-# .github/workflows/auto-fix-paths.yml
-name: Auto-Fix Workflow Paths (v2)
+name: Auto-Fix Workflow Paths (v3)
 
 on:
-  workflow_dispatch: # Run manually from Actions tab
+  workflow_dispatch:
 
 permissions:
   contents: write
-  'workflows': write
+  workflows: write
 
 jobs:
   fix-paths:
@@ -15,31 +14,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug and Fix Paths
+      - name: Fix Paths
         run: |
-          echo "=== Listing workflow files ==="
-          ls -la .github/workflows/
-          
-          echo "=== Searching for python execution ==="
-          grep -rn "python" .github/workflows/ || echo "No 'python' found"
-          
-          echo "=== Applying aggressive fixes ==="
           for file in .github/workflows/*.yml; do
-            # Skip this very file to avoid loops
             if [[ "$file" == *"auto-fix-paths.yml"* ]]; then continue; fi
             
-            # Fix agent paths (handles 'python' or 'python3')
             sed -i -E 's/(python3? +)(forage_agent\.py|literature_agent\.py|critic_agent\.py|intelligence_agent\.py|synthesizer_agent\.py|license_agent\.py|lidar_agent\.py|satellite_agent\.py)/\1src\/agents\/\2/g' "$file"
-            
-            # Fix orchestrator paths
             sed -i -E 's/(python3? +)(mesh_router\.py|mesh_governor\.py)/\1src\/orchestrator\/\2/g' "$file"
-            
-            # Fix pico_containers to psvc_containers
             sed -i -E 's/(python3? +)pico_containers\.py/\1psvc_containers.py/g' "$file"
           done
-          
-          echo "=== Showing what changed ==="
-          git diff .github/workflows/
+          echo "✅ Paths updated."
 
       - name: Commit and Push Fixes
         run: |
