@@ -115,13 +115,14 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T20:54:44.857Z | Hash: 166f897485b86e86d81f9698d508b7bf60e9c6df8ed637d999754960a3052ea0 -->
+<!-- Last updated: 2026-09-20T22:15:47.796Z | Hash: a1c86ff8d757fb62408cff077a9d5300fde96a1c57ec327a744b321d250f35c0 -->
 
 ```
 psivicom.github.io/
 ├── .github/
 │   └── workflows/
 │       ├── README.md
+│       ├── agent-path-guard.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── docs.yml
