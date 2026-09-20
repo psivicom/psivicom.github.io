@@ -289,6 +289,8 @@ psivicom.github.io/
 ├── src/
 │   ├── Base/
 │   │   └── base_agent.py
+│   ├── automation/
+│   │   └── capability_resolver.py
 │   ├── core/
 │   │   ├── __init__.py
 │   │   ├── psvc_builder.py
