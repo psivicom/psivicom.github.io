@@ -296,6 +296,7 @@ psivicom.github.io/
 │   │   └── capability_resolver.py
 │   ├── core/
 │   │   ├── __init__.py
+│   │   ├── http_client.py
 │   │   ├── psvc_builder.py
 │   │   ├── vector_math.py
 │   │   └── vector_pixelizer.py
