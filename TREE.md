@@ -347,6 +347,7 @@ psivicom.github.io/
 ├── Deprecated_mesh_governor.py
 ├── Deprecated_mesh_router.py
 ├── Deprecated_pico_containers.py
+├── Deprecated_synthesizer_agent.py
 ├── Dockerfile
 ├── Feprecated_intelligence_agent.py
 ├── LICENSE
@@ -391,7 +392,6 @@ psivicom.github.io/
 ├── satellite_agent.py
 ├── seed_mesh.py
 ├── sitemap.xml
-├── synthesizer_agent.py
 ├── test_rfc1001_compliance.py
 ├── vector_mesh.py
 ├── volunteer_node.py
