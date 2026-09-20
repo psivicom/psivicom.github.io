@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T18:03:49.291Z | Hash: 413b6734a5b76978bc4c32f330097a43b6080e45fb165aa735f8938d511e058e -->
+<!-- Last updated: 2026-09-20T18:08:13.562Z | Hash: eb28c996b249b70d666a8775ccb30b0f520acf9c07fe12600e8ab3ba6a9a20e6 -->
 
 ```
 psivicom.github.io/
@@ -467,6 +467,7 @@ psivicom.github.io/
 │   └── license_agent.py
 ├── tests/
 │   ├── __init__.py
+│   ├── test_elastic_evolution.py
 │   └── test_pixelizer_fidelity.py
 ├── tools/
 │   └── fix_timestamps.py
