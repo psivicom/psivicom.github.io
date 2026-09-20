@@ -292,7 +292,8 @@ psivicom.github.io/
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
 │   │   ├── intelligence_agent.py
-│   │   └── literature_agent.py
+│   │   ├── literature_agent.py
+│   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
 │   │   ├── auto_integrator.py
