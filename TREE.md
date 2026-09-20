@@ -377,6 +377,7 @@ psivicom.github.io/
 ├── Deprecated_pico_containers.py
 ├── Deprecated_satellite_agent.py
 ├── Deprecated_synthesizer_agent.py
+├── Deprecated_vram_mesh.py
 ├── Dockerfile
 ├── LICENSE
 ├── NOTICE
@@ -421,6 +422,5 @@ psivicom.github.io/
 ├── test_rfc1001_compliance.py
 ├── vector_mesh.py
 ├── volunteer_node.py
-├── volunteer_worker.py
-└── vram_mesh.py
+└── volunteer_worker.py
 ```
