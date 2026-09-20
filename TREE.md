@@ -317,6 +317,7 @@ psivicom.github.io/
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
 │   │   ├── intelligence_agent.py
+│   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
 │   │   ├── satellite_agent.py
 │   │   └── synthesizer_agent.py

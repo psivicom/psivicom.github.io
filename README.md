@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T20:35:44.271Z | Hash: a8c29b74bf6819aced5420ba22e91fe21883ab7ecde2d8f6ba10826a0bfdeaf4 -->
+<!-- Last updated: 2026-09-20T20:39:30.124Z | Hash: b407563b34004e9f670cb091bf6dbc762af35cf776ccf1e2c0ab737b37ed3af1 -->
 
 ```
 psivicom.github.io/
@@ -436,6 +436,7 @@ psivicom.github.io/
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
 │   │   ├── intelligence_agent.py
+│   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
 │   │   ├── satellite_agent.py
 │   │   └── synthesizer_agent.py
