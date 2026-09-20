@@ -20,7 +20,8 @@ jobs:
 
       - name: Run Literature Agent
         run: |
-          pip install numpy requests
+          pip install -r
+          requirements.txt
           python src/agents/literature_agent.py
 
       - name: Commit literature vectors
