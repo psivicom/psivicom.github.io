@@ -289,6 +289,7 @@ psivicom.github.io/
 ├── src/
 │   ├── core/
 │   │   ├── __init__.py
+│   │   ├── psvc_builder.py
 │   │   ├── vector_math.py
 │   │   └── vector_pixelizer.py
 │   ├── nodes/
