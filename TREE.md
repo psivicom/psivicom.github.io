@@ -342,7 +342,6 @@ psivicom.github.io/
 │   ├── orchestrator/
 │   │   ├── __init__.py
 │   │   ├── mesh_brain.py
-│   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
 │   ├── __init__.py
@@ -406,6 +405,7 @@ psivicom.github.io/
 ├── license_agent.py
 ├── mesh-ai.html
 ├── mesh.go
+├── mesh_governor.py
 ├── mesh_state.json
 ├── open-science-guide.html
 ├── pico_mesh.py
