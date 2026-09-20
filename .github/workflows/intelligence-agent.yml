@@ -22,7 +22,7 @@ jobs:
 
       - name: Run Intelligence Agent
         run: |
-          python intelligence_agent.py
+          python src/agents/intelligence_agent.py
 
       - name: Commit Intelligent Fixes
         env:
