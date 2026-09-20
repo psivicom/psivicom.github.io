@@ -2,7 +2,7 @@
 # FILE: chain_orchestrator.py
 # PATH: psivicom.github.io/chain_orchestrator.py
 # DESCRIPTION: Dynamic Chain Orchestrator for Elastic PSVC Mesh
-#              Handles zero-copy handoffs between legacy and evolving agents.
+#              Updated to import agents from src/agents/ directory.
 # LICENSE: EUPL-1.2 | COMPLIANCE: NIST SP 800-218, FAIR Open Science
 # ==============================================================================
 
@@ -10,14 +10,23 @@ import logging
 import time
 import json
 import numpy as np
+import sys
+import os
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field
 
-# Import the newly implemented elastic core
+# Ensure root directory is in path for imports
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
+# Import the elastic core infrastructure
 from vram_mesh import VRAMMesh
 from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
 from mesh_governor import MeshGovernor
 from src.core.vector_pixelizer import VectorPixelizer
+
+# Import agents from their new location
+from src.agents.satellite_agent import SatelliteAgent
+from src.agents.forage_agent import ForageAgent
 
 logger = logging.getLogger(__name__)
 
@@ -120,9 +129,6 @@ class ChainOrchestrator:
     def _execute_handoff(self, step: WorkflowStep) -> bool:
         """
         The core innovation: Zero-copy handoff with elastic evolution.
-        Instead of copying data, the target agent reads directly from the 
-        source agent's VRAM pointer. If the target needs to grow, it 
-        triggers an atomic evolution.
         """
         source_id = step.source_agent_id
         target_id = step.target_agent_id
@@ -134,13 +140,9 @@ class ChainOrchestrator:
             return False
             
         # 2. Simulate reading the source vector data from VRAM
-        # In a real GPU implementation, this is a direct VRAM pointer dereference.
-        # Here we simulate the vector payload based on the allocated memory size.
         simulated_source_data = np.ones(source_handle.size_bytes // 8, dtype=np.float64)
         
         # 3. Execute vector math on the target agent
-        # The VectorPixelizer will automatically check bounds and request 
-        # evolution from the Governor if the operation requires more space.
         success, result_data = self.pixelizer.execute_vector_math(
             target_id, step.operation, simulated_source_data
         )
@@ -183,23 +185,23 @@ if __name__ == "__main__":
     # 1. Initialize the Orchestrator
     orchestrator = ChainOrchestrator(total_vram_gb=4.0)
     
-    # 2. Register a Legacy Agent (e.g., an older SAR processing agent)
+    # 2. Register a Legacy Agent
     legacy_profile = AgentProfile(
         agent_id="legacy_sar_agent",
         agent_type="legacy",
         initial_dimensions=1024,
         initial_memory_bytes=8192,
-        growth_margin=0.05  # Tight margin, doesn't evolve much
+        growth_margin=0.05
     )
     orchestrator.register_agent(legacy_profile)
     
-    # 3. Register an Evolving Agent (e.g., a new AI fusion agent)
+    # 3. Register an Evolving Agent
     evolving_profile = AgentProfile(
         agent_id="evolving_fusion_agent",
         agent_type="evolving",
         initial_dimensions=2048,
         initial_memory_bytes=16384,
-        growth_margin=0.50  # High margin, expects to grow rapidly
+        growth_margin=0.50
     )
     orchestrator.register_agent(evolving_profile)
     
@@ -208,7 +210,7 @@ if __name__ == "__main__":
         WorkflowStep(
             source_agent_id="legacy_sar_agent",
             target_agent_id="evolving_fusion_agent",
-            operation="transform",  # This operation will force the evolving agent to grow
+            operation="transform",
             is_mutable=True
         )
     ]
