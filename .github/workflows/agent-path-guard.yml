@@ -1,0 +1,21 @@
+# .github/workflows/agent-path‑guard.yml
+name: Agent Path Guard
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Find misplaced agent files
+        run: |
+          # Warn / fail if any file under src/ that is not in src/agents/
+          if git ls-files 'src/**/*.js' | grep -v '^src/agents/'; then
+            echo "::error file=src/,line=1::Agent files must reside in src/agents/"
+            exit 1
+          fi
+      - name: Enforce relative imports
+        run: |
+          # Scan all .js/.ts/.py files for disallowed import patterns
+          grep -R -E "import .+ from ['\"](/|\\.\\./)" src/agents/ && exit 1 || echo "All imports are relative"
