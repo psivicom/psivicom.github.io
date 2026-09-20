@@ -1,23 +1,215 @@
-# Add to existing config.yaml
+# config.yaml
+# SPDX-License-Identifier: CC-BY-4.0
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
+# RFC 1001 Compliant — PSIVI Open Science Hub
+#
+# Complete configuration for the PSIVI Open Science Research Mesh.
+# Environment variables can be substituted using ${VAR_NAME} syntax.
+# Example: export PSVC_SIGNATURE_SECRET="your-secret-key"
 
+# ============================================================================
+# METADATA
+# ============================================================================
+metadata:
+  project: "psivicom.github.io"
+  version: "1.0.0"
+  author: "Louis-Philippe Audette"
+  license: "CC-BY-4.0"
+  rfc1001_compliant: true
+  created: "2026-09-20"
+  description: "Open Science Research Mesh with FAIR-compliant, RFC 1001-governed, volunteer-driven distributed compute"
+
+# ============================================================================
+# AGENTS CONFIGURATION
+# ============================================================================
 agents:
+  # --------------------------------------------------------------------------
+  # Ingestion Layer (Layer 1)
+  # --------------------------------------------------------------------------
   forage:
+    name: "forage_agent"
+    layer: "INGESTION"
+    capabilities:
+      - fetch_weather
+      - fetch_solar
+      - fetch_historical
     open_meteo:
       base_url: "https://api.open-meteo.com/v1"
       timeout: 30.0
       rate_limit_per_second: 5.0
+      max_retries: 3
+      circuit_breaker_threshold: 5
+      circuit_breaker_recovery: 60.0
     nasa_power:
       base_url: "https://power.larc.nasa.gov/api/temporal/daily/point"
       timeout: 30.0
       rate_limit_per_second: 5.0
+      max_retries: 3
+      circuit_breaker_threshold: 5
+      circuit_breaker_recovery: 60.0
+    embedding:
+      vocab_size: 32000
+      embedding_dim: 4096
+      dtype: "float16"
+
+  satellite:
+    name: "satellite_agent"
+    layer: "INGESTION"
+    capabilities:
+      - fetch_imagery
+      - process_radar
+    data_sources:
+      - name: "RADARSAT"
+        endpoint: "https://api.radsat.ca"
+        auth: "${RADSAT_API_KEY}"
+      - name: "NASA_EARTH_DATA"
+        endpoint: "https://api.earthdata.nasa.gov"
+        auth: "${NASA_API_KEY}"
+    timeout: 60.0
+    rate_limit_per_second: 2.0
+
+  lidar:
+    name: "lidar_agent"
+    layer: "INGESTION"
+    capabilities:
+      - fetch_point_cloud
+      - voxel_process
+    point_cloud:
+      max_points: 1000000
+      voxel_size: 0.1
+    timeout: 60.0
+    rate_limit_per_second: 1.0
 
   literature:
+    name: "literature_agent"
+    layer: "INGESTION"
+    capabilities:
+      - search_papers
+      - fetch_citations
+      - fetch_references
     semantic_scholar:
       base_url: "https://api.semanticscholar.org/graph/v1"
       timeout: 30.0
       rate_limit_per_second: 1.0
+      max_retries: 3
+      circuit_breaker_threshold: 5
+      circuit_breaker_recovery: 60.0
     crossref:
       base_url: "https://api.crossref.org"
       timeout: 30.0
       rate_limit_per_second: 1.0
       user_agent: "PSIVI/1.0 (mailto:contact@psivicom.com)"
+      max_retries: 3
+      circuit_breaker_threshold: 5
+      circuit_breaker_recovery: 60.0
+
+  # --------------------------------------------------------------------------
+  # Validation Layer (Layer 2)
+  # --------------------------------------------------------------------------
+  critic:
+    name: "critic_agent"
+    layer: "VALIDATION"
+    capabilities:
+      - check_tensor_integrity
+      - check_receipt_chain
+      - check_fair_compliance
+      - flag_anomalies
+    validation_rules:
+      - tensor_integrity
+      - receipt_signature
+      - fair_license
+      - provenance_chain
+    anomaly_threshold: 0.95
+
+  intelligence:
+    name: "intelligence_agent"
+    layer: "VALIDATION"
+    capabilities:
+      - read_vector_mesh
+      - read_pico_mesh
+      - generate_report
+      - audit_memory
+    memory_operations:
+      - read_vector_mesh
+      - read_pico_mesh
+      - read_vram_mesh
+      - read_seed_mesh
+
+  # --------------------------------------------------------------------------
+  # Synthesis Layer (Layer 3)
+  # --------------------------------------------------------------------------
+  consolidator:
+    name: "consolidator_agent"
+    layer: "SYNTHESIS"
+    capabilities:
+      - aggregate_findings
+      - merge_shards
+    aggregation_method: "weighted_average"
+    max_batch_size: 32
+
+  synthesizer:
+    name: "synthesizer_agent"
+    layer: "SYNTHESIS"
+    capabilities:
+      - compose_report
+      - generate_output
+    output_formats:
+      - json
+      - markdown
+      - pdf
+    template: "default_research_report"
+
+  # --------------------------------------------------------------------------
+  # Orchestration Layer (Layer 4)
+  # --------------------------------------------------------------------------
+  chain_orchestrator:
+    name: "chain_orchestrator"
+    layer: "ORCHESTRATION"
+    dynamic_planning: true
+    max_pipeline_depth: 10
+    timeout_seconds: 3600
+    stages:
+      - forage
+      - literature
+      - critic
+      - intelligence
+      - consolidator
+      - synthesizer
+
+  agent_factory:
+    name: "agent_factory"
+    layer: "ORCHESTRATION"
+    auto_spawn: true
+    llm_backend: "ollama"
+    model: "codellama:7b-code"
+    temperature: 0.2
+    max_tokens: 2048
+    cache_generated_agents: true
+    max_resolution_attempts: 3
+
+  mesh_router:
+    name: "mesh_router"
+    layer: "ORCHESTRATION"
+    routing_strategy: "content_aware"
+    load_balancing: "least_connections"
+    retry_attempts: 3
+    retry_base_delay: 1.0
+    max_connections: 100
+    rate_limit_per_second: 1000
+    circuit_breaker_threshold: 5
+    circuit_breaker_recovery: 60.0
+    timeout_seconds: 30.0
+
+  # --------------------------------------------------------------------------
+  # Governance Layer (Layer 5)
+  # --------------------------------------------------------------------------
+  license:
+    name: "license_agent"
+    layer: "GOVERNANCE"
+    capabilities:
+      - stamp_fair
+      - validate_fair
+    fair_stamping:
+      license: "CC-BY-4.0"
+      author: "Louis-Philippe Audette"
+      project: "psivicom.github.io"
