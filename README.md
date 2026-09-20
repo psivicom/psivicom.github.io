@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-20T04:19:08.120Z | Hash: 10c3c859385ef7dd09499da1309c49f73132cf23c66c5063076cf9ff6318cb61 -->
+<!-- Last updated: 2026-09-20T04:27:19.924Z | Hash: f1b7e759095869e6f63eb8b7efa102dd96a372a552b0c61b2ddda02740879b86 -->
 
 ```
 psivicom.github.io/
@@ -464,6 +464,7 @@ psivicom.github.io/
 ├── agent_config.yaml
 ├── chain_orchestrator.py
 ├── codemeta.json
+├── config.yaml
 ├── consolidator_agent.py
 ├── critic_agent.py
 ├── docker-compose.yml

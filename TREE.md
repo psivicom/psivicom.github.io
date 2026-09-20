@@ -345,6 +345,7 @@ psivicom.github.io/
 ├── agent_config.yaml
 ├── chain_orchestrator.py
 ├── codemeta.json
+├── config.yaml
 ├── consolidator_agent.py
 ├── critic_agent.py
 ├── docker-compose.yml
