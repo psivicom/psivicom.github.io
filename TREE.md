@@ -344,6 +344,7 @@ psivicom.github.io/
 ├── Deprecated_consolidator_agent.py
 ├── Deprecated_critic_agent.py
 ├── Deprecated_forage_agent.py
+├── Deprecated_lidar_agent.py
 ├── Deprecated_literature_agent.py
 ├── Deprecated_mesh_governor.py
 ├── Deprecated_mesh_router.py
@@ -378,7 +379,6 @@ psivicom.github.io/
 ├── how-psvc-works2.html
 ├── index.html
 ├── license_agent.py
-├── lidar_agent.py
 ├── mesh-ai.html
 ├── mesh.go
 ├── mesh_state.json
