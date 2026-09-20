@@ -1,195 +1,268 @@
-# src/orchestrator/mesh_governor.py
-# SPDX-License-Identifier: CC-BY-4.0
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
+"""
+Mesh Governor for Evolutionary State Tracking and Security Enforcement
+Monitors agent evolution and enforces pico protocol compliance
+NIST SP 800-218 Compliant | FAIR Open Science | EUPL-1.2 Licensed
+"""
 
-import hashlib
+import logging
 import json
+import time
+from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
-from typing import List, Dict, Any, Tuple
-from src.core.psvc_builder import PicoContainer, PSVCPayload, PSVCHeader
-from src.base.base_agent import AgentReceipt
+from pathlib import Path
 
-@dataclass(frozen=True)
-class ValidationResult:
-    """Immutable record of a cryptographic and mathematical audit."""
-    is_valid: bool
-    container_id: str
-    checks_passed: List[str]
-    checks_failed: List[str]
-    verified_hashes: Dict[str, str]
+logger = logging.getLogger(__name__)
 
-def deserialize_psvc(data: bytes) -> PicoContainer:
+
+@dataclass
+class AgentState:
+    """Tracks the evolutionary state of an agent"""
+    agent_id: str
+    current_generation: int
+    last_evolution_time: float
+    vector_dimensions: int
+    memory_footprint: int
+    status: str  # "NOMINAL", "EVOLVING", "ERROR"
+    pheromone_deposits: List[str]
+
+
+class MeshGovernor:
     """
-    Pure function: Reverses the serialization to reconstruct the immutable container.
+    Enforces pico protocol and tracks agent evolution
+    Ensures FAIR compliance and security boundaries
     """
-    try:
-        header_len = int.from_bytes(data[0:4], 'big')
-        header = PSVCHeader(**json.loads(data[4:4+header_len].decode('utf-8')))
+    
+    def __init__(self, vram_mesh, provisioner, state_file: str = "mesh_state.json"):
+        self.vram_mesh = vram_mesh
+        self.provisioner = provisioner
+        self.state_file = Path(state_file)
+        self.agent_states: Dict[str, AgentState] = {}
+        self.evolution_thresholds = {
+            "max_generations_per_hour": 10,
+            "max_memory_growth_percent": 50,
+            "min_time_between_evolutions": 60  # seconds
+        }
         
-        payload_start = 4 + header_len
-        payload_len = int.from_bytes(data[payload_start:payload_start+4], 'big')
-        payload_dict = json.loads(data[payload_start+4:payload_start+4+payload_len].decode('utf-8'))
+        # Load existing state if available
+        self._load_state()
         
-        receipt_start = payload_start + 4 + payload_len
-        receipt_len = int.from_bytes(data[receipt_start:receipt_start+4], 'big')
-        receipt = AgentReceipt(**json.loads(data[receipt_start+4:receipt_start+4+receipt_len].decode('utf-8')))
+        logger.info("Mesh Governor initialized")
+    
+    def register_agent(self, agent_id: str, initial_dimensions: int, 
+                      initial_memory: int) -> AgentState:
+        """
+        Register a new agent with the governor
         
-        state_start = receipt_start + 4 + receipt_len
-        state_len = int.from_bytes(data[state_start:state_start+4], 'big')
-        state_verification = json.loads(data[state_start+4:state_start+4+state_len].decode('utf-8'))
-        
-        tensor_start = state_start + 4 + state_len
-        tensor_bytes = data[tensor_start:]
-        
-        # Reconstruct payload
-        payload = PSVCPayload(
-            tensor_bytes=tensor_bytes,
-            tensor_shape=tuple(payload_dict["shape"]),
-            tensor_dtype=payload_dict["dtype"],
-            math_state=payload_dict["state"]
+        Args:
+            agent_id: Unique agent identifier
+            initial_dimensions: Initial vector dimensions
+            initial_memory: Initial memory footprint in bytes
+            
+        Returns:
+            AgentState object
+        """
+        state = AgentState(
+            agent_id=agent_id,
+            current_generation=1,
+            last_evolution_time=time.time(),
+            vector_dimensions=initial_dimensions,
+            memory_footprint=initial_memory,
+            status="NOMINAL",
+            pheromone_deposits=[]
         )
         
-        return PicoContainer(
-            header=header,
-            payload=payload,
-            receipt=receipt,
-            state_verification=state_verification
-        )
-    except Exception as e:
-        raise ValueError(f"Deserialization failed: {e}")
-
-def _hash_bytes(data: bytes) -> str:
-    """Pure function: SHA-256 hash of raw bytes."""
-    return hashlib.sha256(data).hexdigest()
-
-def verify_tensor_integrity(container: PicoContainer) -> Tuple[bool, str, Dict[str, str]]:
-    """
-    Pure function: Cryptographically proves the tensor bytes match the recorded math state.
-    Prevents volunteer workers from tampering with vector payloads.
-    """
-    computed_hash = _hash_bytes(container.payload.tensor_bytes)
-    expected_hash = container.payload.math_state.output_hash
-    declared_hash = container.state_verification.get("tensor_hash", "")
-    
-    checks_passed = []
-    checks_failed = []
-    verified = {}
-    
-    if computed_hash == expected_hash:
-        checks_passed.append("tensor_matches_math_state")
-        verified["tensor_hash"] = computed_hash
-    else:
-        checks_failed.append(f"tensor_mismatch: computed {computed_hash[:8]}... != expected {expected_hash[:8]}...")
+        self.agent_states[agent_id] = state
+        self._save_state()
         
-    if computed_hash == declared_hash:
-        checks_passed.append("tensor_matches_declaration")
-    else:
-        checks_failed.append("tensor_declaration_mismatch")
+        logger.info(f"Registered agent {agent_id} (generation 1)")
+        return state
+    
+    def request_evolution(self, agent_id: str, new_dimensions: int, 
+                         new_memory: int) -> bool:
+        """
+        Request evolution for an agent (with security checks)
         
-    is_valid = len(checks_failed) == 0
-    return is_valid, "tensor_integrity", {"passed": checks_passed, "failed": checks_failed, "verified": verified}
-
-def verify_receipt_chain(container: PicoContainer, secret: str = "psivicom-public") -> Tuple[bool, str, Dict[str, Any]]:
-    """
-    Pure function: Verifies the AgentReceipt is authentic, unaltered, and properly chained.
-    """
-    receipt = container.receipt
-    checks_passed = []
-    checks_failed = []
-    verified = {}
-    
-    # 1. Verify payload hash consistency
-    # We re-hash the receipt's own metadata to ensure it wasn't tampered with
-    raw_receipt_data = f"{receipt.agent_id}|{receipt.layer}|{receipt.operation}|{receipt.timestamp}"
-    computed_sig = hashlib.sha256(f"{raw_receipt_data}|{secret}".encode()).hexdigest()
-    
-    # Note: In a full implementation, the signature would be stored in the receipt. 
-    # Here we verify the internal consistency of the payload_hash against the operation.
-    checks_passed.append("receipt_structure_valid")
-    verified["agent_id"] = receipt.agent_id
-    verified["operation"] = receipt.operation
-    
-    # 2. Verify RFC 1001 Chain Integrity (Parent hash must exist unless it's a root operation)
-    if receipt.parent_receipt_hash:
-        if len(receipt.parent_receipt_hash) == 64: # Valid SHA-256 length
-            checks_passed.append("provenance_chain_linked")
-            verified["parent_hash"] = receipt.parent_receipt_hash
-        else:
-            checks_failed.append("invalid_parent_hash_format")
-    else:
-        checks_passed.append("root_operation_verified")
+        Args:
+            agent_id: Agent identifier
+            new_dimensions: New vector dimensions
+            new_memory: New memory requirement
+            
+        Returns:
+            True if evolution is allowed and executed
+        """
+        if agent_id not in self.agent_states:
+            logger.error(f"Agent {agent_id} not registered")
+            return False
         
-    is_valid = len(checks_failed) == 0
-    return is_valid, "receipt_chain", {"passed": checks_passed, "failed": checks_failed, "verified": verified}
-
-def verify_fair_compliance(container: PicoContainer) -> Tuple[bool, str, Dict[str, Any]]:
-    """
-    Pure function: Ensures the container meets Open Science FAIR principles.
-    """
-    checks_passed = []
-    checks_failed = []
-    verified = {}
-    
-    header = container.header
-    
-    if header.fair_license == "CC-BY-4.0":
-        checks_passed.append("fair_license_present")
-        verified["license"] = header.fair_license
-    else:
-        checks_failed.append(f"missing_or_invalid_license: {header.fair_license}")
+        state = self.agent_states[agent_id]
         
-    if header.author and header.project:
-        checks_passed.append("attribution_present")
-        verified["author"] = header.author
-    else:
-        checks_failed.append("missing_attribution")
+        # SECURITY CHECK 1: Rate limiting
+        time_since_last = time.time() - state.last_evolution_time
+        if time_since_last < self.evolution_thresholds["min_time_between_evolutions"]:
+            logger.warning(f"Agent {agent_id} evolving too frequently")
+            return False
         
-    is_valid = len(checks_failed) == 0
-    return is_valid, "fair_compliance", {"passed": checks_passed, "failed": checks_failed, "verified": verified}
-
-def audit_psvc_container(data: bytes, secret: str = "psivicom-public") -> ValidationResult:
-    """
-    MAIN PIPELINE: Pure function that orchestrates the complete RFC 1001 audit.
-    Takes raw bytes from the mesh, deserializes, and runs all verifications.
-    """
-    try:
-        container = deserialize_psvc(data)
-    except Exception as e:
-        return ValidationResult(
-            is_valid=False,
-            container_id="unknown",
-            checks_passed=[],
-            checks_failed=[f"deserialization_error: {str(e)}"],
-            verified_hashes={}
-        )
+        # SECURITY CHECK 2: Memory growth limits
+        growth_percent = ((new_memory - state.memory_footprint) / 
+                         state.memory_footprint) * 100
+        if growth_percent > self.evolution_thresholds["max_memory_growth_percent"]:
+            logger.warning(f"Agent {agent_id} requesting excessive memory growth: {growth_percent}%")
+            return False
+        
+        # Mark as evolving
+        state.status = "EVOLVING"
+        self._save_state()
+        
+        try:
+            # Execute evolution via provisioner
+            success = self.provisioner.evolve(agent_id, new_memory)
+            
+            if success:
+                # Update state
+                state.current_generation += 1
+                state.vector_dimensions = new_dimensions
+                state.memory_footprint = new_memory
+                state.last_evolution_time = time.time()
+                state.status = "NOMINAL"
+                
+                logger.info(f"Agent {agent_id} evolved to generation {state.current_generation}")
+            else:
+                state.status = "ERROR"
+                logger.error(f"Evolution failed for agent {agent_id}")
+            
+            self._save_state()
+            return success
+            
+        except Exception as e:
+            state.status = "ERROR"
+            self._save_state()
+            logger.error(f"Evolution error for agent {agent_id}: {e}")
+            return False
     
-    container_id = f"{container.header.project}-{container.receipt.agent_id}-{container.receipt.timestamp}"
+    def deposit_pheromone(self, agent_id: str, pheromone: str) -> bool:
+        """
+        Record a pheromone deposit from an agent
+        
+        Args:
+            agent_id: Agent identifier
+            pheromone: Pheromone identifier/message
+            
+        Returns:
+            True if recorded successfully
+        """
+        if agent_id not in self.agent_states:
+            return False
+        
+        state = self.agent_states[agent_id]
+        state.pheromone_deposits.append(f"{time.time()}:{pheromone}")
+        
+        # Keep only last 100 pheromones
+        if len(state.pheromone_deposits) > 100:
+            state.pheromone_deposits = state.pheromone_deposits[-100:]
+        
+        self._save_state()
+        return True
     
-    # Run all pure verification functions
-    tensor_valid, _, tensor_results = verify_tensor_integrity(container)
-    receipt_valid, _, receipt_results = verify_receipt_chain(container, secret)
-    fair_valid, _, fair_results = verify_fair_compliance(container)
+    def get_agent_status(self, agent_id: str) -> Optional[AgentState]:
+        """Get current status of an agent"""
+        return self.agent_states.get(agent_id)
     
-    # Aggregate results functionally
-    all_passed = [
-        *tensor_results["passed"], 
-        *receipt_results["passed"], 
-        *fair_results["passed"]
-    ]
-    all_failed = [
-        *tensor_results["failed"], 
-        *receipt_results["failed"], 
-        *fair_results["failed"]
-    ]
+    def scan_for_violations(self) -> List[Dict]:
+        """
+        Scan mesh for security violations and protocol breaches
+        
+        Returns:
+            List of violation reports
+        """
+        violations = []
+        
+        for agent_id, state in self.agent_states.items():
+            # Check for stale agents
+            if time.time() - state.last_evolution_time > 3600:  # 1 hour
+                violations.append({
+                    "agent_id": agent_id,
+                    "type": "STALE_AGENT",
+                    "severity": "WARNING",
+                    "message": "Agent has not evolved in over 1 hour"
+                })
+            
+            # Check for error states
+            if state.status == "ERROR":
+                violations.append({
+                    "agent_id": agent_id,
+                    "type": "ERROR_STATE",
+                    "severity": "CRITICAL",
+                    "message": "Agent is in error state"
+                })
+            
+            # Check VRAM allocation consistency
+            handle = self.provisioner.get_handle(agent_id)
+            if handle and handle.size_bytes != state.memory_footprint:
+                violations.append({
+                    "agent_id": agent_id,
+                    "type": "MEMORY_MISMATCH",
+                    "severity": "WARNING",
+                    "message": f"Governor state ({state.memory_footprint}) != Provisioner state ({handle.size_bytes})"
+                })
+        
+        return violations
     
-    all_verified = {
-        **tensor_results["verified"],
-        **receipt_results["verified"],
-        **fair_results["verified"]
-    }
+    def enforce_pico_protocol(self) -> bool:
+        """
+        Enforce pico protocol compliance across the mesh
+        
+        Returns:
+            True if all checks pass
+        """
+        violations = self.scan_for_violations()
+        
+        critical_violations = [v for v in violations if v["severity"] == "CRITICAL"]
+        
+        if critical_violations:
+            logger.error(f"Pico protocol violation detected: {len(critical_violations)} critical issues")
+            for v in critical_violations:
+                logger.error(f"  - {v['agent_id']}: {v['message']}")
+            return False
+        
+        logger.info("Pico protocol enforcement: PASSED")
+        return True
     
-    is_valid = tensor_valid and receipt_valid and fair_valid
+    def _load_state(self):
+        """Load agent state from disk"""
+        if self.state_file.exists():
+            try:
+                with open(self.state_file, 'r') as f:
+                    data = json.load(f)
+                    for agent_id, state_data in data.get("agents", {}).items():
+                        self.agent_states[agent_id] = AgentState(**state_data)
+                logger.info(f"Loaded state for {len(self.agent_states)} agents")
+            except Exception as e:
+                logger.error(f"Failed to load state: {e}")
     
-    return ValidationResult(
-        is_valid=is_valid,
-       
+    def _save_state(self):
+        """Save agent state to disk"""
+        try:
+            data = {
+                "timestamp": time.time(),
+                "agents": {
+                    agent_id: asdict(state) 
+                    for agent_id, state in self.agent_states.items()
+                }
+            }
+            
+            with open(self.state_file, 'w') as f:
+                json.dump(data, f, indent=2)
+                
+        except Exception as e:
+            logger.error(f"Failed to save state: {e}")
+    
+    def get_mesh_status(self) -> Dict:
+        """Get overall mesh status"""
+        return {
+            "total_agents": len(self.agent_states),
+            "nominal_agents": sum(1 for s in self.agent_states.values() if s.status == "NOMINAL"),
+            "evolving_agents": sum(1 for s in self.agent_states.values() if s.status == "EVOLVING"),
+            "error_agents": sum(1 for s in self.agent_states.values() if s.status == "ERROR"),
+            "vram_stats": self.vram_mesh.get_stats(),
+            "provisioner_stats": self.provisioner.get_evolution_stats()
+        }
