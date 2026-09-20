@@ -300,7 +300,8 @@ psivicom.github.io/
 │   │   └── vector_pixelizer.py
 │   ├── nodes/
 │   │   ├── __init__.py
-│   │   └── pico_worker.py
+│   │   ├── pico_worker.py
+│   │   └── volunteer_worker.py
 │   ├── orchestrator/
 │   │   ├── __init__.py
 │   │   ├── mesh_brain.py
