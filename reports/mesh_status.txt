@@ -1,6 +1,14 @@
-=== PSIVI AETHER STATUS ===
-Health: DEGRADED
-Declared: lidar, intelligence, forage, vanguard, synthesizer
-Active:   unknown, synthesizer
-Silent:   lidar, forage, vanguard, intelligence
-Memories: 4
+INFO:__main__:MeshRouter initialized: max_retries=3, circuit_threshold=5, max_connections=100
+INFO:__main__:Registered connection: worker-1 -> http://localhost:8001
+INFO:__main__:Registered connection: worker-2 -> http://localhost:8002
+INFO:__main__:Registered connection: worker-3 -> http://localhost:8003
+INFO:__main__:Initiating graceful shutdown...
+INFO:__main__:Connection pool shutdown initiated
+INFO:__main__:MeshRouter shutdown complete
+✓ Successfully routed container
+
+Health Status:
+  Circuit Breaker: closed
+  Connections: 3/3
+  Success Rate: 100.00%
+  Avg Latency: 10.07ms
