@@ -2,7 +2,7 @@ name: Mesh Governor
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Every 6 hours
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 permissions:
@@ -13,16 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
       - name: Run Governor
-        run: |
-          pip install numpy requests
-          python src/orchestrator/mesh_governor.py
-
+        run: python src/orchestrator/mesh_governor.py
       - name: Commit enforcement
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
