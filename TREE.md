@@ -329,8 +329,6 @@ psivicom.github.io/
 │   │   └── main.go
 │   └── fix_archive_names.py
 ├── src/
-│   ├── Core/
-│   │   └── vram_mesh.py
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── config_loader.py
@@ -360,7 +358,8 @@ psivicom.github.io/
 │   │   ├── __init__.py
 │   │   ├── http_client.py
 │   │   ├── vector_math.py
-│   │   └── vector_pixelizer.py
+│   │   ├── vector_pixelizer.py
+│   │   └── vram_mesh.py
 │   ├── generated_agents/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
