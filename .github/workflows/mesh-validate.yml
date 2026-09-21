@@ -1,0 +1,22 @@
+name: Mesh Validation (Run First)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/**/*.py'
+      - 'data/**/*.jsonl'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Run Mesh Validation
+        run: |
+          python src/tools/validate_mesh.py
