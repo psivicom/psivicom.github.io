@@ -345,7 +345,6 @@ psivicom.github.io/
 │   │   ├── pico_mesh.py
 │   │   ├── psvc_containers.py
 │   │   ├── research_pipeline.py
-│   │   ├── satellite_agent.py
 │   │   ├── synthesizer_agent.py
 │   │   ├── vector_mesh.py
 │   │   └── vram_mesh.py
@@ -363,7 +362,8 @@ psivicom.github.io/
 │   │   ├── vector_math.py
 │   │   └── vector_pixelizer.py
 │   ├── generated_agents/
-│   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   └── satellite_agent.py
 │   ├── math/
 │   │   └── __init__.py
 │   ├── nodes/
