@@ -338,6 +338,7 @@ psivicom.github.io/
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
 │   │   ├── mesh_governor.py
+│   │   ├── research_pipeline.py
 │   │   ├── satellite_agent.py
 │   │   ├── synthesizer_agent.py
 │   │   ├── vector_mesh.py
@@ -422,7 +423,6 @@ psivicom.github.io/
 ├── psvc_containers.py
 ├── psvc_reference.py
 ├── requirements.txt
-├── research_pipeline.py
 ├── robots.txt
 ├── seed_mesh.py
 ├── sitemap.xml

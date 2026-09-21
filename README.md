@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T01:08:30.303Z | Hash: c2878ebd9ce5a09e7db50d19f129a3b22364587e939d1214ad6d33978ceb5c23 -->
+<!-- Last updated: 2026-09-21T01:09:34.589Z | Hash: 9fe235edcf8ac08dedd9006b25e31333639e0d6b21882b301b2f355f4de6eb95 -->
 
 ```
 psivicom.github.io/
@@ -457,6 +457,7 @@ psivicom.github.io/
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
 │   │   ├── mesh_governor.py
+│   │   ├── research_pipeline.py
 │   │   ├── satellite_agent.py
 │   │   ├── synthesizer_agent.py
 │   │   ├── vector_mesh.py
@@ -541,7 +542,6 @@ psivicom.github.io/
 ├── psvc_containers.py
 ├── psvc_reference.py
 ├── requirements.txt
-├── research_pipeline.py
 ├── robots.txt
 ├── seed_mesh.py
 ├── sitemap.xml
