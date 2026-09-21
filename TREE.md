@@ -335,6 +335,7 @@ psivicom.github.io/
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
+│   │   ├── generate_api.py
 │   │   ├── intelligence_agent.py
 │   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
@@ -412,7 +413,6 @@ psivicom.github.io/
 ├── codemeta.json
 ├── config.yaml
 ├── docker-compose.yml
-├── generate_api.py
 ├── how-psvc-works.html
 ├── how-psvc-works2.html
 ├── index.html
