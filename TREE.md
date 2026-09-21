@@ -375,6 +375,9 @@ psivicom.github.io/
 │   │   └── psvc_provisioner.py
 │   ├── __init__.py
 │   └── license_agent.py
+├── stc/
+│   └── agents/
+│       └── seed_mesh.py
 ├── tests/
 │   ├── __init__.py
 │   ├── test_elastic_evolution.py
@@ -425,7 +428,6 @@ psivicom.github.io/
 ├── psvc_reference.py
 ├── requirements.txt
 ├── robots.txt
-├── seed_mesh.py
 ├── sitemap.xml
 ├── test_rfc1001_compliance.py
 ├── volunteer_node.py
