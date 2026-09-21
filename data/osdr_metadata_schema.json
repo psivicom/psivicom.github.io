@@ -1,0 +1,8 @@
+{
+  "required_fields": ["id", "item_type", "gene", "organism", "tissue", "evidence"],
+  "evidence_schema": {
+    "n_datasets": {"type": "integer", "min": 1},
+    "max_q": {"type": "number", "min": 0, "max": 1},
+    "discordant": {"type": "boolean"}
+  }
+}
