@@ -339,7 +339,6 @@ psivicom.github.io/
 │   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
-│   │   ├── research_pipeline.py
 │   │   ├── synthesizer_agent.py
 │   │   └── vector_mesh.py
 │   ├── automation/
@@ -375,6 +374,8 @@ psivicom.github.io/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
+│   ├── pipelines/
+│   │   └── research_pipeline.py
 │   ├── tools/
 │   │   └── generate_api.py
 │   └── __init__.py
