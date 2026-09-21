@@ -130,7 +130,8 @@ psivicom.github.io/
 │   │   ├── deprecated_LICENSE
 │   │   ├── deprecated_LICENSE-CC-BY-4.0.txt
 │   │   ├── deprecated_NOTICE
-│   │   └── deprecated_licenseREADME.md
+│   │   ├── deprecated_licenseREADME.md
+│   │   └── license_agent.py
 │   └── README.md
 ├── assets/
 │   ├── css/
@@ -374,8 +375,7 @@ psivicom.github.io/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
-│   ├── __init__.py
-│   └── license_agent.py
+│   └── __init__.py
 ├── stc/
 │   └── agents/
 │       └── seed_mesh.py
