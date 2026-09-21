@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T00:43:27.982Z | Hash: 59959b47d308fbb8eda152e11cb4b716089bf64814071d3f56347009d721e8fc -->
+<!-- Last updated: 2026-09-21T00:44:37.675Z | Hash: 614d194c3d5e3d119de916b11b3ff00f9c25d033b1e15e9b91e0fd2ffe6304b9 -->
 
 ```
 psivicom.github.io/
@@ -231,6 +231,7 @@ psivicom.github.io/
 │   │   ├── Deprecated_chain_orchestrator.py
 │   │   ├── Deprecated_consolidator_agent.py
 │   │   ├── Deprecated_critic_agent.py
+│   │   ├── Deprecated_forage_agent.py
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
@@ -492,7 +493,6 @@ psivicom.github.io/
 ├── CONTRIBUTING.md
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
-├── Deprecated_forage_agent.py
 ├── Deprecated_intelligence_agent.py
 ├── Deprecated_lidar_agent.py
 ├── Deprecated_literature_agent.py
