@@ -16,6 +16,7 @@ psivicom.github.io/
 │       ├── literature-ingest.yml
 │       ├── mesh-governor.yml
 │       ├── mesh-status.yml
+│       ├── mesh-validate.yml
 │       ├── mesh.yml
 │       ├── mesh_evolution.yml
 │       ├── neuroplasticity.yml
