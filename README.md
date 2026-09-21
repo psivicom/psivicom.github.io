@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T01:00:08.743Z | Hash: 00b0e674bdbd2c04c0812783dd0298a02c4fa145f23072bacb30f979d176ff5b -->
+<!-- Last updated: 2026-09-21T01:01:04.496Z | Hash: 13dfd460ad19564950392e1ca22bd630e8985bee9662a9d0c0c73319da272787 -->
 
 ```
 psivicom.github.io/
@@ -240,6 +240,7 @@ psivicom.github.io/
 │   │   ├── Deprecated_pico_containers.py
 │   │   ├── Deprecated_satellite_agent.py
 │   │   ├── Deprecated_synthesizer_agent.py
+│   │   ├── Deprecated_vram_mesh.py
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
@@ -501,7 +502,6 @@ psivicom.github.io/
 ├── CONTRIBUTING.md
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
-├── Deprecated_vram_mesh.py
 ├── Dockerfile
 ├── LICENSE
 ├── NOTICE
