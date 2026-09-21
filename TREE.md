@@ -336,6 +336,7 @@ psivicom.github.io/
 │   │   ├── intelligence_agent.py
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
+│   │   ├── mesh_governor.py
 │   │   ├── satellite_agent.py
 │   │   └── synthesizer_agent.py
 │   ├── automation/
@@ -412,7 +413,6 @@ psivicom.github.io/
 ├── license_agent.py
 ├── mesh-ai.html
 ├── mesh.go
-├── mesh_governor.py
 ├── mesh_state.json
 ├── open-science-guide.html
 ├── pico_mesh.py
