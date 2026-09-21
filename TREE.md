@@ -331,7 +331,6 @@ psivicom.github.io/
 ├── src/
 │   ├── agents/
 │   │   ├── __init__.py
-│   │   ├── chain_orchestrator.py
 │   │   ├── config_loader.py
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
@@ -372,6 +371,7 @@ psivicom.github.io/
 │   │   └── volunteer_worker.py
 │   ├── orchestrator/
 │   │   ├── __init__.py
+│   │   ├── chain_orchestrator.py
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
