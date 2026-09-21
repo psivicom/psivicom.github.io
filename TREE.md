@@ -339,8 +339,7 @@ psivicom.github.io/
 │   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
-│   │   ├── synthesizer_agent.py
-│   │   └── vector_mesh.py
+│   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
 │   │   ├── auto_integrator.py
@@ -366,7 +365,8 @@ psivicom.github.io/
 │   ├── mesh/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_router.py
-│   │   └── pico_mesh.py
+│   │   ├── pico_mesh.py
+│   │   └── vector_mesh.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py
