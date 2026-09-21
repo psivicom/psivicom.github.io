@@ -118,6 +118,7 @@ psivicom.github.io/
 │   │   ├── Deprecated_literature_agent.py
 │   │   ├── Deprecated_mesh_governor.py
 │   │   ├── Deprecated_mesh_router.py
+│   │   ├── Deprecated_pico_containers.py
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
@@ -379,7 +380,6 @@ psivicom.github.io/
 ├── CONTRIBUTING.md
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
-├── Deprecated_pico_containers.py
 ├── Deprecated_satellite_agent.py
 ├── Deprecated_synthesizer_agent.py
 ├── Deprecated_vram_mesh.py
