@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T03:07:51.368Z | Hash: a3cc554027b2484d1e6c57015c08380e9618717f8d72378357e17b0711d42f2c -->
+<!-- Last updated: 2026-09-21T03:09:07.457Z | Hash: 2a30546cc8b8d980c04ed420c829f150affc9348e7990d42e435cca80250a4fd -->
 
 ```
 psivicom.github.io/
@@ -473,7 +473,6 @@ psivicom.github.io/
 │   │   ├── config_loader.py
 │   │   ├── http_client.py
 │   │   ├── mesh_governor.py
-│   │   ├── pico_mesh.py
 │   │   ├── psvc_containers.py
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
@@ -484,7 +483,8 @@ psivicom.github.io/
 │   ├── math/
 │   │   └── __init__.py
 │   ├── mesh/
-│   │   └── mesh_brain.py
+│   │   ├── mesh_brain.py
+│   │   └── pico_mesh.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py

@@ -354,7 +354,6 @@ psivicom.github.io/
 │   │   ├── config_loader.py
 │   │   ├── http_client.py
 │   │   ├── mesh_governor.py
-│   │   ├── pico_mesh.py
 │   │   ├── psvc_containers.py
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
@@ -365,7 +364,8 @@ psivicom.github.io/
 │   ├── math/
 │   │   └── __init__.py
 │   ├── mesh/
-│   │   └── mesh_brain.py
+│   │   ├── mesh_brain.py
+│   │   └── pico_mesh.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py
