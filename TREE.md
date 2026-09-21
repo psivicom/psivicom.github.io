@@ -341,6 +341,7 @@ psivicom.github.io/
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
 │   │   ├── mesh_governor.py
+│   │   ├── pico_mesh.py
 │   │   ├── psvc_containers.py
 │   │   ├── research_pipeline.py
 │   │   ├── satellite_agent.py
@@ -423,7 +424,6 @@ psivicom.github.io/
 ├── mesh.go
 ├── mesh_state.json
 ├── open-science-guide.html
-├── pico_mesh.py
 ├── psvc_cli.py
 ├── psvc_reference.py
 ├── requirements.txt
