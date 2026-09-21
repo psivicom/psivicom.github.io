@@ -334,6 +334,7 @@ psivicom.github.io/
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
 │   │   ├── intelligence_agent.py
+│   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
 │   │   ├── mesh_governor.py
@@ -410,7 +411,6 @@ psivicom.github.io/
 ├── how-psvc-works.html
 ├── how-psvc-works2.html
 ├── index.html
-├── license_agent.py
 ├── mesh-ai.html
 ├── mesh.go
 ├── mesh_state.json
