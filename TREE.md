@@ -339,7 +339,8 @@ psivicom.github.io/
 │   │   ├── literature_agent.py
 │   │   ├── mesh_governor.py
 │   │   ├── satellite_agent.py
-│   │   └── synthesizer_agent.py
+│   │   ├── synthesizer_agent.py
+│   │   └── vram_mesh.py
 │   ├── automation/
 │   │   ├── __init__.py
 │   │   ├── auto_integrator.py
@@ -427,6 +428,5 @@ psivicom.github.io/
 ├── test_rfc1001_compliance.py
 ├── vector_mesh.py
 ├── volunteer_node.py
-├── volunteer_worker.py
-└── vram_mesh.py
+└── volunteer_worker.py
 ```
