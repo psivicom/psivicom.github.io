@@ -155,7 +155,7 @@ psivicom.github.io/
 │   │   ├── datapackage.json
 │   │   └── metadata.json
 │   ├── README.md
-│   └── osdr_ground_truth.jsonl
+│   └── osdr_ground_truth.json1
 ├── dist/
 │   └── README.md
 ├── docs/
