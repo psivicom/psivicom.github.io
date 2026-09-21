@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T02:29:12.205Z | Hash: 5df2dfdfe94884719acb91b0c8a5f070e7d3b3eb2b0a8d28cdadd2619893699d -->
+<!-- Last updated: 2026-09-21T02:29:44.431Z | Hash: 1b1ba700bd5babcc0cdeb133faf6e3b1885b8af995cece71418b91cc35cf8f40 -->
 
 ```
 psivicom.github.io/
@@ -448,8 +448,6 @@ psivicom.github.io/
 │   │   └── main.go
 │   └── fix_archive_names.py
 ├── src/
-│   ├── Core/
-│   │   └── config_loader.py
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── consolidator_agent.py
@@ -473,6 +471,7 @@ psivicom.github.io/
 │   ├── core/
 │   │   ├── Deprecated_psvc_builder.py
 │   │   ├── __init__.py
+│   │   ├── config_loader.py
 │   │   ├── http_client.py
 │   │   ├── mesh_governor.py
 │   │   ├── pico_mesh.py

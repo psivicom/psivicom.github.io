@@ -329,8 +329,6 @@ psivicom.github.io/
 │   │   └── main.go
 │   └── fix_archive_names.py
 ├── src/
-│   ├── Core/
-│   │   └── config_loader.py
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── consolidator_agent.py
@@ -354,6 +352,7 @@ psivicom.github.io/
 │   ├── core/
 │   │   ├── Deprecated_psvc_builder.py
 │   │   ├── __init__.py
+│   │   ├── config_loader.py
 │   │   ├── http_client.py
 │   │   ├── mesh_governor.py
 │   │   ├── pico_mesh.py
