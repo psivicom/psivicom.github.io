@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T03:36:07.627Z | Hash: c7ac48834718f81a24b24f047e97bee58e7c222ad9aba139b2d5edc094e70d31 -->
+<!-- Last updated: 2026-09-21T03:41:00.403Z | Hash: 051aa0659905122a2c584e6d2c9075633b13f7ab2890cd6f08bc39bf3b3ad91f -->
 
 ```
 psivicom.github.io/
@@ -139,6 +139,7 @@ psivicom.github.io/
 │       ├── mesh_evolution.yml
 │       ├── neuroplasticity.yml
 │       ├── normalize-archive-names.yml
+│       ├── pilot-scan.yml
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml
