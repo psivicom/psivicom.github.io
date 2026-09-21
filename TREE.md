@@ -354,8 +354,7 @@ psivicom.github.io/
 │   │   ├── http_client.py
 │   │   ├── psvc_containers.py
 │   │   ├── vector_math.py
-│   │   ├── vector_pixelizer.py
-│   │   └── vram_mesh.py
+│   │   └── vector_pixelizer.py
 │   ├── generated_agents/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
@@ -366,7 +365,8 @@ psivicom.github.io/
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
 │   │   ├── pico_mesh.py
-│   │   └── vector_mesh.py
+│   │   ├── vector_mesh.py
+│   │   └── vram_mesh.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py
