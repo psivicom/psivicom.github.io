@@ -638,6 +638,19 @@ GoDaddy → My Products → DNS → psivi.com — TTL: 1 Hour (3600)
 - **GitHub:** github.com/psivicom (repo: psivicom.github.io)
 - **Location:** Goldstream, Langford, BC, Canada
 
+___
+
+
+## ⚠️ First-Time Setup Required
+
+Due to GitHub security restrictions, workflows cannot self-modify. Before running the mesh:
+
+1. **Run validation**: `python src/tools/validate_mesh.py`
+2. **Fix any errors** reported by the validator
+3. **Update workflow files** in `.github/workflows/` to match your directory structure
+4. **Commit and push** - the mesh will then run autonomously
+
+Once configured, the mesh is self-healing for all runtime operations.
 ---
 
 © 2026 Louis-Philippe Audette — PSIVI.COM  
