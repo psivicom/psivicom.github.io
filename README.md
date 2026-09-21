@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T02:52:41.046Z | Hash: e3d8d271281f6e5935729d6529a013b180e1cad3fbff48c6d24aa346b1df69ef -->
+<!-- Last updated: 2026-09-21T03:07:51.368Z | Hash: a3cc554027b2484d1e6c57015c08380e9618717f8d72378357e17b0711d42f2c -->
 
 ```
 psivicom.github.io/
@@ -483,6 +483,8 @@ psivicom.github.io/
 │   │   └── satellite_agent.py
 │   ├── math/
 │   │   └── __init__.py
+│   ├── mesh/
+│   │   └── mesh_brain.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py
@@ -490,7 +492,6 @@ psivicom.github.io/
 │   ├── orchestrator/
 │   │   ├── __init__.py
 │   │   ├── chain_orchestrator.py
-│   │   ├── mesh_brain.py
 │   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
 │   ├── pipelines/

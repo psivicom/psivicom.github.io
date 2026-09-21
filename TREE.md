@@ -364,6 +364,8 @@ psivicom.github.io/
 │   │   └── satellite_agent.py
 │   ├── math/
 │   │   └── __init__.py
+│   ├── mesh/
+│   │   └── mesh_brain.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py
@@ -371,7 +373,6 @@ psivicom.github.io/
 │   ├── orchestrator/
 │   │   ├── __init__.py
 │   │   ├── chain_orchestrator.py
-│   │   ├── mesh_brain.py
 │   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
 │   ├── pipelines/
