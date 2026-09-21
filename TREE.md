@@ -340,7 +340,6 @@ psivicom.github.io/
 │   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
-│   │   ├── mesh_governor.py
 │   │   ├── pico_mesh.py
 │   │   ├── psvc_containers.py
 │   │   ├── research_pipeline.py
@@ -357,6 +356,7 @@ psivicom.github.io/
 │   │   ├── Deprecated_psvc_builder.py
 │   │   ├── __init__.py
 │   │   ├── http_client.py
+│   │   ├── mesh_governor.py
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
 │   │   └── vram_mesh.py
