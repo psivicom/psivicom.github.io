@@ -388,7 +388,8 @@ psivicom.github.io/
 │   │   └── research_pipeline.py
 │   ├── tools/
 │   │   ├── __init__.py
-│   │   └── generate_api.py
+│   │   ├── generate_api.py
+│   │   └── osdr_query.py
 │   └── __init__.py
 ├── tests/
 │   ├── __init__.py
