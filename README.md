@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T03:53:27.335Z | Hash: fea18a1b5509faf6e8628342ad775ce9643e53869db0e57ab99df1b9fb03a080 -->
+<!-- Last updated: 2026-09-21T04:10:14.176Z | Hash: 0084ba8390fdf11ca7ae5d976ed7086792097c71a6a5cc78095e5966e80b3e7b -->
 
 ```
 psivicom.github.io/
@@ -273,7 +273,8 @@ psivicom.github.io/
 │   │   ├── data.csv
 │   │   ├── datapackage.json
 │   │   └── metadata.json
-│   └── README.md
+│   ├── README.md
+│   └── osdr_ground_truth.jsonl
 ├── dist/
 │   └── README.md
 ├── docs/
