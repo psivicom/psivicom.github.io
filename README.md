@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T03:17:30.818Z | Hash: d36198c2ea3ff2383c79104cef072e6e062013a3345bf1cbd1fb4b337400662a -->
+<!-- Last updated: 2026-09-21T03:19:09.991Z | Hash: a75e28d2ecb2f9aa23fccebc13a64b0e6357e1288b825483fc7a80cc41b21bce -->
 
 ```
 psivicom.github.io/
@@ -496,6 +496,7 @@ psivicom.github.io/
 │   │   ├── chain_orchestrator.py
 │   │   └── psvc_provisioner.py
 │   ├── pipelines/
+│   │   ├── __init__.py
 │   │   └── research_pipeline.py
 │   ├── tools/
 │   │   └── generate_api.py
