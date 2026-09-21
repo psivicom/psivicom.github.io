@@ -368,6 +368,7 @@ psivicom.github.io/
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
 │   │   ├── pico_mesh.py
+│   │   ├── seed_mesh.py
 │   │   ├── vector_mesh.py
 │   │   └── vram_mesh.py
 │   ├── nodes/
@@ -385,9 +386,6 @@ psivicom.github.io/
 │   │   ├── __init__.py
 │   │   └── generate_api.py
 │   └── __init__.py
-├── stc/
-│   └── agents/
-│       └── seed_mesh.py
 ├── tests/
 │   ├── __init__.py
 │   ├── test_elastic_evolution.py
