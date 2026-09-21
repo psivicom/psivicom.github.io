@@ -339,6 +339,7 @@ psivicom.github.io/
 │   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
+│   │   ├── pilot_agent.py
 │   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
