@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T01:16:29.864Z | Hash: 4b03a0cf3868de4c35fb6a61ddea03ab0bf6085af0334339e01957685a298f1f -->
+<!-- Last updated: 2026-09-21T01:21:40.396Z | Hash: 332ce9999e8127ce2ec8c37628a1bfa713b05ba67df86064237def58a5f61d2d -->
 
 ```
 psivicom.github.io/
@@ -319,6 +319,7 @@ psivicom.github.io/
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
+│   ├── Notesofrootfiles.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── Synopsis_orchestrator_agent.md

@@ -200,6 +200,7 @@ psivicom.github.io/
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
 │   ├── NIST-SSDF-COMPLIANCE-MAPPING.md
+│   ├── Notesofrootfiles.md
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── Synopsis_orchestrator_agent.md
