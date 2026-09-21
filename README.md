@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-21T02:29:44.431Z | Hash: 1b1ba700bd5babcc0cdeb133faf6e3b1885b8af995cece71418b91cc35cf8f40 -->
+<!-- Last updated: 2026-09-21T02:31:50.896Z | Hash: fd24f9c8153c445b839e3ba16bf2781a041413bb51aa699b45eeca46dd60b5bb -->
 
 ```
 psivicom.github.io/
@@ -428,7 +428,8 @@ psivicom.github.io/
 │   │   ├── 2026-09-17_external_volunteer_49b5fced.json
 │   │   ├── 2026-09-18_external_volunteer_df3588cb.json
 │   │   ├── 2026-09-19_external_volunteer.json
-│   │   └── 2026-09-20_external_volunteer.json
+│   │   ├── 2026-09-20_external_volunteer.json
+│   │   └── 2026-09-21_external_volunteer.json
 │   ├── 2026-09-16_memory.json
 │   ├── 2026-09-16_synthesizer_memory.json
 │   ├── 2026-09-17_synthesizer_memory.json
@@ -453,7 +454,6 @@ psivicom.github.io/
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
-│   │   ├── generate_api.py
 │   │   ├── intelligence_agent.py
 │   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
@@ -494,6 +494,8 @@ psivicom.github.io/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
+│   ├── tools/
+│   │   └── generate_api.py
 │   └── __init__.py
 ├── stc/
 │   └── agents/
