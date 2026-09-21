@@ -329,6 +329,7 @@ psivicom.github.io/
 ├── src/
 │   ├── agents/
 │   │   ├── __init__.py
+│   │   ├── chain_orchestrator.py
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
@@ -400,7 +401,6 @@ psivicom.github.io/
 ├── VOLUNTEER_PROTOCOL.md
 ├── _config.yml
 ├── agent_config.yaml
-├── chain_orchestrator.py
 ├── codemeta.json
 ├── config.yaml
 ├── config_loader.py
