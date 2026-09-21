@@ -365,6 +365,7 @@ psivicom.github.io/
 │   │   └── __init__.py
 │   ├── mesh/
 │   │   ├── mesh_brain.py
+│   │   ├── mesh_router.py
 │   │   └── pico_mesh.py
 │   ├── nodes/
 │   │   ├── __init__.py
@@ -373,7 +374,6 @@ psivicom.github.io/
 │   ├── orchestrator/
 │   │   ├── __init__.py
 │   │   ├── chain_orchestrator.py
-│   │   ├── mesh_router.py
 │   │   └── psvc_provisioner.py
 │   ├── pipelines/
 │   │   └── research_pipeline.py
