@@ -329,6 +329,8 @@ psivicom.github.io/
 │   │   └── main.go
 │   └── fix_archive_names.py
 ├── src/
+│   ├── Core/
+│   │   └── vram_mesh.py
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── config_loader.py
@@ -345,8 +347,7 @@ psivicom.github.io/
 │   │   ├── psvc_containers.py
 │   │   ├── research_pipeline.py
 │   │   ├── synthesizer_agent.py
-│   │   ├── vector_mesh.py
-│   │   └── vram_mesh.py
+│   │   └── vector_mesh.py
 │   ├── automation/
 │   │   ├── __init__.py
 │   │   ├── auto_integrator.py
