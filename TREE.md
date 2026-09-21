@@ -330,6 +330,7 @@ psivicom.github.io/
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── chain_orchestrator.py
+│   │   ├── config_loader.py
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
 │   │   ├── forage_agent.py
@@ -408,7 +409,6 @@ psivicom.github.io/
 ├── agent_config.yaml
 ├── codemeta.json
 ├── config.yaml
-├── config_loader.py
 ├── docker-compose.yml
 ├── generate_api.py
 ├── how-psvc-works.html
