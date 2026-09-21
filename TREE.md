@@ -110,6 +110,7 @@ psivicom.github.io/
 │   │   └── A_mesh-ai.html
 │   ├── deprecated/
 │   │   ├── Deprecated_chain_orchestrator.py
+│   │   ├── Deprecated_consolidator_agent.py
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
@@ -371,7 +372,6 @@ psivicom.github.io/
 ├── CONTRIBUTING.md
 ├── DATA_LICENSE_MANIFEST.json
 ├── DISCLAIMER.md
-├── Deprecated_consolidator_agent.py
 ├── Deprecated_critic_agent.py
 ├── Deprecated_forage_agent.py
 ├── Deprecated_intelligence_agent.py
