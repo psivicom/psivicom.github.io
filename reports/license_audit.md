@@ -1,12 +1,12 @@
 # License Uniformity Audit Report
 
-**Audit Time:** 2026-09-21T04:36:13.000Z
+**Audit Time:** 2026-09-22T04:32:10.000Z
 **Agent:** PSIVI Omni-Stamper
 
 ## Summary
-- **Total Files Scanned:** 163
-- **Code/Docs Stamped:** 61
-- **Data Files Cataloged:** 9
+- **Total Files Scanned:** 170
+- **Code/Docs Stamped:** 67
+- **Data Files Cataloged:** 10
 
 ## Files Stamped (EUPL 1.2 / CC BY-SA 4.0)
 - `./VOLUNTEER_PROTOCOL.md`
@@ -33,7 +33,10 @@
 - `./docs/SPACE_RESEARCH/unifiedopenspacehub.html`
 - `./src/__init__.py`
 - `./src/math/__init__.py`
+- `./src/tools/osdr_export.py`
+- `./src/tools/osdr_query.py`
 - `./src/tools/__init__.py`
+- `./src/tools/validate_mesh.py`
 - `./src/orchestrator/chain_orchestrator.py`
 - `./src/orchestrator/__init__.py`
 - `./src/orchestrator/psvc_provisioner.py`
@@ -54,13 +57,16 @@
 - `./src/agents/intelligence_agent.py`
 - `./src/pipelines/__init__.py`
 - `./src/pipelines/research_pipeline.py`
+- `./src/core/osdr_validator.py`
 - `./src/core/http_client.py`
 - `./src/core/__init__.py`
 - `./src/core/Deprecated_psvc_builder.py`
 - `./src/core/psvc_containers.py`
+- `./src/core/osdr_confidence.py`
 - `./src/core/config_loader.py`
 - `./src/core/vector_pixelizer.py`
 - `./src/core/vector_math.py`
+- `./src/core/osdr_provenance.py`
 - `./src/generated_agents/__init__.py`
 - `./src/generated_agents/satellite_agent.py`
 - `./src/base/__init__.py`
@@ -77,6 +83,7 @@
 - `DATA_LICENSE_MANIFEST.json`
 - `.zenodo.json`
 - `mesh_state.json`
+- `data/osdr_metadata_schema.json`
 - `data/sample-pollinator-data/metadata.json`
 - `data/sample-pollinator-data/datapackage.json`
 - `data/sample-pollinator-data/data.csv`
