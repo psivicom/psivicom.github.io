@@ -1,3 +1,4 @@
+# test_rfc1001_compliance.py
 # Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
 # Author: Louis-Philippe Audette
 # ORCID: https://orcid.org/0000-000X-XXXX-XXXX
@@ -8,7 +9,7 @@
 import struct
 import zlib
 import numpy as np
-from src.core.psvc_reference import (
+from psvc_reference import (
     seal, open_container, encode_text, content_hash, validate_file,
     write_file, read_file, PSVCError,
     MAGIC, VERSION, HEADER_SIZE,
