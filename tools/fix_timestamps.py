@@ -5,7 +5,6 @@ import datetime
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
-
 for f in ROOT.rglob('*.md'):
     text = f.read_text(encoding='utf-8', errors='ignore')
     orig = text
