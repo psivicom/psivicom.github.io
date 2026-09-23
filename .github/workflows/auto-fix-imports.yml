@@ -1,7 +1,7 @@
 name: Auto-Fix Python Imports
 
 on:
-  workflow_dispatch: # Allows you to run this manually with one click
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,19 +15,17 @@ jobs:
       - name: Fix Python Imports Programmatically
         run: |
           python3 << 'EOF'
-          import re
-
           # 1. Fix forage_agent.py
           with open('src/agents/forage_agent.py', 'r') as f:
               content = f.read()
           
-          # Remove the sys.path hack and its comment
-          content = re.sub(r'# Ensure the root directory.*?\n', '', content, flags=re.DOTALL)
-          content = re.sub(r'sys\.path\.insert\(0, os\.path\.abspath\(os\.path\.join\(os\.path\.dirname\(__file__\), \.\./\.\.\)\)\)\n', '', content)
+          # Remove the sys.path hack and its comment using exact string match
+          content = content.replace("# Ensure the root directory is in the path so we can import root-level files\n", "")
+          content = content.replace("sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))\n", "")
           
           # Correct the absolute imports
-          content = content.replace('from vram_mesh import VRAMMesh', 'from src.mesh.vram_mesh import VRAMMesh')
-          content = content.replace('from mesh_governor import MeshGovernor', 'from src.mesh.mesh_governor import MeshGovernor')
+          content = content.replace("from vram_mesh import VRAMMesh", "from src.mesh.vram_mesh import VRAMMesh")
+          content = content.replace("from mesh_governor import MeshGovernor", "from src.mesh.mesh_governor import MeshGovernor")
           
           with open('src/agents/forage_agent.py', 'w') as f:
               f.write(content)
@@ -36,12 +34,13 @@ jobs:
           with open('src/agents/intelligence_agent.py', 'r') as f:
               content = f.read()
           
-          content = content.replace('from psvc_containers import (', 'from src.core.psvc_containers import (')
+          # Correct the absolute import
+          content = content.replace("from psvc_containers import (", "from src.core.psvc_containers import (")
           
           with open('src/agents/intelligence_agent.py', 'w') as f:
               f.write(content)
           
-          print("✅ Imports fixed successfully.")
+          print("✅ String replacements applied successfully.")
           EOF
 
       - name: Commit Fixes
