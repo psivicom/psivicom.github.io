@@ -21,15 +21,17 @@ jobs:
       - name: Run Mesh Router
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.mesh.mesh_router
+        run: python -m 
         
       - name: Commit status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           git config user.name "PSIVI Mesh Router"
           git config user.email "mesh-router@users.noreply.github.com"
-          python src/orchestrator/mesh_router.py > reports/mesh_status.txt 2>&1
+          python -m src.mesh.mesh_router > reports/mesh_status.txt 2>&1
           git add reports/mesh_status.txt
           git diff --staged --quiet || git commit -m "mesh: updated status report"
           git push
+
