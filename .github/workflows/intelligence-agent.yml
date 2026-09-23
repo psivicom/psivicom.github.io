@@ -21,7 +21,10 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
       - name: Run Intelligence Agent
-        run: python src/agents/intelligence_agent.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.intelligence_agent
+        
       - name: Commit Intelligent Fixes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
