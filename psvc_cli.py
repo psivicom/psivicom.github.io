@@ -1,3 +1,4 @@
+# psvc_cli.py
 # Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
 # Author: Louis-Philippe Audette
 # ORCID: https://orcid.org/0000-000X-XXXX-XXXX
@@ -9,7 +10,7 @@ import sys
 import argparse
 import numpy as np
 from pathlib import Path
-from src.core.psvc_reference import (
+from psvc_reference import (
     encode_text, seal, open_container, write_file, read_file,
     validate_file, content_hash, PSVCError,
     PRECISION_INT8, PRECISION_FLOAT16, PRECISION_FLOAT32, DEFAULT_DIM
@@ -40,7 +41,6 @@ def cmd_create(args):
     
     write_file(vector, out_path, precision)
     
-    # FIXED: Use .stat().st_size to get file size in bytes
     size = Path(out_path).stat().st_size 
     
     print(f"[CREATE] Sealed: {out_path}")
@@ -110,7 +110,6 @@ Examples:
     )
     subparsers = parser.add_subparsers(dest="command")
     
-    # create
     p_create = subparsers.add_parser("create", help="Create a .psvc container")
     p_create.add_argument("--text", type=str, help="Text to encode as vector")
     p_create.add_argument("--random", action="store_true", help="Generate random vector")
@@ -119,17 +118,14 @@ Examples:
     p_create.add_argument("--output", type=str, help="Output filename")
     p_create.set_defaults(func=cmd_create)
     
-    # inspect
     p_inspect = subparsers.add_parser("inspect", help="Inspect container header")
     p_inspect.add_argument("file", help=".psvc file to inspect")
     p_inspect.set_defaults(func=cmd_inspect)
     
-    # validate
     p_validate = subparsers.add_parser("validate", help="Validate container (full test)")
     p_validate.add_argument("file", help=".psvc file to validate")
     p_validate.set_defaults(func=cmd_validate)
     
-    # open
     p_open = subparsers.add_parser("open", help="Open and display vector")
     p_open.add_argument("file", help=".psvc file to open")
     p_open.set_defaults(func=cmd_open)
