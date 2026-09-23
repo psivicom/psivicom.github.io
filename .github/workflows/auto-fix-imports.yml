@@ -12,36 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fix Python Imports Programmatically
+      - name: Fix Python Imports using sed
         run: |
-          python3 << 'EOF'
-          # 1. Fix forage_agent.py
-          with open('src/agents/forage_agent.py', 'r') as f:
-              content = f.read()
+          echo "--- Fixing forage_agent.py ---"
+          sed -i 's/from vram_mesh import VRAMMesh/from src.mesh.vram_mesh import VRAMMesh/g' src/agents/forage_agent.py
+          sed -i 's/from mesh_governor import MeshGovernor/from src.mesh.mesh_governor import MeshGovernor/g' src/agents/forage_agent.py
+          sed -i '/sys\.path\.insert/d' src/agents/forage_agent.py
+          sed -i '/Ensure the root directory is in the path/d' src/agents/forage_agent.py
           
-          # Remove the sys.path hack and its comment using exact string match
-          content = content.replace("# Ensure the root directory is in the path so we can import root-level files\n", "")
-          content = content.replace("sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))\n", "")
+          echo "--- Fixing intelligence_agent.py ---"
+          sed -i 's/from psvc_containers import (/from src.core.psvc_containers import (/g' src/agents/intelligence_agent.py
           
-          # Correct the absolute imports
-          content = content.replace("from vram_mesh import VRAMMesh", "from src.mesh.vram_mesh import VRAMMesh")
-          content = content.replace("from mesh_governor import MeshGovernor", "from src.mesh.mesh_governor import MeshGovernor")
-          
-          with open('src/agents/forage_agent.py', 'w') as f:
-              f.write(content)
-
-          # 2. Fix intelligence_agent.py
-          with open('src/agents/intelligence_agent.py', 'r') as f:
-              content = f.read()
-          
-          # Correct the absolute import
-          content = content.replace("from psvc_containers import (", "from src.core.psvc_containers import (")
-          
-          with open('src/agents/intelligence_agent.py', 'w') as f:
-              f.write(content)
-          
-          print("✅ String replacements applied successfully.")
-          EOF
+          echo "--- Verifying changes with git diff ---"
+          git diff || true
 
       - name: Commit Fixes
         run: |
