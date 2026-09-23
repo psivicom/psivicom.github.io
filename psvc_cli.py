@@ -9,14 +9,13 @@ import sys
 import argparse
 import numpy as np
 from pathlib import Path
-from psvc_reference import (
+from src.core.psvc_reference import (
     encode_text, seal, open_container, write_file, read_file,
     validate_file, content_hash, PSVCError,
     PRECISION_INT8, PRECISION_FLOAT16, PRECISION_FLOAT32, DEFAULT_DIM
 )
 
 PRECISION_MAP = {"int8": PRECISION_INT8, "float16": PRECISION_FLOAT16, "float32": PRECISION_FLOAT32}
-
 
 def cmd_create(args):
     """Create a .psvc container from text or random vector."""
@@ -50,7 +49,6 @@ def cmd_create(args):
     print(f"[CREATE] File size: {size} bytes")
     return 0
 
-
 def cmd_inspect(args):
     """Inspect a .psvc container header."""
     try:
@@ -65,7 +63,6 @@ def cmd_inspect(args):
     except FileNotFoundError:
         print(f"[ERROR] File not found: {args.file}")
         return 1
-
 
 def cmd_validate(args):
     """Validate a .psvc container (full decompression test)."""
@@ -85,7 +82,6 @@ def cmd_validate(args):
         print(f"[ERROR] File not found: {args.file}")
         return 1
 
-
 def cmd_open(args):
     """Open a .psvc container and show the vector."""
     try:
@@ -98,7 +94,6 @@ def cmd_open(args):
     except PSVCError as e:
         print(f"[INVALID] {e}")
         return 1
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -145,7 +140,6 @@ Examples:
         return 1
     
     return args.func(args)
-
 
 if __name__ == "__main__":
     sys.exit(main())
