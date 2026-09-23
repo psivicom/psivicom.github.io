@@ -1,34 +1,33 @@
-name: Volunteer Mesh Coordinator
+name: Volunteer Mesh
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Midnight UTC
+    - cron: '0 */4 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  coordinate:
+  volunteer:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
       - name: Run Volunteer Worker
-        run: |
-          pip install numpy
-          python volunteer_worker.py
-
-      - name: Commit contributions
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.nodes.volunteer_worker
+      - name: Commit volunteer status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "PSIVI Volunteer Coordinator"
+          git config user.name "PSIVI Volunteer Mesh"
           git config user.email "volunteer@users.noreply.github.com"
-          git add reports/volunteer_contributions/
-          git diff --staged --quiet || git commit -m "volunteer: processed pico containers and logged contributions"
+          git add reports/
+          git diff --staged --quiet || git commit -m "volunteer: processed distributed tasks"
           git push
