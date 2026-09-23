@@ -19,7 +19,6 @@ from src.core.vector_pixelizer import VectorPixelizer
 
 logger = logging.getLogger(__name__)
 
-
 class ForageAgent:
     """
     An evolving agent specialized in fusing pollinator telemetry with 
@@ -97,7 +96,6 @@ class ForageAgent:
         """Calculates the VRAM required for a given batch size."""
         base_bytes = sample_count * self.bytes_per_sample
         return int(base_bytes * self.fusion_overhead)
-
 
 # ==============================================================================
 # Example Usage / Local Test Harness
