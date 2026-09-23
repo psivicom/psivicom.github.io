@@ -22,6 +22,7 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.mesh.mesh_router
+        
       - name: Commit status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
