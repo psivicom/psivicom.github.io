@@ -23,7 +23,6 @@ from src.core.psvc_containers import (
 
 logger = logging.getLogger(__name__)
 
-
 @dataclass(frozen=True)
 class IntelligenceReport:
     """Immutable intelligence report from mesh queries."""
@@ -48,7 +47,6 @@ class IntelligenceReport:
             "confidence_score": self.confidence_score,
             "timestamp": self.timestamp
         }
-
 
 class TieredMeshStore:
     """
@@ -93,7 +91,6 @@ class TieredMeshStore:
 
     def get_stats(self) -> Dict[str, int]:
         return self._stats.copy()
-
 
 class IntelligenceAgent(BaseAgent):
     """
@@ -267,7 +264,6 @@ class IntelligenceAgent(BaseAgent):
         """Main execution entry point."""
         report = self.generate_report(query_context, shard_ids)
         return report.to_dict()
-
 
 # ============================================================================
 # USAGE EXAMPLE
