@@ -9,17 +9,23 @@
 import logging
 import numpy as np
 import time
-import sys
+#import sys
 import os
 from typing import Optional, Tuple
 
-# Ensure the root directory is in the path so we can import root-level files
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+# removed this hack : sys Ensure the root directory is in the path so we can import root-level files
+#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-# Import the elastic core infrastructure
-from vram_mesh import VRAMMesh
+# removed : Import the elastic core infrastructure
+#from vram_mesh import VRAMMesh
+#from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
+#from mesh_governor import MeshGovernor
+#from src.core.vector_pixelizer import VectorPixelizer
+
+# CORRECT absolute imports from the repository root
+from src.mesh.vram_mesh import VRAMMesh
 from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
-from mesh_governor import MeshGovernor
+from src.mesh.mesh_governor import MeshGovernor
 from src.core.vector_pixelizer import VectorPixelizer
 
 logger = logging.getLogger(__name__)
