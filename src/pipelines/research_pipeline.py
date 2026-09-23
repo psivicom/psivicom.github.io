@@ -1,243 +1,224 @@
-# research_pipeline.py
-# SPDX-License-Identifier: CC-BY-4.0
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
+# src/pipelines/research_pipeline.py
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# Research Pipeline: Coordinates multi-agent research workflows with OSDR validation
 
-"""
-End-to-End Research Pipeline — Production Demonstration
-"""
-
-import hashlib
-import time
+import sys
+import os
+import json
 import logging
-from typing import List, Dict, Any
+from pathlib import Path
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 
-import torch
-import numpy as np
+# Ensure project root is in path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from psvc_containers import (
-    PicoContainer,
-    build_psvc_from_tensor,
-    serialize_psvc,
-    deserialize_psvc,
-    verify_container,
-    reconstruct_torch_tensor,
-    MathematicalState
-)
-from src.base.base_agent import BaseAgent, AgentLayer
+# CORRECTED IMPORTS: Pointing to new modular architecture
+from src.core.psvc_reference import write_file, read_file, validate_file, content_hash, PRECISION_FLOAT16
+from src.core.psvc_containers import seal_container, extract_metadata
+from src.mesh.vram_mesh import VRAMMesh
+from src.mesh.governor import MeshGovernor
+from src.mesh.provisioner import ElasticPSVCProvisioner
+from src.orchestrator.chain_orchestrator import ChainOrchestrator, AgentProfile, WorkflowStep
+from src.agents.forage_agent import ForageAgent
+from src.agents.pilot_agent import PilotAgent
+from src.agents.consolidator_agent import ConsolidatorAgent
+from src.agents.literature_agent import LiteratureAgent
 
 logger = logging.getLogger(__name__)
 
 
-class ForageAgent(BaseAgent):
-    LAYER = AgentLayer.INGESTION
-
-    def __init__(self, name: str = "forage_agent"):
-        super().__init__(name=name)
-        self.embedding_matrix = torch.randn(1000, 512, dtype=torch.float16)
-
-    def fetch_weather_data(self, location: str) -> Dict[str, Any]:
-        from src.agents.forage_agent import ForageAgent as RealForage
+class ResearchPipeline:
+    """
+    Coordinates end-to-end research workflows using the PSIVI mesh.
+    Integrates OSDR ground truth validation via Pilot Agent.
+    """
+    
+    def __init__(self, vram_gb: float = 8.0, osdr_data_path: str = "data/osdr_ground_truth.jsonl"):
+        self.vram_gb = vram_gb
+        self.osdr_data_path = osdr_data_path
+        self.orchestrator = None
+        self.results: List[Dict] = []
+        
+    def initialize(self) -> bool:
+        """Initialize the orchestrator and mesh infrastructure"""
         try:
-            real = RealForage(name=self.name)
-            return real.fetch_weather(latitude=45.5017, longitude=-73.5673, days=7)
-        except Exception as e:
-            logger.warning(f"Real API unavailable ({e}), using fallback data")
-            return {
-                "location": location,
-                "temperature": 22.5,
-                "humidity": 65,
-                "daily": {
-                    "temperature_2m_max": [22.0, 23.0, 21.5, 24.0, 22.5, 23.5, 21.0],
-                    "temperature_2m_min": [15.0, 16.0, 14.5, 17.0, 15.5, 16.5, 14.0],
-                    "precipitation_sum": [0.0, 2.5, 0.0, 0.0, 5.0, 0.0, 1.0],
-                    "windspeed_10m_max": [12.0, 15.0, 10.0, 18.0, 14.0, 11.0, 16.0],
-                    "relative_humidity_2m_max": [65, 70, 60, 75, 80, 68, 72]
-                },
-                "fetched_at": time.time()
-            }
-
-    def embed_data(self, data: Dict[str, Any]) -> torch.Tensor:
-        daily = data.get("daily", {})
-        temp_max = np.array(daily.get("temperature_2m_max", []), dtype=np.float32)
-        temp_min = np.array(daily.get("temperature_2m_min", []), dtype=np.float32)
-        precip = np.array(daily.get("precipitation_sum", []), dtype=np.float32)
-        wind = np.array(daily.get("windspeed_10m_max", []), dtype=np.float32)
-        humidity = np.array(daily.get("relative_humidity_2m_max", []), dtype=np.float32)
-
-        if len(temp_max) == 0:
-            return torch.zeros(35, dtype=torch.float32)
-
-        features = np.stack([temp_max, temp_min, precip, wind, humidity], axis=1)
-        features = (features - features.mean(axis=0)) / (features.std(axis=0) + 1e-8)
-        return torch.tensor(features.flatten(), dtype=torch.float32)
-
-    def create_containers(self, vectors: torch.Tensor) -> List[PicoContainer]:
-        containers = []
-        shard_size = 5
-        for i in range(0, vectors.shape[0], shard_size):
-            shard = vectors[i:i+shard_size]
-            container = build_psvc_from_tensor(
-                tensor=shard,
-                operation=f"embed_weather_shard_{i}",
-                agent_id=self.agent_id,
-                layer=self.LAYER.name,
-                shard_id=f"{self.agent_id}-shard-{i}",
-                content_type="weather_vector_shard"
+            self.orchestrator = ChainOrchestrator(
+                total_vram_gb=self.vram_gb,
+                osdr_data_path=self.osdr_data_path
             )
-            containers.append(container)
-        return containers
-
-
-class VolunteerWorker(BaseAgent):
-    LAYER = AgentLayer.INGESTION
-
-    def __init__(self, name: str = "volunteer_worker"):
-        super().__init__(name=name)
-
-    def process_container(self, container_bytes: bytes) -> bytes:
-        from src.orchestrator.mesh_governor import audit_psvc_container
-
-        audit_result = audit_psvc_container(container_bytes)
-        if not audit_result.is_valid:
-            raise PermissionError(f"RFC 1001 Violation: {audit_result.checks_failed}")
-
-        container = deserialize_psvc(container_bytes)
-        tensor = reconstruct_torch_tensor(container)
-        processed_tensor = tensor * 1.05
-
-        new_container = build_psvc_from_tensor(
-            tensor=processed_tensor,
-            operation="volunteer_scale_transform",
-            agent_id=self.agent_id,
-            layer=self.LAYER.name,
-            parent_receipt_hash=container.receipt.payload_hash,
-            shard_id=f"processed-{container.header.shard_id}",
-            content_type=f"processed_{container.header.content_type}"
-        )
-        return serialize_psvc(new_container)
-
-
-class SynthesizerAgent(BaseAgent):
-    LAYER = AgentLayer.SYNTHESIS
-
-    def __init__(self, name: str = "synthesizer_agent"):
-        super().__init__(name=name)
-
-    def aggregate_containers(self, container_bytes_list: List[bytes]) -> torch.Tensor:
-        from src.orchestrator.mesh_governor import audit_psvc_container
-        tensors = []
-        for cb in container_bytes_list:
-            audit_result = audit_psvc_container(cb)
-            if not audit_result.is_valid:
-                raise PermissionError(f"Aggregation failed: {audit_result.checks_failed}")
-            container = deserialize_psvc(cb)
-            tensors.append(reconstruct_torch_tensor(container))
-        return torch.cat(tensors, dim=0)
-
-    def generate_report(self, tensor: torch.Tensor, metadata: Dict[str, Any]) -> Dict[str, Any]:
+            logger.info("Research Pipeline initialized successfully")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to initialize Research Pipeline: {e}")
+            return False
+    
+    def run_workflow(self, goal: str, agents: List[str] = None) -> Dict[str, Any]:
+        """
+        Execute a research workflow for a given goal.
+        
+        Args:
+            goal: Research goal/question
+            agents: Optional list of agent IDs to include
+        
+        Returns:
+            Workflow execution results
+        """
+        if not self.orchestrator:
+            if not self.initialize():
+                return {"success": False, "error": "Pipeline initialization failed"}
+        
+        # Define default workflow steps
+        steps = [
+            WorkflowStep(
+                source_agent_id="orchestrator",
+                target_agent_id="forage_agent",
+                operation="collect_data",
+                is_mutable=True
+            ),
+            WorkflowStep(
+                source_agent_id="forage_agent",
+                target_agent_id="literature_agent",
+                operation="validate_context",
+                is_mutable=True
+            ),
+            WorkflowStep(
+                source_agent_id="literature_agent",
+                target_agent_id="critic_agent",
+                operation="evaluate_quality",
+                is_mutable=False
+            ),
+            WorkflowStep(
+                source_agent_id="critic_agent",
+                target_agent_id="consolidator_agent",
+                operation="synthesize_results",
+                is_mutable=True
+            )
+        ]
+        
+        # Execute workflow (Pilot Agent automatically evaluates elasticity)
+        success = self.orchestrator.execute_workflow(steps, goal=goal)
+        
+        result = {
+            "success": success,
+            "goal": goal,
+            "timestamp": datetime.utcnow().isoformat(),
+            "vram_gb": self.vram_gb,
+            "osdr_data_path": self.osdr_data_path
+        }
+        
+        self.results.append(result)
+        return result
+    
+    def run_pilot_scan(self) -> Dict[str, Any]:
+        """
+        Run Pilot Agent scan to evaluate mesh epistemic health.
+        
+        Returns:
+            Pilot scan results including fragility/concordance counts
+        """
+        if not self.orchestrator:
+            if not self.initialize():
+                return {"success": False, "error": "Pipeline initialization failed"}
+        
+        elasticity = self.orchestrator.evaluate_elasticity()
+        
         return {
-            "summary": f"Processed {tensor.shape[0]} vector dimensions",
-            "tensor_shape": list(tensor.shape),
-            "tensor_mean": tensor.mean().item(),
-            "tensor_std": tensor.std().item(),
-            "metadata": metadata,
-            "timestamp": time.time()
+            "success": True,
+            "timestamp": datetime.utcnow().isoformat(),
+            "decision": elasticity.decision,
+            "reason": elasticity.reason,
+            "fragility_count": elasticity.fragility_count,
+            "concordance_count": elasticity.concordance_count,
+            "osdr_matches": len(elasticity.osdr_matches)
         }
-
-
-class LicenseAgent(BaseAgent):
-    LAYER = AgentLayer.GOVERNANCE
-
-    def __init__(self, name: str = "license_agent"):
-        super().__init__(name=name)
-
-    def stamp_fair(self, report: Dict[str, Any]) -> Dict[str, Any]:
-        report["_psivi_fair_metadata"] = {
-            "psivi_license": "CC-BY-4.0",
-            "author": "Louis-Philippe Audette",
-            "project": "psivicom.github.io",
-            "timestamp": time.time(),
-            "findable": True,
-            "accessible": True,
-            "interoperable": True,
-            "reusable": True,
-            "rfc1001_compliant": True
+    
+    def export_results(self, output_dir: Path = None) -> List[Path]:
+        """
+        Export all workflow results as RFC 1001 compliant containers.
+        
+        Args:
+            output_dir: Output directory (default: reports/pico_containers)
+        
+        Returns:
+            List of exported file paths
+        """
+        if output_dir is None:
+            output_dir = Path("reports/pico_containers")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        exported_files = []
+        
+        for i, result in enumerate(self.results):
+            # Create summary vector
+            summary = json.dumps(result, sort_keys=True)
+            summary_hash = content_hash(summary.encode())
+            
+            # Create vector from hash
+            vector = np.zeros(4096, dtype=np.float32)
+            for j, char in enumerate(summary_hash[:4096]):
+                vector[j] = ord(char) / 255.0
+            vector /= np.linalg.norm(vector)
+            
+            # Write container
+            filename = f"research_result_{i}_{summary_hash[:12]}.psvc"
+            filepath = output_dir / filename
+            write_file(vector, filepath, precision=PRECISION_FLOAT16)
+            
+            # Write sidecar
+            sidecar_path = filepath.with_suffix('.json')
+            with open(sidecar_path, 'w') as f:
+                json.dump(result, f, indent=2)
+            
+            exported_files.append(filepath)
+            logger.info(f"Exported result to {filename}")
+        
+        return exported_files
+    
+    def get_mesh_status(self) -> Dict[str, Any]:
+        """Get current mesh status from orchestrator"""
+        if not self.orchestrator:
+            return {"status": "not_initialized"}
+        
+        return {
+            "status": "nominal",
+            "vram_gb": self.vram_gb,
+            "results_count": len(self.results),
+            "osdr_data_loaded": Path(self.osdr_data_path).exists()
         }
-        self.seal("stamp_fair", report)
-        return report
-
-
-def run_research_pipeline():
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    logger.info("=" * 80)
-    logger.info("PSIVI Open Science Research Pipeline")
-    logger.info("=" * 80)
-
-    forage = ForageAgent()
-    worker = VolunteerWorker()
-    synthesizer = SynthesizerAgent()
-    licensor = LicenseAgent()
-
-    logger.info(f"Agents: {forage.agent_id}, {worker.agent_id}, {synthesizer.agent_id}, {licensor.agent_id}")
-
-    # Step 1: Fetch
-    logger.info("Step 1: Fetching weather data...")
-    raw_data = forage.fetch_weather_data("Montreal")
-    logger.info(f"  Fetched: {raw_data.get('location', 'unknown')}")
-
-    # Step 2: Embed
-    logger.info("Step 2: Embedding to tensor...")
-    vectors = forage.embed_data(raw_data)
-    logger.info(f"  Shape: {vectors.shape}")
-
-    # Step 3: Containerize
-    logger.info("Step 3: Creating .psvc containers...")
-    containers = forage.create_containers(vectors)
-    serialized = [serialize_psvc(c) for c in containers]
-    logger.info(f"  Created {len(serialized)} containers, {sum(len(s) for s in serialized)} bytes total")
-
-    # Step 4: Volunteer processing
-    logger.info("Step 4: Volunteer worker processing...")
-    processed = []
-    for i, cb in enumerate(serialized):
-        result = worker.process_container(cb)
-        processed.append(result)
-        logger.info(f"  Shard {i+1}/{len(serialized)} processed")
-
-    # Step 5: Synthesize
-    logger.info("Step 5: Synthesizing results...")
-    aggregated = synthesizer.aggregate_containers(processed)
-    report = synthesizer.generate_report(aggregated, {"goal": "Analyze weather patterns in Montreal"})
-    logger.info(f"  {report['summary']}")
-
-    # Step 6: FAIR stamp
-    logger.info("Step 6: FAIR compliance stamping...")
-    final = licensor.stamp_fair(report)
-    logger.info(f"  License: {final['_psivi_fair_metadata']['psivi_license']}")
-
-    # Final verification
-    logger.info("Final verification...")
-    all_valid = True
-    for cb in processed:
-        c = deserialize_psvc(cb)
-        v = verify_container(c)
-        if not all(v.values()):
-            all_valid = False
-            logger.warning(f"  FAILED: {v}")
-    if all_valid:
-        logger.info("  ✓ All containers verified")
-
-    logger.info("=" * 80)
-    logger.info("PIPELINE COMPLETE")
-    return final
 
 
 if __name__ == "__main__":
-    final_report = run_research_pipeline()
-    print("\n📊 FINAL OUTPUT:")
-    for k, v in final_report.items():
-        if k != "_psivi_fair_metadata":
-            print(f"  {k}: {v}")
-    print("\n🔒 FAIR METADATA:")
-    for k, v in final_report["_psivi_fair_metadata"].items():
-        print(f"  {k}: {v}")
+    logging.basicConfig(level=logging.INFO)
+    
+    pipeline = ResearchPipeline(vram_gb=4.0, osdr_data_path="data/osdr_ground_truth.jsonl")
+    
+    if not pipeline.initialize():
+        print("❌ Failed to initialize Research Pipeline")
+        sys.exit(1)
+    
+    print("✅ Research Pipeline initialized")
+    
+    # Run a sample workflow
+    goal = "Analyze Goldstream forage window with satellite radar and literature context"
+    result = pipeline.run_workflow(goal)
+    
+    if result["success"]:
+        print(f"\n✅ Workflow completed: {goal}")
+        print(f"   Timestamp: {result['timestamp']}")
+    else:
+        print(f"\n❌ Workflow failed: {result.get('error', 'Unknown error')}")
+    
+    # Run pilot scan
+    pilot_result = pipeline.run_pilot_scan()
+    print(f"\n🧭 Pilot Scan: {pilot_result['decision']}")
+    print(f"   Fragility: {pilot_result['fragility_count']}, Concordance: {pilot_result['concordance_count']}")
+    
+    # Export results
+    exported = pipeline.export_results()
+    print(f"\n📦 Exported {len(exported)} result containers")
+    
+    # Show mesh status
+    status = pipeline.get_mesh_status()
+    print(f"\n📊 Mesh Status: {status['status']}")
