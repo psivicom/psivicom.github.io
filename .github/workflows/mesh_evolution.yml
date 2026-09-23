@@ -1,57 +1,33 @@
-name: AETHER VANGUARD Auto-Evolution
+name: Mesh Evolution
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight UTC
-  workflow_dispatch: # Allows you to click "Run workflow" manually in GitHub UI
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  evolve-vector-pixelizer:
+  evolve:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Required to auto-commit the PROVENANCE.json update
-    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
       - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Mesh Evolution
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.mesh.mesh_brain
+      - name: Commit evolution report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m pip install --upgrade pip
-          pip install torch numpy pytest PyYAML websockets psutil
-
-      - name: Run Fidelity Tests
-        run: pytest tests/
-
-      - name: Generate Provenance Hash & Update Ledger
-        run: |
-          # Hash the core algorithm
-          HASH=$(shasum -a 256 src/core/vector_pixelizer.py | awk '{print $1}')
-          TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-          
-          # Write the new PROVENANCE.json
-          cat <<EOF > PROVENANCE.json
-          {
-            "status": "active",
-            "timestamp": "$TIMESTAMP",
-            "algorithm_hash": "$HASH",
-            "nist_compliance": true,
-            "fair_license": "CC-BY-SA-4.0",
-            "mesh_name": "AETHER VANGUARD - Goldstream Ecology",
-            "auto_generated": true
-          }
-          EOF
-
-      - name: Commit and Push Evolution
-        run: |
-          git config user.name "AETHER VANGUARD Bot"
-          git config user.email "mesh-bot@psivicom.github.io"
-          git add PROVENANCE.json
-          # Only commit if the hash actually changed
-          git diff --quiet && git diff --staged --quiet || git commit -m "chore: Auto-evolve Vector Pixelizer [Hash: $HASH]"
+          git config user.name "PSIVI Mesh Evolution"
+          git config user.email "evolution@users.noreply.github.com"
+          git add reports/
+          git diff --staged --quiet || git commit -m "evolution: executed weekly mesh brain update"
           git push
