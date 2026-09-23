@@ -1,163 +1,33 @@
-# .github/workflows/pilot-scan.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# 
-# Pilot Agent Workflow: OSDR-Inspired Fragility & Concordance Detection
-# Scans mesh vectors for contradictions (Fragility) and agreements (Concordance)
-# RFC 1001 Compliant | FAIR Open Science | NIST SP 800-218
-
-name: Pilot Agent (Fragility & Concordance Scan)
+name: Pilot Scan
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:       # Manual trigger from GitHub UI
-  push:
-    paths:
-      - 'src/agents/pilot_agent.py'
-      - 'src/base/base_agent.py'
-      - 'reports/pico_containers/*.psvc'
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
-  actions: read
 
 jobs:
   pilot-scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
-
       - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install numpy
-
-      - name: Run Pilot Agent Scan
-        id: pilot-run
-        run: |
-          echo "=== PSIVI PILOT AGENT: OSDR-INSPIRED SCAN ==="
-          echo "Scanning for Fragility Traps and Concordant Controls..."
-          echo ""
-          
-          # Run the pilot agent
-          python src/agents/pilot_agent.py
-          
-          # Extract results from the generated report
-          if [ -f "reports/pilot_report.json" ]; then
-            FRAGILITY_COUNT=$(python -c "import json; print(json.load(open('reports/pilot_report.json'))['fragility_count'])")
-            CONCORDANCE_COUNT=$(python -c "import json; print(json.load(open('reports/pilot_report.json'))['concordance_count'])")
-            
-            echo "fragility_count=$FRAGILITY_COUNT" >> $GITHUB_OUTPUT
-            echo "concordance_count=$CONCORDANCE_COUNT" >> $GITHUB_OUTPUT
-            
-            echo ""
-            echo "=== SCAN RESULTS ==="
-            echo "Fragility Traps: $FRAGILITY_COUNT"
-            echo "Concordant Controls: $CONCORDANCE_COUNT"
-            
-            # Determine mesh state
-            if [ "$FRAGILITY_COUNT" -gt "$CONCORDANCE_COUNT" ]; then
-              echo "mesh_state=EXPAND" >> $GITHUB_OUTPUT
-              echo "MESH STATE: EXPAND (High uncertainty - spawn literature/genesis agents)"
-            else
-              echo "mesh_state=CONTRACT" >> $GITHUB_OUTPUT
-              echo "MESH STATE: CONTRACT (High certainty - prune redundant vectors)"
-            fi
-          else
-            echo "fragility_count=0" >> $GITHUB_OUTPUT
-            echo "concordance_count=0" >> $GITHUB_OUTPUT
-            echo "mesh_state=STABLE" >> $GITHUB_OUTPUT
-            echo "[WARNING] Pilot report not generated"
-          fi
-
-      - name: Generate Summary Report
-        run: |
-          echo "## 🧭 Pilot Agent Scan Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Timestamp:** $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Fragility Traps | ${{ steps.pilot-run.outputs.fragility_count }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Concordant Controls | ${{ steps.pilot-run.outputs.concordance_count }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Mesh State | ${{ steps.pilot-run.outputs.mesh_state }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -f "reports/pilot_report.json" ]; then
-            echo "### Fragility Traps (Contradictions)" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
-            python -c "import json; traps = json.load(open('reports/pilot_report.json'))['fragility_traps'][:5]; print(json.dumps(traps, indent=2))" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            
-            echo "### Concordant Controls (Agreements)" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
-            python -c "import json; controls = json.load(open('reports/pilot_report.json'))['concordant_controls'][:5]; print(json.dumps(controls, indent=2))" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Commit Pilot Results
+        run: pip install -r requirements.txt
+      - name: Run Pilot Agent
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.pilot_agent
+      - name: Commit pilot report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Pilot Agent"
-          git config user.email "pilot@psivi.com"
-          
-          # Add all pilot-generated files
-          git add reports/pico_containers/*pilot*.psvc
-          git add reports/pico_containers/*pilot*.json
-          git add reports/pilot_report.json
-          
-          # Commit if there are changes
-          if ! git diff --staged --quiet; then
-            git commit -m "pilot: scanned mesh for fragility/concordance (traps=${{ steps.pilot-run.outputs.fragility_count }}, controls=${{ steps.pilot-run.outputs.concordance_count }})"
-            git push
-            echo "✅ Pilot results committed and pushed"
-          else
-            echo "ℹ️ No new pilot results to commit"
-          fi
-
-      - name: Trigger Expansion Workflow (If High Fragility)
-        if: steps.pilot-run.outputs.mesh_state == 'EXPAND'
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: mesh-expand
-          client-payload: '{"fragility_count": "${{ steps.pilot-run.outputs.fragility_count }}", "reason": "high_uncertainty"}'
-
-      - name: Trigger Contraction Workflow (If High Concordance)
-        if: steps.pilot-run.outputs.mesh_state == 'CONTRACT'
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: mesh-contract
-          client-payload: '{"concordance_count": "${{ steps.pilot-run.outputs.concordance_count }}", "reason": "high_certainty"}'
-
-  notify:
-    needs: pilot-scan
-    runs-on: ubuntu-latest
-    if: always()
-    
-    steps:
-      - name: Notify on Failure
-        if: needs.pilot-scan.result == 'failure'
-        run: |
-          echo "❌ Pilot Agent Scan FAILED"
-          echo "Please check the workflow logs for details."
-          echo ""
-          echo "This may indicate:"
-          echo "- Corrupted .psvc containers"
-          echo "- RFC 1001 compliance violations"
-          echo "- Memory or VRAM allocation issues"
+          git config user.email "pilot@users.noreply.github.com"
+          git add reports/
+          git diff --staged --quiet || git commit -m "pilot: executed fragility and concordance scan"
+          git push
