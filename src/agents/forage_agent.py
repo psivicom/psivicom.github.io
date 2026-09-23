@@ -2,27 +2,16 @@
 # FILE: forage_agent.py
 # PATH: psivicom.github.io/src/agents/forage_agent.py
 # DESCRIPTION: Evolving Forage Agent for Pollinator & RADARSAT Data Fusion
-#              Utilizes intelligent chunking and elastic VRAM provisioning.
+# Utilizes intelligent chunking and elastic VRAM provisioning.
 # LICENSE: EUPL-1.2 | COMPLIANCE: NIST SP 800-218, FAIR Open Science
 # ==============================================================================
 
 import logging
 import numpy as np
 import time
-#import sys
-import os
 from typing import Optional, Tuple
 
-# removed this hack : sys Ensure the root directory is in the path so we can import root-level files
-#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
-# removed : Import the elastic core infrastructure
-#from vram_mesh import VRAMMesh
-#from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
-#from mesh_governor import MeshGovernor
-#from src.core.vector_pixelizer import VectorPixelizer
-
-# CORRECT absolute imports from the repository root
+# CORRECT absolute imports from the repository root (PYTHONPATH)
 from src.mesh.vram_mesh import VRAMMesh
 from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
 from src.mesh.mesh_governor import MeshGovernor
