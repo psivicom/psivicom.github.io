@@ -1,22 +1,33 @@
-name: Mesh Validation (Run First)
+name: Mesh Validate
 
 on:
+  schedule:
+    - cron: '0 */3 * * *'
   workflow_dispatch:
-  push:
-    paths:
-      - 'src/**/*.py'
-      - 'data/**/*.jsonl'
+
+permissions:
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
-      - name: Run Mesh Validation
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Mesh Validator
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.tools.validate_mesh
+      - name: Commit validation report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python src/tools/validate_mesh.py
+          git config user.name "PSIVI Mesh Validator"
+          git config user.email "validator@users.noreply.github.com"
+          git add reports/
+          git diff --staged --quiet || git commit -m "validator: checked mesh integrity"
+          git push
