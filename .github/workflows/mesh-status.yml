@@ -22,7 +22,6 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m 
-        
       - name: Commit status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,4 +33,3 @@ jobs:
           git add reports/mesh_status.txt
           git diff --staged --quiet || git commit -m "mesh: updated status report"
           git push
-
