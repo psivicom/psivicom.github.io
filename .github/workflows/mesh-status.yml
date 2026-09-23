@@ -19,7 +19,9 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
       - name: Run Mesh Router
-        run: python src/orchestrator/mesh_router.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.mesh.mesh_router
       - name: Commit status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
