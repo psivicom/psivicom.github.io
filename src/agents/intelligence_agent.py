@@ -2,30 +2,18 @@
 # SPDX-License-Identifier: CC-BY-4.0
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
 
-"""
-Production IntelligenceAgent: Reads from tiered vector mesh and produces
-contextual intelligence reports for synthesis.
-
-Responsibilities:
-- Query VRAM mesh (hot compute vectors)
-- Query Pico mesh (distributed cache)
-- Query Seed mesh (immutable archive)
-- Build contextual intelligence reports
-- Produce cryptographically sealed outputs
-"""
-
 import logging
 import time
 import hashlib
 from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass, field
 from pathlib import Path
-
 import numpy as np
 import torch
 
+# CORRECT absolute imports
 from src.base.base_agent import BaseAgent, AgentLayer
-from psvc_containers import (
+from src.core.psvc_containers import (
     PicoContainer,
     build_psvc_from_tensor,
     serialize_psvc,
