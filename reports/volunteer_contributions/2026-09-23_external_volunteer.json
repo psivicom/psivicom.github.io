@@ -1,0 +1,49 @@
+{
+  "agent_id": "external_volunteer",
+  "timestamp": "2026-09-23T02:33:57.640899",
+  "containers_processed": 5,
+  "results": [
+    {
+      "container": "state_0_10b94c687294.psvc",
+      "hash": "150aac965656",
+      "norm": 1.0000636577606201,
+      "dimensions": 4096,
+      "precision": "int8",
+      "status": "VALID"
+    },
+    {
+      "container": "chain_20260919_194635_step2_satellite_98dc4091d0fa.psvc",
+      "hash": "e341fa35440c",
+      "norm": 0.9996504187583923,
+      "dimensions": 4096,
+      "precision": "float16",
+      "status": "VALID"
+    },
+    {
+      "container": "a16330272f3f.psvc",
+      "hash": "e07b3869f6ea",
+      "norm": 0.9942241311073303,
+      "dimensions": 4096,
+      "precision": "int8",
+      "status": "VALID"
+    },
+    {
+      "container": "ab60b664eaa6.psvc",
+      "hash": "304ec4ebb7a2",
+      "norm": 1.0070102214813232,
+      "dimensions": 4096,
+      "precision": "int8",
+      "status": "VALID"
+    },
+    {
+      "container": "chain_20260919_114056_step2_satellite_98dc4091d0fa.psvc",
+      "hash": "e341fa35440c",
+      "norm": 0.9996504187583923,
+      "dimensions": 4096,
+      "precision": "float16",
+      "status": "VALID"
+    }
+  ],
+  "protocol": "RFC 1001",
+  "library": "psvc_reference.py"
+}
