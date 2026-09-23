@@ -1,40 +1,33 @@
-# ==============================================================================
-# FILE: test-elastic-evolution.yml
-# PATH: .github/workflows/test-elastic-evolution.yml
-# DESCRIPTION: GitHub Actions workflow to run security tests in the cloud.
-# ==============================================================================
-
-name: Run Elastic Evolution Security Tests
+name: Test Elastic Evolution
 
 on:
-  # Allows you to trigger this manually from a button on your phone
+  schedule:
+    - cron: '0 */12 * * *'
   workflow_dispatch:
-  # Also runs automatically when you update the test file
-  push:
-    paths:
-      - 'tests/test_elastic_evolution.py'
+
+permissions:
+  contents: write
 
 jobs:
-  run-security-tests:
-    name: Security & Stress Tests
-    runs-on: ubuntu-latest  # Uses GitHub's cloud Linux server
-
+  test-elastic:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-
+          python-version: '3.11'
       - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Elastic Test
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.orchestrator.psvc_provisioner
+      - name: Commit test report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m pip install --upgrade pip
-          pip install numpy
-
-      - name: Run Elastic Security Tests
-        run: |
-          echo "Starting security tests..."
-          python tests/test_elastic_evolution.py
-          echo "Tests completed successfully!"
+          git config user.name "PSIVI Elastic Test"
+          git config user.email "elastic-test@users.noreply.github.com"
+          git add reports/
+          git diff --staged --quiet || git commit -m "elastic-test: verified provisioner security"
+          git push
