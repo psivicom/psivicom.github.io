@@ -370,7 +370,7 @@ psivicom.github.io/
 │   ├── math/
 │   │   └── __init__.py
 │   ├── mesh/
-│   │   ├── __init__.py
+│   │   ├──  __init__.py
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
