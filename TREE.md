@@ -3,7 +3,6 @@ psivicom.github.io/
 ├── .github/
 │   └── workflows/
 │       ├── README.md
-│       ├── agent-path-guard.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── docs.yml
