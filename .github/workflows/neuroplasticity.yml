@@ -1,35 +1,33 @@
-name: Neuroplasticity (Consolidator)
+name: Neuroplasticity
 
 on:
   schedule:
-    - cron: '0 4 * * *' # 9 PM PST daily
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  consolidate:
+  neuro:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
       - name: Install Dependencies
         run: pip install -r requirements.txt
-        
-      - name: Run Consolidator Agent
-        run: python src/agents/consolidator_agent.py
-        
-      - name: Commit Consolidated Vectors
+      - name: Run Neuroplasticity
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.pipelines.research_pipeline
+      - name: Commit neuro report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "PSIVI Consolidator Agent"
-          git config user.email "consolidator@users.noreply.github.com"
-          git add reports/ vector_mesh.py
-          git diff --staged --quiet || git commit -m "neuroplasticity: consolidated daily vector shards and updated mesh weights"
+          git config user.name "PSIVI Neuroplasticity"
+          git config user.email "neuro@users.noreply.github.com"
+          git add reports/
+          git diff --staged --quiet || git commit -m "neuro: executed research pipeline"
           git push
