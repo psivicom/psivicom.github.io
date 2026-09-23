@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-23T05:01:52.944Z | Hash: 37daf0c8a740348371031745fea605f4c8b4c5766061a83a99cd32a95dfc7528 -->
+<!-- Last updated: 2026-09-23T05:06:20.225Z | Hash: c099221ec7bc74f0add84704cca31895b9a3f493809e0a0d992c0642f9a92b12 -->
 
 ```
 psivicom.github.io/
@@ -146,7 +146,8 @@ psivicom.github.io/
 │       ├── test-elastic-evolution.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
-│       └── volunteer-mesh.yml
+│       ├── volunteer-mesh.yml
+│       └── workflow-integrity.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md

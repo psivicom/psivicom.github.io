@@ -27,7 +27,8 @@ psivicom.github.io/
 │       ├── test-elastic-evolution.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
-│       └── volunteer-mesh.yml
+│       ├── volunteer-mesh.yml
+│       └── workflow-integrity.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
