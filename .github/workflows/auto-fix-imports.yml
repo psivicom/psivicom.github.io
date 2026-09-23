@@ -1,0 +1,53 @@
+name: Auto-Fix Python Imports
+
+on:
+  workflow_dispatch: # Allows you to run this manually with one click
+
+permissions:
+  contents: write
+
+jobs:
+  fix-imports:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix Python Imports Programmatically
+        run: |
+          python3 << 'EOF'
+          import re
+
+          # 1. Fix forage_agent.py
+          with open('src/agents/forage_agent.py', 'r') as f:
+              content = f.read()
+          
+          # Remove the sys.path hack and its comment
+          content = re.sub(r'# Ensure the root directory.*?\n', '', content, flags=re.DOTALL)
+          content = re.sub(r'sys\.path\.insert\(0, os\.path\.abspath\(os\.path\.join\(os\.path\.dirname\(__file__\), \.\./\.\.\)\)\)\n', '', content)
+          
+          # Correct the absolute imports
+          content = content.replace('from vram_mesh import VRAMMesh', 'from src.mesh.vram_mesh import VRAMMesh')
+          content = content.replace('from mesh_governor import MeshGovernor', 'from src.mesh.mesh_governor import MeshGovernor')
+          
+          with open('src/agents/forage_agent.py', 'w') as f:
+              f.write(content)
+
+          # 2. Fix intelligence_agent.py
+          with open('src/agents/intelligence_agent.py', 'r') as f:
+              content = f.read()
+          
+          content = content.replace('from psvc_containers import (', 'from src.core.psvc_containers import (')
+          
+          with open('src/agents/intelligence_agent.py', 'w') as f:
+              f.write(content)
+          
+          print("✅ Imports fixed successfully.")
+          EOF
+
+      - name: Commit Fixes
+        run: |
+          git config user.name "PSIVI Auto-Fix"
+          git config user.email "auto-fix@users.noreply.github.com"
+          git add src/agents/forage_agent.py src/agents/intelligence_agent.py
+          git commit -m "chore: fix absolute imports for python -m execution" || echo "No changes to commit"
+          git push
