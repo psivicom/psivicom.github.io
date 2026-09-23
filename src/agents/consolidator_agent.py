@@ -1,74 +1,113 @@
-# src/agents/consolidator_agent.py
-# SPDX-License-Identifier: CC-BY-4.0
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
-
-"""
-Production ConsolidatorAgent: Aggregates daily vector shards and updates mesh weights.
-"""
+# ==============================================================================
+# FILE: consolidator_agent.py
+# PATH: psivicom.github.io/src/agents/consolidator_agent.py
+# DESCRIPTION: Evolving Consolidator Agent for Multi-Source Data Clustering
+# LICENSE: EUPL-1.2 | COMPLIANCE: NIST SP 800-218, FAIR Open Science
+# ==============================================================================
 
 import logging
-import time
-from typing import Dict, Any, List
 import numpy as np
-import torch
+import time
+from typing import Optional, Tuple, List
 
-from src.base.base_agent import BaseAgent, AgentLayer
-from psvc_containers import build_psvc_from_tensor, serialize_psvc
+# CORRECT absolute imports from the repository root (PYTHONPATH)
+from src.mesh.vram_mesh import VRAMMesh
+from src.mesh.mesh_governor import MeshGovernor
+from src.core.vector_pixelizer import VectorPixelizer
+from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
 
 logger = logging.getLogger(__name__)
 
-class ConsolidatorAgent(BaseAgent):
-    LAYER = AgentLayer.SYNTHESIS
+class ConsolidatorAgent:
+    """
+    Clusters and merges data from multiple agents into unified vectors.
+    """
+    
+    def __init__(
+        self,
+        agent_id: str,
+        provisioner: ElasticPSVCProvisioner,
+        governor: MeshGovernor,
+        pixelizer: VectorPixelizer
+    ):
+        self.agent_id = agent_id
+        self.provisioner = provisioner
+        self.governor = governor
+        self.pixelizer = pixelizer
+        
+        self.bytes_per_element = 8
+        self.cluster_overhead = 1.3
+        
+        logger.info(f"ConsolidatorAgent {self.agent_id} initialized.")
 
-    def __init__(self, name: str = "consolidator_agent"):
-        super().__init__(
-            name=name,
-            capabilities=["aggregate_findings", "merge_shards", "update_mesh_weights"]
+    def consolidate_batch(
+        self,
+        source_vectors: List[np.ndarray]
+    ) -> Tuple[bool, Optional[np.ndarray]]:
+        logger.info(f"[{self.agent_id}] Starting consolidation of {len(source_vectors)} vectors.")
+        
+        total_elements = sum(v.size for v in source_vectors)
+        required_vram = self._calc_required_vram(total_elements)
+        
+        handle = self.provisioner.get_handle(self.agent_id)
+        if not handle:
+            logger.error(f"[{self.agent_id}] No VRAM handle.")
+            return False, None
+            
+        current_vram = handle.size_bytes
+        
+        if required_vram > current_vram:
+            logger.warning(f"[{self.agent_id}] Consolidation requires {required_vram} bytes. Requesting evolution...")
+            success = self.governor.request_evolution(
+                self.agent_id,
+                new_dimensions=total_elements,
+                new_memory=required_vram
+            )
+            if not success:
+                logger.info(f"[{self.agent_id}] Evolution denied. Using chunking.")
+                
+        fused_input = np.concatenate(source_vectors)
+        
+        success, result = self.pixelizer.execute_vector_math(
+            self.agent_id,
+            operation="transform",
+            input_data=fused_input
         )
-        logger.info(f"ConsolidatorAgent initialized: {self.agent_id}")
+        
+        if not success:
+            logger.error(f"[{self.agent_id}] Consolidation failed.")
+            return False, None
+            
+        pheromone = f"consolidation_complete:{len(source_vectors)}_vectors:{total_elements}_elements"
+        self.governor.deposit_pheromone(self.agent_id, pheromone)
+        
+        logger.info(f"[{self.agent_id}] Consolidation complete.")
+        return True, result
 
-    def merge_shards(self, shard_data: List[np.ndarray]) -> np.ndarray:
-        """Merge multiple vector shards into a single consolidated array."""
-        if not shard_data:
-            return np.array([])
-        
-        # Pad arrays to the same length and compute mean
-        max_len = max(len(arr) for arr in shard_data)
-        padded = [
-            np.pad(arr, (0, max_len - len(arr)), mode='constant') 
-            for arr in shard_data
-        ]
-        consolidated = np.mean(padded, axis=0)
-        return consolidated
-
-    def execute(self) -> bytes:
-        """Main execution: simulate consolidation and seal into .psvc container."""
-        logger.info("Executing consolidation routine...")
-        
-        # Simulate aggregated daily data
-        mock_shards = [np.random.randn(128).astype(np.float32) for _ in range(5)]
-        consolidated_vector = self.merge_shards(mock_shards)
-        
-        # Seal operation
-        receipt = self.seal(
-            operation="merge_daily_shards",
-            payload={"shard_count": len(mock_shards), "output_dim": len(consolidated_vector)}
-        )
-        
-        # Build .psvc container
-        container = build_psvc_from_tensor(
-            tensor=consolidated_vector,
-            operation="daily_consolidation",
-            agent_id=self.agent_id,
-            layer=self.LAYER.name,
-            parent_receipt_hash=receipt.payload_hash,
-            content_type="consolidated_vector"
-        )
-        
-        return serialize_psvc(container)
+    def _calc_required_vram(self, total_elements: int) -> int:
+        base = total_elements * self.bytes_per_element
+        return int(base * self.cluster_overhead)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    agent = ConsolidatorAgent()
-    result = agent.execute()
-    print(f"✅ Consolidation complete. Container size: {len(result)} bytes")
+    
+    mesh = VRAMMesh(total_vram_bytes=4 * 1024 * 1024 * 1024)
+    provisioner = ElasticPSVCProvisioner(mesh)
+    governor = MeshGovernor(mesh, provisioner)
+    pixelizer = VectorPixelizer(mesh, provisioner, governor)
+    
+    agent = ConsolidatorAgent("consolidator_01", provisioner, governor, pixelizer)
+    
+    initial_elements = 1000
+    initial_vram = agent._calc_required_vram(initial_elements)
+    provisioner.allocate(agent.agent_id, initial_vram, growth_margin=0.2)
+    governor.register_agent(agent.agent_id, initial_elements, initial_vram)
+    
+    print("\n--- Normal Consolidation ---")
+    vectors = [np.random.rand(500).astype(np.float64) for _ in range(3)]
+    agent.consolidate_batch(vectors)
+    
+    print("\n--- Final Status ---")
+    status = governor.get_mesh_status()
+    print(f"Generations: {status['provisioner_stats']['average_generation']:.2f}")
+    print("Consolidator complete. Mesh: NOMINAL.")
