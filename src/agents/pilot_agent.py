@@ -1,111 +1,139 @@
-# ==============================================================================
-# FILE: pilot_agent.py
-# PATH: psivicom.github.io/src/agents/pilot_agent.py
-# DESCRIPTION: Pilot Agent for Fragility and Concordance Scanning
-# LICENSE: EUPL-1.2 | COMPLIANCE: NIST SP 800-218, FAIR Open Science
-# ==============================================================================
+# src/agents/pilot_agent.py
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# RFC 1001 Compliant | OSDR-Inspired Fragility Detection
 
-import logging
+import sys
+import os
+import json
 import numpy as np
-import time
-from typing import Optional, Tuple
+from pathlib import Path
+from typing import List, Dict
 
-# CORRECT absolute imports from the repository root (PYTHONPATH)
-from src.mesh.vram_mesh import VRAMMesh
-from src.mesh.mesh_governor import MeshGovernor
-from src.core.vector_pixelizer import VectorPixelizer
-from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
+src_root = Path(__file__).parent.parent
+sys.path.insert(0, str(src_root))
 
-logger = logging.getLogger(__name__)
+from base.base_agent import BaseAgent, AgentLayer
+from core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, read_file, validate_file
 
-class PilotAgent:
-    """
-    Executes fragility and concordance scans on mesh vectors.
-    """
-    
-    def __init__(
-        self,
-        agent_id: str,
-        provisioner: ElasticPSVCProvisioner,
-        governor: MeshGovernor,
-        pixelizer: VectorPixelizer
-    ):
-        self.agent_id = agent_id
-        self.provisioner = provisioner
-        self.governor = governor
-        self.pixelizer = pixelizer
-        
-        self.bytes_per_element = 8
-        self.pilot_overhead = 1.25
-        
-        logger.info(f"PilotAgent {self.agent_id} initialized.")
+class PilotAgent(BaseAgent):
+    LAYER = AgentLayer.VALIDATION
 
-    def execute_scan(
-        self,
-        vector_dimensions: int
-    ) -> Tuple[bool, Optional[np.ndarray]]:
-        logger.info(f"[{self.agent_id}] Starting pilot scan of {vector_dimensions} dimensions.")
+    def __init__(self, name: str = "pilot", osdr_data_path: str = "data/osdr_ground_truth.jsonl"):
+        super().__init__(name, capabilities=["scan", "analyze", "signal"])
+        self.osdr_data_path = Path(osdr_data_path)
+        self.osdr_library: List[Dict] = []
+        self.fragility_traps: List[Dict] = []
+        self.concordant_controls: List[Dict] = []
+        self._load_osdr_library()
+
+    def _load_osdr_library(self):
+        if not self.osdr_data_path.exists():
+            return
+        with open(self.osdr_data_path, 'r') as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        self.osdr_library.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
+
+    def _match_observation(self, meta: Dict) -> Dict:
+        obs_gene = meta.get('gene', '').upper()
+        obs_organism = meta.get('organism', '').lower()
+        obs_tissue = meta.get('tissue', '').lower()
         
-        required_vram = self._calc_required_vram(vector_dimensions)
-        
-        handle = self.provisioner.get_handle(self.agent_id)
-        if not handle:
-            logger.error(f"[{self.agent_id}] No VRAM handle.")
-            return False, None
-            
-        current_vram = handle.size_bytes
-        
-        if required_vram > current_vram:
-            logger.warning(f"[{self.agent_id}] Scan requires {required_vram} bytes. Requesting evolution...")
-            success = self.governor.request_evolution(
-                self.agent_id,
-                new_dimensions=vector_dimensions,
-                new_memory=required_vram
-            )
-            if not success:
-                logger.info(f"[{self.agent_id}] Evolution denied. Using chunking.")
+        for record in self.osdr_library:
+            if (record.get('gene', '').upper() == obs_gene and
+                record.get('organism', '').lower() == obs_organism and
+                record.get('tissue', '').lower() == obs_tissue):
+                return record
+        return None
+
+    def _run_logic(self, input_vector: np.ndarray = None) -> np.ndarray:
+        container_dir = Path("reports/pico_containers")
+        if not container_dir.exists():
+            self.seal("scan", {"status": "empty"}, fragility=False)
+            return np.zeros(4096)
+
+        for psvc_file in container_dir.glob("*.psvc"):
+            try:
+                validate_file(psvc_file)
+                sidecar = psvc_file.with_suffix('.json')
+                if not sidecar.exists():
+                    continue
                 
-        simulated_data = np.random.rand(vector_dimensions).astype(np.float64)
-        
-        success, result = self.pixelizer.execute_vector_math(
-            self.agent_id,
-            operation="transform",
-            input_data=simulated_data
-        )
-        
-        if not success:
-            logger.error(f"[{self.agent_id}] Pilot scan failed.")
-            return False, None
-            
-        pheromone = f"pilot_scan_complete:{vector_dimensions}_dims"
-        self.governor.deposit_pheromone(self.agent_id, pheromone)
-        
-        logger.info(f"[{self.agent_id}] Pilot scan complete.")
-        return True, result
+                with open(sidecar) as f:
+                    meta = json.load(f)
+                
+                if 'gene' not in meta:
+                    continue
+                
+                osdr_record = self._match_observation(meta)
+                if osdr_record:
+                    is_fragile = osdr_record.get('item_type') == 'fragility_trap' or osdr_record.get('evidence', {}).get('discordant', False)
+                    
+                    if is_fragile:
+                        trap = {
+                            "type": "fragility_trap",
+                            "file": psvc_file.name,
+                            "osdr_id": osdr_record.get('id'),
+                            "gene": meta.get('gene'),
+                            "reason": "OSDR Ground Truth: Discordant Evidence"
+                        }
+                        self.fragility_traps.append(trap)
+                        self.seal("osdr_fragility_detected", {"osdr_id": osdr_record.get('id')}, fragility=True)
+                    else:
+                        control = {
+                            "type": "concordant_control",
+                            "file": psvc_file.name,
+                            "osdr_id": osdr_record.get('id'),
+                            "gene": meta.get('gene'),
+                            "reason": "OSDR Ground Truth: Concordant Evidence"
+                        }
+                        self.concordant_controls.append(control)
+                        self.seal("osdr_concordance_verified", {"osdr_id": osdr_record.get('id')}, concordance=True)
+            except Exception:
+                continue
 
-    def _calc_required_vram(self, vector_dimensions: int) -> int:
-        base = vector_dimensions * self.bytes_per_element
-        return int(base * self.pilot_overhead)
+        return self._generate_elasticity_signal()
+
+    def _generate_elasticity_signal(self) -> np.ndarray:
+        signal = np.zeros(4096, dtype=np.float32)
+        signal[0] = len(self.fragility_traps) / 100.0
+        signal[1] = len(self.concordant_controls) / 100.0
+        signal[2] = len(self.osdr_library) / 1000.0
+        
+        norm = np.linalg.norm(signal)
+        if norm > 0:
+            signal /= norm
+        return signal
+
+    def finalize(self, output_dir: Path = None):
+        if output_dir is None:
+            output_dir = Path("reports/pico_containers")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        signal_vector = self._generate_elasticity_signal()
+        self.seal_result(signal_vector, output_dir, meta={
+            "fragility_count": len(self.fragility_traps),
+            "concordance_count": len(self.concordant_controls),
+            "osdr_library_size": len(self.osdr_library),
+            "elasticity_mode": "EXPAND" if len(self.fragility_traps) > len(self.concordant_controls) else "CONTRACT"
+        })
+        
+        report_path = output_dir.parent / "pilot_report.json"
+        with open(report_path, 'w') as f:
+            json.dump({
+                "timestamp": self.creation_time,
+                "fragility_traps": self.fragility_traps,
+                "concordant_controls": self.concordant_controls,
+                "receipt_count": len(self.receipt_chain)
+            }, f, indent=2)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    
-    mesh = VRAMMesh(total_vram_bytes=4 * 1024 * 1024 * 1024)
-    provisioner = ElasticPSVCProvisioner(mesh)
-    governor = MeshGovernor(mesh, provisioner)
-    pixelizer = VectorPixelizer(mesh, provisioner, governor)
-    
-    agent = PilotAgent("pilot_01", provisioner, governor, pixelizer)
-    
-    initial_dims = 1000
-    initial_vram = agent._calc_required_vram(initial_dims)
-    provisioner.allocate(agent.agent_id, initial_vram, growth_margin=0.2)
-    governor.register_agent(agent.agent_id, initial_dims, initial_vram)
-    
-    print("\n--- Normal Pilot Scan ---")
-    agent.execute_scan(vector_dimensions=1000)
-    
-    print("\n--- Final Status ---")
-    status = governor.get_mesh_status()
-    print(f"Generations: {status['provisioner_stats']['average_generation']:.2f}")
-    print("Pilot scan complete. Mesh: NOMINAL.")
+    print("=== PSIVI PILOT AGENT (OSDR-FRAG/CTRL INSPIRED) ===")
+    pilot = PilotAgent()
+    pilot._run_logic()
+    pilot.finalize()
+    print(f"[PILOT] Scan Complete. Fragility Traps: {len(pilot.fragility_traps)}, Concordant Controls: {len(pilot.concordant_controls)}")
