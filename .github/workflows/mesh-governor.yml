@@ -19,7 +19,10 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
       - name: Run Governor
-        run: python src/orchestrator/mesh_governor.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.mesh.mesh_governor
+
       - name: Commit enforcement
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
