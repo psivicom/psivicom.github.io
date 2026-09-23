@@ -5,7 +5,6 @@ psivicom.github.io/
 │       ├── README.md
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
-│       ├── docs.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
 │       ├── intelligence-agent.yml
