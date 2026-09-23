@@ -93,7 +93,7 @@ def test_validation_rejects_truncated():
     print("\n[TEST] Validation Rejects Truncated Files (RFC 1001 Security)")
     vec = np.random.randn(4096).astype(np.float32)
     data = seal(vec, PRECISION_INT8)
-    truncated = data[:10]  # Cut off mid-header
+    truncated = data[:10]
     try:
         open_container(truncated)
         check("Rejects truncated file", False)
@@ -104,7 +104,7 @@ def test_validation_rejects_size_mismatch():
     print("\n[TEST] Validation Rejects Size Mismatch (RFC 1001 Security)")
     vec = np.random.randn(4096).astype(np.float32)
     data = seal(vec, PRECISION_INT8)
-    tampered = data + b'\x00\x00\x00'  # Add extra bytes
+    tampered = data + b'\x00\x00\x00'
     try:
         open_container(tampered)
         check("Rejects size mismatch", False)
@@ -116,7 +116,7 @@ def test_compression():
     vec = np.random.randn(4096).astype(np.float32)
     vec /= np.linalg.norm(vec)
     data = seal(vec, PRECISION_INT8)
-    raw_size = 4096 * 4  # float32
+    raw_size = 4096 * 4
     compressed_size = len(data)
     ratio = raw_size / compressed_size
     print(f"  [INFO] Raw: {raw_size}B, Compressed: {compressed_size}B, Ratio: {ratio:.1f}x")
