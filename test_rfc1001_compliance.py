@@ -8,7 +8,7 @@
 import struct
 import zlib
 import numpy as np
-from psvc_reference import (
+from src.core.psvc_reference import (
     seal, open_container, encode_text, content_hash, validate_file,
     write_file, read_file, PSVCError,
     MAGIC, VERSION, HEADER_SIZE,
@@ -17,7 +17,6 @@ from psvc_reference import (
 
 PASS = 0
 FAIL = 0
-
 
 def check(name, condition):
     global PASS, FAIL
@@ -28,14 +27,12 @@ def check(name, condition):
         FAIL += 1
         print(f"  [FAIL] {name}")
 
-
 def test_magic_bytes():
     print("\n[TEST] Magic Bytes (RFC 1001 Section 3)")
     vec = np.random.randn(4096).astype(np.float32)
     data = seal(vec, PRECISION_INT8)
     check("First 4 bytes are 'PSVI'", data[:4] == b'PSVI')
     check("Magic is 0x50 0x53 0x56 0x49", data[:4] == bytes([0x50, 0x53, 0x56, 0x49]))
-
 
 def test_header_structure():
     print("\n[TEST] Header Structure (RFC 1001 Section 3)")
@@ -47,7 +44,6 @@ def test_header_structure():
     dim = struct.unpack('I', data[6:10])[0]
     check("Dimensions field is 4096", dim == 4096)
 
-
 def test_roundtrip_int8():
     print("\n[TEST] Round-Trip INT8 (RFC 1001 Section 4.1)")
     vec = np.random.randn(4096).astype(np.float32)
@@ -58,7 +54,6 @@ def test_roundtrip_int8():
     error = np.max(np.abs(recovered - vec))
     check(f"INT8 error < 0.02 (got {error:.4f})", error < 0.02)
 
-
 def test_roundtrip_float16():
     print("\n[TEST] Round-Trip Float16 (RFC 1001 Section 4.2)")
     vec = np.random.randn(4096).astype(np.float32)
@@ -68,14 +63,12 @@ def test_roundtrip_float16():
     error = np.max(np.abs(recovered - vec))
     check(f"Float16 error < 0.001 (got {error:.6f})", error < 0.001)
 
-
 def test_roundtrip_float32():
     print("\n[TEST] Round-Trip Float32 (RFC 1001 Section 4.3)")
     vec = np.random.randn(4096).astype(np.float32)
     data = seal(vec, PRECISION_FLOAT32)
     recovered = open_container(data)
     check("Float32 is lossless", np.array_equal(recovered, vec))
-
 
 def test_content_addressing():
     print("\n[TEST] Content Addressing (RFC 1001 Section 5.1)")
@@ -86,7 +79,6 @@ def test_content_addressing():
     check("Hash is 12 hex chars", len(h1) == 12)
     check("Hash is lowercase hex", all(c in '0123456789abcdef' for c in h1))
 
-
 def test_validation_rejects_bad_magic():
     print("\n[TEST] Validation Rejects Bad Magic (RFC 1001 Security)")
     bad_data = b'XXXX' + b'\x00' * 20
@@ -95,7 +87,6 @@ def test_validation_rejects_bad_magic():
         check("Rejects wrong magic bytes", False)
     except PSVCError:
         check("Rejects wrong magic bytes", True)
-
 
 def test_validation_rejects_truncated():
     print("\n[TEST] Validation Rejects Truncated Files (RFC 1001 Security)")
@@ -108,7 +99,6 @@ def test_validation_rejects_truncated():
     except PSVCError:
         check("Rejects truncated file", True)
 
-
 def test_validation_rejects_size_mismatch():
     print("\n[TEST] Validation Rejects Size Mismatch (RFC 1001 Security)")
     vec = np.random.randn(4096).astype(np.float32)
@@ -119,7 +109,6 @@ def test_validation_rejects_size_mismatch():
         check("Rejects size mismatch", False)
     except PSVCError:
         check("Rejects size mismatch", True)
-
 
 def test_compression():
     print("\n[TEST] Compression Efficiency (RFC 1001 Abstract)")
@@ -132,7 +121,6 @@ def test_compression():
     print(f"  [INFO] Raw: {raw_size}B, Compressed: {compressed_size}B, Ratio: {ratio:.1f}x")
     check("Compression reduces size", compressed_size < raw_size)
 
-
 def test_text_encoding():
     print("\n[TEST] Text Encoding Determinism")
     v1 = encode_text("Goldstream forage forecast")
@@ -140,7 +128,6 @@ def test_text_encoding():
     check("Same text produces same vector", np.array_equal(v1, v2))
     check("Vector is normalized", abs(np.linalg.norm(v1) - 1.0) < 1e-5)
     check("Vector is 4096-dim", len(v1) == 4096)
-
 
 if __name__ == "__main__":
     print("=== RFC 1001 COMPLIANCE TEST SUITE ===")
