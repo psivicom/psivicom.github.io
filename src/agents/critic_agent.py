@@ -10,26 +10,15 @@
 import logging
 import numpy as np
 import time
-import sys
-import os
 from typing import Optional, Tuple
 
-# Ensure root directory is in path
-base_dir = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '../..')
-)
-sys.path.insert(0, base_dir)
-
-# Import elastic core infrastructure
-from vram_mesh import VRAMMesh
-from mesh_governor import MeshGovernor
+# CORRECT absolute imports from the repository root (PYTHONPATH)
+from src.mesh.vram_mesh import VRAMMesh
+from src.mesh.mesh_governor import MeshGovernor
 from src.core.vector_pixelizer import VectorPixelizer
-from src.orchestrator.psvc_provisioner import (
-    ElasticPSVCProvisioner
-)
+from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
 
 logger = logging.getLogger(__name__)
-
 
 class CriticAgent:
     """
@@ -53,67 +42,36 @@ class CriticAgent:
         self.bytes_per_element = 8  # float64
         self.audit_overhead = 1.2   # 20% overhead
         
-        logger.info(
-            f"CriticAgent {self.agent_id} initialized."
-        )
+        logger.info(f"CriticAgent {self.agent_id} initialized.")
 
     def audit_payload(
         self,
         target_agent_id: str,
         payload_dimensions: int
     ) -> Tuple[bool, str]:
-        """
-        Audits a payload from another agent.
-        If the payload is massive, it uses elastic 
-        chunking to verify it without crashing.
-        """
-        logger.info(
-            f"[{self.agent_id}] Auditing agent "
-            f"{target_agent_id} ({payload_dimensions} dims)."
-        )
+        logger.info(f"[{self.agent_id}] Auditing agent {target_agent_id} ({payload_dimensions} dims).")
         
-        # 1. Calculate required VRAM to hold the audit
-        required_vram = self._calc_required_vram(
-            payload_dimensions
-        )
+        required_vram = self._calc_required_vram(payload_dimensions)
         
-        # 2. Check current allocation
         handle = self.provisioner.get_handle(self.agent_id)
         if not handle:
-            logger.error(
-                f"[{self.agent_id}] No VRAM handle."
-            )
+            logger.error(f"[{self.agent_id}] No VRAM handle.")
             return False, "ERROR: No VRAM"
             
         current_vram = handle.size_bytes
         
-        # 3. EVOLUTION CHECK
         if required_vram > current_vram:
-            logger.warning(
-                f"[{self.agent_id}] Audit requires "
-                f"{required_vram} bytes. Requesting growth..."
-            )
-            
+            logger.warning(f"[{self.agent_id}] Audit requires {required_vram} bytes. Requesting growth...")
             success = self.governor.request_evolution(
                 self.agent_id,
                 new_dimensions=payload_dimensions,
                 new_memory=required_vram
             )
-            
             if not success:
-                logger.info(
-                    f"[{self.agent_id}] Evolution denied. "
-                    f"Using chunking to audit safely."
-                )
+                logger.info(f"[{self.agent_id}] Evolution denied. Using chunking to audit safely.")
                 
-        # 4. Simulate the payload from the target agent
-        #    (In reality, this is a zero-copy pointer read)
-        simulated_payload = np.random.rand(
-            payload_dimensions
-        ).astype(np.float64)
+        simulated_payload = np.random.rand(payload_dimensions).astype(np.float64)
         
-        # 5. Execute the Fidelity Check
-        #    "transform" here represents the audit algorithm
         success, result = self.pixelizer.execute_vector_math(
             self.agent_id,
             operation="transform",
@@ -121,84 +79,45 @@ class CriticAgent:
         )
         
         if not success:
-            logger.error(
-                f"[{self.agent_id}] Audit execution failed."
-            )
+            logger.error(f"[{self.agent_id}] Audit execution failed.")
             return False, "ERROR: Execution failed"
             
-        # 6. Check for "Drift" (simulated)
-        #    If the mean is too high, it's a hallucination
         drift_score = np.mean(result)
-        passed = drift_score < 10.0  # Arbitrary threshold
-        
+        passed = drift_score < 10.0
         status = "PASSED" if passed else "FAILED"
         
-        # 7. Deposit pheromone for the audit record
-        pheromone = (
-            f"audit_result:{target_agent_id}:"
-            f"{status}:{drift_score:.2f}"
-        )
-        self.governor.deposit_pheromone(
-            self.agent_id, pheromone
-        )
+        pheromone = f"audit_result:{target_agent_id}:{status}:{drift_score:.2f}"
+        self.governor.deposit_pheromone(self.agent_id, pheromone)
         
-        logger.info(
-            f"[{self.agent_id}] Audit {status} "
-            f"for {target_agent_id}."
-        )
-        
+        logger.info(f"[{self.agent_id}] Audit {status} for {target_agent_id}.")
         return passed, status
 
-    def _calc_required_vram(
-        self, dimensions: int
-    ) -> int:
-        """Calculates VRAM for audit workspace."""
+    def _calc_required_vram(self, dimensions: int) -> int:
         base = dimensions * self.bytes_per_element
         return int(base * self.audit_overhead)
 
-
-# ==============================================================================
-# Example Usage / Test Harness
-# ==============================================================================
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     
-    # 1. Initialize infrastructure
-    mesh = VRAMMesh(
-        total_vram_bytes=4 * 1024 * 1024 * 1024
-    )
+    mesh = VRAMMesh(total_vram_bytes=4 * 1024 * 1024 * 1024)
     provisioner = ElasticPSVCProvisioner(mesh)
     governor = MeshGovernor(mesh, provisioner)
-    pixelizer = VectorPixelizer(
-        mesh, provisioner, governor
-    )
+    pixelizer = VectorPixelizer(mesh, provisioner, governor)
     
-    # 2. Initialize Critic
-    critic = CriticAgent(
-        "critic_01", provisioner, governor, pixelizer
-    )
+    critic = CriticAgent("critic_01", provisioner, governor, pixelizer)
     
-    # 3. Register with small initial allocation
     initial_dims = 1000
     initial_vram = critic._calc_required_vram(initial_dims)
-    provisioner.allocate(
-        critic.agent_id, initial_vram, growth_margin=0.2
-    )
-    governor.register_agent(
-        critic.agent_id, initial_dims, initial_vram
-    )
+    provisioner.allocate(critic.agent_id, initial_vram, growth_margin=0.2)
+    governor.register_agent(critic.agent_id, initial_dims, initial_vram)
     
-    # 4. Audit a normal agent
     print("\n--- Auditing Normal Agent ---")
     critic.audit_payload("forage_agent_01", 1000)
     
-    # 5. Audit a massive synthesis report
     print("\n--- Auditing Massive Synthesis Report ---")
     critic.audit_payload("synthesizer_01", 500000)
     
-    # 6. Final status
     print("\n--- Final Status ---")
     status = governor.get_mesh_status()
-    print(f"Critic Generations: "
-          f"{status['provisioner_stats']['average_generation']:.2f}")
+    print(f"Critic Generations: {status['provisioner_stats']['average_generation']:.2f}")
     print("Critic audit complete. Mesh: NOMINAL.")
