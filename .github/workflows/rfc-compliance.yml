@@ -1,3 +1,4 @@
+# .github/workflows/rfc-compliance.yml
 name: RFC 1001 Compliance
 
 on:
@@ -23,7 +24,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install numpy
+        run: pip install -r requirements.txt
 
       - name: Run RFC 1001 Compliance Tests
         run: python test_rfc1001_compliance.py
