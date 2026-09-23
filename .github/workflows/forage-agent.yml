@@ -18,8 +18,10 @@ jobs:
           python-version: '3.11'
       - name: Install Dependencies
         run: pip install -r requirements.txt
-      - name: Run Forage Agent
-        run: python src/agents/forage_agent.py
+      - name: Run Forage Agent # or Intelligence Agent
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.forage_agent # or src.agents.intelligence_agent
       - name: Commit Map, Report, and Vector Memory
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
