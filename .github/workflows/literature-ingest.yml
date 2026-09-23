@@ -19,7 +19,9 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
       - name: Run Literature Agent
-        run: python src/agents/literature_agent.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.literature_agent
       - name: Commit literature vectors
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
