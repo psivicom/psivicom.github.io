@@ -40,8 +40,13 @@ def main():
                     continue
                 
                 # Match 'python script.py', 'python3 script.py', or 'python -m module'
+                # Note: We explicitly ignore 'python -' which means read from stdin (heredoc)
                 matches = re.findall(r'python3?\s+(-m\s+)?([^\s;&|>]+)', run_cmd)
                 for is_module, target in matches:
+                    # Ignore stdin execution
+                    if target == '-':
+                        continue
+                        
                     if is_module:
                         # Convert module path to file path: src.agents.foo -> src/agents/foo.py
                         file_path = Path(target.replace('.', '/') + '.py')
