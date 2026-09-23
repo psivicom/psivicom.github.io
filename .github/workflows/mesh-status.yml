@@ -13,15 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          
       - name: Install Dependencies
         run: pip install -r requirements.txt
+        
       - name: Run Mesh Router
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python -m 
+        run: python -m src.mesh.mesh_router
+        
       - name: Commit status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
