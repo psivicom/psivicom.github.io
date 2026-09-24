@@ -155,7 +155,8 @@ psivicom.github.io/
 │   │   └── metadata.json
 │   ├── README.md
 │   ├── osdr_ground_truth.jsonl
-│   └── osdr_metadata_schema.json
+│   ├── osdr_metadata_schema.json
+│   └── pollinator_ground_truth.jsonl
 ├── dist/
 │   └── README.md
 ├── docs/
