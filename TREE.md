@@ -3,6 +3,7 @@ psivicom.github.io/
 ├── .github/
 │   └── workflows/
 │       ├── README.md
+│       ├── auto-report.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── fix-all-timestamps.yml
