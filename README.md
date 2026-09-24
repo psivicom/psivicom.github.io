@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T03:09:12.990Z | Hash: 1851a830d9f34df0b39d14f59dc49b9b497489b9791895018c800586a12e3e7f -->
+<!-- Last updated: 2026-09-24T03:10:34.728Z | Hash: 67193036348e8bf5ddfeea3c426d12b18e928d426fcecb90dd0ef5730792aaa6 -->
 
 ```
 psivicom.github.io/
@@ -466,6 +466,7 @@ psivicom.github.io/
 │   │   ├── literature_agent.py
 │   │   ├── observer_agent.py
 │   │   ├── pilot_agent.py
+│   │   ├── pollinator_pilot_agent.py
 │   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
