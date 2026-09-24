@@ -24,6 +24,7 @@ psivicom.github.io/
 │       ├── normalize-archive-names.yml
 │       ├── pilot-scan.yml
 │       ├── psivi-mesh-bridge.yml
+│       ├── psivi-seed-instruction.yml
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml

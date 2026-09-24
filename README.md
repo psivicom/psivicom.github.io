@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T23:41:21.030Z | Hash: e0eca0f90bf413c9fc399ee69242a7123955948b7579731a84d6541b3a9cb0bf -->
+<!-- Last updated: 2026-09-24T23:46:13.103Z | Hash: 7614623c65c08582e38141467a9516c2d8f587f801a1b12d0673bf6f1ef933b4 -->
 
 ```
 psivicom.github.io/
@@ -143,6 +143,7 @@ psivicom.github.io/
 │       ├── normalize-archive-names.yml
 │       ├── pilot-scan.yml
 │       ├── psivi-mesh-bridge.yml
+│       ├── psivi-seed-instruction.yml
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml
