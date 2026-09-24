@@ -8,6 +8,7 @@ psivicom.github.io/
 │       ├── critic-agent.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
+│       ├── instruction-handler.yml
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
 │       ├── lidar-agent.yml
