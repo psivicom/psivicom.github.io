@@ -340,6 +340,7 @@ psivicom.github.io/
 │   │   ├── __init__.py
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
+│   │   ├── discovery_agent.py
 │   │   ├── forage_agent.py
 │   │   ├── intelligence_agent.py
 │   │   ├── license_agent.py
