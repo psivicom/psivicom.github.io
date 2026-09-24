@@ -1,32 +1,26 @@
 # .github/workflows/psivi-mesh-bridge.yml
-name: PSIVI Mesh Bridge - External AI Connection
+name: PSIVI Mesh Bridge - Autonomous Loop
 
 on:
   push:
     branches: [ main, master ]
     paths:
-      - 'data/instruction_queue/**'
-      - '.github/workflows/psivi-mesh-bridge.yml'
+      - 'data/instruction_queue/*.psvc'
+      - 'data/instruction_queue/*.json'
   workflow_dispatch:
-    inputs:
-      trigger_source:
-        description: 'Manual trigger source identifier'
-        required: false
-        default: 'manual_admin'
 
 permissions:
   contents: write
-  actions: read
 
 jobs:
-  process-instructions:
+  process-and-report:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for proper diff detection if needed later
+          fetch-depth: 0
 
       - name: Set up Python Environment
         uses: actions/setup-python@v5
@@ -38,21 +32,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install numpy
 
-      - name: Execute BEGIN.py (Instruction Processor)
-        id: run_bridge
+      - name: Execute BEGIN.py (Processor)
+        id: run_processor
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "🚀 Starting PSIVI Mesh Bridge Execution..."
+          echo "🚀 Starting PSIVI Mesh Processor..."
           
           # Ensure directories exist
           mkdir -p data/instruction_queue
           mkdir -p reports/scientific_reports
           
-          # Run the bridge script
-          python scripts/BEGIN.py
+          # Run the processor script which reads queue and generates reports
+          python scripts/BEGIN_PROCESSOR.py
           
-          echo "✅ Bridge execution completed."
+          echo "✅ Processing completed."
 
       - name: Commit Generated Reports
         if: always()
@@ -60,12 +54,12 @@ jobs:
           git config user.name "PSIVI-Mesh-Bot"
           git config user.email "bot@psivi.com"
           
-          # Check if there are new files to commit
+          # Check if there are new files to commit in reports directory
           if [[ -n "$(git status --porcelain reports/)" ]]; then
             git add reports/
             git commit -m "chore(mesh): auto-generated scientific reports via RFC 1001 protocol
             
-            Source: External AI Collaboration Loop
+            Source: Autonomous AI Collaboration Loop
             Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)
             
             🤖 Automated by GitHub Actions"
@@ -73,4 +67,3 @@ jobs:
           else
             echo "ℹ️ No new reports generated to commit."
           fi
-
