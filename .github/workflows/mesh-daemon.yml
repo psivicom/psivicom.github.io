@@ -1,0 +1,78 @@
+# .github/workflows/mesh-daemon.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# Cloud-based autonomous daemon for AI-to-Mesh collaboration (No local bash required)
+
+name: Mesh Daemon (Auto-Process Instructions)
+
+on:
+  # Trigger immediately when an external AI drops a new instruction file
+  push:
+    paths:
+      - 'data/instruction_queue/**'
+  # Fallback polling every 15 minutes to ensure no instructions are missed
+  schedule:
+    - cron: '*/15 * * * *'
+  # Allow manual triggering for testing
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  process-instructions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pyyaml
+
+      - name: Ensure Directories Exist
+        run: |
+          mkdir -p data/instruction_queue
+          mkdir -p reports/scientific_reports
+          mkdir -p logs
+
+      - name: Run Mesh Automation Loop
+        run: |
+          echo "🔄 Starting autonomous mesh processing loop..."
+          python src/tools/auto_reporter.py
+
+      - name: Commit Generated Agents and Reports
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "PSIVI Mesh Daemon"
+          git config user.email "daemon@psivi.com"
+          
+          # Stage any new agents created by the AgentFactory
+          git add src/agents/*_agent.py
+          
+          # Stage any new reports generated
+          git add reports/scientific_reports/
+          
+          # Stage processed instructions to mark them as handled (optional, or move to archive)
+          git add data/instruction_queue/
+          
+          # Commit only if there are changes
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: daemon processed instructions and generated scientific artifacts [skip ci]"
+            git push
+            echo "✅ Changes committed and pushed to repository."
+          else
+            echo "ℹ️ No new changes to commit."
+          fi
