@@ -3,8 +3,8 @@
 PSIVI AETHER Mesh — Instruction Sealer (BEGIN_SEALER.py)
 Location: /scripts/BEGIN_SEALER.py
 
-This script is used by EXTERNAL AI agents (or local developers) to CREATE
-and DROP instructions into the mesh queue. It does NOT process them.
+This script is used to CREATE and DROP instructions into the mesh queue.
+It reads environment variables to determine what kind of instruction to create.
 
 Protocol: RFC 1001 Compliant
 License: EUPL-1.2
@@ -33,7 +33,7 @@ def get_zulu_time_ms() -> str:
     millis_part = f"{now_utc.microsecond // 1000:03d}"
     return f"{base_format}{millis_part}Z"
 
-def seal_instruction(command: str, params: dict, source: str = "external_ai_collaborator", intent_vector: np.ndarray = None):
+def seal_instruction(command: str, params: dict, source: str = "workflow_seed", intent_vector: np.ndarray = None):
     """
     Seals an AI instruction into a PSIVI-compliant .psvc + .json sidecar.
     
@@ -92,33 +92,41 @@ def main():
     print("️  PSIVI AETHER Mesh - Instruction Sealer Started")
     print("="*60)
     
-    # Example Usage: Spawn a satellite observer
-    # In a real scenario, this would be called by an external API or CLI argument parser
+    # Read configuration from Environment Variables (set by GitHub Actions)
+    command_type = os.getenv("COMMAND_TYPE", "spawn_agent")
+    template_name = os.getenv("TEMPLATE_NAME", "satellite_observer")
+    target_region = os.getenv("TARGET_REGION", "Goldstream_Watershed")
+    
     try:
-        psvc_path, json_path = seal_instruction(
-            command="spawn_agent",
-            params={
-                "template_name": "satellite_observer",
-                "agent_name": "goldstream_init_probe",
-                "config": {
-                    "target_region": "Goldstream_Watershed",
-                    "modality": "RADARSAT_SAR",
-                    "priority": "HIGH"
-                }
-            },
-            source="local_dev_seed"
-        )
+        if command_type == "spawn_agent":
+            psvc_path, json_path = seal_instruction(
+                command="spawn_agent",
+                params={
+                    "template_name": template_name,
+                    "agent_name": f"{template_name}_seed_{datetime.now().strftime('%H%M%S')}",
+                    "config": {
+                        "target_region": target_region,
+                        "modality": "RADARSAT_SAR",
+                        "priority": "HIGH"
+                    }
+                },
+                source="workflow_seed"
+            )
+        elif command_type == "request_report":
+            psvc_path, json_path = seal_instruction(
+                command="request_report",
+                params={
+                    "topic": "Initial Mesh Health Check",
+                    "format": "JSON"
+                },
+                source="workflow_seed"
+            )
+        else:
+            raise ValueError(f"Unknown command type: {command_type}")
         
         print(f"✅ Instruction Sealed:")
         print(f"   PSVC: {psvc_path}")
         print(f"   JSON: {json_path}")
-        print("")
-        print("👉 NEXT STEP: Commit these files to your repository.")
-        print("   git add data/instruction_queue/")
-        print("   git commit -m 'feat(mesh): seed initial instruction'")
-        print("   git push origin main")
-        print("")
-        print("⏳ The GitHub Action will automatically detect the push and process it.")
         
     except Exception as e:
         print(f"❌ Error sealing instruction: {e}", file=sys.stderr)
