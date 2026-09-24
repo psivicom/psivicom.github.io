@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T05:46:48.729Z | Hash: f21620342b67d32d94bcbb315e6741a1508030448fe19320838cec266fde7eb7 -->
+<!-- Last updated: 2026-09-24T05:47:59.561Z | Hash: c3c60296bcb09d5c3a37320244f641c82e0747080168eef442a34c58e7c85d7e -->
 
 ```
 psivicom.github.io/
@@ -307,6 +307,7 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── QWEN/
+│   │   ├── Prompt.md
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai_to_mesh_bridge.py
 │   │   └── psivi_ai_collaboration.ipynb
