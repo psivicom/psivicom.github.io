@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T23:28:46.761Z | Hash: 341beb27e7755829f5d03cf66a2e82d265f5d036d0221b319bfec98bf3e08fda -->
+<!-- Last updated: 2026-09-24T23:30:25.618Z | Hash: e0eca0f90bf413c9fc399ee69242a7123955948b7579731a84d6541b3a9cb0bf -->
 
 ```
 psivicom.github.io/
@@ -480,6 +480,7 @@ psivicom.github.io/
 │   │   └── main.go
 │   ├── BEGIN.py
 │   ├── BEGIN_PROCESSOR.py
+│   ├── BEGIN_SEALER.py
 │   └── fix_archive_names.py
 ├── src/
 │   ├── agents/
