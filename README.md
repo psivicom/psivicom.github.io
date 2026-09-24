@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T23:04:56.511Z | Hash: 69d4ef64dc72887dd9935acd439554cf677f3a37763e853ed4b420bf94dcd877 -->
+<!-- Last updated: 2026-09-24T23:10:22.799Z | Hash: 96cdd362f62ed9ddc661e6a05f3c3775e65a3a2602c5484163e9bdab20bdde78 -->
 
 ```
 psivicom.github.io/
@@ -315,6 +315,7 @@ psivicom.github.io/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md
 │   ├── QWEN/
+│   │   ├── A_psivi-mesh-bridge.yml
 │   │   ├── BEGIN.py
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
@@ -322,7 +323,6 @@ psivicom.github.io/
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
-│   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   └── psivi_ai_collaboration.json
 │   ├── SECURITY_PLAN/

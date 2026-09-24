@@ -196,6 +196,7 @@ psivicom.github.io/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md
 │   ├── QWEN/
+│   │   ├── A_psivi-mesh-bridge.yml
 │   │   ├── BEGIN.py
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
@@ -203,7 +204,6 @@ psivicom.github.io/
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
-│   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   └── psivi_ai_collaboration.json
 │   ├── SECURITY_PLAN/
