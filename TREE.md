@@ -351,6 +351,7 @@ psivicom.github.io/
 │   │   ├── pilot_agent.py
 │   │   ├── pollinator_observer_agent.py
 │   │   ├── pollinator_pilot_agent.py
+│   │   ├── report_generator_agent.py
 │   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
