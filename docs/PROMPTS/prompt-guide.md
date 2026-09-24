@@ -1,16 +1,7 @@
 <!-- README.md -->
+<!-- EUPL 1.2 , CC-BY-SA 4.0, 2026 Louis-Philippe Audette -->
 
-# Excellence Prompt Engineering Guide
-
-<!-- README.md -->
-
-# Prompt Engineering Guide: Components, Best Practices, and Refinement
-
-
-
-<!-- README.md -->
-
-# Prompt Engineering Guide: Components, Best Practices, and Refinement
+# Excellence Prompt Engineering Guide: Components, Best Practices, and Refinement
 
 This guide outlines the structural components of effective prompts, establishes best practices for clarity and specificity, and demonstrates a refinement process to transform vague requests into high-quality, actionable outputs. It applies software engineering principles ("garbage in, garbage out") to natural language interactions with AI assistants.
 
