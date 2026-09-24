@@ -112,8 +112,12 @@ Instruct the model to review its own output against constraints before finalizin
 **Source Material:**
 [Insert raw notes, code comments, or API specs]
 
-Anti-Pattern	Why It Fails	Correction
-Vague Instructions	Model guesses intent incorrectly.	Be explicit about scope, limits, and goals.
+***Anti-Pattern	Why It Fails Correction***
+
+-Vague Instructions
+-Model guesses intent incorrectly.
+
+Be explicit about scope, limits, and goals.
 Mixed Delimiters	Confuses parsing boundaries.	Consistently use one type (e.g., always XML tags).
 Assumed Knowledge	Hallucinations due to missing context.	Paste relevant docs/code into the prompt.
 Single Giant Block	Attention mechanism dilutes focus.	Break down into sections with headers.
@@ -123,8 +127,10 @@ Vague Instructions,Model guesses intent incorrectly.,"Be explicit about scope, l
 Mixed Delimiters,Confuses parsing boundaries.,"Consistently use one type (e.g., always XML tags)."
 Assumed Knowledge,Hallucinations due to missing context.,Paste relevant docs/code into the prompt.
 Single Giant Block,Attention mechanism dilutes focus.,Break down into sections with headers.
+___
 
-```csv
+CSV:
+```
 Negatives Only,“Don’t do X” is less effective than “Do Y”.,Frame instructions positively when possible.
 ```
 
@@ -134,5 +140,6 @@ Iterative Refinement Process
 	3.	Analyze Failures: Identify if errors are due to misunderstanding, lack of context, or format issues.
 	4.	Refine: Add few-shot examples, clarify constraints, or adjust role priming.
 	5.	Version Control: Store successful prompts alongside code repositories for reproducibility.
+
 Conclusion
 Excellence in prompting is not about magic words; it is about clear communication, structured thinking, and rigorous specification. Apply software engineering discipline to your natural language interfaces.
