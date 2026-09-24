@@ -6,7 +6,7 @@
 import sys
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
@@ -50,7 +50,7 @@ class SpatioTemporalEngine:
         return all(field in metadata for field in required_fields)
 
     @staticmethod
-    def align_time_series(events: list, window_hours: int = 24) -> list:
+    def align_time_series(events: List[Dict[str, Any]], window_hours: int = 24) -> List[List[Dict[str, Any]]]:
         """
         Groups spatio-temporal events into aligned windows for vector fusion.
         """
@@ -63,14 +63,26 @@ class SpatioTemporalEngine:
         current_window = [sorted_events[0]]
         
         for event in sorted_events[1:]:
-            t1 = datetime.fromisoformat(current_window[-1]["acquisition_time"].replace("Z", "+00:00"))
-            t2 = datetime.fromisoformat(event["acquisition_time"].replace("Z", "+00:00"))
+            t1_str = current_window[-1]["acquisition_time"].replace("Z", "+00:00")
+            t2_str = event["acquisition_time"].replace("Z", "+00:00")
             
-            if (t2 - t1).total_seconds() <= window_hours * 3600:
+            # Handle potential missing timezone info
+            if t1_str[-6:] != "+00:00" and "T" in t1_str:
+                t1_str += "+00:00"
+            if t2_str[-6:] != "+00:00" and "T" in t2_str:
+                t2_str += "+00:00"
+                
+            try:
+                t1 = datetime.fromisoformat(t1_str)
+                t2 = datetime.fromisoformat(t2_str)
+                if (t2 - t1).total_seconds() <= window_hours * 3600:
+                    current_window.append(event)
+                else:
+                    aligned_windows.append(current_window)
+                    current_window = [event]
+            except ValueError:
+                # Fallback: just append if parsing fails
                 current_window.append(event)
-            else:
-                aligned_windows.append(current_window)
-                current_window = [event]
                 
         if current_window:
             aligned_windows.append(current_window)
