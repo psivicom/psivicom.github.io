@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T05:47:59.561Z | Hash: c3c60296bcb09d5c3a37320244f641c82e0747080168eef442a34c58e7c85d7e -->
+<!-- Last updated: 2026-09-24T05:55:51.667Z | Hash: ec59fbee6598e2e3119a6326f7e62fce01056fc11d9ec1ccb47b8162d1cb1f70 -->
 
 ```
 psivicom.github.io/
@@ -467,6 +467,7 @@ psivicom.github.io/
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── agent_factory.py
+│   │   ├── ambassador_agent.py
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
 │   │   ├── discovery_agent.py

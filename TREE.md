@@ -348,6 +348,7 @@ psivicom.github.io/
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── agent_factory.py
+│   │   ├── ambassador_agent.py
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
 │   │   ├── discovery_agent.py
