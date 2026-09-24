@@ -193,6 +193,7 @@ psivicom.github.io/
 │   ├── QWEN/
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
+│   │   ├── Psivi.json
 │   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai_to_mesh_bridge.py
