@@ -25,7 +25,7 @@ High-quality prompts yield high-quality responses. A good prompt is clear, speci
 
 ## Core Prompt Components
 
-To construct an effective prompt, include the following five components:
+To construct an effective prompt, include the following six(6) components:
 
 ### 1. Instruction
 Directs the model on what task to perform. Written as a clear command.
@@ -52,6 +52,9 @@ A brief piece of text placed at the end of the prompt to steer the start of the 
 *   *Example:* "Here is the optimized code:" or "The root cause is:"
 *   *Purpose:* Nudges the model’s output initiation toward the expected structure immediately.
 
+### 6. Critique: 
+Missing enforcement, no error handling, lacks documentation, ambiguous format, missing precision, details or specifications.
+
 ## Best Practices
 
 Adhere to these guidelines to maximize effectiveness:
@@ -77,10 +80,6 @@ from datetime import datetime
 def print_datetime():
     now = datetime.now()
     print(now.strftime("%Y-%m-%d %H:%M:%S"))
-```
-
-## Critique: Missing enforcement, no error handling, lacks documentation, ambiguous format, missing precision, details or specifications.
-
 ___
 
 The Prompt:
