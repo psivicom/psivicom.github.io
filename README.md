@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T22:23:46.054Z | Hash: d79124702197ee55ebed80bc64c5ff451b658117c846832a540be977c4d2d5b7 -->
+<!-- Last updated: 2026-09-24T22:47:06.235Z | Hash: b75463a48426bbd2281f67fe3bc9398638001fe6543af89dfb0d3eb7a3b1b1cf -->
 
 ```
 psivicom.github.io/
@@ -314,6 +314,7 @@ psivicom.github.io/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md
 │   ├── QWEN/
+│   │   ├── BEGIN.py
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
 │   │   ├── README.md
