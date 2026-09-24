@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T05:58:23.856Z | Hash: d7449617d69cf95ab2117f1fdb6d14831546860054259f18cd2f4a8059bacb41 -->
+<!-- Last updated: 2026-09-24T06:00:10.011Z | Hash: cd4d29128f1bafbbf2387f0b970449b6ff33c17164dd881779b25c46d959d2f5 -->
 
 ```
 psivicom.github.io/
@@ -270,6 +270,8 @@ psivicom.github.io/
 │   ├── data_sources.json
 │   └── mesh_topology.yaml
 ├── data/
+│   ├── ai_handshake/
+│   │   └── README.md
 │   ├── images/
 │   │   └── README.md
 │   ├── sample-pollinator-data/
