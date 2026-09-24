@@ -1,41 +1,58 @@
 # src/tools/auto_reporter.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Main entry point for instruction handling and report generation
+# Main entry point for cloud daemon automation (replaces local bash scripts)
 
 import sys
 import logging
 from pathlib import Path
 
+# Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.agents.instruction_agent import InstructionAgent
 from src.agents.agent_factory import AgentFactory
 from src.agents.report_generator_agent import ReportGeneratorAgent
 
-logger = logging.getLogger(__name__)
+# Configure logging for GitHub Actions output
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger("AutoReporter")
 
 def main():
-    logging.basicConfig(level=logging.INFO)
-    logger.info("Starting PSIVI Auto-Reporter & Instruction Handler")
+    logger.info("🚀 Starting PSIVI Mesh Automation Loop")
     
-    # 1. Handle Instructions (Spawn Agents, etc.)
+    # 1. Handle Instructions (Spawn Agents, Update Configs, etc.)
+    logger.info("📥 Scanning instruction queue...")
     instruction_agent = InstructionAgent()
     factory = AgentFactory()
-    inst_count = instruction_agent.execute(factory=factory)
-    logger.info(f"Executed {inst_count} instructions")
     
-    # 2. Generate Reports (Based on Mesh State)
-    # Note: ReportGeneratorAgent assumed to exist from previous context
     try:
-        report_agent = ReportGeneratorAgent()
-        # Mock instruction for report generation
-        report_agent.execute({"goal": "Auto-generated mesh status report", "path": "auto"})
-        logger.info("Report generation complete")
+        inst_count = instruction_agent.execute(factory=factory)
+        logger.info(f"✅ Executed {inst_count} instruction(s).")
     except Exception as e:
-        logger.error(f"Report generation failed: {e}")
+        logger.error(f"❌ Instruction processing failed: {e}")
+        inst_count = 0
     
-    logger.info("Auto-Reporter loop finished")
+    # 2. Generate Reports (Based on updated Mesh State)
+    if inst_count > 0:
+        logger.info("📊 Triggering report generation for updated mesh state...")
+        try:
+            report_agent = ReportGeneratorAgent()
+            report_agent.execute({
+                "goal": "Auto-generated report post-instruction processing",
+                "path": "github_actions_daemon"
+            })
+            logger.info("✅ Report generation complete.")
+        except Exception as e:
+            logger.error(f"❌ Report generation failed: {e}")
+    else:
+        logger.info("ℹ️ No new instructions. Mesh state unchanged.")
+    
+    logger.info("🏁 Automation loop finished successfully.")
 
 if __name__ == "__main__":
     main()
