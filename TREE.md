@@ -195,6 +195,7 @@ psivicom.github.io/
 │   │   ├── Prompt.md
 │   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
+│   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   └── psivi_ai_collaboration.json
