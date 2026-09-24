@@ -1,0 +1,48 @@
+# .github/workflows/instruction-handler.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# Triggers when external AI drops instruction .psvc files into queue
+
+name: Instruction Handler (Agent Spawning)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/instruction_queue/**'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  handle-instructions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+      
+      - name: Run Instruction Handler
+        run: |
+          python src/tools/auto_reporter.py
+      
+      - name: Commit Generated Agents
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "PSIVI Instruction Agent"
+          git config user.email "instructions@psivi.com"
+          git add src/agents/*_agent.py
+          git add data/instruction_queue/
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: spawned new agents via external AI instruction"
+            git push
+          fi
