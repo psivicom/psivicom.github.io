@@ -1,3 +1,8 @@
+# agent_config.yaml
+# SPDX-License-Identifier: CC-BY-4.0
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
+# Agent runtime scheduling and role configuration
+
 mesh:
   name: "PSIVI AETHER"
   version: "2.0"
@@ -16,10 +21,40 @@ agents:
     tools: ["opentopography", "elevation", "memory_write"]
     precision: "float16"
 
-  intelligence:
+  satellite:
+    role: "remote_sensing"
+    schedule: "0 6 * * *"
+    tools: ["radarsat", "nasa_earthdata", "memory_write"]
+    precision: "float16"
+
+  pilot:
+    role: "validator"
+    schedule: "0 */6 * * *"
+    tools: ["scan_psvc", "match_osdr", "match_pollinator"]
+    precision: "float32"
+
+  discovery:
+    role: "researcher"
+    schedule: "0 */12 * * *"
+    tools: ["query_zenodo", "query_gbif", "query_osdr"]
+    precision: "float32"
+
+  literature:
+    role: "context_resolver"
+    schedule: "0 */12 * * *"
+    tools: ["semantic_scholar", "crossref"]
+    precision: "float32"
+
+  critic:
     role: "auditor"
     schedule: "0 */12 * * *"
     tools: ["read_mesh", "stamp", "report"]
+    precision: "float32"
+
+  intelligence:
+    role: "analyst"
+    schedule: "0 14 * * *"
+    tools: ["read_mesh", "audit_memory", "generate_insights"]
     precision: "float32"
 
   synthesizer:
@@ -28,10 +63,22 @@ agents:
     tools: ["read_mesh", "query_external", "synthesize", "update_site"]
     precision: "float32"
 
+  report_generator:
+    role: "publisher"
+    schedule: "0 20 * * *"
+    tools: ["generate_psvc", "write_sidecar", "commit_reports"]
+    precision: "float32"
+
+  instruction:
+    role: "listener"
+    schedule: "*/5 * * * *"
+    tools: ["scan_queue", "parse_psvc", "trigger_factory"]
+    precision: "float32"
+
   vanguard:
     role: "guardian"
     schedule: "0 */6 * * *"
-    tools: ["heartbeat", "ledger"]
+    tools: ["heartbeat", "ledger", "enforce_pico"]
     precision: "float32"
 
 routing:
