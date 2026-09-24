@@ -192,6 +192,7 @@ psivicom.github.io/
 │   │   └── usethisinreadme.md
 │   ├── QWEN/
 │   │   ├── Prompt.md
+│   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai_to_mesh_bridge.py
 │   │   └── psivi_ai_collaboration.ipynb
