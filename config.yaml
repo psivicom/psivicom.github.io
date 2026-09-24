@@ -5,19 +5,18 @@
 #
 # Complete configuration for the PSIVI Open Science Research Mesh.
 # Environment variables can be substituted using ${VAR_NAME} syntax.
-# Example: export PSVC_SIGNATURE_SECRET="your-secret-key"
 
 # ============================================================================
 # METADATA
 # ============================================================================
 metadata:
   project: "psivicom.github.io"
-  version: "1.0.0"
+  version: "2.0.0"
   author: "Louis-Philippe Audette"
   license: "CC-BY-4.0"
   rfc1001_compliant: true
   created: "2026-09-20"
-  description: "Open Science Research Mesh with FAIR-compliant, RFC 1001-governed, volunteer-driven distributed compute"
+  description: "Open Science Research Mesh with FAIR-compliant, RFC 1001-governed, volunteer-driven distributed compute and AI-driven DAG planning"
 
 # ============================================================================
 # AGENTS CONFIGURATION
@@ -98,14 +97,45 @@ agents:
       base_url: "https://api.crossref.org"
       timeout: 30.0
       rate_limit_per_second: 1.0
-      user_agent: "PSIVI/1.0 (mailto:contact@psivicom.com)"
+      user_agent: "PSIVI/2.0 (mailto:contact@psivicom.com)"
       max_retries: 3
       circuit_breaker_threshold: 5
       circuit_breaker_recovery: 60.0
 
+  discovery:
+    name: "discovery_agent"
+    layer: "INGESTION"
+    capabilities:
+      - search_datasets
+      - query_api
+    data_registry_path: "config/data_sources.json"
+    timeout: 30.0
+    max_retries: 3
+
+  instruction:
+    name: "instruction_agent"
+    layer: "INGESTION"
+    capabilities:
+      - monitor_queue
+      - parse_psvc
+      - trigger_factory
+    queue_dir: "data/instruction_queue"
+    poll_interval_seconds: 60
+
   # --------------------------------------------------------------------------
   # Validation Layer (Layer 2)
   # --------------------------------------------------------------------------
+  pilot:
+    name: "pilot_agent"
+    layer: "VALIDATION"
+    capabilities:
+      - scan_containers
+      - match_osdr
+      - generate_elasticity_signal
+    osdr_data_path: "data/osdr_ground_truth.jsonl"
+    pollinator_data_path: "data/pollinator_ground_truth.jsonl"
+    container_dir: "reports/pico_containers"
+
   critic:
     name: "critic_agent"
     layer: "VALIDATION"
@@ -144,6 +174,7 @@ agents:
     capabilities:
       - aggregate_findings
       - merge_shards
+      - prune_redundant
     aggregation_method: "weighted_average"
     max_batch_size: 32
 
@@ -159,6 +190,14 @@ agents:
       - pdf
     template: "default_research_report"
 
+  report_generator:
+    name: "report_generator_agent"
+    layer: "SYNTHESIS"
+    capabilities:
+      - generate_scientific_report
+      - seal_psvc
+    output_dir: "reports/scientific_reports"
+
   # --------------------------------------------------------------------------
   # Orchestration Layer (Layer 4)
   # --------------------------------------------------------------------------
@@ -166,10 +205,13 @@ agents:
     name: "chain_orchestrator"
     layer: "ORCHESTRATION"
     dynamic_planning: true
+    ai_planner_enabled: true
     max_pipeline_depth: 10
     timeout_seconds: 3600
     stages:
       - forage
+      - pilot
+      - discovery
       - literature
       - critic
       - intelligence
@@ -180,8 +222,9 @@ agents:
     name: "agent_factory"
     layer: "ORCHESTRATION"
     auto_spawn: true
+    templates_path: "config/agent_templates.json"
     llm_backend: "ollama"
-    model: "codellama:7b-code"
+    model: "phi3:mini"
     temperature: 0.2
     max_tokens: 2048
     cache_generated_agents: true
