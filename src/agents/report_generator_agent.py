@@ -1,7 +1,7 @@
 # src/agents/report_generator_agent.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Executes instructions from InstructionAgent and generates FAIR scientific reports
+# Executes instructions and generates FAIR scientific reports
 
 import sys
 import json
@@ -9,9 +9,9 @@ import logging
 import numpy as np
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Dict, Any
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16
@@ -20,10 +20,6 @@ from src.agents.pilot_agent import PilotAgent
 logger = logging.getLogger(__name__)
 
 class ReportGeneratorAgent(BaseAgent):
-    """
-    Reads instruction metadata, queries mesh state (via Pilot), and generates 
-    RFC 1001 compliant scientific reports in reports/scientific_reports/
-    """
     LAYER = AgentLayer.SYNTHESIS
 
     def __init__(self, name: str = "report_generator"):
@@ -43,7 +39,7 @@ class ReportGeneratorAgent(BaseAgent):
         report_data = {
             "title": f"PSIVI Mesh Scientific Report: {goal}",
             "timestamp": datetime.utcnow().isoformat() + "Z",
-            "instruction_source": instruction.get("path", "unknown"),
+            "instruction_source": instruction.get("path", "daemon_auto"),
             "mesh_state": {
                 "fragility_traps": frag_count,
                 "concordant_controls": conc_count,
@@ -57,7 +53,9 @@ class ReportGeneratorAgent(BaseAgent):
         report_vector[0] = frag_count / 100.0
         report_vector[1] = conc_count / 100.0
         report_vector[2] = 1.0 if report_data["osdr_ground_truth_loaded"] else 0.0
-        report_vector /= np.linalg.norm(report_vector)
+        norm = np.linalg.norm(report_vector)
+        if norm > 0:
+            report_vector /= norm
         
         chash = content_hash(report_vector)
         report_path = self.output_dir / f"report_{chash[:12]}.psvc"
@@ -76,6 +74,6 @@ class ReportGeneratorAgent(BaseAgent):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     agent = ReportGeneratorAgent()
-    mock_instruction = {"goal": "Test Automation", "path": "data/instruction_queue/test.json"}
+    mock_instruction = {"goal": "Daemon Test Report", "path": "daemon_test"}
     path = agent.execute(mock_instruction)
     logger.info(f"Report generated at {path}")
