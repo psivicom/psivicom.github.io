@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T19:58:52.319Z | Hash: e2311af523c644f089f85d945770d2ad8ca2feb338dbcd43546a88f1d37c88c4 -->
+<!-- Last updated: 2026-09-24T20:16:10.559Z | Hash: 75214c0736f60d164bf71d270fb77456f810b6a4bf0987b1fe7fdc67aaeaf938 -->
 
 ```
 psivicom.github.io/
@@ -310,6 +310,8 @@ psivicom.github.io/
 │   │   ├── go.mod
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
+│   ├── PROMPTS/
+│   │   └── prompt-guide.md
 │   ├── QWEN/
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
@@ -350,7 +352,6 @@ psivicom.github.io/
 │   ├── make-psvc-guide.md
 │   ├── osdmp.html
 │   ├── osdmp.md
-│   ├── prompt-guide.md
 │   ├── psvc-test-results.md
 │   ├── rfc1001.txt
 │   ├── robotics-automation-notes.md

@@ -191,6 +191,8 @@ psivicom.github.io/
 │   │   ├── go.mod
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
+│   ├── PROMPTS/
+│   │   └── prompt-guide.md
 │   ├── QWEN/
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
@@ -231,7 +233,6 @@ psivicom.github.io/
 │   ├── make-psvc-guide.md
 │   ├── osdmp.html
 │   ├── osdmp.md
-│   ├── prompt-guide.md
 │   ├── psvc-test-results.md
 │   ├── rfc1001.txt
 │   ├── robotics-automation-notes.md
