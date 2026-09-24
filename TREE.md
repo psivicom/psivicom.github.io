@@ -204,6 +204,7 @@ psivicom.github.io/
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
+│   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   └── psivi_ai_collaboration.json
 │   ├── SECURITY_PLAN/
