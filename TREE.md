@@ -188,6 +188,7 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── QWEN/
+│   │   ├── TalkingtoQwen.md
 │   │   ├── ai_to_mesh_bridge.py
 │   │   └── psivi_ai_collaboration.ipynb
 │   ├── SECURITY_PLAN/
