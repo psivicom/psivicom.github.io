@@ -349,6 +349,7 @@ psivicom.github.io/
 │   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
+│   │   ├── ai_planner.py
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
 │   ├── base/

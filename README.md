@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T02:22:57.206Z | Hash: b3bca1b08c005af312ea2c206012f19c193df13e53e308302356605d5b4529b1 -->
+<!-- Last updated: 2026-09-24T02:42:13.432Z | Hash: 2d83e9fbea4e4c503912094959bd4e113ded9daf621208a74b3757123aa09fe1 -->
 
 ```
 psivicom.github.io/
@@ -468,6 +468,7 @@ psivicom.github.io/
 │   │   └── synthesizer_agent.py
 │   ├── automation/
 │   │   ├── __init__.py
+│   │   ├── ai_planner.py
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
 │   ├── base/
