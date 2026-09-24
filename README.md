@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T22:56:42.336Z | Hash: 3bec8b86fd175ac9eed411d1669f15e3ed3e43b2b211f03bf6616a88e65a1b93 -->
+<!-- Last updated: 2026-09-24T22:58:20.895Z | Hash: dfb0b68435e6f9cb95f15d3e7df87588d7abf5d5abc1f17e0eddc1b754c68f53 -->
 
 ```
 psivicom.github.io/
@@ -354,6 +354,7 @@ psivicom.github.io/
 │   ├── make-psvc-guide.md
 │   ├── osdmp.html
 │   ├── osdmp.md
+│   ├── psivi-mesh-bridge.yml
 │   ├── psvc-test-results.md
 │   ├── rfc1001.txt
 │   ├── robotics-automation-notes.md
