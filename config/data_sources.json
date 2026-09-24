@@ -1,0 +1,33 @@
+# config/data_sources.json
+{
+  "sources": {
+    "osdr": {
+      "name": "NASA Open Science Data Repository",
+      "base_url": "https://opensciencedatacloud.org/api",
+      "query_params": ["gene", "organism", "tissue", "study"],
+      "auth_required": false,
+      "format": "json"
+    },
+    "nasa_earthdata": {
+      "name": "NASA Earthdata Search",
+      "base_url": "https://cmr.earthdata.nasa.gov/search",
+      "query_params": ["keyword", "polygon", "temporal"],
+      "auth_required": true,
+      "format": "json"
+    },
+    "zenodo": {
+      "name": "Zenodo Open Research",
+      "base_url": "https://zenodo.org/api/records",
+      "query_params": ["query", "keywords"],
+      "auth_required": false,
+      "format": "json"
+    },
+    "gbif": {
+      "name": "Global Biodiversity Information Facility",
+      "base_url": "https://api.gbif.org/v1/occurrence",
+      "query_params": ["species", "decimalLatitude", "decimalLongitude", "year"],
+      "auth_required": false,
+      "format": "json"
+    }
+  }
+}
