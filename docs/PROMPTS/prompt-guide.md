@@ -6,9 +6,32 @@
 
 # Prompt Engineering Guide: Components, Best Practices, and Refinement
 
-This guide outlines the structural components of effective prompts, establishes best practices for clarity and specificity, and demonstrates a refinement process to transform vague requests into high-quality, actionable outputs. It applies software engineering principles ("garbage in, garbage out") to natural language interactions with AI assistants.
+The Prompt:
 
-CRITICAL CONSTRAINT: Do not provide explanations, partial snippets, or instructions on how to edit. Return ONLY the complete, final, corrected code blocks for every file that requires changes, ready for direct copy-pasting to replace the existing files, include at top a commented filename with path if it is missing”
+```text
+“STRUCTURE: The structural components of effective prompts, establishes best practices for clarity and specificity, and demonstrates a refinement process to transform vague requests into high-quality, actionable outputs. It applies software engineering principles ("garbage in, garbage out") to natural language interactions with AI assistants.
+
+ROLE: You are a senior software engineer with expertise in Python 3.1.
+
+INSTRUCTION: Write a Python 3.1 function that prints the current date and time in UTC Zulu to milliseconds format.
+
+CONTEXT: The function must be well-documented and include robust error handling.
+
+REFERENCE: Model the exception handling after standard best practices for system clock access and formatting failures.
+
+ITERATIVE WORKFLOW:
+	1.	Draft: Construct the initial prompt using all five components.
+	2.	Evaluate: Review the output against requirements. Identify gaps (missing context, wrong format, hallucinations).
+	3.	Refine: Adjust instructions, add specific examples, or clarify constraints.
+	4.	Store: Save successful prompt templates for reuse across projects and teams.
+	
+POLICY: By treating prompts as specification documents rather than casual chat, developers can achieve deterministic, high-quality results from AI assistants.
+
+CRITICAL CONSTRAINT: Do not provide explanations, partial snippets, or instructions on how to edit. Return ONLY the complete, final, corrected code blocks for every file that requires changes, ready for direct copy-pasting to replace the existing files, include at top a commented filename with path if it is missing.”
+```
+
+___
+
 
 ## What is a Prompt?
 
@@ -55,40 +78,10 @@ Adhere to these guidelines to maximize effectiveness:
 *   **Be Specific:** Avoid vague questions. Instead of "How do I write a Python function?", ask "How do I write a Python function that calculates the median of a list while handling empty inputs?"
 *   **Provide Context:** Reference specific files, libraries, or architectural decisions relevant to your project. If using an IDE-integrated assistant, utilize context mentions (e.g., `@file`) to ground the model in your actual codebase.
 *   **Break Down Tasks:** Decompose complex problems into smaller, manageable steps. This mirrors agile backlog refinement and helps the model maintain focus and accuracy.
-*   **Include Examples:** When introducing new APIs or patterns, direct the model to review existing well-written examples in your codebase or provide explicit samples in the prompt.
+*   **Include Examples:** When introducing new APIs or patterns, direct the model to review existing well-written examples in your codebase or provide explicit samples.
 
-## Practical Application: Refining a Vague Prompt
-
-The following exercise demonstrates transforming a low-quality prompt into a high-quality specification.
-
-**Goal:** Generate a Python function that prints the current date and time in UTC format, including documentation and error handling.
-
-### Step 1: The Vague Prompt (Anti-Pattern)
-> Write a Python function that prints the date and time.
-
-**Likely Outcome:**
-```python
-from datetime import datetime
-
-def print_datetime():
-    now = datetime.now()
-    print(now.strftime("%Y-%m-%d %H:%M:%S"))
-```
-
-Role: You are a senior software engineer with expertise in Python 3.
-Instruction: Write a Python 3 function that prints the current date and time in UTC format.
-Context: The function must be well-documented and include robust error handling.
-Reference: Model the exception handling after standard best practices for system clock access and formatting failures.
-
-Iterative Workflow
-	1.	Draft: Construct the initial prompt using all five components.
-	2.	Evaluate: Review the output against requirements. Identify gaps (missing context, wrong format, hallucinations).
-	3.	Refine: Adjust instructions, add specific examples, or clarify constraints.
-	4.	Store: Save successful prompt templates for reuse across projects and teams.
-By treating prompts as specification documents rather than casual chat, developers can achieve deterministic, high-quality results from AI assistants.
-
+  
 ___
-
 
 
 
