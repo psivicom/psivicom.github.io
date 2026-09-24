@@ -1,29 +1,31 @@
 # src/automation/ai_planner.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Lightweight AI Planner | Deterministic Step Mapping | Branch-Free
+# Intelligent Workflow Planner (Updated with Discovery Step)
 
 import sys
 import json
 import logging
+import numpy as np
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 logger = logging.getLogger(__name__)
 
 class AIPlanner:
     STEP_TEMPLATES = {
         "EXPAND": [
-            {"step_id": "step_2", "agent_id": "literature_agent", "operation": "resolve_discordance", "dependencies": ["step_1"]},
-            {"step_id": "step_3", "agent_id": "critic_agent", "operation": "evaluate_significance", "dependencies": ["step_2"]}
+            {"step_id": "step_discovery", "agent_id": "discovery_agent", "operation": "search_datasets", "dependencies": ["step_1"]},
+            {"step_id": "step_literature", "agent_id": "literature_agent", "operation": "resolve_discordance", "dependencies": ["step_discovery"]},
+            {"step_id": "step_critic", "agent_id": "critic_agent", "operation": "evaluate_significance", "dependencies": ["step_literature"]}
         ],
         "CONTRACT": [
-            {"step_id": "step_2", "agent_id": "consolidator_agent", "operation": "prune_redundant", "dependencies": ["step_1"]}
+            {"step_id": "step_consolidator", "agent_id": "consolidator_agent", "operation": "prune_redundant", "dependencies": ["step_1"]}
         ],
         "STABLE": [
-            {"step_id": "step_2", "agent_id": "synthesizer_agent", "operation": "generate_insight", "dependencies": ["step_1"]}
+            {"step_id": "step_synthesizer", "agent_id": "synthesizer_agent", "operation": "generate_insight", "dependencies": ["step_1"]}
         ]
     }
 
