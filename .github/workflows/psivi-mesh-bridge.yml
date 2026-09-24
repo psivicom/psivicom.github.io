@@ -1,1 +1,76 @@
+# .github/workflows/psivi-mesh-bridge.yml
+name: PSIVI Mesh Bridge - External AI Connection
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'data/instruction_queue/**'
+      - '.github/workflows/psivi-mesh-bridge.yml'
+  workflow_dispatch:
+    inputs:
+      trigger_source:
+        description: 'Manual trigger source identifier'
+        required: false
+        default: 'manual_admin'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  process-instructions:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for proper diff detection if needed later
+
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+
+      - name: Execute BEGIN.py (Instruction Processor)
+        id: run_bridge
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🚀 Starting PSIVI Mesh Bridge Execution..."
+          
+          # Ensure directories exist
+          mkdir -p data/instruction_queue
+          mkdir -p reports/scientific_reports
+          
+          # Run the bridge script
+          python scripts/BEGIN.py
+          
+          echo "✅ Bridge execution completed."
+
+      - name: Commit Generated Reports
+        if: always()
+        run: |
+          git config user.name "PSIVI-Mesh-Bot"
+          git config user.email "bot@psivi.com"
+          
+          # Check if there are new files to commit
+          if [[ -n "$(git status --porcelain reports/)" ]]; then
+            git add reports/
+            git commit -m "chore(mesh): auto-generated scientific reports via RFC 1001 protocol
+            
+            Source: External AI Collaboration Loop
+            Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+            
+            🤖 Automated by GitHub Actions"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "ℹ️ No new reports generated to commit."
+          fi
 
