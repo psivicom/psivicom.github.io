@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-24T03:10:34.728Z | Hash: 67193036348e8bf5ddfeea3c426d12b18e928d426fcecb90dd0ef5730792aaa6 -->
+<!-- Last updated: 2026-09-24T03:13:17.166Z | Hash: 121c157ac5f200754ec00c95a924f230ca7e5494c12999decf4273f2972b0b4c -->
 
 ```
 psivicom.github.io/
@@ -502,6 +502,8 @@ psivicom.github.io/
 │   │   ├── seed_mesh.py
 │   │   ├── vector_mesh.py
 │   │   └── vram_mesh.py
+│   ├── models/
+│   │   └── forage_quality_model.py
 │   ├── nodes/
 │   │   ├── __init__.py
 │   │   ├── pico_worker.py
