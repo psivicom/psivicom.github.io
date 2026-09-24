@@ -8,6 +8,8 @@
 
 This guide outlines the structural components of effective prompts, establishes best practices for clarity and specificity, and demonstrates a refinement process to transform vague requests into high-quality, actionable outputs. It applies software engineering principles ("garbage in, garbage out") to natural language interactions with AI assistants.
 
+CRITICAL CONSTRAINT: Do not provide explanations, partial snippets, or instructions on how to edit. Return ONLY the complete, final, corrected code blocks for every file that requires changes, ready for direct copy-pasting to replace the existing files, include at top a commented filename with path if it is missing”
+
 ## What is a Prompt?
 
 A prompt is a set of instructions given to an AI model to elicit a specific output. It can be a question, request, or command, ranging from simple factual queries to complex code generation tasks.
