@@ -1,3 +1,8 @@
+# config/mesh_topology.yaml
+# SPDX-License-Identifier: CC-BY-4.0
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
+# Mesh topology, sharding rules, and modality configurations
+
 mesh_name: "AETHER VANGUARD - Goldstream Ecology"
 license: "EUPL 1.2"
 fair_compliance: "CC BY-SA 4.0"
@@ -15,6 +20,19 @@ modalities:
     min_vram_required_mb: 1024
     priority: "MEDIUM"
 
+  POLLINATOR_OBSERVATION:
+    target_dim: 4096
+    preferred_encoder: "Tabular-MLP"
+    min_vram_required_mb: 512
+    priority: "HIGH"
+
 sharding_rules:
-  holographic_redundancy_factor: 3 # Store 3 shards per pixel across different nodes
-  max_latency_ms: 250 # Drop nodes with ping > 250ms for real-time attention
+  holographic_redundancy_factor: 3
+  max_latency_ms: 250
+
+paths:
+  instruction_queue: "data/instruction_queue"
+  pico_containers: "reports/pico_containers"
+  scientific_reports: "reports/scientific_reports"
+  osdr_ground_truth: "data/osdr_ground_truth.jsonl"
+  pollinator_ground_truth: "data/pollinator_ground_truth.jsonl"
