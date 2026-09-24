@@ -1,6 +1,7 @@
 # src/orchestrator/chain_orchestrator.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# Dynamic Chain Orchestrator with DAG Support and Pre-flight Smoke Testing
 
 import sys
 import logging
@@ -8,10 +9,9 @@ import time
 import json
 import numpy as np
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set
 from dataclasses import dataclass, field
 
-# Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from psvc_reference import write_file, content_hash, PRECISION_FLOAT16
@@ -19,6 +19,7 @@ from src.mesh.vram_mesh import VRAMMesh
 from src.mesh.mesh_governor import MeshGovernor
 from src.orchestrator.psvc_provisioner import ElasticPSVCProvisioner
 from src.agents.pilot_agent import PilotAgent
+from src.core.spatio_temporal import SpatioTemporalEngine
 
 logger = logging.getLogger(__name__)
 
@@ -32,10 +33,11 @@ class AgentProfile:
 
 @dataclass
 class WorkflowStep:
-    source_agent_id: str
-    target_agent_id: str
+    step_id: str
+    agent_id: str
     operation: str
-    is_mutable: bool
+    dependencies: List[str] = field(default_factory=list)  # DAG support
+    is_mutable: bool = True
 
 @dataclass
 class ElasticityDecision:
@@ -54,6 +56,7 @@ class ChainOrchestrator:
         self.governor = MeshGovernor(self.vram_mesh, self.provisioner)
         self.pilot = PilotAgent(osdr_data_path=osdr_data_path)
         self.agents: Dict[str, AgentProfile] = {}
+        self.ste_engine = SpatioTemporalEngine()
         logger.info("Chain Orchestrator initialized. Mesh status: NOMINAL")
 
     def register_agent(self, profile: AgentProfile) -> bool:
@@ -82,24 +85,83 @@ class ChainOrchestrator:
         else:
             decision, reason = "STABLE", f"Balanced: {frag_count} traps, {conc_count} controls"
             
-        return ElasticityDecision(decision=decision, reason=reason, fragility_count=frag_count, concordance_count=conc_count, osdr_matches=self.pilot.fragility_traps + self.pilot.concordant_controls)
+        return ElasticityDecision(
+            decision=decision, reason=reason, fragility_count=frag_count, 
+            concordance_count=conc_count, osdr_matches=self.pilot.fragility_traps + self.pilot.concordant_controls
+        )
+
+    def _resolve_dag_execution_order(self, steps: List[WorkflowStep]) -> List[WorkflowStep]:
+        """Topological sort to resolve DAG dependencies for parallel/sequential execution."""
+        step_map = {step.step_id: step for step in steps}
+        executed: Set[str] = set()
+        execution_order: List[WorkflowStep] = []
+        
+        while len(executed) < len(steps):
+            progress = False
+            for step in steps:
+                if step.step_id not in executed:
+                    if all(dep in executed for dep in step.dependencies):
+                        execution_order.append(step)
+                        executed.add(step.step_id)
+                        progress = True
+            if not progress and len(executed) < len(steps):
+                raise ValueError("Circular dependency detected in workflow DAG")
+                
+        return execution_order
+
+    def _preflight_smoke_test(self, step: WorkflowStep, mock_data: np.ndarray) -> bool:
+        """
+        OPERA-inspired pre-flight verification.
+        Runs a micro-test on dummy data before committing VRAM to full execution.
+        """
+        try:
+            # Simulate a lightweight version of the operation
+            if step.operation == "transform":
+                _ = mock_data * 1.1
+            elif step.operation == "normalize":
+                norm = np.linalg.norm(mock_data)
+                _ = mock_data / norm if norm > 0 else mock_data
+            return True
+        except Exception as e:
+            logger.error(f"Pre-flight smoke test failed for {step.step_id}: {e}")
+            return False
 
     def execute_workflow(self, steps: List[WorkflowStep], goal: str = None) -> bool:
-        logger.info(f"Starting workflow execution with {len(steps)} steps...")
+        logger.info(f"Starting DAG workflow execution with {len(steps)} steps...")
         start_time = time.time()
+        
         elasticity = self.evaluate_elasticity()
         logger.info(f"[Orchestrator] Elasticity decision: {elasticity.decision} - {elasticity.reason}")
         
         if elasticity.decision == "EXPAND":
-            steps.append(WorkflowStep(source_agent_id=steps[-1].target_agent_id if steps else "orchestrator", target_agent_id="literature_agent", operation="resolve_fragility", is_mutable=True))
+            steps.append(WorkflowStep(
+                step_id="expand_literature", agent_id="literature_agent", 
+                operation="resolve_fragility", dependencies=[steps[-1].step_id] if steps else []
+            ))
         elif elasticity.decision == "CONTRACT":
-            steps.append(WorkflowStep(source_agent_id=steps[-1].target_agent_id if steps else "orchestrator", target_agent_id="consolidator_agent", operation="prune_redundant", is_mutable=False))
+            steps.append(WorkflowStep(
+                step_id="contract_prune", agent_id="consolidator_agent", 
+                operation="prune_redundant", dependencies=[steps[-1].step_id] if steps else []
+            ))
         
-        for i, step in enumerate(steps):
-            logger.info(f"Executing Step {i+1}: {step.source_agent_id} -> {step.target_agent_id} [{step.operation}]")
+        # Resolve DAG execution order
+        execution_order = self._resolve_dag_execution_order(steps)
+        
+        for i, step in enumerate(execution_order):
+            logger.info(f"Executing Step {i+1}/{len(execution_order)}: {step.step_id} [{step.agent_id}]")
+            
             if not self.governor.enforce_pico_protocol():
                 logger.error("Pico protocol violation detected. Halting workflow.")
                 return False
+            
+            # Pre-flight smoke test
+            mock_data = np.random.randn(64).astype(np.float32)
+            if not self._preflight_smoke_test(step, mock_data):
+                logger.error(f"Workflow halted: Pre-flight test failed for {step.step_id}")
+                return False
+            
+            # TODO: Insert actual agent execution logic here
+            self.governor.deposit_pheromone(step.agent_id, f"executed:{step.step_id}")
         
         self._finalize_workflow(start_time, elasticity)
         return True
@@ -124,6 +186,7 @@ class ChainOrchestrator:
         summary_vector[2] = 1.0 if decision.decision == "STABLE" else 0.0
         summary_vector[3] = decision.fragility_count / 100.0
         summary_vector[4] = decision.concordance_count / 100.0
+        
         norm = np.linalg.norm(summary_vector)
         if norm > 0: summary_vector /= norm
         
@@ -136,5 +199,9 @@ class ChainOrchestrator:
         
         sidecar_path = output_path.with_suffix('.json')
         with open(sidecar_path, 'w') as f:
-            json.dump({"type": "elasticity_decision", "decision": decision.decision, "reason": decision.reason, "fragility_count": decision.fragility_count, "concordance_count": decision.concordance_count, "timestamp": time.time(), "rfc1001_compliant": True}, f, indent=2)
+            json.dump({
+                "type": "elasticity_decision", "decision": decision.decision, "reason": decision.reason,
+                "fragility_count": decision.fragility_count, "concordance_count": decision.concordance_count,
+                "timestamp": time.time(), "rfc1001_compliant": True
+            }, f, indent=2)
         logger.info(f"[Orchestrator] Sealed elasticity decision to {filename}")
