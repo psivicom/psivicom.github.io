@@ -1,16 +1,15 @@
 # src/agents/instruction_agent.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Detects instruction files dropped by outside AI agents and queues them for execution
+# Monitors instruction queue for external AI commands via .psvc containers
 
 import sys
 import json
 import logging
-import time
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_reference import validate_file, read_file
@@ -19,49 +18,67 @@ logger = logging.getLogger(__name__)
 
 class InstructionAgent(BaseAgent):
     """
-    Monitors data/instruction_queue/ for new .psvc or .json instruction files.
-    When detected, validates the instruction and triggers the ReportGeneratorAgent.
+    Scans data/instruction_queue/ for .psvc files dropped by external AI.
+    Parses sidecar JSON for commands (e.g., spawn_agent, update_config).
     """
     LAYER = AgentLayer.INGESTION
 
     def __init__(self, name: str = "instruction", queue_dir: str = "data/instruction_queue"):
-        super().__init__(name, capabilities=["monitor", "validate", "trigger"])
+        super().__init__(name, capabilities=["monitor", "parse", "trigger"])
         self.queue_dir = Path(queue_dir)
         self.queue_dir.mkdir(parents=True, exist_ok=True)
         self.processed_instructions = set()
 
     def scan_for_instructions(self) -> List[Dict[str, Any]]:
         instructions = []
-        for file_path in self.queue_dir.glob("*"):
-            if file_path.stem in self.processed_instructions:
+        for psvc_file in self.queue_dir.glob("*.psvc"):
+            if psvc_file.stem in self.processed_instructions:
                 continue
             try:
-                if file_path.suffix in ['.psvc', '.json']:
-                    meta = {"path": str(file_path), "type": "instruction"}
-                    if file_path.suffix == '.psvc':
-                        validate_file(file_path)
-                        meta["validated"] = True
-                    instructions.append(meta)
-                    self.processed_instructions.add(file_path.stem)
-                    self.seal("instruction_detected", {"file": file_path.name})
+                validate_file(psvc_file)
+                sidecar = psvc_file.with_suffix('.json')
+                if not sidecar.exists():
+                    logger.warning(f"Instruction {psvc_file.name} missing sidecar")
+                    continue
+                
+                with open(sidecar) as f:
+                    meta = json.load(f)
+                
+                if 'command' not in meta:
+                    logger.warning(f"Instruction {psvc_file.name} missing 'command' field")
+                    continue
+                
+                instructions.append({"file": psvc_file, "meta": meta})
+                self.processed_instructions.add(psvc_file.stem)
+                self.seal("instruction_detected", {"command": meta.get('command')})
             except Exception as e:
-                logger.error(f"Failed to validate instruction {file_path.name}: {e}")
+                logger.error(f"Failed to validate instruction {psvc_file.name}: {e}")
         return instructions
 
-    def execute(self, trigger_callback: callable = None) -> int:
+    def execute(self, factory: Any = None) -> int:
         logger.info(f"[{self.agent_id}] Scanning instruction queue...")
         instructions = self.scan_for_instructions()
-        triggered = 0
+        executed_count = 0
+        
         for inst in instructions:
-            if trigger_callback:
-                success = trigger_callback(inst)
+            command = inst['meta'].get('command')
+            params = inst['meta'].get('params', {})
+            
+            if command == "spawn_agent" and factory:
+                success = factory.create_agent(params)
                 if success:
-                    triggered += 1
-                    self.seal("instruction_executed", {"file": inst["path"], "status": "success"})
-        return triggered
+                    executed_count += 1
+                    self.seal("instruction_executed", {"command": command, "status": "success"})
+                else:
+                    self.seal("instruction_executed", {"command": command, "status": "failed"}, fragility=True)
+            else:
+                logger.warning(f"Unknown command: {command}")
+                self.seal("instruction_unknown", {"command": command})
+                
+        return executed_count
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     agent = InstructionAgent()
-    count = agent.execute(lambda x: True)
+    count = agent.execute()
     logger.info(f"Processed {count} instructions")
