@@ -134,12 +134,14 @@ CSV:
 Negatives Only,“Don’t do X” is less effective than “Do Y”.,Frame instructions positively when possible.
 ```
 
-Iterative Refinement Process
+***Iterative Refinement Process***
 	1.	Draft: Write initial prompt based on templates above.
 	2.	Test: Run against representative inputs.
 	3.	Analyze Failures: Identify if errors are due to misunderstanding, lack of context, or format issues.
 	4.	Refine: Add few-shot examples, clarify constraints, or adjust role priming.
 	5.	Version Control: Store successful prompts alongside code repositories for reproducibility.
+
+___
 
 Conclusion
 Excellence in prompting is not about magic words; it is about clear communication, structured thinking, and rigorous specification. Apply software engineering discipline to your natural language interfaces.
