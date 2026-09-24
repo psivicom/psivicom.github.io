@@ -1,0 +1,92 @@
+# .github/workflows/psivi-seed-instruction.yml
+name: PSIVI Mesh - Seed Initial Instruction
+
+on:
+  workflow_dispatch:
+    inputs:
+      command_type:
+        description: 'Type of instruction to seed'
+        required: true
+        default: 'spawn_agent'
+        type: choice
+        options:
+          - spawn_agent
+          - request_report
+      template_name:
+        description: 'Agent Template (if spawn_agent)'
+        required: false
+        default: 'satellite_observer'
+      target_region:
+        description: 'Target Region for Satellite Observer'
+        required: false
+        default: 'Goldstream_Watershed'
+
+permissions:
+  contents: write
+
+jobs:
+  seed-and-process:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+
+      - name: Execute BEGIN_SEALER.py (Create Instruction)
+        id: sealer
+        env:
+          COMMAND_TYPE: ${{ github.event.inputs.command_type }}
+          TEMPLATE_NAME: ${{ github.event.inputs.template_name }}
+          TARGET_REGION: ${{ github.event.inputs.target_region }}
+        run: |
+          echo "🚀 Seeding New Instruction..."
+          
+          # Ensure directories exist
+          mkdir -p data/instruction_queue
+          
+          # Run the sealer script which creates the .psvc and .json files
+          python scripts/BEGIN_SEALER.py
+          
+          echo "✅ Instruction Created."
+
+      - name: Commit Generated Instruction Files
+        id: commit_instruction
+        run: |
+          git config user.name "PSIVI-Mesh-Bot"
+          git config user.email "bot@psivi.com"
+          
+          # Check if there are new files in instruction_queue
+          if [[ -n "$(git status --porcelain data/instruction_queue/)" ]]; then
+            git add data/instruction_queue/
+            git commit -m "feat(mesh): seed initial instruction via workflow_dispatch
+            
+            Type: ${COMMAND_TYPE}
+            Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+            
+            🤖 Automated by GitHub Actions"
+            git push origin HEAD:${{ github.ref_name }}
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ℹ️ No new instruction files generated."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger Processor Workflow (Self-Call)
+        if: steps.commit_instruction.outputs.committed == 'true'
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: psivi-mesh-bridge.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref_name }}
