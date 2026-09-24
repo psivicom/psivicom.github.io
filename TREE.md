@@ -191,6 +191,7 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── QWEN/
+│   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
 │   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
