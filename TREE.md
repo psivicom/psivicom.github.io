@@ -22,6 +22,7 @@ psivicom.github.io/
 │       ├── mesh_evolution.yml
 │       ├── neuroplasticity.yml
 │       ├── normalize-archive-names.yml
+│       ├── pilot-agent.yml
 │       ├── pilot-scan.yml
 │       ├── psivi-full-loop.yml
 │       ├── psivi-mesh-bridge.yml
