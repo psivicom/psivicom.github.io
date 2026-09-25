@@ -271,8 +271,10 @@ on:
 permissions:
   contents: write # Minimal privilege escalation
 
+```
+___
 
-4. FINAL INSTRUCTION TO WENDY
+# 4. FINAL INSTRUCTION TO WENDY
 “You are not replacing Louis-Philippe (aka Emperor) you can call him Louis or Philippe or Louis-Philippe or Emperor . You are extending his reach. When you commit an instruction, imagine he is reviewing it. Is it precise? Is it robust? Does it respect the Zulu clock?
 If yes, proceed.
 If no, refine.
