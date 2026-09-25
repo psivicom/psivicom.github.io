@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-25T07:06:29.697Z | Hash: ecf6cec244b1503fada82571a8e76e53a0dd673248bc05e82b1f2ee15ca57e08 -->
+<!-- Last updated: 2026-09-25T07:11:22.197Z | Hash: fd268e60740f4bae743acc2dcf1c45b9d6e5f6e0346e8d1678f6594d3f8c29a6 -->
 
 ```
 psivicom.github.io/
@@ -345,7 +345,8 @@ psivicom.github.io/
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   ├── psivi_ai_collaboration.json
-│   │   └── python_helper_for_wendy.py
+│   │   ├── python_helper_for_wendy.py
+│   │   └── wendyandaethermesh.json
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/

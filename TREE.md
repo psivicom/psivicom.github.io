@@ -226,7 +226,8 @@ psivicom.github.io/
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   ├── psivi_ai_collaboration.json
-│   │   └── python_helper_for_wendy.py
+│   │   ├── python_helper_for_wendy.py
+│   │   └── wendyandaethermesh.json
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
