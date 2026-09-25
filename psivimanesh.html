@@ -1,0 +1,275 @@
+<!-- psivimanesh.html -->
+<!-- EUPL 1.2 , CC-BY-SA 4.0, 2026 Louis-Philippe Audette -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSIVI AETHER Mesh — Live Status</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --text: #c9d1d9;
+            --accent: #58a6ff;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 1rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .card-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8b949e;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+
+        .value-stable { color: var(--success); }
+        .value-contract { color: var(--warning); }
+        .value-error { color: var(--danger); }
+
+        .log-section {
+            background-color: #000;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .log-entry { margin-bottom: 0.5rem; line-height: 1.4; }
+        .log-time { color: #8b949e; margin-right: 10px; }
+        .log-msg-success { color: var(--success); }
+        .log-msg-info { color: var(--accent); }
+        .log-msg-warn { color: var(--warning); }
+
+        .refresh-btn {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+        .refresh-btn:hover { opacity: 0.9; }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid #30363d;
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🛰️ PSIVI AETHER Mesh <span id="loading-indicator" class="spinner hidden"></span></h1>
+    
+    <div class="status-grid">
+        <!-- Card 1: Last Report Title -->
+        <div class="card">
+            <div class="card-label">Latest Scientific Report</div>
+            <div id="report-title" class="card-value" style="font-size: 1.2rem;">Loading...</div>
+            <div id="report-timestamp" style="color:#8b949e; font-size:0.8rem; margin-top:5px;"></div>
+        </div>
+
+        <!-- Card 2: Mesh Health (Fragility) -->
+        <div class="card">
+            <div class="card-label">Epistemic Fragility</div>
+            <div id="fragility-count" class="card-value value-stable">--</div>
+            <div style="color:#8b949e; font-size:0.8rem;">Traps Detected</div>
+        </div>
+
+        <!-- Card 3: Concordance -->
+        <div class="card">
+            <div class="card-label">Concordant Controls</div>
+            <div id="concordance-count" class="card-value value-stable">--</div>
+            <div style="color:#8b949e; font-size:0.8rem;">Validated Nodes</div>
+        </div>
+
+        <!-- Card 4: Elasticity State -->
+        <div class="card">
+            <div class="card-label">Mesh Elasticity</div>
+            <div id="elasticity-state" class="card-value">UNKNOWN</div>
+            <div style="color:#8b949e; font-size:0.8rem;">System Stability</div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 1rem;">
+        <div class="card-label">Recent Activity Log</div>
+        <div id="activity-log" class="log-section">
+            Initializing connection to GitHub raw data...
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="fetchMeshStatus()">🔄 Refresh Status</button>
+    <p style="color:#8b949e; font-size:0.8rem; margin-top:1rem;">
+        Data sourced directly from <code>psivicom.github.io/reports/</code>. 
+        No backend server required. Pure static site + GitHub Actions.
+    </p>
+</div>
+
+<script>
+    const REPO_BASE = "https://raw.githubusercontent.com/psivicom/psivicom.github.io/main";
+    const PILOT_REPORT_URL = `${REPO_BASE}/reports/pilot_report.json`;
+    
+    async function fetchMeshStatus() {
+        const spinner = document.getElementById('loading-indicator');
+        const logDiv = document.getElementById('activity-log');
+        
+        spinner.classList.remove('hidden');
+        logDiv.innerHTML = `<div class="log-entry"><span class="log-time">${new Date().toLocaleTimeString()}</span><span class="log-msg-info">Fetching mesh state from GitHub...</span></div>` + logDiv.innerHTML;
+
+        try {
+            const response = await fetch(PILOT_REPORT_URL, { cache: 'no-store' });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Update Cards
+            updateUI(data);
+            
+            // Add success log
+            addLog(logDiv, `✅ State synchronized at ${data.last_updated}`, 'success');
+
+        } catch (error) {
+            console.error(error);
+            addLog(logDiv, `❌ Error fetching status: ${error.message}. Is the processor run yet?`, 'warn');
+            
+            // Fallback UI state
+            document.getElementById('report-title').innerText = "No Data Yet";
+            document.getElementById('fragility-count').innerText = "--";
+            document.getElementById('concordance-count').innerText = "--";
+            document.getElementById('elasticity-state').innerText = "OFFLINE";
+            document.getElementById('elasticity-state').className = "card-value value-error";
+        } finally {
+            spinner.classList.add('hidden');
+        }
+    }
+
+    function updateUI(data) {
+        // Extract metrics from pilot_report.json structure defined in BEGIN_PROCESSOR.py
+        const fragility = data.aggregate_fragility || 0;
+        const concordance = data.aggregate_concordance || 0;
+        const elasticity = getElasticityLabel(fragility, concordance);
+        
+        // Update DOM
+        document.getElementById('fragility-count').innerText = fragility;
+        document.getElementById('fragility-count').className = `card-value ${fragility > 5 ? 'value-error' : 'value-stable'}`;
+        
+        document.getElementById('concordance-count').innerText = concordance;
+        document.getElementById('concordance-count').className = `card-value ${concordance > 10 ? 'value-stable' : 'value-warning'}`;
+        
+        document.getElementById('elasticity-state').innerText = elasticity.label;
+        document.getElementById('elasticity-state').className = `card-value ${elasticity.class}`;
+        
+        document.getElementById('report-timestamp').innerText = `Last Sync: ${data.last_updated}`;
+        document.getElementById('report-title').innerText = `Processed Instructions: ${data.total_processed_instructions || 0}`;
+    }
+
+    function getElasticityLabel(frag, conc) {
+        if (frag === 0 && conc === 0) return { label: "IDLE", class: "" };
+        if (frag > conc) return { label: "CONTRACT", class: "value-error" };
+        if (conc > frag * 2) return { label: "EXPAND", class: "value-stable" };
+        return { label: "STABLE", class: "value-stable" };
+    }
+
+    function addLog(container, message, type) {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'log-time';
+        timeSpan.innerText = new Date().toLocaleTimeString();
+        
+        const msgSpan = document.createElement('span');
+        msgSpan.className = `log-msg-${type}`;
+        msgSpan.innerText = message;
+        
+        entry.appendChild(timeSpan);
+        entry.appendChild(msgSpan);
+        
+        container.prepend(entry); // Newest first
+        
+        // Keep log manageable
+        if (container.children.length > 50) {
+            container.removeChild(container.lastChild);
+        }
+    }
+
+    // Auto-refresh every 30 seconds to simulate "Live" feel without heavy polling
+    setInterval(fetchMeshStatus, 30000);
+    
+    // Initial Load
+    window.onload = fetchMeshStatus;
+
+</script>
+
+</body>
+</html>
