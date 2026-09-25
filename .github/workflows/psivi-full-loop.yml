@@ -106,7 +106,7 @@ jobs:
           git config user.name "PSIVI-Mesh-Bot"
           git config user.email "bot@psivi.com"
           
-          # Add new reports
+          # Add new reports (Root level pilot + Subdir scientific)
           git add reports/
           
           # Remove processed instructions from queue (they are now in .processed/)
