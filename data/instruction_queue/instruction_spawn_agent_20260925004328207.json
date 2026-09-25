@@ -1,0 +1,15 @@
+{
+  "command": "spawn_agent",
+  "params": {
+    "template_name": "satellite_observer",
+    "agent_name": "satellite_observer_seed_004328",
+    "config": {
+      "target_region": "Goldstream_Watershed",
+      "modality": "RADARSAT_SAR",
+      "priority": "HIGH"
+    }
+  },
+  "source": "workflow_seed",
+  "timestamp": "2026-09-25T00:43:28.207Z",
+  "rfc1001_compliant": true
+}
