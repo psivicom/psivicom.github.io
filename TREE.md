@@ -212,6 +212,7 @@ psivicom.github.io/
 │   │   ├── Prompt.md
 │   │   ├── Qwenapplause.md
 │   │   ├── QweninstructionWOW.md
+│   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
