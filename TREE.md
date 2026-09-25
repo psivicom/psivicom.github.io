@@ -460,6 +460,7 @@ psivicom.github.io/
 │   └── validate_workflows.py
 ├── .gitignore
 ├── .zenodo.json
+├── A2_psivimanesh.html
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_psivimanesh.html
@@ -498,7 +499,6 @@ psivicom.github.io/
 ├── mesh.go
 ├── mesh_state.json
 ├── open-science-guide.html
-├── psivimanesh.html
 ├── psvc_cli.py
 ├── psvc_reference.py
 ├── requirements.txt

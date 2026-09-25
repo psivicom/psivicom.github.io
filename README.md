@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-25T03:40:04.043Z | Hash: 66419f41b58a0e1d1abf702154df63bbef4536598d421a76e58d43aa02016cd7 -->
+<!-- Last updated: 2026-09-25T03:49:02.829Z | Hash: b8ad9f911779c3b6818399d2916372e2f50722ceab78b2bbcfd57aae9fd2b082 -->
 
 ```
 psivicom.github.io/
@@ -579,6 +579,7 @@ psivicom.github.io/
 │   └── validate_workflows.py
 ├── .gitignore
 ├── .zenodo.json
+├── A2_psivimanesh.html
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_psivimanesh.html
@@ -617,7 +618,6 @@ psivicom.github.io/
 ├── mesh.go
 ├── mesh_state.json
 ├── open-science-guide.html
-├── psivimanesh.html
 ├── psvc_cli.py
 ├── psvc_reference.py
 ├── requirements.txt
