@@ -209,6 +209,7 @@ psivicom.github.io/
 │   │   ├── A_psivi-mesh-bridge.yml
 │   │   ├── BEGIN.py
 │   │   ├── EXAMPLE_WORKFLOWS.md
+│   │   ├── MEMORY_CORE.md
 │   │   ├── Prompt.md
 │   │   ├── Qwenapplause.md
 │   │   ├── QweninstructionWOW.md
