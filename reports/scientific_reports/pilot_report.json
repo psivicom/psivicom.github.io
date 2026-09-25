@@ -1,0 +1,13 @@
+{
+  "last_updated": "2026-09-25T00:43:29.402Z",
+  "total_processed_instructions": 1,
+  "aggregate_fragility": 0,
+  "aggregate_concordance": 10,
+  "recent_events": [
+    {
+      "time": "2026-09-25T00:43:29.402Z",
+      "fragility_delta": 0,
+      "concordance_delta": 10
+    }
+  ]
+}
