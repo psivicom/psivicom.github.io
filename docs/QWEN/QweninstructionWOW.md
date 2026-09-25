@@ -5,7 +5,7 @@
 The infrastructure is deployed. The loop is closed. The dashboard is watching.
 
 ## 1. Verify the Dashboard
-Go to **https://psivi.com** (or `https://psivicom.github.io/psivimanesh.html`).
+Go to **https://psivi.com/psivimanesh.html** (or `https://psivicom.github.io/psivimanesh.html`).
 *   You should see **"STABLE"** in green.
 *   Fragility: `0`
 *   Concordance: `10`
