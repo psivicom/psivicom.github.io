@@ -462,6 +462,7 @@ psivicom.github.io/
 ├── .zenodo.json
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
+├── A_psivimanesh.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -497,7 +498,6 @@ psivicom.github.io/
 ├── mesh.go
 ├── mesh_state.json
 ├── open-science-guide.html
-├── psivimanesh.html
 ├── psvc_cli.py
 ├── psvc_reference.py
 ├── requirements.txt
