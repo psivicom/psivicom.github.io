@@ -202,6 +202,7 @@ psivicom.github.io/
 │   │   ├── BEGIN.py
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
+│   │   ├── Qwenapplause.md
 │   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai-to-ai.md
