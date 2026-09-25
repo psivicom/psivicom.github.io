@@ -218,7 +218,8 @@ psivicom.github.io/
 │   │   ├── ai_to_mesh_bridge.py
 │   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_ai_collaboration.ipynb
-│   │   └── psivi_ai_collaboration.json
+│   │   ├── psivi_ai_collaboration.json
+│   │   └── python_helper_for_wendy.py
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
