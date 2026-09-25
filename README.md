@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-25T00:41:49.805Z | Hash: 840562a7f39d02c4aee9e1ac5f92af34ee53be88fe58482ab26bc51c4c936b15 -->
+<!-- Last updated: 2026-09-25T00:49:00.956Z | Hash: 9eb038541223083c128c071606c16dc21128ae45c9a2507786c7fe06004f8fb3 -->
 
 ```
 psivicom.github.io/
@@ -278,6 +278,10 @@ psivicom.github.io/
 │   │   └── README.md
 │   ├── images/
 │   │   └── README.md
+│   ├── instruction_queue/
+│   │   └── .processed/
+│   │       ├── instruction_spawn_agent_20260925004328207.json
+│   │       └── instruction_spawn_agent_20260925004328207.psvc
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
@@ -441,6 +445,9 @@ psivicom.github.io/
 │   │   ├── state_2_9d3839e18eed.psvc
 │   │   ├── state_2_c53c5acaffaf.psvc
 │   │   └── state_2_f8b95d782471.psvc
+│   ├── scientific_reports/
+│   │   ├── pilot_report.json
+│   │   └── report_instruction_spawn_agent_20260925004328207_20260925004329402336.json
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
