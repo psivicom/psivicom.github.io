@@ -1,0 +1,358 @@
+<!-- psivimanesh.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSIVI AETHER Mesh — Live Status</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --text: #c9d1d9;
+            --accent: #58a6ff;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --font-mono: 'Courier New', Courier, monospace;
+            --zulu-font: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        /* --- THE ZULU CLOCK HEADER --- */
+        .clock-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 1rem;
+        }
+
+        .clock-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #8b949e;
+            margin-bottom: 0.5rem;
+        }
+
+        .zulu-clock {
+            font-family: var(--zulu-font);
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            border-bottom: none;
+            padding-bottom: 0;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .card-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8b949e;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+
+        .value-stable { color: var(--success); }
+        .value-contract { color: var(--warning); }
+        .value-error { color: var(--danger); }
+
+        .log-section {
+            background-color: #000;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: var(--zulu-font);
+            font-size: 0.85rem;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .log-entry { 
+            margin-bottom: 0.5rem; 
+            line-height: 1.4; 
+            border-left: 2px solid transparent;
+            padding-left: 8px;
+        }
+        
+        .log-time { 
+            color: var(--accent); 
+            margin-right: 10px; 
+            font-weight: bold;
+        }
+        
+        .log-msg-success { color: var(--success); border-left-color: var(--success); }
+        .log-msg-info { color: var(--accent); border-left-color: var(--accent); }
+        .log-msg-warn { color: var(--warning); border-left-color: var(--warning); }
+        .log-msg-error { color: var(--danger); border-left-color: var(--danger); }
+
+        .refresh-btn {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+            font-family: var(--font-mono);
+        }
+        .refresh-btn:hover { opacity: 0.9; }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid #30363d;
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- TOP TOOL: BEAUTIFUL ZULU CLOCK -->
+    <div class="clock-header">
+        <div class="clock-label">System Time (UTC Zulu)</div>
+        <div id="live-zulu-clock" class="zulu-clock">----.--.--T--:--:--.---Z</div>
+    </div>
+
+    <h1>🛰️ PSIVI AETHER Mesh <span id="loading-indicator" class="spinner hidden"></span></h1>
+    
+    <div class="status-grid">
+        <!-- Card 1: Last Report Title -->
+        <div class="card">
+            <div class="card-label">Latest Scientific Report</div>
+            <div id="report-title" class="card-value" style="font-size: 1.2rem;">Loading...</div>
+            <div id="report-timestamp" style="color:#8b949e; font-size:0.8rem; margin-top:5px;"></div>
+        </div>
+
+        <!-- Card 2: Mesh Health (Fragility) -->
+        <div class="card">
+            <div class="card-label">Epistemic Fragility</div>
+            <div id="fragility-count" class="card-value value-stable">--</div>
+            <div style="color:#8b949e; font-size:0.8rem;">Traps Detected</div>
+        </div>
+
+        <!-- Card 3: Concordance -->
+        <div class="card">
+            <div class="card-label">Concordant Controls</div>
+            <div id="concordance-count" class="card-value value-stable">--</div>
+            <div style="color:#8b949e; font-size:0.8rem;">Validated Nodes</div>
+        </div>
+
+        <!-- Card 4: Elasticity State -->
+        <div class="card">
+            <div class="card-label">Mesh Elasticity</div>
+            <div id="elasticity-state" class="card-value">UNKNOWN</div>
+            <div style="color:#8b949e; font-size:0.8rem;">System Stability</div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 1rem;">
+        <div class="card-label">Recent Activity Log (Zulu Timestamped)</div>
+        <div id="activity-log" class="log-section">
+            Initializing connection to GitHub raw data...
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="fetchMeshStatus()">🔄 REFRESH MESH STATE</button>
+    <p style="color:#8b949e; font-size:0.8rem; margin-top:1rem; text-align:center;">
+        Data sourced directly from <code>psivicom.github.io/reports/</code>. 
+        Protocol: RFC 1001 | Time Standard: ISO 8601 Zulu (ms precision).
+    </p>
+</div>
+
+<script>
+    const REPO_BASE = "https://raw.githubusercontent.com/psivicom/psivicom.github.io/main";
+    const PILOT_REPORT_URL = `${REPO_BASE}/reports/pilot_report.json`;
+    
+    // --- ZULU TIME UTILITY (JavaScript Equivalent of Python Function) ---
+    function getZuluTimeMs() {
+        const now = new Date();
+        // Format: YYYY-MM-DDTHH:MM:SS.mmmZ
+        const pad = (num, size) => String(num).padStart(size, '0');
+        
+        const year = now.getUTCFullYear();
+        const month = pad(now.getUTCMonth() + 1, 2);
+        const day = pad(now.getUTCDate(), 2);
+        const hours = pad(now.getUTCHours(), 2);
+        const minutes = pad(now.getUTCMinutes(), 2);
+        const seconds = pad(now.getUTCSeconds(), 2);
+        const millis = pad(now.getUTCMilliseconds(), 3);
+        
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${millis}Z`;
+    }
+
+    // --- LIVE CLOCK UPDATE LOOP ---
+    function updateClock() {
+        const clockEl = document.getElementById('live-zulu-clock');
+        if(clockEl) {
+            clockEl.innerText = getZuluTimeMs();
+        }
+    }
+    setInterval(updateClock, 100); // Update every 100ms for smooth ms ticking
+    updateClock(); // Initial call
+
+    // --- MESH STATUS FETCHER ---
+    async function fetchMeshStatus() {
+        const spinner = document.getElementById('loading-indicator');
+        const logDiv = document.getElementById('activity-log');
+        
+        spinner.classList.remove('hidden');
+        
+        // Log start with Zulu timestamp
+        addLog(logDiv, `INFO: Fetching mesh state from GitHub...`, 'info');
+
+        try {
+            const response = await fetch(PILOT_REPORT_URL, { cache: 'no-store' });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Update Cards
+            updateUI(data);
+            
+            // Add success log with Zulu timestamp
+            addLog(logDiv, `SUCCESS: State synchronized. Fragility: ${data.aggregate_fragility}, Concordance: ${data.aggregate_concordance}`, 'success');
+
+        } catch (error) {
+            console.error(error);
+            // Add error log with Zulu timestamp
+            addLog(logDiv, `ERROR: Failed to fetch status (${error.message}). Is processor run?`, 'error');
+            
+            // Fallback UI state
+            document.getElementById('report-title').innerText = "No Data Yet";
+            document.getElementById('fragility-count').innerText = "--";
+            document.getElementById('concordance-count').innerText = "--";
+            document.getElementById('elasticity-state').innerText = "OFFLINE";
+            document.getElementById('elasticity-state').className = "card-value value-error";
+        } finally {
+            spinner.classList.add('hidden');
+        }
+    }
+
+    function updateUI(data) {
+        const fragility = data.aggregate_fragility || 0;
+        const concordance = data.aggregate_concordance || 0;
+        const elasticity = getElasticityLabel(fragility, concordance);
+        
+        document.getElementById('fragility-count').innerText = fragility;
+        document.getElementById('fragility-count').className = `card-value ${fragility > 5 ? 'value-error' : 'value-stable'}`;
+        
+        document.getElementById('concordance-count').innerText = concordance;
+        document.getElementById('concordance-count').className = `card-value ${concordance > 10 ? 'value-stable' : 'value-warning'}`;
+        
+        document.getElementById('elasticity-state').innerText = elasticity.label;
+        document.getElementById('elasticity-state').className = `card-value ${elasticity.class}`;
+        
+        // Use the Zulu timestamp from the JSON payload for the card footer
+        document.getElementById('report-timestamp').innerText = `Last Sync: ${data.last_updated}`;
+        document.getElementById('report-title').innerText = `Processed Instructions: ${data.total_processed_instructions || 0}`;
+    }
+
+    function getElasticityLabel(frag, conc) {
+        if (frag === 0 && conc === 0) return { label: "IDLE", class: "" };
+        if (frag > conc) return { label: "CONTRACT", class: "value-error" };
+        if (conc > frag * 2) return { label: "EXPAND", class: "value-stable" };
+        return { label: "STABLE", class: "value-stable" };
+    }
+
+    function addLog(container, message, type) {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        
+        // GET CURRENT ZULU TIME FOR LOG ENTRY
+        const zuluStamp = getZuluTimeMs();
+        
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'log-time';
+        timeSpan.innerText = `[${zuluStamp}]`;
+        
+        const msgSpan = document.createElement('span');
+        msgSpan.className = `log-msg-${type}`;
+        msgSpan.innerText = ` ${message}`;
+        
+        entry.appendChild(timeSpan);
+        entry.appendChild(msgSpan);
+        
+        container.prepend(entry); // Newest first
+        
+        // Keep log manageable
+        if (container.children.length > 50) {
+            container.removeChild(container.lastChild);
+        }
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(fetchMeshStatus, 30000);
+    
+    // Initial Load
+    window.onload = () => {
+        fetchMeshStatus();
+    };
+
+</script>
+
+</body>
+</html>
