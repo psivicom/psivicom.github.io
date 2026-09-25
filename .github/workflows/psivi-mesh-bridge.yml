@@ -1,5 +1,5 @@
 # .github/workflows/psivi-mesh-bridge.yml
-name: PSIVI Mesh Bridge - Autonomous Loop
+name: PSIVI Mesh - Autonomous Listener (Push Trigger)
 
 on:
   push:
@@ -7,13 +7,12 @@ on:
     paths:
       - 'data/instruction_queue/*.psvc'
       - 'data/instruction_queue/*.json'
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  process-and-report:
+  process-incoming-instructions:
     runs-on: ubuntu-latest
     
     steps:
@@ -32,38 +31,45 @@ jobs:
           python -m pip install --upgrade pip
           pip install numpy
 
-      - name: Execute BEGIN_PROCESSOR.py (Consumer)
-        id: run_processor
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Execute BEGIN_PROCESSOR.py
+        id: processor
         run: |
-          echo "🚀 Starting PSIVI Mesh Processor..."
+          echo "🚀 Incoming Instruction Detected. Starting Processor..."
           
           # Ensure directories exist
-          mkdir -p data/instruction_queue
           mkdir -p reports/scientific_reports
           
           # Run the processor script which reads queue and generates reports
           python scripts/BEGIN_PROCESSOR.py
           
-          echo "✅ Processing completed."
+          # Check if reports were generated
+          if ls reports/scientific_reports/*.json >/dev/null 2>&1; then
+            echo "✅ Reports generated."
+            echo "has_reports=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️ No new reports generated (queue might have been empty or already processed)."
+            echo "has_reports=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Commit Generated Reports
-        if: always()
+      - name: Commit Generated Reports & Cleanup
+        if: steps.processor.outputs.has_reports == 'true'
         run: |
           git config user.name "PSIVI-Mesh-Bot"
           git config user.email "bot@psivi.com"
           
-          # Check if there are new files to commit in reports directory
-          if [[ -n "$(git status --porcelain reports/)" ]]; then
-            git add reports/
-            git commit -m "chore(mesh): auto-generated scientific reports via RFC 1001 protocol
+          # Add new reports
+          git add reports/
+          
+          # Stage changes in instruction_queue (moves to .processed/)
+          git add data/instruction_queue/
+          
+          git commit -m "chore(mesh): auto-generated scientific report via listener trigger
             
-            Source: Autonomous AI Collaboration Loop
+            Source: Push Event (External AI / Manual Drop)
             Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)
             
             🤖 Automated by GitHub Actions"
-            git push origin HEAD:${{ github.ref_name }}
-          else
-            echo "ℹ️ No new reports generated to commit."
-          fi
+          
+          git push origin HEAD:${{ github.ref_name }}
+          
+          echo "🏁 Listener Loop Complete."
