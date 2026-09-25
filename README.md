@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-25T04:14:12.107Z | Hash: e9df63c13d3ff9baadb46c1c30a8cde00f33ab6331bb868b168da11776dcda60 -->
+<!-- Last updated: 2026-09-25T04:25:58.856Z | Hash: 9e6e13f98bc41ecbd7e320b862a0f834efe28c14a9e6668f3e963b0e0d5331ea -->
 
 ```
 psivicom.github.io/
@@ -279,9 +279,12 @@ psivicom.github.io/
 │   ├── images/
 │   │   └── README.md
 │   ├── instruction_queue/
-│   │   └── .processed/
-│   │       ├── instruction_spawn_agent_20260925004328207.json
-│   │       └── instruction_spawn_agent_20260925004328207.psvc
+│   │   ├── .errors/
+│   │   │   └── instruction_spawn_agent_20260925042134365.psvc
+│   │   ├── .processed/
+│   │   │   ├── instruction_spawn_agent_20260925004328207.json
+│   │   │   └── instruction_spawn_agent_20260925004328207.psvc
+│   │   └── instruction_spawn_agent_20260925042134365.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
@@ -448,7 +451,8 @@ psivicom.github.io/
 │   │   └── state_2_f8b95d782471.psvc
 │   ├── scientific_reports/
 │   │   ├── pilot_report.json
-│   │   └── report_instruction_spawn_agent_20260925004328207_20260925004329402336.json
+│   │   ├── report_instruction_spawn_agent_20260925004328207_20260925004329402336.json
+│   │   └── report_instruction_spawn_agent_20260925042134365_20260925042135527741.json
 │   ├── vector_memory/
 │   │   ├── 2e034fc1b1be.json
 │   │   ├── 2e034fc1b1be.npy
@@ -482,6 +486,7 @@ psivicom.github.io/
 │   ├── governor_log.md
 │   ├── license_audit.md
 │   ├── mesh_status.txt
+│   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
 │   ├── synthesis_2026-09-18.md
@@ -489,9 +494,9 @@ psivicom.github.io/
 ├── scripts/
 │   ├── update-tree/
 │   │   └── main.go
+│   ├── A3_BEGIN_PROCESSOR.py
 │   ├── A_BEGIN_PROCESSOR.py
 │   ├── BEGIN.py
-│   ├── BEGIN_PROCESSOR.py
 │   ├── BEGIN_SEALER.py
 │   └── fix_archive_names.py
 ├── src/
