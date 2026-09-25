@@ -1,0 +1,6 @@
+on:
+  push:
+    paths:
+      - 'data/instruction_queue/*.psvc' # Only trigger on valid instructions
+permissions:
+  contents: write # Minimal privilege escalation
