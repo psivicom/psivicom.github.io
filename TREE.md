@@ -228,6 +228,7 @@ psivicom.github.io/
 │   │   ├── psivi_ai_collaboration.json
 │   │   ├── python_helper_for_wendy.py
 │   │   ├── qwenwanttorememberwendyprompts.md
+│   │   ├── theifealsystemwendyprompt.md
 │   │   └── wendyandaethermesh.json
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
