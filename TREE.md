@@ -217,6 +217,7 @@ psivicom.github.io/
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
 │   │   ├── psivi-mesh-bridge.yml
+│   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   ├── psivi_ai_collaboration.json
 │   │   └── python_helper_for_wendy.py
