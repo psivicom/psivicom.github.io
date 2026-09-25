@@ -210,6 +210,7 @@ psivicom.github.io/
 │   │   ├── BEGIN.py
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── MEMORY_CORE.md
+│   │   ├── PERSONALITY_CORE.md
 │   │   ├── Prompt.md
 │   │   ├── Qwenapplause.md
 │   │   ├── QweninstructionWOW.md
