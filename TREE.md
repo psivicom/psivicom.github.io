@@ -211,6 +211,7 @@ psivicom.github.io/
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── MEMORY_CORE.md
 │   │   ├── PERSONALITY_CORE.md
+│   │   ├── Pattern_The_RFC_1001_Header_Binary.py
 │   │   ├── Prompt.md
 │   │   ├── Qwenapplause.md
 │   │   ├── QweninstructionWOW.md
