@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-25T00:51:59.437Z | Hash: 9eb038541223083c128c071606c16dc21128ae45c9a2507786c7fe06004f8fb3 -->
+<!-- Last updated: 2026-09-25T00:55:54.469Z | Hash: cd3e5395c4c87a0d0c202b1f8fd32124abbc46f9f9f17d4aa872dd01cf8b4338 -->
 
 ```
 psivicom.github.io/
@@ -326,6 +326,7 @@ psivicom.github.io/
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
 │   │   ├── Qwenapplause.md
+│   │   ├── QweninstructionWOW.md
 │   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
 │   │   ├── ai-to-ai.md
