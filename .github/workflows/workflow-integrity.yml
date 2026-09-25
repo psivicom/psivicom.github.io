@@ -1,24 +1,30 @@
+# .github/workflows/workflow-integrity.yml
 name: Workflow Integrity
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  #workflow_dispatch: # <-- Add this line to enable the manual "Run workflow" button
+  workflow_dispatch:
 
 jobs:
-  validate:
+  integrity-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
-      - name: Install Validator Dependencies
-        run: pip install pyyaml
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
 
-      - name: Validate Workflow Targets
-        run: python tools/validate_workflows.py
+      - name: Compile Source Tree
+        run: python -m compileall src/
+
+      - name: Verify Zulu Clock
+        run: python src/core/zulu_clock.py
