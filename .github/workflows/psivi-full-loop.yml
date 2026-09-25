@@ -1,0 +1,125 @@
+# .github/workflows/psivi-full-loop.yml
+name: PSIVI Mesh - Full Autonomous Loop (Seed -> Process -> Report)
+
+on:
+  workflow_dispatch:
+    inputs:
+      command_type:
+        description: 'Instruction Type'
+        required: true
+        default: 'spawn_agent'
+        type: choice
+        options:
+          - spawn_agent
+          - request_report
+      template_name:
+        description: 'Agent Template'
+        required: false
+        default: 'satellite_observer'
+      target_region:
+        description: 'Target Region'
+        required: false
+        default: 'Goldstream_Watershed'
+      gene_focus:
+        description: 'Gene Focus (for literature_resolver)'
+        required: false
+        default: 'IGFBP7'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  seed-and-process:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+
+      # STEP 1: SEAL THE INSTRUCTION
+      - name: Execute BEGIN_SEALER.py
+        id: sealer
+        env:
+          COMMAND_TYPE: ${{ github.event.inputs.command_type }}
+          TEMPLATE_NAME: ${{ github.event.inputs.template_name }}
+          TARGET_REGION: ${{ github.event.inputs.target_region }}
+          GENE_FOCUS: ${{ github.event.inputs.gene_focus }}
+        run: |
+          echo "🚀 Step 1: Sealing Instruction..."
+          mkdir -p data/instruction_queue
+          python scripts/BEGIN_SEALER.py
+          
+          # Verify files were created
+          if ls data/instruction_queue/*.psvc >/dev/null 2>&1; then
+            echo "✅ Instruction files created."
+            echo "has_instruction=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "❌ No instruction files found."
+            echo "has_instruction=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # STEP 2: COMMIT THE INSTRUCTION TO GIT (So it persists for the processor)
+      - name: Commit Instruction Files
+        if: steps.sealer.outputs.has_instruction == 'true'
+        run: |
+          git config user.name "PSIVI-Mesh-Bot"
+          git config user.email "bot@psivi.com"
+          git add data/instruction_queue/
+          git commit -m "feat(mesh): auto-seeded instruction via full loop workflow"
+          git push origin HEAD:${{ github.ref_name }}
+
+      # STEP 3: PROCESS THE INSTRUCTION IMMEDIATELY (In-memory, no re-trigger needed)
+      - name: Execute BEGIN_PROCESSOR.py
+        if: steps.sealer.outputs.has_instruction == 'true'
+        id: processor
+        run: |
+          echo "🧠 Step 2: Processing Instruction..."
+          mkdir -p reports/scientific_reports
+          python scripts/BEGIN_PROCESSOR.py
+          
+          # Check if reports were generated
+          if ls reports/scientific_reports/*.json >/dev/null 2>&1; then
+            echo "✅ Reports generated."
+            echo "has_reports=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️ No reports generated."
+            echo "has_reports=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # STEP 4: COMMIT REPORTS AND CLEANUP QUEUE
+      - name: Finalize Mesh State
+        if: steps.processor.outputs.has_reports == 'true'
+        run: |
+          git config user.name "PSIVI-Mesh-Bot"
+          git config user.email "bot@psivi.com"
+          
+          # Add new reports
+          git add reports/
+          
+          # Remove processed instructions from queue (they are now in .processed/)
+          # We stage deletions/modifications in the queue directory
+          git add data/instruction_queue/
+          
+          git commit -m "chore(mesh): auto-generated scientific report & cleaned queue
+            
+            Source: Full Autonomous Loop
+            Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+            
+            🤖 Automated by GitHub Actions"
+          
+          git push origin HEAD:${{ github.ref_name }}
+          
+          echo "🏁 Full Loop Complete."
