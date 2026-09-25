@@ -210,6 +210,7 @@ psivicom.github.io/
 │   │   ├── BEGIN.py
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── Prompt.md
+│   │   ├── Python_helper_for_wendy.py
 │   │   ├── Qwenapplause.md
 │   │   ├── QweninstructionWOW.md
 │   │   ├── README.md
