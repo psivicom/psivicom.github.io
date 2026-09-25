@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-25T04:25:58.856Z | Hash: 9e6e13f98bc41ecbd7e320b862a0f834efe28c14a9e6668f3e963b0e0d5331ea -->
+<!-- Last updated: 2026-09-25T04:26:47.865Z | Hash: 8ab88eb970f33a1c39403f32d644d01ea25e7ac1be2de390ded89f0ac018f71b -->
 
 ```
 psivicom.github.io/
@@ -497,6 +497,7 @@ psivicom.github.io/
 │   ├── A3_BEGIN_PROCESSOR.py
 │   ├── A_BEGIN_PROCESSOR.py
 │   ├── BEGIN.py
+│   ├── BEGIN_PROCESSOR.py
 │   ├── BEGIN_SEALER.py
 │   └── fix_archive_names.py
 ├── src/
