@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-25T03:49:02.829Z | Hash: b8ad9f911779c3b6818399d2916372e2f50722ceab78b2bbcfd57aae9fd2b082 -->
+<!-- Last updated: 2026-09-25T03:51:22.759Z | Hash: e17a95ce47671d87f60f74e8e64f6e5d725c50decd2b97914d005c7bfe01359e -->
 
 ```
 psivicom.github.io/
@@ -618,6 +618,7 @@ psivicom.github.io/
 ├── mesh.go
 ├── mesh_state.json
 ├── open-science-guide.html
+├── psivimanesh.html
 ├── psvc_cli.py
 ├── psvc_reference.py
 ├── requirements.txt
