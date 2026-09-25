@@ -23,6 +23,7 @@ psivicom.github.io/
 │       ├── neuroplasticity.yml
 │       ├── normalize-archive-names.yml
 │       ├── pilot-scan.yml
+│       ├── psivi-full-loop.yml
 │       ├── psivi-mesh-bridge.yml
 │       ├── psivi-seed-instruction.yml
 │       ├── rfc-compliance.yml
