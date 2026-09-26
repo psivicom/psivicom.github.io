@@ -1,0 +1,75 @@
+# .github/workflows/orchestrator.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Chain Orchestrator (Dynamic DAG Execution)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/orchestrator/**'
+      - 'config/mesh_topology.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  run-orchestrator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Install ONLY lightweight dependencies required for orchestration logic
+          pip install numpy pyyaml requests python-dateutil
+
+      - name: Ensure Directories Exist
+        run: |
+          mkdir -p reports/pico_containers
+          mkdir -p reports/scientific_reports
+          mkdir -p logs
+
+      - name: Run Chain Orchestrator
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "🧬 Starting Dynamic Chain Orchestration..."
+          # CRITICAL FIX: Use -m to respect PYTHONPATH and avoid ModuleNotFoundError
+          python -m src.orchestrator.chain_orchestrator
+
+      - name: Commit Generated Artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "PSIVI Orchestrator"
+          git config user.email "orchestrator@psivi.com"
+          
+          git add reports/pico_containers/
+          git add reports/scientific_reports/
+          git add logs/
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: orchestrator executed dynamic DAG and sealed artifacts [skip ci]"
+            git push
+            echo "✅ Orchestrator artifacts committed."
+          else
+            echo "ℹ️ No new artifacts to commit."
+          fi
