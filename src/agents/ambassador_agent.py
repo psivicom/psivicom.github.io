@@ -3,15 +3,12 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 # Automatically shares PSIVI collaboration protocol with external AI systems via .psvc containers
 
-import sys
 import json
 import logging
 import numpy as np
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16
@@ -96,7 +93,7 @@ class AmbassadorAgent(BaseAgent):
         """
         Packages the collaboration protocol into a .psvc container for sharing.
         """
-        timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+        timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
         filename = f"psivi_handshake_{recipient_ai}_{timestamp}"
         
         # Convert protocol to vector (embed the JSON as a normalized float32 array)
@@ -112,7 +109,7 @@ class AmbassadorAgent(BaseAgent):
         vector[0] = len(self.protocol_content["collaboration_protocol"]["available_commands"])
         vector[1] = len(self.protocol_content["collaboration_protocol"]["agent_templates"])
         vector[2] = 1.0  # Handshake version flag
-        vector[3] = datetime.utcnow().timestamp() / 1e9  # Normalized timestamp
+        vector[3] = datetime.now(timezone.utc).timestamp() / 1e9  # Normalized timestamp
         
         vector /= np.linalg.norm(vector)
         
@@ -128,7 +125,7 @@ class AmbassadorAgent(BaseAgent):
                 "recipient": recipient_ai,
                 "mesh_info": self.protocol_content,
                 "instructions": "Read this JSON to understand how to collaborate with PSIVI Mesh. Use the python_bridge functions to generate .psvc instructions.",
-                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
                 "rfc1001_compliant": True
             }, f, indent=2)
         
@@ -153,7 +150,7 @@ class AmbassadorAgent(BaseAgent):
             "sidecar_path": str(psvc_path.with_suffix('.json')),
             "delivery_method": delivery_method,
             "status": "ready_for_pickup" if delivery_method == "file_drop" else "pending",
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         }
         
         # Log the handshake offer
