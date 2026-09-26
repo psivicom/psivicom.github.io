@@ -409,6 +409,8 @@ psivicom.github.io/
 │   ├── BEGIN_SEALER.py
 │   └── fix_archive_names.py
 ├── src/
+│   ├── CALCULATING/
+│   │   └── __init__.py
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── agent_factory.py
@@ -458,8 +460,6 @@ psivicom.github.io/
 │   ├── generated_agents/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
-│   ├── math/
-│   │   └── __init__.py
 │   ├── mesh/
 │   │   ├──  __init__.py
 │   │   ├── mesh_brain.py
