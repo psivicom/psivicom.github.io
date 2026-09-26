@@ -221,6 +221,7 @@ psivicom.github.io/
 │   │   ├── QweninstructionWOW.md
 │   │   ├── README.md
 │   │   ├── TalkingtoQwen.md
+│   │   ├── WENDY_INVITATION.md
 │   │   ├── Wendy please read.md
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
