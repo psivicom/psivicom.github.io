@@ -437,6 +437,7 @@ psivicom.github.io/
 │   │   ├── osdr_provenance.py
 │   │   ├── osdr_validator.py
 │   │   ├── psvc_containers.py
+│   │   ├── rollback_manager.py
 │   │   ├── spatio_temporal.py
 │   │   ├── vector_math.py
 │   │   └── vector_pixelizer.py
