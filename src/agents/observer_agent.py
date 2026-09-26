@@ -3,14 +3,11 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 # Event-Driven Autonomy Agent (Inspired by OPERA-SDS-PCM data_subscriber)
 
-import sys
 import json
 import logging
 import time
 from pathlib import Path
 from typing import Dict, Any, Optional
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.spatio_temporal import SpatioTemporalEngine
