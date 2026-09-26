@@ -1,7 +1,6 @@
 # src/agents/report_generator_agent.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Executes instructions and generates FAIR scientific reports
 
 import json
 import logging
