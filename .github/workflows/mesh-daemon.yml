@@ -1,8 +1,6 @@
 # .github/workflows/mesh-daemon.yml
-# .github/workflows/mesh-daemon.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Cloud-based autonomous daemon for AI-to-Mesh collaboration
 
 name: Mesh Daemon (Auto-Process Instructions)
 
