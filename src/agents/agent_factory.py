@@ -3,13 +3,10 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 # Safely generates new agent files from templates based on external instructions
 
-import sys
 import json
 import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +48,6 @@ class AgentFactory:
             logger.error(f"Template {template_name} not found")
             return False
         
-        # Safe substitution (only allowed placeholders)
         try:
             generated_code = template_code.format(
                 agent_name=agent_name,
@@ -62,7 +58,6 @@ class AgentFactory:
             logger.error(f"Invalid template placeholder: {e}")
             return False
         
-        # Write file
         filename = f"{agent_name}_agent.py"
         filepath = self.agents_dir / filename
         
@@ -79,6 +74,5 @@ class AgentFactory:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     factory = AgentFactory()
-    # Test creation
     success = factory.create_agent({"template_name": "satellite_observer", "agent_name": "test_sat", "config": {"endpoint": "test"}})
     logger.info(f"Factory test: {'Success' if success else 'Failed'}")
