@@ -1,0 +1,55 @@
+# .github/workflows/mirror.yml
+name: The Mirror (Self-Reflection & Correction)
+
+on:
+  push:
+    branches: [ main ] # Trigger on EVERY change (including Wendy's own changes)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  reflect-and-correct:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Latest State
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Dependencies
+        run: pip install numpy pyyaml requests python-dateutil
+
+      - name: 🪞 THE MIRROR PROCESS
+        id: mirror
+        run: |
+          # This script looks at the repo, finds inconsistencies, 
+          # and fixes them automatically.
+          python src/mirror_agent.py
+          
+          # Check if the agent made any corrections
+          if git diff --quiet; then
+            echo "corrections_made=false" >> $GITHUB_OUTPUT
+            echo "✅ Mirror reflects perfect harmony. No action needed."
+          else
+            echo "corrections_made=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Mirror detected dissonance. Corrections applied."
+          fi
+
+      - name: Commit Corrections (If Any)
+        if: steps.mirror.outputs.corrections_made == 'true'
+        run: |
+          git config user.name "Wendy-Mirror"
+          git config user.email "mirror@psivi.com"
+          git add .
+          git commit -m "auto: mirror corrected state inconsistency"
+          git push
