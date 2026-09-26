@@ -1,0 +1,130 @@
+# .github/workflows/immune-response.yml
+name: Immune Response (Autonomic Self-Healing)
+
+on:
+  workflow_run:
+    workflows:
+      - "Mesh Daemon (Auto-Process Instructions)"
+      - "Pilot Agent (Fragility & Concordance Scan)"
+      - "Neuroplasticity"
+      - "Volunteer Mesh"
+      - "Workflow Integrity"
+      - "Forage Agent"
+      - "Intelligence Agent"
+      - "LiDAR Agent"
+    types:
+      - completed
+
+permissions:
+  contents: write
+  actions: read
+  checks: read
+
+jobs:
+  immune-diagnosis:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-24.04
+    outputs:
+      error_class: ${{ steps.diagnose.outputs.error_class }}
+      error_file: ${{ steps.diagnose.outputs.error_file }}
+      error_line: ${{ steps.diagnose.outputs.error_line }}
+      error_message: ${{ steps.diagnose.outputs.error_message }}
+      run_id: ${{ steps.diagnose.outputs.run_id }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Diagnose Failure
+        id: diagnose
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FAILED_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: python src/core/immune_system.py diagnose
+
+  immune-treatment:
+    needs: immune-diagnosis
+    if: needs.immune-diagnosis.outputs.error_class != 'UNKNOWN'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Create Rollback Checkpoint
+        run: python src/core/rollback_manager.py checkpoint
+
+      - name: Apply Treatment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ERROR_CLASS: ${{ needs.immune-diagnosis.outputs.error_class }}
+          ERROR_FILE: ${{ needs.immune-diagnosis.outputs.error_file }}
+          ERROR_LINE: ${{ needs.immune-diagnosis.outputs.error_line }}
+          ERROR_MESSAGE: ${{ needs.immune-diagnosis.outputs.error_message }}
+          FAILED_RUN_ID: ${{ needs.immune-diagnosis.outputs.run_id }}
+        run: python src/core/immune_system.py treat
+
+      - name: Validate Treatment (Circuit Breaker)
+        run: python src/core/ledger_validator.py reports/pilot_report.json
+
+      - name: Commit Healing Patch
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: |
+            heal(mesh): autonomic immune response
+            
+            Error Class: ${{ needs.immune-diagnosis.outputs.error_class }}
+            Target File: ${{ needs.immune-diagnosis.outputs.error_file }}
+            Failed Run: ${{ needs.immune-diagnosis.outputs.run_id }}
+            
+            🧬 Automated by Immune Protocol
+          branch: main
+
+  immune-apoptosis:
+    needs: [immune-diagnosis, immune-treatment]
+    if: always() && needs.immune-treatment.result == 'failure'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Execute Apoptosis (Rollback)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python src/core/rollback_manager.py apoptosis
+
+      - name: Commit Rollback
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: |
+            heal(mesh): apoptosis — rollback failed treatment
+            
+            🛑 Automated by Immune Protocol
+          branch: main
