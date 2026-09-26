@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-26T15:33:03.168Z | Hash: a61f89e6098251ca4193fa3f1bcf30acc414ccc4f9a4fced0839ff86dae91332 -->
+<!-- Last updated: 2026-09-26T15:42:15.902Z | Hash: fba78a6ac4828d49001d8717ff4e0eeda0db4428e438754a9906cb51b57c7d9d -->
 
 ```
 psivicom.github.io/
@@ -124,6 +124,7 @@ psivicom.github.io/
 │       ├── README.md
 │       ├── ai-handshake.yml
 │       ├── auto-report.yml
+│       ├── breath.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── fix-all-timestamps.yml
