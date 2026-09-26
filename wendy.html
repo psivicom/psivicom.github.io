@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSIVI | WENDY MISSION CONTROL</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0a0a;
+            --border-color: #333;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent-green: #00ff41; /* Terminal Green */
+            --accent-red: #ff3333;   /* Alert Red */
+            --accent-blue: #00ccff;  /* Data Blue */
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, #111, #050505);
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-green);
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+
+        .status-badge {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 65, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0); }
+        }
+
+        /* MAIN GRID */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .card-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: auto;
+        }
+
+        .card-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* SPECIFIC CARDS */
+        .breath-card {
+            grid-column: span 2;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .visualizer-container {
+            width: 100%;
+            height: 100px;
+            position: relative;
+            background: #000;
+            border: 1px solid #222;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .metric-group {
+            text-align: center;
+        }
+
+        .big-number {
+            font-size: 3rem;
+            line-height: 1;
+            color: var(--accent-green);
+        }
+
+        .unit {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* LOG CONSOLE */
+        .console-card {
+            grid-column: 1 / -1;
+            height: 200px;
+            background: #000;
+            border: 1px solid #333;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            overflow-y: scroll;
+            padding: 1rem;
+        }
+
+        .log-entry {
+            margin-bottom: 0.4rem;
+            opacity: 0.8;
+        }
+        .log-entry:last-child { opacity: 1; font-weight: bold; }
+        .log-time { color: var(--text-secondary); margin-right: 0.5rem; }
+        .log-msg { color: var(--text-primary); }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* LOADING STATE */
+        .loading {
+            filter: blur(2px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+        <h1>WENDY // MISSION CONTROL</h1>
+    </div>
+    <div class="status-badge" id="system-status">INITIALIZING...</div>
+</header>
+
+<main id="dashboard-grid" class="loading">
+    
+    <!-- BREATH VISUALIZER -->
+    <div class="card breath-card">
+        <div class="metric-group">
+            <div class="card-label">Current Phase</div>
+            <div class="big-number" id="val-phase">--</div>
+            <div class="unit">/ 1.0 Cycle</div>
+        </div>
+        
+        <div class="visualizer-container">
+            <canvas id="wave-canvas"></canvas>
+        </div>
+
+        <div class="metric-group">
+            <div class="card-label">Intensity</div>
+            <div class="big-number" id="val-intensity" style="color:var(--accent-blue)">--</div>
+            <div class="unit">% Energy</div>
+        </div>
+    </div>
+
+    <!-- METABOLICS -->
+    <div class="card">
+        <div class="card-label">Breathing Period</div>
+        <div class="card-value" id="val-period">--</div>
+        <div class="card-sub">Minutes per cycle</div>
+    </div>
+
+    <div class="card">
+        <div class="card-label">Total Cycles Completed</div>
+        <div class="card-value" id="val-cycles">--</div>
+        <div class="card-sub">Lifetime breaths</div>
+    </div>
+
+    <div class="card">
+        <div class="card-label">Last Action Taken</div>
+        <div class="card-value" id="val-action" style="font-size:1.5rem; word-break:break-all;">--</div>
+        <div class="card-sub" id="val-reason">Waiting for telemetry...</div>
+    </div>
+
+    <div class="card">
+        <div class="card-label">Spawned Agents</div>
+        <div class="card-value" id="val-agents-count">0</div>
+        <div class="card-sub" id="val-agents-list">None yet</div>
+    </div>
+
+    <!-- TELEMETRY LOG -->
+    <div class="card console-card" id="telemetry-log">
+        <div class="log-entry"><span class="log-time">[--:--:--]</span><span class="log-msg">Connecting to PSIVI Mesh...</span></div>
+    </div>
+
+</main>
+
+<footer>
+    <div>Source: psivicom.github.io/src/wendy_metabolism.json</div>
+    <div id="last-update">Updated: Never</div>
+</footer>
+
+<script>
+    // CONFIG
+    const REPO_OWNER = 'psivicom';
+    const REPO_NAME = 'psivicom.github.io';
+    const BRANCH = 'main';
+    const FILE_PATH = 'src/wendy_metabolism.json';
+    const REFRESH_INTERVAL_MS = 5000; // Check every 5 seconds
+
+    // DOM ELEMENTS
+    const els = {
+        status: document.getElementById('system-status'),
+        phase: document.getElementById('val-phase'),
+        intensity: document.getElementById('val-intensity'),
+        period: document.getElementById('val-period'),
+        cycles: document.getElementById('val-cycles'),
+        action: document.getElementById('val-action'),
+        reason: document.getElementById('val-reason'),
+        agentsCount: document.getElementById('val-agents-count'),
+        agentsList: document.getElementById('val-agents-list'),
+        log: document.getElementById('telemetry-log'),
+        lastUpdate: document.getElementById('last-update'),
+        grid: document.getElementById('dashboard-grid')
+    };
+
+    // CANVAS SETUP
+    const canvas = document.getElementById('wave-canvas');
+    const ctx = canvas.getContext('2d');
+    let waveOffset = 0;
+
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawWave(phase) {
+        const w = canvas.width;
+        const h = canvas.height;
+        const mid = h / 2;
+        
+        ctx.clearRect(0, 0, w, h);
+        
+        // Draw Grid Lines
+        ctx.strokeStyle = '#1a1a1a';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for(let i=0; i<w; i+=20) { ctx.moveTo(i, 0); ctx.lineTo(i, h); }
+        for(let i=0; i<h; i+=20) { ctx.moveTo(0, i); ctx.lineTo(w, i); }
+        ctx.stroke();
+
+        // Draw Sine Wave based on current phase
+        ctx.strokeStyle = '#00ff41';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#00ff41';
+        
+        ctx.beginPath();
+        const frequency = Math.PI * 2 / w;
+        // Shift wave so the peak aligns roughly with current phase visual
+        
+        for (let x = 0; x <= w; x++) {
+            // Map x to angle
+            const angle = (x / w) * Math.PI * 2 + waveOffset;
+            const y = mid - Math.sin(angle) * (mid * 0.8);
+            
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        
+        // Draw Current Position Indicator
+        const posX = phase * w;
+        const posAngle = (posX / w) * Math.PI * 2 + waveOffset;
+        const posY = mid - Math.sin(posAngle) * (mid * 0.8);
+        
+        ctx.fillStyle = '#fff';
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.arc(posX, posY, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Animate offset slowly
+        waveOffset += 0.02;
+        requestAnimationFrame(() => drawWave(phase));
+    }
+
+    // LOGGING HELPER
+    function addLog(msg, type = 'info') {
+        const now = new Date().toLocaleTimeString('en-US', {hour12: false});
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        div.innerHTML = `<span class="log-time">[${now}]</span><span class="log-msg">${msg}</span>`;
+        els.log.prepend(div);
+        
+        // Keep only last 50 logs
+        if (els.log.children.length > 50) {
+            els.log.removeChild(els.log.lastChild);
+        }
+    }
+
+    // FETCH DATA
+    async function fetchTelemetry() {
+        try {
+            const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${FILE_PATH}?t=${Date.now()}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const data = await response.json();
+            updateUI(data);
+            
+            els.grid.classList.remove('loading');
+            els.status.textContent = "LIVE";
+            els.status.style.color = "var(--accent-green)";
+            els.status.style.borderColor = "var(--accent-green)";
+            
+        } catch (error) {
+            console.error(error);
+            els.status.textContent = "DISCONNECTED";
+            els.status.style.color = "var(--accent-red)";
+            els.status.style.borderColor = "var(--accent-red)";
+            addLog(`Error fetching telemetry: ${error.message}`, 'error');
+        }
+    }
+
+    function updateUI(data) {
+        // Update Numbers
+        els.phase.textContent = data.phase.toFixed(4);
+        els.intensity.textContent = (data.intensity * 100).toFixed(1) + '%';
+        els.period.textContent = data.period_minutes;
+        els.cycles.textContent = data.total_cycles_completed;
+        
+        // Determine Action Color
+        let actionColor = 'var(--text-primary)';
+        if (data.should_act === 'true') {
+            if (data.action === 'SCAN' || data.action === 'EVOLVE') actionColor = 'var(--accent-red)';
+            else if (data.action === 'MAINTAIN') actionColor = 'var(--accent-blue)';
+            else actionColor = 'var(--accent-green)';
+        }
+        
+        els.action.textContent = data.action;
+        els.action.style.color = actionColor;
+        els.reason.textContent = data.reason;
+
+        // Agents
+        const agents = data.spawned_agents || [];
+        els.agentsCount.textContent = agents.length;
+        els.agentsList.textContent = agents.length > 0 ? agents.join(', ') : 'None yet';
+
+        // Timestamp
+        els.lastUpdate.textContent = `Updated: ${new Date().toLocaleString()}`;
+
+        // Log significant events
+        if (data.should_act === 'true') {
+             addLog(`ACTION: ${data.action} (${data.reason})`);
+        }
+
+        // Start Visualizer Loop with current phase
+        drawWave(data.phase);
+    }
+
+    // INIT
+    addLog("Mission Control Online.");
+    addLog("Establishing link to PSIVI Mesh...");
+    
+    // Initial Fetch
+    fetchTelemetry();
+    
+    // Polling
+    setInterval(fetchTelemetry, REFRESH_INTERVAL_MS);
+
+</script>
+
+</body>
+</html>
