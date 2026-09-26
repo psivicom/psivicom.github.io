@@ -1,31 +1,25 @@
 # src/tools/auto_reporter.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Main entry point for cloud daemon automation (replaces local bash scripts)
+# Main entry point for cloud daemon automation
 
-import sys
 import logging
 from pathlib import Path
-
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.agents.instruction_agent import InstructionAgent
 from src.agents.agent_factory import AgentFactory
 from src.agents.report_generator_agent import ReportGeneratorAgent
 
-# Configure logging for GitHub Actions output
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)]
+    handlers=[logging.StreamHandler()]
 )
 logger = logging.getLogger("AutoReporter")
 
 def main():
     logger.info("🚀 Starting PSIVI Mesh Automation Loop")
     
-    # 1. Handle Instructions (Spawn Agents, Update Configs, etc.)
     logger.info("📥 Scanning instruction queue...")
     instruction_agent = InstructionAgent()
     factory = AgentFactory()
@@ -37,7 +31,6 @@ def main():
         logger.error(f"❌ Instruction processing failed: {e}")
         inst_count = 0
     
-    # 2. Generate Reports (Based on updated Mesh State)
     if inst_count > 0:
         logger.info("📊 Triggering report generation for updated mesh state...")
         try:
