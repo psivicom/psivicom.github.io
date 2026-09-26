@@ -1,16 +1,18 @@
 # .github/workflows/breath.yml
-name: Wendy Breath (Sinusoidal Rhythm)
+name: Wendy Breath (Autonomous Rhythm)
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # The Heartbeat Monitor (checks every 5 mins)
-  workflow_dispatch:
+    - cron: '*/5 * * * *' # The Heartbeat
+  workflow_dispatch:      # Manual Override
 
 permissions:
   contents: write
+  actions: read           # Required to trigger other workflows via API
 
 env:
   PYTHONPATH: ${{ github.workspace }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Explicitly pass token for API calls
 
 jobs:
   breathe:
@@ -29,58 +31,46 @@ jobs:
       - name: Install Deps
         run: pip install numpy pyyaml requests python-dateutil
 
-      - name: 🫁 Calculate Breath Phase
+      - name: 🫁 Calculate Breath & Act
         id: breath
         run: |
-          # This script calculates WHERE we are in the sine wave
-          # and decides IF we should exhale (act) or inhale (rest).
+          # Run the engine. It prints JSON to stdout.
+          python src/breath_engine.py > decision.json
           
-          python src/breath_engine.py > breath_state.json
-          
-          PHASE=$(jq -r '.phase' breath_state.json)       # 0.0 to 1.0 position in cycle
-          INTENSITY=$(jq -r '.intensity' breath_state.json) # Current energy level (0.0 to 1.0)
-          SHOULD_ACT=$(jq -r '.should_act' breath_state.json) # Boolean
-          ACTION=$(jq -r '.action' breath_state.json)     # What to do if acting
+          # Parse outputs for GitHub Actions context
+          PHASE=$(jq -r '.phase' decision.json)
+          INTENSITY=$(jq -r '.intensity' decision.json)
+          SHOULD_ACT=$(jq -r '.should_act' decision.json)
+          ACTION=$(jq -r '.action' decision.json)
+          REASON=$(jq -r '.reason' decision.json)
           
           echo "phase=$PHASE" >> $GITHUB_OUTPUT
           echo "intensity=$INTENSITY" >> $GITHUB_OUTPUT
           echo "should_act=$SHOULD_ACT" >> $GITHUB_OUTPUT
           echo "action=$ACTION" >> $GITHUB_OUTPUT
           
-          cat breath_state.json
+          cat decision.json
 
-      - name: 💨 Exhale (Act)
-        if: steps.breath.outputs.should_act == 'true'
-        run: |
-          ACTION="${{ steps.breath.outputs.action }}"
-          INTENSITY="${{ steps.breath.outputs.intensity }}"
-          
-          echo "🌬️ Breathing Out... Intensity: $INTENSITY | Action: $ACTION"
-          
-          if [ "$ACTION" == "SCAN" ]; then
-            python -m src.agents.pilot_agent
-          elif [ "$ACTION" == "OPTIMIZE" ]; then
-            python -m src.agents.optimization_agent || true
-          fi
-
-      - name: 📝 Update Metabolic Memory
+      - name: 💾 Commit Memory & Evolutions
+        if: always()
         run: |
           git config user.name "Wendy-Breath"
           git config user.email "breath@psivi.com"
           
-          # We only commit the memory file to track the phase progression
-          # Actual data changes from agents are committed separately if they occur
+          # Add everything Wendy might have changed:
+          # 1. Her memory file
+          # 2. Any new agents she spawned
+          # 3. Any reports generated
           git add src/wendy_metabolism.json
+          git add src/agents/
+          git add reports/
+          git add config/
           
-          # Only push if the metabolic state changed significantly 
-          # OR if an action occurred
           if ! git diff --staged --quiet; then
-             MSG="auto: breath cycle updated (Phase: ${PHASE})"
-             if [ "${{ steps.breath.outputs.should_act }}" == "true" ]; then
-               MSG="auto: exhaled ($ACTION) at intensity ${INTENSITY}"
-             fi
-             git commit -m "$MSG"
-             git push
+            MSG="auto: wendy breathed [Phase:${{ steps.breath.outputs.phase }}] [Action:${{ steps.breath.outputs.action }}]"
+            git commit -m "$MSG"
+            git push
+            echo "✅ Changes committed."
           else
-             echo "💤 Inhaling... No change needed."
+            echo "💤 No changes to commit."
           fi
