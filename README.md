@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-26T17:21:57.929Z | Hash: 0348823e71dfcc36eb7cab240c91354ac582b88d93e17da5ce29ede52717439d -->
+<!-- Last updated: 2026-09-26T17:40:22.159Z | Hash: 731f2a47264cca7bcab422224006108fb4d7b20bff41daf8e109a76fbcc816a2 -->
 
 ```
 psivicom.github.io/
@@ -672,7 +672,8 @@ psivicom.github.io/
 ├── sitemap.xml
 ├── test_rfc1001_compliance.py
 ├── volunteer_node.py
-└── volunteer_worker.py
+├── volunteer_worker.py
+└── wendy.html
 ```
 <!-- AUTO_TREE_END -->
 
