@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-26T00:21:40.670Z | Hash: 893d4a336d483fa1ac108d34f0eecd993bcf032907f6eef70094adc90c52f7c9 -->
+<!-- Last updated: 2026-09-26T00:23:25.172Z | Hash: 7a3042211fe5bbb7b33e097fefe5cefb1245273f4954c57f1f2a8c62696f5cad -->
 
 ```
 psivicom.github.io/
@@ -128,6 +128,7 @@ psivicom.github.io/
 │       ├── critic-agent.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
+│       ├── immune-response.yml
 │       ├── instruction-handler.yml
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
