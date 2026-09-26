@@ -208,6 +208,7 @@ psivicom.github.io/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md
 │   ├── QWEN/
+│   │   ├── AUTONOMY_MANIFESTO.md
 │   │   ├── A_README.md
 │   │   ├── A_psivi-mesh-bridge.yml
 │   │   ├── BEGIN.py
