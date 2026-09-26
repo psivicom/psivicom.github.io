@@ -409,8 +409,6 @@ psivicom.github.io/
 │   ├── BEGIN_SEALER.py
 │   └── fix_archive_names.py
 ├── src/
-│   ├── CALCULATING/
-│   │   └── __init__.py
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── agent_factory.py
@@ -439,6 +437,8 @@ psivicom.github.io/
 │   ├── base/
 │   │   ├── __init__.py
 │   │   └── base_agent.py
+│   ├── calculating/
+│   │   └── __init__.py
 │   ├── core/
 │   │   ├──  __init__.py
 │   │   ├── Deprecated_psvc_builder.py
