@@ -167,7 +167,8 @@ psivicom.github.io/
 │   │   ├── .processed/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.json
 │   │   │   └── instruction_spawn_agent_20260925004328207.psvc
-│   │   └── instruction_spawn_agent_20260925042134365.json
+│   │   ├── instruction_spawn_agent_20260925042134365.json
+│   │   └── wendy_initial_request.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv

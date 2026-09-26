@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-26T03:14:07.387Z | Hash: 23a9ec6b1f9ca20cfb1a04f25942cc52064149034ce31133952fce26b49fa725 -->
+<!-- Last updated: 2026-09-26T03:20:41.946Z | Hash: 5afef883e61600bbf507957f95079936ebb11bfbbe8caeb7cac858912cbe3e6c -->
 
 ```
 psivicom.github.io/
@@ -286,7 +286,8 @@ psivicom.github.io/
 │   │   ├── .processed/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.json
 │   │   │   └── instruction_spawn_agent_20260925004328207.psvc
-│   │   └── instruction_spawn_agent_20260925042134365.json
+│   │   ├── instruction_spawn_agent_20260925042134365.json
+│   │   └── wendy_initial_request.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
