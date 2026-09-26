@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-26T15:42:15.902Z | Hash: fba78a6ac4828d49001d8717ff4e0eeda0db4428e438754a9906cb51b57c7d9d -->
+<!-- Last updated: 2026-09-26T15:44:03.719Z | Hash: e2173d23ce89127421664dbb12cc10105dc6c0baf9d996db46286dddd0e63a49 -->
 
 ```
 psivicom.github.io/
@@ -610,6 +610,7 @@ psivicom.github.io/
 │   │   ├── osdr_query.py
 │   │   └── validate_mesh.py
 │   ├──  __init__.py
+│   ├── breath_engine.py
 │   ├── mirror_agent.py
 │   └── wendy.py
 ├── tests/
