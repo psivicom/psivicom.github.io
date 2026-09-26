@@ -3,14 +3,11 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 # Intelligent Dataset Discovery Agent
 
-import sys
 import json
 import logging
 import requests
 from pathlib import Path
 from typing import List, Dict, Any, Optional
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.data_registry import DataRegistry
