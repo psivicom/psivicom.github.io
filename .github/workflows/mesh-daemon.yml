@@ -39,7 +39,9 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install numpy pyyaml
+          # Only install lightweight deps required for the mesh logic
+          # Removed torch/numpy heavy deps to prevent timeout/failure if not strictly needed by core agents
+          pip install numpy pyyaml requests python-dateutil
 
       - name: Ensure Directories Exist
         run: |
