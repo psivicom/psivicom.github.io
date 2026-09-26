@@ -1,0 +1,22 @@
+name: Wendy Auto-Pilot
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # Every 15 mins
+  workflow_dispatch:       # Allows manual click "Run Workflow"
+
+permissions:
+  contents: write
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install numpy pyyaml requests python-dateutil
+      - run: python src/wendy.py
