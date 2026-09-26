@@ -1,21 +1,15 @@
 # src/agents/agent_factory.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Safely generates new agent files from templates based on external instructions
 
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 
 class AgentFactory:
-    """
-    Generates agent Python files using safe templating.
-    External AI specifies template_name + params, not raw code.
-    """
-    
     def __init__(self, templates_path: str = "config/agent_templates.json"):
         self.templates_path = Path(templates_path)
         self.templates = self._load_templates()
@@ -31,10 +25,6 @@ class AgentFactory:
             return data.get("templates", {})
 
     def create_agent(self, params: Dict[str, Any]) -> bool:
-        """
-        Creates a new agent file based on template and params.
-        params: {"template_name": "satellite_observer", "agent_name": "sentinel_1", "config": {...}}
-        """
         template_name = params.get("template_name")
         agent_name = params.get("agent_name")
         config = params.get("config", {})
