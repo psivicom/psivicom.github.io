@@ -1,4 +1,9 @@
 # .github/workflows/mesh-daemon.yml
+# .github/workflows/mesh-daemon.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# Cloud-based autonomous daemon for AI-to-Mesh collaboration
+
 name: Mesh Daemon (Auto-Process Instructions)
 
 on:
@@ -6,43 +11,66 @@ on:
     branches: [ main ]
     paths:
       - 'data/instruction_queue/**'
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
 
 jobs:
   process-instructions:
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Execute Mesh Governor
         run: |
-          if [ -f "src/mesh/mesh_governor.py" ]; then
-            python src/mesh/mesh_governor.py
-          elif [ -f "src/mesh/pico_mesh.py" ]; then
-            python src/mesh/pico_mesh.py
+          python -m pip install --upgrade pip
+          pip install numpy pyyaml
+
+      - name: Ensure Directories Exist
+        run: |
+          mkdir -p data/instruction_queue
+          mkdir -p reports/scientific_reports
+          mkdir -p logs
+
+      - name: Run Mesh Automation Loop
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "🔄 Starting autonomous mesh processing loop..."
+          python -m src.tools.auto_reporter
+
+      - name: Commit Generated Agents and Reports
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "PSIVI Mesh Daemon"
+          git config user.email "daemon@psivi.com"
+          
+          git add src/agents/*_agent.py
+          git add reports/scientific_reports/
+          git add data/instruction_queue/
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: daemon processed instructions and generated scientific artifacts [skip ci]"
+            git push
+            echo "✅ Changes committed and pushed to repository."
           else
-            echo "Mesh daemon not found"
-            exit 1
+            echo "ℹ️ No new changes to commit."
           fi
-
-      - name: Validate Ledger Before Commit (Circuit Breaker)
-        run: python src/core/ledger_validator.py reports/pilot_report.json
-
-      - name: Commit State Changes
-        uses: stefanzweifel/git-auto-commit-action@v6
-        with:
-          commit_message: "chore(mesh): daemon auto-process execution"
-          branch: main
