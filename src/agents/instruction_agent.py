@@ -1,23 +1,18 @@
 # src/agents/instruction_agent.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Monitors instruction queue for external AI commands via .psvc containers
 
 import json
 import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 from src.base.base_agent import BaseAgent, AgentLayer
-from src.core.psvc_reference import validate_file, read_file
+from src.core.psvc_reference import validate_file
 
 logger = logging.getLogger(__name__)
 
 class InstructionAgent(BaseAgent):
-    """
-    Scans data/instruction_queue/ for .psvc files dropped by external AI.
-    Parses sidecar JSON for commands (e.g., spawn_agent, update_config).
-    """
     LAYER = AgentLayer.INGESTION
 
     def __init__(self, name: str = "instruction", queue_dir: str = "data/instruction_queue"):
