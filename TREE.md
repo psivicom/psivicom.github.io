@@ -24,6 +24,7 @@ psivicom.github.io/
 │       ├── neuroplasticity.yml
 │       ├── normalize-archive-names.yml
 │       ├── orchestrator.yml
+│       ├── pages.yml
 │       ├── pilot-agent.yml
 │       ├── pilot-scan.yml
 │       ├── psivi-full-loop.yml
