@@ -25,25 +25,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for git metadata if needed by plugins
+          fetch-depth: 0
       
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3' # Compatible with latest GitHub Pages Jekyll
-          bundler-cache: true # caches intermediate bundle installation, speeds up builds
+          ruby-version: '3.3'
+          # Do NOT use bundler-cache here because there is no Gemfile in the repo root.
+          # The GitHub Pages environment provides its own gems via the jekyll-build-pages action or system packages.
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Install dependencies
+      - name: Install dependencies and Build
         run: |
-          bundle install --path vendor/bundle
-
-      - name: Build with Jekyll
-        # Uses standard jekyll build instead of the docker-based action to avoid timeout/cancellation issues
-        # and allows better control over liquid warnings/errors if necessary
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+          # Since there is no Gemfile, we rely on the pre-installed github-pages gem 
+          # which includes Jekyll and all standard plugins.
+          # We explicitly install it to ensure availability if not present in base image.
+          gem install github-pages --no-document
+          
+          # Build using the github-pages wrapper which handles config and plugins automatically
+          bundle exec jekyll build --destination _site --baseurl "${{ steps.pages.outputs.base_path }}" || \
+          jekyll build --destination _site --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
 
