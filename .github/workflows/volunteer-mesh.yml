@@ -1,33 +1,44 @@
+# .github/workflows/volunteer-mesh.yml
 name: Volunteer Mesh
 
 on:
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: '45 * * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  volunteer:
-    runs-on: ubuntu-latest
+  volunteer-sync:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+
       - name: Install Dependencies
         run: pip install -r requirements.txt
-      - name: Run Volunteer Worker
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.nodes.volunteer_worker
-      - name: Commit volunteer status
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Execute Volunteer Worker
         run: |
-          git config user.name "PSIVI Volunteer Mesh"
-          git config user.email "volunteer@users.noreply.github.com"
-          git add reports/
-          git diff --staged --quiet || git commit -m "volunteer: processed distributed tasks"
-          git push
+          if [ -f "src/mesh/volunteer_worker.py" ]; then
+            python src/mesh/volunteer_worker.py
+          else
+            echo "Volunteer worker not found"
+            exit 1
+          fi
+
+      - name: Validate Ledger Before Commit (Circuit Breaker)
+        run: python src/core/ledger_validator.py reports/pilot_report.json
+
+      - name: Commit State Changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "chore(mesh): volunteer node sync"
+          branch: main
