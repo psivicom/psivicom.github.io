@@ -1,12 +1,10 @@
-"""
-AETHER VANGUARD - Autonomous Mesh Orchestrator
-Purpose: Ingests heterogeneous data, auto-selects encoders, and routes vector pixels.
-"""
+# src/mesh/mesh_brain.py
 import asyncio
 import websockets
 import json
 import torch
 from src.core.vector_pixelizer import VectorPixelizer
+from src.orchestrator.psvc_provisioner import PSVCProvisioner
 
 class MeshBrain:
     def __init__(self):
@@ -37,25 +35,23 @@ class MeshBrain:
         encoder = self.encoders.get(modality)
         latent_vector = encoder(raw_data)
         
-               from src.orchestrator.psvc_provisioner import PSVCProvisioner
-        
-        # 1. Calculate required VRAM
+        # 2. Calculate required VRAM
         required_vram = (latent_vector.element_size() * latent_vector.nelement()) / (1024 * 1024)
         
-        # 2. Provision a secure .psvc container for this exact payload
+        # 3. Provision a secure .psvc container for this exact payload
         provisioner = PSVCProvisioner()
         provisioner.spawn_pico_node(node_id="GOLDSTREAM_01", target_vram_mb=int(required_vram * 1.5))
         
-        # 3. Select the newly provisioned node
+        # 4. Select the newly provisioned node
         target_node = self._select_optimal_node(required_vram)
         if not target_node:
             print("Error: No volunteer nodes with sufficient VRAM available.")
             return
 
-        # 3. Pixelize and Shard
+        # 5. Pixelize and Shard
         pixel_data = self.pixelizer.pixelize(latent_vector, target_node["vram_dim_mb"], num_shards=1)
         
-        # 4. Transmit pure tensors over the mesh (No text/JSON overhead for the tensor itself)
+        # 6. Transmit pure tensors over the mesh (No text/JSON overhead for the tensor itself)
         payload = {
             "action": "ASSIGN_PIXEL_SHARD",
             "pixel_id": pixel_data["pixel_id"],
