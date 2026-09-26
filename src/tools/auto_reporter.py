@@ -1,10 +1,8 @@
 # src/tools/auto_reporter.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Main entry point for cloud daemon automation
 
 import logging
-from pathlib import Path
 
 from src.agents.instruction_agent import InstructionAgent
 from src.agents.agent_factory import AgentFactory
