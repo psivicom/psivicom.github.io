@@ -10,11 +10,12 @@ import numpy as np
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-src_root = Path(__file__).parent.parent
-sys.path.insert(0, str(src_root))
+# Ensure project root is in path for absolute imports if run directly
+# However, this file relies on PYTHONPATH being set correctly by the runner
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from base.base_agent import BaseAgent, AgentLayer
-from core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, read_file, validate_file
+from src.base.base_agent import BaseAgent, AgentLayer
+from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, read_file, validate_file
 
 class PilotAgent(BaseAgent):
     LAYER = AgentLayer.VALIDATION
