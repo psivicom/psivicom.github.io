@@ -53,6 +53,7 @@ jobs:
         run: |
           echo "🧬 Starting Dynamic Chain Orchestration..."
           # CRITICAL FIX: Use -m to respect PYTHONPATH and avoid ModuleNotFoundError
+          # This ensures that imports like `from src.core...` resolve correctly relative to the workspace root
           python -m src.orchestrator.chain_orchestrator
 
       - name: Commit Generated Artifacts
