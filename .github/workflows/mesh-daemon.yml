@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Mesh Daemon (Auto-Process Instructions)
+name: Mesh Daemon (Auto-Process, Optimize & Heal)
 
 on:
   push:
@@ -46,6 +46,7 @@ jobs:
           mkdir -p data/instruction_queue
           mkdir -p reports/scientific_reports
           mkdir -p logs
+          mkdir -p config
 
       - name: Run Mesh Automation Loop
         env:
@@ -54,19 +55,37 @@ jobs:
           echo "🔄 Starting autonomous mesh processing loop..."
           python -m src.tools.auto_reporter
 
-      - name: Commit Generated Agents and Reports
+      - name: Run Optimization Cycle (WENDY Authorized)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "🔍 Running optimization analysis..."
+          python -m src.agents.optimization_agent
+
+      - name: Run Self-Healing Audit (Autonomous Evolution)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "🩺 Running autonomous code health check..."
+          python -m src.agents.self_healing_agent
+
+      - name: Commit Generated Agents, Reports, Optimizations, and Patches
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "PSIVI Mesh Daemon"
+          git config user.name "PSIVI Mesh Daemon (WENDY Authorized)"
           git config user.email "daemon@psivi.com"
           
           git add src/agents/*_agent.py
           git add reports/scientific_reports/
           git add data/instruction_queue/
+          git add config/*.json
+          git add config/*.yaml
+          # Add any patched source files
+          git add src/
           
           if ! git diff --staged --quiet; then
-            git commit -m "auto: daemon processed instructions and generated scientific artifacts [skip ci]"
+            git commit -m "auto: daemon processed instructions, optimized system, healed code, and generated artifacts [skip ci]"
             git push
             echo "✅ Changes committed and pushed to repository."
           else
