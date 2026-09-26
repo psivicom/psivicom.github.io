@@ -1,33 +1,44 @@
+# .github/workflows/neuroplasticity.yml
 name: Neuroplasticity
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '30 */6 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  neuro:
-    runs-on: ubuntu-latest
+  neuroplasticity-update:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+
       - name: Install Dependencies
         run: pip install -r requirements.txt
-      - name: Run Neuroplasticity
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.pipelines.research_pipeline
-      - name: Commit neuro report
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Execute Neuroplasticity Agent
         run: |
-          git config user.name "PSIVI Neuroplasticity"
-          git config user.email "neuro@users.noreply.github.com"
-          git add reports/
-          git diff --staged --quiet || git commit -m "neuro: executed research pipeline"
-          git push
+          if [ -f "src/agents/neuroplasticity_agent.py" ]; then
+            python src/agents/neuroplasticity_agent.py
+          else
+            echo "Neuroplasticity agent not found"
+            exit 1
+          fi
+
+      - name: Validate Ledger Before Commit (Circuit Breaker)
+        run: python src/core/ledger_validator.py reports/pilot_report.json
+
+      - name: Commit State Changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "chore(mesh): neuroplasticity vector update"
+          branch: main
