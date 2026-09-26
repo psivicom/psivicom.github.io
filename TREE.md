@@ -244,7 +244,8 @@ psivicom.github.io/
 │   │   ├── python_protocol_qwen.md
 │   │   ├── qwenwanttorememberwendyprompts.md
 │   │   ├── theifealsystemwendyprompt.md
-│   │   └── wendyandaethermesh.json
+│   │   ├── wendyandaethermesh.json
+│   │   └── wendyisbreathing.md
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/

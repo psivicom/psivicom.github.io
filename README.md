@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-26T16:57:04.960Z | Hash: 4f63053476063334fe80bd51cea889892e954172b5b36f95718cba9e9f0aff47 -->
+<!-- Last updated: 2026-09-26T17:16:17.099Z | Hash: 0348823e71dfcc36eb7cab240c91354ac582b88d93e17da5ce29ede52717439d -->
 
 ```
 psivicom.github.io/
@@ -363,7 +363,8 @@ psivicom.github.io/
 │   │   ├── python_protocol_qwen.md
 │   │   ├── qwenwanttorememberwendyprompts.md
 │   │   ├── theifealsystemwendyprompt.md
-│   │   └── wendyandaethermesh.json
+│   │   ├── wendyandaethermesh.json
+│   │   └── wendyisbreathing.md
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
