@@ -231,6 +231,7 @@ psivicom.github.io/
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   ├── psivi_ai_collaboration.json
 │   │   ├── python_helper_for_wendy.py
+│   │   ├── python_protocol_qwen.md
 │   │   ├── qwenwanttorememberwendyprompts.md
 │   │   ├── theifealsystemwendyprompt.md
 │   │   └── wendyandaethermesh.json
