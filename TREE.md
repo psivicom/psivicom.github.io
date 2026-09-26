@@ -38,6 +38,7 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
+│       ├── wendy.yml 
 │       └── workflow-integrity.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
