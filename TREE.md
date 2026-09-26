@@ -493,7 +493,8 @@ psivicom.github.io/
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
-│   └── wendy.py
+│   ├── wendy.py
+│   └── wendy_metabolism.json
 ├── tests/
 │   ├── __init__.py
 │   ├── test_elastic_evolution.py
