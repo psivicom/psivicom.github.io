@@ -1,22 +1,81 @@
-from src.base.base_agent import BaseAgent, AgentLayer
-from typing import Dict, Any
+# src/agents/instruction_agent.py
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# Monitors instruction queue for external AI commands via .psvc containers
 
+import json
+import logging
+from pathlib import Path
+from typing import List, Dict, Any, Optional
+
+from src.base.base_agent import BaseAgent, AgentLayer
+from src.core.psvc_reference import validate_file, read_file
+
+logger = logging.getLogger(__name__)
 
 class InstructionAgent(BaseAgent):
-    """Agent responsible for parsing and routing auto-process instructions."""
+    """
+    Scans data/instruction_queue/ for .psvc files dropped by external AI.
+    Parses sidecar JSON for commands (e.g., spawn_agent, update_config).
+    """
+    LAYER = AgentLayer.INGESTION
 
-    def __init__(self):
-        super().__init__(name="InstructionAgent", layer=AgentLayer.PROCESSING)
+    def __init__(self, name: str = "instruction", queue_dir: str = "data/instruction_queue"):
+        super().__init__(name, capabilities=["monitor", "parse", "trigger"])
+        self.queue_dir = Path(queue_dir)
+        self.queue_dir.mkdir(parents=True, exist_ok=True)
+        self.processed_instructions = set()
 
-    async def execute(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        # Implementation details preserved from original logic
-        instruction_type = payload.get("type", "unknown")
+    def scan_for_instructions(self) -> List[Dict[str, Any]]:
+        instructions = []
+        for psvc_file in self.queue_dir.glob("*.psvc"):
+            if psvc_file.stem in self.processed_instructions:
+                continue
+            try:
+                validate_file(psvc_file)
+                sidecar = psvc_file.with_suffix('.json')
+                if not sidecar.exists():
+                    logger.warning(f"Instruction {psvc_file.name} missing sidecar")
+                    continue
+                
+                with open(sidecar) as f:
+                    meta = json.load(f)
+                
+                if 'command' not in meta:
+                    logger.warning(f"Instruction {psvc_file.name} missing 'command' field")
+                    continue
+                
+                instructions.append({"file": psvc_file, "meta": meta})
+                self.processed_instructions.add(psvc_file.stem)
+                self.seal("instruction_detected", {"command": meta.get('command')})
+            except Exception as e:
+                logger.error(f"Failed to validate instruction {psvc_file.name}: {e}")
+        return instructions
+
+    def execute(self, factory: Any = None) -> int:
+        logger.info(f"[{self.agent_id}] Scanning instruction queue...")
+        instructions = self.scan_for_instructions()
+        executed_count = 0
         
-        if instruction_type == "mesh_process":
-            await self.process_mesh_instructions(payload)
+        for inst in instructions:
+            command = inst['meta'].get('command')
+            params = inst['meta'].get('params', {})
             
-        return {"status": "completed", "agent": self.name}
+            if command == "spawn_agent" and factory:
+                success = factory.create_agent(params)
+                if success:
+                    executed_count += 1
+                    self.seal("instruction_executed", {"command": command, "status": "success"})
+                else:
+                    self.seal("instruction_executed", {"command": command, "status": "failed"}, fragility=True)
+            else:
+                logger.warning(f"Unknown or unhandled command: {command}")
+                self.seal("instruction_unknown", {"command": command})
+                
+        return executed_count
 
-    async def process_mesh_instructions(self, payload: Dict[str, Any]) -> None:
-        # Placeholder for actual processing logic
-        pass
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    agent = InstructionAgent()
+    count = agent.execute()
+    logger.info(f"Processed {count} instructions")
