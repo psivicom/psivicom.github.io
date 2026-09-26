@@ -3,16 +3,10 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 # RFC 1001 Compliant | OSDR-Inspired Fragility Detection | Optimized Lookup
 
-import sys
-import os
 import json
 import numpy as np
 from pathlib import Path
 from typing import List, Dict, Tuple
-
-# Ensure project root is in path for absolute imports if run directly
-# However, this file relies on PYTHONPATH being set correctly by the runner
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, read_file, validate_file
