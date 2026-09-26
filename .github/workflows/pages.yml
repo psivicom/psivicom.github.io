@@ -32,7 +32,7 @@ jobs:
         with:
           ruby-version: '3.3'
           # bundler-cache is disabled because there is no Gemfile in the root directory.
-          # We rely on the system-installed github-pages gem instead.
+          # We rely on installing the github-pages gem directly instead.
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
