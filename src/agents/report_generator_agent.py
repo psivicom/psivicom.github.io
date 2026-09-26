@@ -3,15 +3,12 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 # Executes instructions and generates FAIR scientific reports
 
-import sys
 import json
 import logging
 import numpy as np
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16
