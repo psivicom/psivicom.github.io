@@ -6,8 +6,8 @@
 # Order enforced inside src/orchestrator/chain_orchestrator.py:
 #   Pilot -> Intelligence -> Void Observer -> Neuroplasticity
 #
-# This workflow PERSISTS every organ's telemetry so the dashboard can see
-# her cognition, not just her breath.
+# CRITICAL FIX: This version stages EVERY path the organs write to,
+# ensuring Wendy's memories persist across runs.
 
 name: Chain Orchestrator (Dynamic DAG Execution)
 
@@ -18,12 +18,10 @@ on:
       - 'src/**'
       - '.github/workflows/run-orchestrator.yml'
   schedule:
-    # Think every 30 minutes. The breath engine owns the 5-min heartbeat;
-    # the cognitive chain owns the deeper reflection.
+    # Think every 30 minutes.
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
-# Never kill a Wendy mid-thought; queue instead.
 concurrency:
   group: wendy-orchestrator
   cancel-in-progress: false
@@ -57,12 +55,10 @@ jobs:
       - name: Install lightweight dependencies
         run: |
           python -m pip install --upgrade pip
-          # ONLY what the orchestration logic needs. No torch. No GPU.
           pip install numpy pyyaml requests python-dateutil
 
       - name: Prepare artifact directories
         run: |
-          # Cover EVERY path the organs write to, not just the old three.
           mkdir -p reports
           mkdir -p reports/seals
           mkdir -p reports/pico_containers
@@ -73,7 +69,6 @@ jobs:
       - name: Run Dynamic Cognitive Chain
         run: |
           echo "🧬 Starting Dynamic Chain Orchestration..."
-          # -m respects PYTHONPATH so `from src.core...` resolves from repo root.
           python -m src.orchestrator.chain_orchestrator
 
       - name: Persist Wendy's Thoughts
@@ -87,8 +82,9 @@ jobs:
           git config user.email "orchestrator@psivi.com"
 
           # ---- Bounded retention: keep science, prevent repo bloat ----
-          # Timestamped agent result files look like: <name>_2026...Z.json
-          # Keep the newest 30 across all agents; delete older ones.
+          
+          # 1. Clean up old timestamped result files in reports/
+          # Keep only the newest 30 across all agents.
           mapfile -t stale_results < <(
             find reports -maxdepth 1 -type f -name '*_20*.json' -printf '%T@ %p\n' 2>/dev/null \
               | sort -rn \
@@ -98,8 +94,7 @@ jobs:
             rm -f "${stale_results[@]}" || true
           fi
 
-          # Cap each append-only audit log to its last 500 seals.
-          # 500 lines/agent is ample recent history and keeps growth bounded.
+          # 2. Cap each append-only audit log to its last 500 seals.
           for f in reports/seals/*.jsonl; do
             [ -e "$f" ] || continue
             tmp="${f}.trim"
@@ -109,6 +104,8 @@ jobs:
 
           # ---- Stage EVERYTHING the organs produced ----
           # -A records new files, modified files, AND the deletions above.
+          # This captures: data/mesh_weights.json, data/void_metrics.json, 
+          # data/exchange_registry.json, reports/*.json, reports/seals/*.jsonl
           git add -A reports data logs
 
           if ! git diff --staged --quiet; then
