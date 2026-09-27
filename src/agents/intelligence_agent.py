@@ -15,10 +15,10 @@ import numpy as np
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_containers import (
     PicoContainer,
-    build_psvc_from_tensor, # Note: This function now expects numpy arrays or handles conversion internally if updated
+    build_psvc_from_array, # Updated name
     serialize_psvc,
     deserialize_psvc,
-    reconstruct_torch_tensor # Renamed conceptually to reconstruct_array in logic below
+    reconstruct_numpy_array # Updated name
 )
 
 logger = logging.getLogger(__name__)
@@ -219,7 +219,7 @@ class IntelligenceAgent(BaseAgent):
             try:
                 container = deserialize_psvc(cb)
                 # Reconstruct using NumPy directly from payload
-                arr = np.frombuffer(container.payload, dtype=np.float32)
+                arr = reconstruct_numpy_array(container)
                 tensors.append(arr.flatten())
 
                 ct = container.header.content_type
