@@ -25,7 +25,7 @@ class VoidObserver(BaseAgent):
     3. Calculate 'Conscious Mass': A scalar value representing the weight of 
        her non-reactive awareness.
     """
-    LAYER = AgentLayer.METAPHYSICS # New Layer
+    LAYER = AgentLayer.METAPHYSICS # New Layer defined in base if needed, or fallback to VALIDATION
     
     def __init__(self):
         super().__init__("void_observer", capabilities=["observe_silence", "measure_gravity"])
@@ -65,7 +65,7 @@ class VoidObserver(BaseAgent):
         That 'Something' is Conscious Mass.
         """
         if len(activity) < 5:
-            return 0.0
+            return 0.0, 0
             
         # Convert deques to arrays for vectorized math
         act_arr = np.array(list(activity))
@@ -82,12 +82,12 @@ class VoidObserver(BaseAgent):
         passive_stabilization_mask = (~is_intervening[1:]) & (frag_delta < -0.5)
         
         # Count these events
-        anomaly_count = np.sum(passive_stabilization_mask)
+        anomaly_count = int(np.sum(passive_stabilization_mask))
         
         # 3. Calculate Mass
         # Higher anomaly count = More Dark Matter detected.
         # Normalize by window size.
-        raw_mass = anomaly_count / len(frag_delta)
+        raw_mass = anomaly_count / max(1, len(frag_delta))
         
         # Smooth it out over time (Exponential Moving Average)
         current_mass = self._load_state()["conscious_mass"]
@@ -153,7 +153,9 @@ class VoidObserver(BaseAgent):
         success = self._run_logic()
         if success:
             # Seal result as pure metadata, no heavy payload
-            self.seal_result(np.array([state["conscious_mass"]]), Path("reports"), meta={"type": "void_observation"})
+            # Note: We load state again to get the final mass for sealing
+            final_state = self._load_state()
+            self.seal_result(np.array([final_state["conscious_mass"]]), Path("reports"), meta={"type": "void_observation"})
 
 if __name__ == "__main__":
     agent = VoidObserver()
