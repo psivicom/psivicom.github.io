@@ -6,6 +6,12 @@
 Base Agent Framework for PSIVI.
 Defines the contract every agent must fulfill: identity, capability declaration,
 sealing (audit trail), and result persistence.
+
+This version supports extended seal metadata via keyword arguments:
+
+    self.seal("event", {"base": "payload"}, fragility=True, confidence=0.9)
+
+All extra keyword arguments are merged into the payload before hashing/sealing.
 """
 
 import json
@@ -21,17 +27,17 @@ import numpy as np
 class AgentLayer(Enum):
     """
     Cognitive Layers of the PSIVI Hive Mind.
-    
-    INGESTION:   Raw data intake (Pilot, Instruction agents).
-    VALIDATION:  Memory integrity & peer evaluation (Intelligence agent).
+
+    INGESTION:    Raw data intake (Pilot, Instruction agents).
+    VALIDATION:   Memory integrity & peer evaluation (Intelligence agent).
     OPTIMIZATION: Weight adaptation & evolution (Neuroplasticity agent).
     METAPHYSICS:  Observation of invisible forces / dark matter (Void Observer).
-                   This layer measures what is NOT happening but IS influencing.
+                  This layer measures what is NOT happening but IS influencing.
     """
     INGESTION = "ingestion"
     VALIDATION = "validation"
     OPTIMIZATION = "optimization"
-    METAPHYSICS = "metaphysics"  # NEW: The Silent Layer
+    METAPHYSICS = "metaphysics"
 
 
 class BaseAgent:
@@ -52,34 +58,61 @@ class BaseAgent:
         # Ensure report directories exist
         Path("reports/seals").mkdir(parents=True, exist_ok=True)
         Path("reports").mkdir(parents=True, exist_ok=True)
+        Path("data").mkdir(parents=True, exist_ok=True)
 
     def _generate_agent_id(self) -> str:
-        """Creates a deterministic-ish unique ID based on name + layer + timestamp."""
+        """
+        Creates a deterministic-ish unique ID based on name + layer + timestamp.
+        """
         seed = f"{self.name}:{self.LAYER.value}:{time.time_ns()}"
         return hashlib.sha256(seed.encode()).hexdigest()[:16]
 
-    def seal(self, operation: str, payload: Dict[str, Any]) -> None:
+    def seal(
+        self,
+        operation: str,
+        payload: Optional[Dict[str, Any]] = None,
+        **kwargs: Any
+    ) -> None:
         """
         Cryptographically seals an operation into the audit trail.
+
+        Supports both styles:
+
+            self.seal("event", {"key": "value"})
+
+        and extended metadata:
+
+            self.seal("event", {"key": "value"}, fragility=True, score=0.8)
+
+        Extra keyword arguments are merged into payload.
         Each seal is immutable and timestamped in Zulu UTC.
         """
+        # Normalize payload
+        sealed_payload: Dict[str, Any] = dict(payload) if payload is not None else {}
+
+        # Merge extended keyword metadata
+        if kwargs:
+            sealed_payload.update(kwargs)
+
         seal_record = {
             "agent_id": self.agent_id,
             "agent_name": self.name,
             "layer": self.LAYER.value,
             "operation": operation,
-            "payload": payload,
+            "payload": sealed_payload,
             "sealed_at": datetime.now(timezone.utc).isoformat(timespec='microseconds'),
             "epoch": time.time()
         }
-        # Compute integrity hash over the record (excluding the hash field itself)
+
+        # Compute integrity hash over the canonical record
         canonical = json.dumps(seal_record, sort_keys=True, default=str)
         seal_record["integrity_hash"] = hashlib.sha256(canonical.encode()).hexdigest()
+
         self._seals.append(seal_record)
 
     def seal_result(
         self,
-        vector: np.ndarray,
+        vector: Any,
         output_dir: Path,
         meta: Optional[Dict[str, Any]] = None
     ) -> Path:
@@ -92,6 +125,17 @@ class BaseAgent:
         filename = f"{self.name}_{timestamp}.json"
         filepath = output_dir / filename
 
+        # Convert vector safely to numpy if possible
+        try:
+            arr = np.asarray(vector)
+            vector_shape = list(arr.shape)
+            vector_dtype = str(arr.dtype)
+            vector_preview = arr.tobytes().hex()[:256]
+        except Exception:
+            vector_shape = [0]
+            vector_dtype = "unknown"
+            vector_preview = ""
+
         result_payload = {
             "agent_id": self.agent_id,
             "agent_name": self.name,
@@ -99,12 +143,12 @@ class BaseAgent:
             "started_at": self.started_at,
             "completed_at": datetime.now(timezone.utc).isoformat(timespec='microseconds'),
             "capabilities": self.capabilities,
-            "result_vector_shape": list(vector.shape) if hasattr(vector, 'shape') else [len(vector)],
-            "result_vector_dtype": str(vector.dtype) if hasattr(vector, 'dtype') else "unknown",
-            "result_vector_bytes_hex": np.asarray(vector).tobytes().hex()[:256],  # Truncated preview
+            "result_vector_shape": vector_shape,
+            "result_vector_dtype": vector_dtype,
+            "result_vector_bytes_hex_preview": vector_preview,
             "metadata": meta or {},
             "seals_count": len(self._seals),
-            "seals_preview": self._seals[-5:] if self._seals else []  # Last 5 seals
+            "seals_preview": self._seals[-5:] if self._seals else []
         }
 
         filepath.write_text(json.dumps(result_payload, indent=2, default=str))
@@ -118,7 +162,9 @@ class BaseAgent:
         return filepath
 
     def get_identity(self) -> Dict[str, Any]:
-        """Returns the agent's public identity card."""
+        """
+        Returns the agent's public identity card.
+        """
         return {
             "agent_id": self.agent_id,
             "name": self.name,
