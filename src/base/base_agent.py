@@ -9,37 +9,44 @@ Defines the contract every agent must fulfill:
 - identity
 - capability declaration
 - cryptographic sealing / audit trail
-- receipt chain ledger
 - result persistence
 - Zulu millisecond time law
 
-This version fixes PilotAgent compatibility by exposing:
-- self.creation_time
-- self.created_at
-- self.started_at
-- self.start_time
-- self.receipt_chain
-- self.receipts
+This version fixes the PilotAgent contract by exposing the canonical audit
+chain under multiple compatible names:
+
+    self._seals
+    self.receipt_chain
+    self.receipts
+    self.seal_chain
+    self.seals
+    self.audit_trail
 
 All timestamps are formatted as:
-YYYY-MM-DDTHH:MM:SS.sssZ
+
+    YYYY-MM-DDTHH:MM:SS.sssZ
 """
 
 import json
 import hashlib
 import time
 from enum import Enum
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 from pathlib import Path
 from datetime import datetime, timezone
 
 import numpy as np
 
 
+# ---------------------------------------------------------------------------
+# Zulu Time Law
+# ---------------------------------------------------------------------------
+
 def _zulu_ms(dt: Optional[datetime] = None) -> str:
     """
     Returns a strict Zulu UTC timestamp with milliseconds:
-    2026-09-27T06:17:53.627Z
+
+        2026-09-27T06:17:53.628Z
     """
     if dt is None:
         dt = datetime.now(timezone.utc)
@@ -51,7 +58,8 @@ def _zulu_ms(dt: Optional[datetime] = None) -> str:
 def _zulu_compact(dt: Optional[datetime] = None) -> str:
     """
     Returns a filesystem-safe compact Zulu timestamp:
-    20260927T061753627Z
+
+        20260927T061753628Z
     """
     if dt is None:
         dt = datetime.now(timezone.utc)
@@ -60,13 +68,9 @@ def _zulu_compact(dt: Optional[datetime] = None) -> str:
     return f"{dt.strftime('%Y%m%dT%H%M%S')}{ms:03d}Z"
 
 
-def _sha256_obj(obj: Any) -> str:
-    """
-    Deterministically hashes a Python object using canonical JSON.
-    """
-    canonical = json.dumps(obj, sort_keys=True, default=str)
-    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
-
+# ---------------------------------------------------------------------------
+# Cognitive Layers
+# ---------------------------------------------------------------------------
 
 class AgentLayer(Enum):
     """
@@ -78,11 +82,38 @@ class AgentLayer(Enum):
     METAPHYSICS:  Observation of invisible forces / dark matter (Void Observer).
                   This layer measures what is NOT happening but IS influencing.
     """
+
     INGESTION = "ingestion"
     VALIDATION = "validation"
     OPTIMIZATION = "optimization"
     METAPHYSICS = "metaphysics"
 
+
+# ---------------------------------------------------------------------------
+# Compatibility Aliases
+# ---------------------------------------------------------------------------
+
+# Some older agents refer to the audit chain as receipts, seal chain, etc.
+# The base class keeps all of these pointing to the same underlying list.
+_RECEIPT_ALIASES = (
+    "receipt_chain",
+    "receipts",
+    "seal_chain",
+    "seals",
+    "audit_trail",
+    "_receipt_chain",
+)
+
+_COUNT_ALIASES = (
+    "receipt_count",
+    "seals_count",
+    "audit_count",
+)
+
+
+# ---------------------------------------------------------------------------
+# Base Agent
+# ---------------------------------------------------------------------------
 
 class BaseAgent:
     """
@@ -92,9 +123,9 @@ class BaseAgent:
     - deterministic-ish unique agent identity
     - capability registry
     - cryptographic seal chain
-    - receipt chain ledger
     - result persistence
     - Zulu millisecond timestamps
+    - legacy-compatible audit aliases such as receipt_chain
     """
 
     LAYER: AgentLayer = AgentLayer.INGESTION  # Override in subclasses
@@ -115,23 +146,79 @@ class BaseAgent:
         self.started_at = self.creation_time
         self.start_time = self.creation_time
 
-        # Internal cryptographic seal chain.
+        # Canonical audit chain.
+        # All aliases are synchronized through __setattr__.
         self._seals: List[Dict[str, Any]] = []
-
-        # Legacy-compatible receipt ledger.
-        # PilotAgent expects self.receipt_chain to exist.
-        self.receipt_chain: List[Dict[str, Any]] = []
-
-        # Convenience alias.
-        self.receipts = self.receipt_chain
 
         # Ensure required directories exist.
         Path("reports").mkdir(parents=True, exist_ok=True)
         Path("reports/seals").mkdir(parents=True, exist_ok=True)
-        Path("reports/scientific_reports").mkdir(parents=True, exist_ok=True)
-        Path("reports/pico_containers").mkdir(parents=True, exist_ok=True)
         Path("data").mkdir(parents=True, exist_ok=True)
-        Path("logs").mkdir(parents=True, exist_ok=True)
+
+    # -----------------------------------------------------------------------
+    # Attribute synchronization
+    # -----------------------------------------------------------------------
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        """
+        Keeps legacy audit aliases synchronized with the canonical _seals list.
+
+        This allows agents to safely use:
+
+            self.receipt_chain
+            self.receipts
+            self.seal_chain
+            self.seals
+            self.audit_trail
+
+        without breaking the base audit trail.
+        """
+        object.__setattr__(self, name, value)
+
+        if name == "_seals" and isinstance(value, list):
+            for alias in _RECEIPT_ALIASES:
+                object.__setattr__(self, alias, value)
+
+        elif name in _RECEIPT_ALIASES and isinstance(value, list):
+            object.__setattr__(self, "_seals", value)
+            for alias in _RECEIPT_ALIASES:
+                object.__setattr__(self, alias, value)
+
+    def __getattr__(self, name: str) -> Any:
+        """
+        Fallback compatibility layer.
+
+        If an agent accesses a legacy audit attribute before it was initialized,
+        this creates the canonical list and synchronizes all aliases.
+        """
+        if name in _RECEIPT_ALIASES:
+            try:
+                seals = object.__getattribute__(self, "_seals")
+            except AttributeError:
+                seals = []
+                object.__setattr__(self, "_seals", seals)
+                for alias in _RECEIPT_ALIASES:
+                    object.__setattr__(self, alias, seals)
+            else:
+                object.__setattr__(self, name, seals)
+
+            return seals
+
+        if name in _COUNT_ALIASES:
+            try:
+                seals = object.__getattribute__(self, "_seals")
+            except AttributeError:
+                return 0
+
+            return len(seals)
+
+        raise AttributeError(
+            f"'{type(self).__name__}' object has no attribute '{name}'"
+        )
+
+    # -----------------------------------------------------------------------
+    # Identity
+    # -----------------------------------------------------------------------
 
     def _generate_agent_id(self) -> str:
         """
@@ -139,51 +226,32 @@ class BaseAgent:
         name + layer + nanosecond timestamp.
         """
         seed = f"{self.name}:{self.LAYER.value}:{time.time_ns()}"
-        return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
+        return hashlib.sha256(seed.encode()).hexdigest()[:16]
 
-    def add_receipt(
-        self,
-        operation: str,
-        payload: Optional[Dict[str, Any]] = None,
-        **kwargs: Any
-    ) -> Dict[str, Any]:
+    def get_identity(self) -> Dict[str, Any]:
         """
-        Appends a human-readable receipt to the agent's receipt chain.
-
-        This is the legacy-compatible audit ledger used by PilotAgent.
-        Extra keyword arguments are merged into payload.
+        Returns the agent's public identity card.
         """
-        receipt_payload: Dict[str, Any] = dict(payload) if payload is not None else {}
-
-        if kwargs:
-            receipt_payload.update(kwargs)
-
-        receipt_index = len(self.receipt_chain)
-        receipt_seed = f"{self.agent_id}:{receipt_index}:{operation}:{time.time_ns()}"
-        receipt_id = hashlib.sha256(receipt_seed.encode("utf-8")).hexdigest()[:16]
-
-        receipt = {
-            "receipt_id": receipt_id,
+        return {
             "agent_id": self.agent_id,
-            "agent_name": self.name,
+            "name": self.name,
             "layer": self.LAYER.value,
-            "operation": operation,
-            "payload": receipt_payload,
-            "created_at": _zulu_ms(),
-            "epoch": time.time()
+            "capabilities": self.capabilities,
+            "creation_time": self.creation_time,
+            "started_at": self.started_at,
+            "receipt_count": len(self._seals),
         }
 
-        receipt["integrity_hash"] = _sha256_obj(receipt)
-        self.receipt_chain.append(receipt)
-
-        return receipt
+    # -----------------------------------------------------------------------
+    # Sealing / Audit Trail
+    # -----------------------------------------------------------------------
 
     def seal(
         self,
         operation: str,
         payload: Optional[Dict[str, Any]] = None,
-        **kwargs: Any
-    ) -> None:
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
         """
         Cryptographically seals an operation into the audit trail.
 
@@ -197,8 +265,6 @@ class BaseAgent:
 
         Extra keyword arguments are merged into payload.
         Each seal is immutable and timestamped in Zulu UTC milliseconds.
-
-        Also mirrors the event into receipt_chain for legacy compatibility.
         """
         sealed_payload: Dict[str, Any] = dict(payload) if payload is not None else {}
 
@@ -212,25 +278,72 @@ class BaseAgent:
             "operation": operation,
             "payload": sealed_payload,
             "sealed_at": _zulu_ms(),
-            "epoch": time.time()
+            "epoch": time.time(),
         }
 
-        seal_record["integrity_hash"] = _sha256_obj(seal_record)
+        # Compute integrity hash over the canonical record.
+        canonical = json.dumps(seal_record, sort_keys=True, default=str)
+        seal_record["integrity_hash"] = hashlib.sha256(canonical.encode()).hexdigest()
+
         self._seals.append(seal_record)
 
-        # Mirror into receipt_chain so PilotAgent sees meaningful activity.
-        self.add_receipt(
-            operation=operation,
-            payload=sealed_payload,
-            source="seal",
-            seal_integrity_hash=seal_record["integrity_hash"]
-        )
+        return seal_record
+
+    def add_receipt(
+        self,
+        operation: str,
+        payload: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """
+        Legacy-compatible alias for seal().
+        """
+        return self.seal(operation, payload, **kwargs)
+
+    def record(
+        self,
+        operation: str,
+        payload: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """
+        Convenience alias for seal().
+        """
+        return self.seal(operation, payload, **kwargs)
+
+    def get_receipts(self) -> List[Dict[str, Any]]:
+        """
+        Returns a copy of the audit chain.
+        """
+        return list(self._seals)
+
+    def get_seals(self) -> List[Dict[str, Any]]:
+        """
+        Returns a copy of the audit chain.
+        """
+        return list(self._seals)
+
+    def receipts_count(self) -> int:
+        """
+        Method-style count for legacy callers.
+        """
+        return len(self._seals)
+
+    def seals_count(self) -> int:
+        """
+        Method-style count for legacy callers.
+        """
+        return len(self._seals)
+
+    # -----------------------------------------------------------------------
+    # Result Persistence
+    # -----------------------------------------------------------------------
 
     def seal_result(
         self,
         vector: Any,
         output_dir: Path,
-        meta: Optional[Dict[str, Any]] = None
+        meta: Optional[Dict[str, Any]] = None,
     ) -> Path:
         """
         Persists the agent's final result vector + metadata to disk.
@@ -253,7 +366,10 @@ class BaseAgent:
 
             # If object dtype sneaks in, try to coerce to float32.
             if arr.dtype == object:
-                arr = arr.astype(np.float32)
+                try:
+                    arr = arr.astype(np.float32)
+                except Exception:
+                    arr = np.zeros(0, dtype=np.float32)
 
         except Exception:
             arr = np.zeros(0, dtype=np.float32)
@@ -279,14 +395,13 @@ class BaseAgent:
             "result_vector_bytes_hex_preview": vector_preview,
             "metadata": meta or {},
             "seals_count": len(self._seals),
+            "receipt_count": len(self._seals),
             "seals_preview": self._seals[-5:] if self._seals else [],
-            "receipt_count": len(self.receipt_chain),
-            "receipts_preview": self.receipt_chain[-5:] if self.receipt_chain else []
         }
 
         filepath.write_text(
             json.dumps(result_payload, indent=2, default=str),
-            encoding="utf-8"
+            encoding="utf-8",
         )
 
         # Append full seal chain to dedicated audit file.
@@ -295,28 +410,11 @@ class BaseAgent:
             for seal in self._seals:
                 f.write(json.dumps(seal, default=str) + "\n")
 
-        # Append full receipt chain to dedicated ledger file.
-        receipts_path = Path("reports/seals") / f"{self.name}_receipts.jsonl"
-        with open(receipts_path, "a", encoding="utf-8") as f:
-            for receipt in self.receipt_chain:
-                f.write(json.dumps(receipt, default=str) + "\n")
-
         return filepath
 
-    def get_identity(self) -> Dict[str, Any]:
-        """
-        Returns the agent's public identity card.
-        """
-        return {
-            "agent_id": self.agent_id,
-            "name": self.name,
-            "layer": self.LAYER.value,
-            "capabilities": self.capabilities,
-            "creation_time": self.creation_time,
-            "started_at": self.started_at,
-            "seal_count": len(self._seals),
-            "receipt_count": len(self.receipt_chain)
-        }
+    # -----------------------------------------------------------------------
+    # Representation
+    # -----------------------------------------------------------------------
 
     def __repr__(self) -> str:
         return (
@@ -324,5 +422,5 @@ class BaseAgent:
             f"id={self.agent_id} "
             f"layer={self.LAYER.value} "
             f"created={self.creation_time} "
-            f"receipts={len(self.receipt_chain)}>"
+            f"receipts={len(self._seals)}>"
         )
