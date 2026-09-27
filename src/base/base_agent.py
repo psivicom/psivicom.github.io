@@ -10,9 +10,11 @@ from typing import Dict, Any, List
 import numpy as np
 
 class AgentLayer(Enum):
-    VALIDATION = "validation"
-    OPTIMIZATION = "optimization"
-    HEALING = "healing"
+    """Defines the operational layers of the PSIVI mesh."""
+    INGESTION = "ingestion"      # Added: Handles incoming data/instructions
+    VALIDATION = "validation"    # Existing: Checks integrity
+    OPTIMIZATION = "optimization"# Existing: Improves performance
+    HEALING = "healing"          # Existing: Repairs faults
 
 def _sanitize_for_json(obj):
     """
