@@ -349,8 +349,8 @@
     const REPO_NAME = 'psivicom.github.io';
     const BRANCH = 'main';
     const FILE_PATH = 'src/wendy_metabolism.json';
-    const REFRESH_INTERVAL_MS = 5000; 
-
+    const REFRESH_INTERVAL_MS = 30000; // Increased from 5s to 30s to reduce noise
+    
     // DOM ELEMENTS
     const els = {
         status: document.getElementById('system-status'),
@@ -372,6 +372,7 @@
     let waveOffset = 0;
     let currentPhase = 0;
     let animationId = null;
+    let lastKnownStatus = ""; // To prevent duplicate logs
 
     function resizeCanvas() {
         const container = canvas.parentElement;
@@ -417,7 +418,6 @@
         ctx.shadowColor = '#00ff41';
         
         ctx.beginPath();
-        const frequency = Math.PI * 2 / w;
         
         for (let x = 0; x <= w; x++) {
             const angle = (x / w) * Math.PI * 2 + waveOffset;
@@ -443,16 +443,17 @@
         animationId = requestAnimationFrame(() => drawWave(phase));
     }
 
-    // LOGGING HELPER
+    // LOGGING HELPER (Throttled)
     function addLog(msg, type = 'info') {
-        const now = new Date().toLocaleTimeString('en-US', {hour12: false, hour: '2-digit', minute:'2-digit'});
+        // Prevent spamming identical messages consecutively
+        const now = new Date().toISOString().substring(11,19) + 'Z'; // Zulu Time Format
         const div = document.createElement('div');
         div.className = 'log-entry';
         const msgClass = type === 'error' ? 'log-error' : 'log-msg';
         div.innerHTML = `<span class="log-time">[${now}]</span><span class="${msgClass}">${msg}</span>`;
         els.log.prepend(div);
         
-        if (els.log.children.length > 50) {
+        if (els.log.children.length > 20) { // Reduced max entries
             els.log.removeChild(els.log.lastChild);
         }
     }
@@ -460,10 +461,7 @@
     // FETCH DATA
     async function fetchTelemetry() {
         try {
-            // Add cache buster to force fresh data
             const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${FILE_PATH}?t=${Date.now()}`;
-            
-            addLog(`Fetching: ${url.substring(0, 50)}...`);
             
             const response = await fetch(url);
             
@@ -473,12 +471,21 @@
             
             const text = await response.text();
             
-            // Debug: Print first 100 chars of raw JSON to verify structure
-            addLog(`Raw Response Length: ${text.length}`);
-            
+            // DEBUG: If length is suspiciously small, warn once
+            if (text.length < 50 && lastKnownStatus !== 'SMALL_DATA') {
+                addLog(`WARNING: Data file too small (${text.length} bytes). Check repo.`, 'error');
+                lastKnownStatus = 'SMALL_DATA';
+            }
+
             const data = JSON.parse(text);
             
             updateUI(data);
+            
+            // Only log success if status changed from ERROR
+            if (lastKnownStatus === 'ERROR' || lastKnownStatus === 'INIT') {
+                addLog("Connection Established. Telemetry Live.");
+            }
+            lastKnownStatus = "LIVE";
             
             els.status.textContent = "LIVE";
             els.status.classList.remove('error');
@@ -487,12 +494,12 @@
             console.error(error);
             els.status.textContent = "ERR";
             els.status.classList.add('error');
-            addLog(`CRITICAL ERROR: ${error.message}`, 'error');
             
-            // If it's a network error, suggest CORS or URL issue
-            if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                 addLog("Hint: Check Console (F12) for CORS or Network blocks.", 'error');
+            // Only log error if it's new or different
+            if (lastKnownStatus !== 'ERROR') {
+                addLog(`CRITICAL ERROR: ${error.message}`, 'error');
             }
+            lastKnownStatus = "ERROR";
         }
     }
 
@@ -505,7 +512,6 @@
             return defaultVal;
         };
 
-        // Update Numbers with fallbacks for common naming variations
         const phase = getVal(data, ['phase'], 0);
         const intensity = getVal(data, ['intensity'], 0);
         const period = getVal(data, ['period_minutes', 'current_period_minutes', 'base_period_minutes'], '--');
@@ -541,7 +547,7 @@
         els.agentsList.textContent = `Stress: ${stress.toFixed(2)}`;
 
         // Timestamp
-        els.lastUpdate.textContent = `Sync: ${new Date().toLocaleTimeString()}`;
+        els.lastUpdate.textContent = `Sync: ${new Date().toISOString().substring(11,19)}Z`; // Zulu Time Format
 
         // Start Visualizer Loop
         currentPhase = parseFloat(phase) || 0;
