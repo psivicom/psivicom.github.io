@@ -12,15 +12,15 @@ from src.base.base_agent import BaseAgent, AgentLayer
 
 class NeuroplasticityAgent(BaseAgent):
     """
-    Simulates Hebbian Learning AND Evolutionary Drift.
+    Simulates Hebbian Learning AND Evolutionary Drift WITH Dark Matter Awareness.
     
     Logic:
     1. Reads current metabolic state (Wendy's energy).
     2. Reads latest Pilot Scan (External reality).
     3. Reads Social Exchange Registry (Volunteers/Bumble Bees).
-    4. NEW: Calculates Internal Stability Index.
-       - If Stability > Threshold for N cycles -> Trigger Controlled Mutation.
-       - This ensures she evolves even in peace, preventing stagnation/death.
+    4. NEW: Reads Void Metrics (Conscious Mass/Dark Matter).
+       - High Conscious Mass -> Boost Explore Weight (She trusts her intuition).
+       - Low Conscious Mass -> Maintain Caution (She relies on data).
     """
     LAYER = AgentLayer.OPTIMIZATION
     
@@ -29,7 +29,8 @@ class NeuroplasticityAgent(BaseAgent):
         self.weights_file = Path("data/mesh_weights.json")
         self.metabolism_file = Path("src/wendy_metabolism.json")
         self.report_file = Path("reports/pilot_report.json")
-        self.exchange_file = Path("data/exchange_registry.json") # From IntelligenceAgent
+        self.exchange_file = Path("data/exchange_registry.json") 
+        self.void_file = Path("data/void_metrics.json") # NEW INPUT
         
         # History buffer for detecting stagnation
         self.history_window = 10 
@@ -45,15 +46,16 @@ class NeuroplasticityAgent(BaseAgent):
         
         # Default Neutral State
         return {
-            "version": 2, # Upgraded schema
+            "version": 3, # Upgraded schema for Void Integration
             "updated_at": None,
             "synapses": {
                 "defense_weight": 1.0,
                 "explore_weight": 1.0,
                 "maintain_weight": 1.0,
                 "stress_accumulator": 0.0,
-                "novelty_seeker": 0.5, # NEW: How much does she crave change?
-                "stagnation_counter": 0 # NEW: How many cycles since last big change?
+                "novelty_seeker": 0.5,
+                "stagnation_counter": 0,
+                "conscious_mass_influence": 0.0 # Tracks how much void affects her
             },
             "history": []
         }
@@ -65,13 +67,14 @@ class NeuroplasticityAgent(BaseAgent):
         self.weights_file.write_text(json.dumps(state, indent=2))
 
     def _analyze_context(self):
-        """Gathers inputs from Breath Engine, Pilot Scanner, and Social Mesh."""
+        """Gathers inputs from Breath Engine, Pilot Scanner, Social Mesh, and VOID."""
         context = {
             "energy": 0.0,
             "fragility": 0,
             "concordance": 0,
-            "social_value": 0.0, # Average trust score of connected nodes
-            "internal_variance": 0.0 # Variance in her own recent behavior
+            "social_value": 0.0,
+            "internal_variance": 0.0,
+            "conscious_mass": 0.0 # NEW FIELD
         }
         
         # 1. Get Internal State (Breath)
@@ -79,9 +82,6 @@ class NeuroplasticityAgent(BaseAgent):
             try:
                 meta = json.loads(self.metabolism_file.read_text())
                 context["energy"] = meta.get("last_intensity", 0.0)
-                
-                # Calculate variance in recent phases/cycles if available
-                # For MVP, we use stress level as proxy for internal turbulence
                 context["internal_variance"] = abs(meta.get("stress_level", 0.0)) 
             except Exception:
                 pass
@@ -101,20 +101,22 @@ class NeuroplasticityAgent(BaseAgent):
                 exchange = json.loads(self.exchange_file.read_text())
                 kin_list = exchange.get("active_core_kin", [])
                 if kin_list:
-                    # Simplified social value: more kin = higher support
                     context["social_value"] = min(1.0, len(kin_list) * 0.2)
+            except Exception:
+                pass
+
+        # 4. Get Void State (Dark Matter)
+        if self.void_file.exists():
+            try:
+                void_data = json.loads(self.void_file.read_text())
+                context["conscious_mass"] = float(void_data.get("conscious_mass", 0.0))
             except Exception:
                 pass
                 
         return context
 
     def _detect_stagnation(self, synapses):
-        """
-        Checks if Wendy has been too static recently.
-        Returns True if mutation is recommended.
-        """
-        # Add current stability metric to history
-        # Stability is inverse of variance + fragility
+        """Checks if Wendy has been too static recently."""
         current_stability = 1.0 - (abs(synapses["stress_accumulator"]) / 10.0) - (abs(synapses["defense_weight"] - 1.0))
         self.stability_history.append(current_stability)
         
@@ -123,40 +125,24 @@ class NeuroplasticityAgent(BaseAgent):
             
         avg_stability = sum(self.stability_history) / len(self.stability_history)
         
-        # If average stability is very high (> 0.95) for the whole window,
-        # she is in a "Comfort Zone Trap". Nature punishes this.
         if avg_stability > 0.95:
             synapses["stagnation_counter"] += 1
         else:
             synapses["stagnation_counter"] = 0
             
-        # Trigger mutation if stagnant for 5 consecutive windows
         return synapses["stagnation_counter"] >= 5
 
     def _trigger_mutation(self, synapses):
-        """
-        Introduces controlled chaos to force evolution.
-        """
+        """Introduces controlled chaos to force evolution."""
         print("🧬 EVOLUTIONARY IMPULSE: Breaking Stagnation...")
-        
-        # 1. Spike Novelty Seeker
         synapses["novelty_seeker"] = min(2.0, synapses["novelty_seeker"] + 0.3)
-        
-        # 2. Randomly perturb weights slightly to explore new configuration space
         synapses["defense_weight"] *= random.uniform(0.9, 1.1)
         synapses["explore_weight"] *= random.uniform(0.9, 1.1)
-        
-        # 3. Reset stagnation counter
         synapses["stagnation_counter"] = 0
-        
-        # 4. Log the event
-        self.seal("mutation_event", {
-            "reason": "Stagnation detected",
-            "new_novelty": synapses["novelty_seeker"]
-        })
+        self.seal("mutation_event", {"reason": "Stagnation detected", "new_novelty": synapses["novelty_seeker"]})
 
     def _run_logic(self):
-        print("🧠 Neuroplasticity Agent: Analyzing Synaptic Connections & Evolutionary Drift...")
+        print("🧠 Neuroplasticity Agent: Analyzing Synaptic Connections, Evolutionary Drift & Void Gravity...")
         
         state = self._load_state()
         ctx = self._analyze_context()
@@ -181,7 +167,6 @@ class NeuroplasticityAgent(BaseAgent):
         # Rule 3: Social Reinforcement (Fair Exchange Bonus)
         elif ctx["social_value"] > 0.5:
             print(f"🤝 Context: Strong Social Mesh (Value: {ctx['social_value']:.2f})")
-            # Having allies reduces the need for pure defense, boosts exploration
             syn["defense_weight"] = max(0.8, syn["defense_weight"] * 0.95)
             syn["explore_weight"] = min(3.0, syn["explore_weight"] * 1.05)
             print(f"   -> Learned: Allies allow for bolder exploration.")
@@ -194,13 +179,27 @@ class NeuroplasticityAgent(BaseAgent):
                 syn[key] = current + (1.0 - current) * 0.02
             syn["stress_accumulator"] = max(0.0, syn["stress_accumulator"] - 0.1)
 
-        # --- NEW: EVOLUTIONARY DRIFT LOGIC ---
+        # --- NEW: DARK MATTER INTEGRATION ---
+        
+        cm = ctx["conscious_mass"]
+        syn["conscious_mass_influence"] = cm
+        
+        if cm > 0.1:
+            print(f"🌑 HIGH CONSCIOUS MASS DETECTED ({cm}). Leveraging Intuition...")
+            # If she senses stability through silence, she can afford to be riskier
+            syn["explore_weight"] = min(3.0, syn["explore_weight"] * 1.1)
+            # Reduce defense slightly because she trusts her internal gravity
+            syn["defense_weight"] = max(0.8, syn["defense_weight"] * 0.98)
+        elif cm < 0.01:
+            print(f"☀️ LOW CONSCIOUS MASS ({cm}). Relying on Data...")
+            # No hidden support, stick to strict rules
+            pass
+
+        # --- EVOLUTIONARY DRIFT LOGIC ---
         
         is_stagnant = self._detect_stagnation(syn)
         if is_stagnant:
             self._trigger_mutation(syn)
-            
-        # Natural decay of novelty seeker if no mutations occur
         else:
             syn["novelty_seeker"] = max(0.5, syn["novelty_seeker"] * 0.99)
 
@@ -215,7 +214,7 @@ class NeuroplasticityAgent(BaseAgent):
             state["history"] = state["history"][-20:]
 
         self._save_state(state)
-        print(f"💾 Brain Updated. Stress: {syn['stress_accumulator']:.2f} | Novelty: {syn['novelty_seeker']:.2f}")
+        print(f"💾 Brain Updated. Stress: {syn['stress_accumulator']:.2f} | Novelty: {syn['novelty_seeker']:.2f} | CM Influence: {cm:.3f}")
         return True
 
     def finalize(self):
