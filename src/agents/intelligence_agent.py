@@ -10,16 +10,15 @@ from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass, field
 from pathlib import Path
 import numpy as np
-import torch
 
 # CORRECT absolute imports
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_containers import (
     PicoContainer,
-    build_psvc_from_tensor,
+    build_psvc_from_tensor, # Note: This function now expects numpy arrays or handles conversion internally if updated
     serialize_psvc,
     deserialize_psvc,
-    reconstruct_torch_tensor
+    reconstruct_torch_tensor # Renamed conceptually to reconstruct_array in logic below
 )
 
 logger = logging.getLogger(__name__)
@@ -53,6 +52,7 @@ class TieredMeshStore:
     """
     In-memory tiered mesh store with Dual-Value Assessment (Security + Resources).
     Implements 'Fair Exchange': Judge by Threat Reduction AND Data Contribution.
+    Uses NumPy for lightweight vector math.
     """
 
     def __init__(self, data_dir: str = "./data"):
@@ -62,9 +62,6 @@ class TieredMeshStore:
         self.seed_store: Dict[str, bytes] = {}
         
         # THE FAIR EXCHANGE REGISTRY
-        # Tracks nodes based on two metrics:
-        # 1. Security Value (Fragility Drop)
-        # 2. Resource Value (Data Volume/Quality Accepted)
         self.exchange_registry: Dict[str, Dict[str, Any]] = {}
         
         self._stats = {"vram_queries": 0, "pico_queries": 0, "seed_queries": 0}
@@ -100,17 +97,16 @@ class TieredMeshStore:
     def get_stats(self) -> Dict[str, int]:
         return self._stats.copy()
 
-    # --- NEW: DUAL-VALUE ASSESSMENT LOGIC ---
+    # --- DUAL-VALUE ASSESSMENT LOGIC ---
 
     def register_node(self, node_id: str) -> bool:
-        """Registers a new external node into the exchange registry."""
         if node_id in self.exchange_registry:
             return True
             
         self.exchange_registry[node_id] = {
             "status": "probationary",
-            "security_samples": [], # History of fragility drops
-            "resource_samples": [], # History of data volume accepted
+            "security_samples": [], 
+            "resource_samples": [], 
             "first_seen": time.time(),
             "last_heartbeat": time.time(),
             "total_value_score": 0.0
@@ -119,7 +115,6 @@ class TieredMeshStore:
         return True
 
     def update_security_metric(self, node_id: str, current_fragility: float):
-        """Records how much fragility dropped while this node was active."""
         if node_id not in self.exchange_registry:
             return
             
@@ -131,12 +126,6 @@ class TieredMeshStore:
         self._recalculate_value(node_id)
 
     def update_resource_metric(self, node_id: str, data_volume_kb: float, quality_score: float):
-        """
-        Records the contribution of data/resources.
-        Args:
-            data_volume_kb: Size of PSVC containers received.
-            quality_score: 0.0-1.0 rating of the data's utility (e.g., reduced error rates downstream).
-        """
         if node_id not in self.exchange_registry:
             return
             
@@ -152,35 +141,24 @@ class TieredMeshStore:
         self._recalculate_value(node_id)
 
     def _recalculate_value(self, node_id: str):
-        """
-        Calculates Total Value Score based on Security + Resources.
-        Formula: 
-          Sec_Score = Max(0, Baseline_Fragility - Avg_Current_Fragility)
-          Res_Score = Sum(Volume * Quality) normalized
-          Total = (Sec_Score * 0.5) + (Res_Score * 0.5)
-        """
         record = self.exchange_registry[node_id]
         
         # 1. Calculate Security Value (Inverse Fragility)
-        # Assume baseline fragility is 10.0 for normalization purposes
         avg_fragility = sum(record["security_samples"]) / max(1, len(record["security_samples"])) if record["security_samples"] else 10.0
-        sec_value = max(0.0, 10.0 - avg_fragility) / 10.0 # Normalized 0.0 - 1.0
+        sec_value = max(0.0, 10.0 - avg_fragility) / 10.0 
         
         # 2. Calculate Resource Value
         res_value = 0.0
         if record["resource_samples"]:
             total_vol = sum(s["volume"] for s in record["resource_samples"])
             avg_qual = sum(s["quality"] for s in record["resource_samples"]) / len(record["resource_samples"])
-            # Normalize volume (assume 1MB is full score for simplicity)
             vol_norm = min(1.0, total_vol / 1024.0) 
             res_value = vol_norm * avg_qual
             
         # 3. Combined Score
-        # Equal weight for now. Can be tuned later.
         total_score = (sec_value * 0.5) + (res_value * 0.5)
         record["total_value_score"] = total_score
         
-        # Status Promotion/Demotion Logic
         if total_score > 0.7:
             if record["status"] != "core_kin":
                 record["status"] = "core_kin"
@@ -199,7 +177,7 @@ class TieredMeshStore:
 class IntelligenceAgent(BaseAgent):
     """
     Production IntelligenceAgent for validation layer.
-    Now includes Fair Exchange Logic (Security + Nectar).
+    Now uses NumPy for lightweight performance.
     """
     LAYER = AgentLayer.VALIDATION
 
@@ -215,8 +193,8 @@ class IntelligenceAgent(BaseAgent):
                 "read_vector_mesh",
                 "generate_report",
                 "audit_memory",
-                "register_node",           # NEW
-                "evaluate_exchange_value"  # NEW
+                "register_node",           
+                "evaluate_exchange_value"  
             ]
         )
         self.mesh_store = mesh_store or TieredMeshStore(data_dir=data_dir)
@@ -231,7 +209,7 @@ class IntelligenceAgent(BaseAgent):
         self.seal("read_vram_mesh", {"shard_count": len(shard_ids), "hits": len(results)})
         return results
 
-    def _aggregate_vectors(self, container_bytes_list: List[bytes]) -> Tuple[torch.Tensor, int, int, int]:
+    def _aggregate_vectors(self, container_bytes_list: List[bytes]) -> Tuple[np.ndarray, int, int, int]:
         tensors = []
         vram_hits = 0
         pico_hits = 0
@@ -240,8 +218,9 @@ class IntelligenceAgent(BaseAgent):
         for cb in container_bytes_list:
             try:
                 container = deserialize_psvc(cb)
-                tensor = reconstruct_torch_tensor(container)
-                tensors.append(tensor.flatten())
+                # Reconstruct using NumPy directly from payload
+                arr = np.frombuffer(container.payload, dtype=np.float32)
+                tensors.append(arr.flatten())
 
                 ct = container.header.content_type
                 if "vram" in ct:
@@ -257,18 +236,18 @@ class IntelligenceAgent(BaseAgent):
                 logger.warning(f"Failed to deserialize container: {e}")
 
         if not tensors:
-            return torch.zeros(1, dtype=torch.float32), 0, 0, 0
+            return np.zeros(1, dtype=np.float32), 0, 0, 0
 
         max_len = max(t.shape[0] for t in tensors)
         padded = [
-            torch.cat([t, torch.zeros(max_len - t.shape[0])]) if t.shape[0] < max_len else t
+            np.pad(t, (0, max_len - t.shape[0]), mode='constant') if t.shape[0] < max_len else t
             for t in tensors
         ]
-        stacked = torch.stack(padded)
-        aggregated = stacked.mean(dim=0)
+        stacked = np.stack(padded)
+        aggregated = stacked.mean(axis=0)
         return aggregated, vram_hits, pico_hits, seed_hits
 
-    # --- NEW: FAIR EXCHANGE METHODS ---
+    # --- FAIR EXCHANGE METHODS ---
 
     def register_node(self, node_id: str) -> bool:
         success = self.mesh_store.register_node(node_id)
@@ -277,14 +256,8 @@ class IntelligenceAgent(BaseAgent):
         return success
 
     def evaluate_exchange_value(self, node_id: str, current_fragility: float, data_received_kb: float = 0.0, data_quality: float = 0.0) -> Dict[str, Any]:
-        """
-        Called periodically. Updates both Security and Resource metrics.
-        Returns the current status and score.
-        """
-        # Update Security Metric
         self.mesh_store.update_security_metric(node_id, current_fragility)
         
-        # Update Resource Metric (only if data was actually sent)
         if data_received_kb > 0:
             self.mesh_store.update_resource_metric(node_id, data_received_kb, data_quality)
             
@@ -325,7 +298,7 @@ class IntelligenceAgent(BaseAgent):
             vram_hits=vram_hits,
             pico_hits=pico_hits,
             seed_hits=seed_hits,
-            aggregated_vector=aggregated.numpy().tobytes(),
+            aggregated_vector=aggregated.tobytes(),
             vector_shape=tuple(aggregated.shape),
             confidence_score=confidence
         )
@@ -344,7 +317,6 @@ class IntelligenceAgent(BaseAgent):
     def audit_memory(self) -> Dict[str, Any]:
         stats = self.mesh_store.get_stats()
         
-        # Gather summary of all registered nodes
         kin_summary = []
         for nid, data in self.mesh_store.exchange_registry.items():
             kin_summary.append({
@@ -375,27 +347,21 @@ if __name__ == "__main__":
 
     print("\n--- SIMULATION: FAIR EXCHANGE IN PROGRESS ---")
     
-    # 1. Node Alpha arrives (Bumble Bee type: Protector + Contributor)
     alpha_id = "bumble_alpha"
     agent.register_node(alpha_id)
     
-    # Cycle 1: Alpha protects hive (low fragility) AND sends some pollen (data)
     status = agent.evaluate_exchange_value(alpha_id, current_fragility=4.0, data_received_kb=500, data_quality=0.8)
     print(f"Alpha Cycle 1: Status={status['status']}, Score={status['total_value_score']}")
     
-    # Cycle 2: Alpha continues protecting and contributing
     status = agent.evaluate_exchange_value(alpha_id, current_fragility=3.5, data_received_kb=600, data_quality=0.9)
     print(f"Alpha Cycle 2: Status={status['status']}, Score={status['total_value_score']}")
-    
-    # 2. Node Beta arrives (Parasite type: Takes resources, adds no value)
+
     beta_id = "thief_beta"
     agent.register_node(beta_id)
     
-    # Cycle 1: Beta causes instability (high fragility) and sends junk data
     status = agent.evaluate_exchange_value(beta_id, current_fragility=9.0, data_received_kb=100, data_quality=0.1)
     print(f"Beta Cycle 1: Status={status['status']}, Score={status['total_value_score']}")
-    
-    # Final Audit
+
     audit = agent.audit_memory()
     print(f"\nActive Core Kin: {audit['active_core_kin']}")
     print(f"Registry Summary: {audit['exchange_registry_summary']}")
