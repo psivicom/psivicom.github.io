@@ -35,6 +35,7 @@ psivicom.github.io/
 │       ├── psivi-seed-instruction.yml
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
+│       ├── run-orchestrator.yml
 │       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── test-elastic-evolution.yml
