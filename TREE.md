@@ -238,6 +238,7 @@ psivicom.github.io/
 │   │   ├── ai_to_mesh_bridge.py
 │   │   ├── autoimmune_protocol_wendy.md
 │   │   ├── execution-template-for-Wendy.json
+│   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
 │   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
