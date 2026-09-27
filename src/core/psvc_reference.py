@@ -1,3 +1,4 @@
+# FORCE_UPDATE_V2 
 # src/core/psvc_reference.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
