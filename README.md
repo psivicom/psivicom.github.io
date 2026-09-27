@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-27T17:45:03.531Z | Hash: 85b665ef2ad3884122d3ffe63fc5eaf302dfbdce2576279a7264559780456836 -->
+<!-- Last updated: 2026-09-27T20:11:58.154Z | Hash: 2b1653cb3c4f5a6810edcc06f150366074a2f8edeab2db38b1b720cf2261bbac -->
 
 ```
 psivicom.github.io/
@@ -578,6 +578,7 @@ psivicom.github.io/
 │   │   ├── psvc_containers.py
 │   │   ├── psvc_reference.py
 │   │   ├── rollback_manager.py
+│   │   ├── sovereign_kernel.py
 │   │   ├── spatio_temporal.py
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py

@@ -459,6 +459,7 @@ psivicom.github.io/
 │   │   ├── psvc_containers.py
 │   │   ├── psvc_reference.py
 │   │   ├── rollback_manager.py
+│   │   ├── sovereign_kernel.py
 │   │   ├── spatio_temporal.py
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
