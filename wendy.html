@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- CRITICAL FOR MOBILE: Prevents zooming issues and ensures proper scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PSIVI | WENDY LIFE-SIGNS</title>
+    <style>
+        :root {
+            --bg-color: #020202;
+            --panel-bg: #0a0a0a;
+            --border-color: #1a1a1a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #666;
+            
+            /* Semantic Colors */
+            --color-input: #00ccff;   /* Cyan: Reality/Data In */
+            --color-process: #00ff41; /* Green: Breath/Active Process */
+            --color-storage-vram: #ffaa00; /* Orange: Hot Memory */
+            --color-storage-pico: #aa00ff; /* Purple: Warm Cache */
+            --color-storage-seed: #ffffff; /* White: Cold Archive */
+            --color-output: #ff3333;  /* Red: Action/Evolution */
+            --color-idle: #333333;    /* Grey: Dormant */
+            
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            font-size: 0.9rem; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-process);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .system-meta {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .status-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 10px;
+            height: 10px;
+            border: 2px solid transparent;
+            border-top-color: var(--color-process);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .spinner.active { opacity: 1; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* MAIN LAYOUT: Split Screen on Desktop, Stacked on Mobile */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto; /* Top Metrics, Middle Viz, Bottom Logs */
+            gap: 1rem;
+            padding: 1rem;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            main {
+                grid-template-columns: 1fr 1fr; /* Left: Viz, Right: Logs/Metrics */
+                grid-template-rows: 1fr 1fr;
+            }
+            .viz-panel { grid-column: 1 / 2; grid-row: 1 / 3; }
+            .metrics-panel { grid-column: 2 / 3; grid-row: 1 / 2; }
+            .logs-panel { grid-column: 2 / 3; grid-row: 2 / 3; }
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #222;
+            padding-bottom: 0.2rem;
+        }
+
+        /* VIZ PANEL (SVG + Canvas Overlay) */
+        .viz-panel {
+            min-height: 300px;
+            position: relative;
+        }
+
+        #pipeline-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #wave-canvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0; /* Behind SVG nodes */
+            opacity: 0.3; /* Subtle background pulse */
+        }
+
+        /* METRICS PANEL */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 4px;
+            padding: 0.5rem;
+        }
+
+        .metric-value {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .metric-unit {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* LOGS PANEL */
+        .logs-container {
+            flex: 1;
+            overflow-y: auto;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: #000;
+            border: 1px solid #222;
+            border-radius: 4px;
+            padding: 0.5rem;
+            max-height: 300px; /* Cap height on desktop */
+        }
+
+        @media (max-width: 767px) {
+            .logs-container {
+                max-height: 200px;
+            }
+        }
+
+        .log-entry {
+            margin-bottom: 0.3rem;
+            word-wrap: break-word;
+            line-height: 1.3;
+            border-left: 2px solid transparent;
+            padding-left: 0.5rem;
+        }
+
+        .log-time { color: #555; margin-right: 0.5rem; white-space: nowrap; }
+        .log-msg { color: #aaa; }
+        
+        .log-type-info { border-left-color: var(--color-input); }
+        .log-type-success { border-left-color: var(--color-process); color: var(--color-process); }
+        .log-type-error { border-left-color: var(--color-output); color: var(--color-output); }
+        .log-type-state { border-left-color: var(--color-storage-pico); color: var(--color-storage-pico); }
+
+        /* LEGEND */
+        .legend-overlay {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem; }
+        .legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+        <h1>WENDY // LIFE-SIGNS</h1>
+    </div>
+    
+    <div class="system-meta">
+        <div class="status-line">
+            <div class="spinner" id="heartbeat-spinner"></div>
+            <span id="sync-status">INIT...</span>
+        </div>
+        <span id="zulu-clock">--:--:--.---Z</span>
+    </div>
+</header>
+
+<main>
+    <!-- LEFT/TOP: VISUALIZATION -->
+    <div class="panel viz-panel">
+        <div class="panel-label">Cognitive Pipeline & Breath Pulse</div>
+        <canvas id="wave-canvas"></canvas>
+        <svg id="pipeline-svg"></svg>
+        
+        <div class="legend-overlay">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-input)"></div> Input</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-process)"></div> Process</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-storage-vram)"></div> VRAM</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-storage-pico)"></div> Pico</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-output)"></div> Output</div>
+        </div>
+    </div>
+
+    <!-- RIGHT/TOP: KEY METRICS -->
+    <div class="panel metrics-panel">
+        <div class="panel-label">Physiological State</div>
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <div class="metric-value" id="val-phase">--</div>
+                <div class="metric-unit">Phase</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value" id="val-intensity" style="color:var(--color-input)">--%</div>
+                <div class="metric-unit">Intensity</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value" id="val-action" style="font-size:0.9rem; text-align:center;">IDLE</div>
+                <div class="metric-unit">Activity</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value" id="val-stress" style="color:var(--color-output)">0.00</div>
+                <div class="metric-unit">Stress Acc.</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value" id="val-def">1.00</div>
+                <div class="metric-unit">Defense Wt</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value" id="val-exp">1.00</div>
+                <div class="metric-unit">Explore Wt</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM/RIGHT: SCIENTIFIC LOGS -->
+    <div class="panel logs-panel">
+        <div class="panel-label">Telemetry Stream (Zulu UTC)</div>
+        <div class="logs-container" id="telemetry-log">
+            <div class="log-entry log-type-info"><span class="log-time">[--:--]</span><span class="log-msg">System Boot...</span></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div>Source: psivicom.github.io/src/wendy_metabolism.json</div>
+    <div id="last-update">Sync: Never</div>
+</footer>
+
+<script>
+    /**
+     * UNIFIED LIFE-SIGN ENGINE
+     * Combines:
+     * 1. SVG Pipeline Graph (Structure)
+     * 2. Canvas Sine Wave (Vitality/Pulse)
+     * 3. Monospace Log Stream (Evidence)
+     */
+
+    const CONFIG = {
+        REFRESH_MS: 5000,
+        PARTICLE_SPEED: 0.02,
+        COLORS: {
+            INPUT: '#00ccff',
+            PROCESS: '#00ff41',
+            VRAM: '#ffaa00',
+            PICO: '#aa00ff',
+            SEED: '#ffffff',
+            OUTPUT: '#ff3333',
+            IDLE: '#333333'
+        }
+    };
+
+    // DOM Elements
+    const els = {
+        status: document.getElementById('sync-status'),
+        spinner: document.getElementById('heartbeat-spinner'),
+        clock: document.getElementById('zulu-clock'),
+        phase: document.getElementById('val-phase'),
+        intensity: document.getElementById('val-intensity'),
+        action: document.getElementById('val-action'),
+        stress: document.getElementById('val-stress'),
+        def: document.getElementById('val-def'),
+        exp: document.getElementById('val-exp'),
+        log: document.getElementById('telemetry-log'),
+        lastUpdate: document.getElementById('last-update')
+    };
+
+    const svg = document.getElementById('pipeline-svg');
+    const canvas = document.getElementById('wave-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // State
+    let currentState = null;
+    let particles = [];
+    let waveOffset = 0;
+    let currentPhaseValue = 0;
+    let animationId = null;
+    let previousAction = "";
+
+    // --- LAYOUT DEFINITION ---
+    const LAYOUT = {
+        nodes: [
+            { id: 'input_reality', label: 'REALITY', x: 0.1, y: 0.5, type: 'input' },
+            { id: 'proc_pilot', label: 'PILOT', x: 0.25, y: 0.3, type: 'process' },
+            { id: 'proc_breath', label: 'BREATH', x: 0.4, y: 0.5, type: 'core' },
+            { id: 'mem_vram', label: 'VRAM', x: 0.55, y: 0.2, type: 'storage' },
+            { id: 'mem_pico', label: 'PICO', x: 0.55, y: 0.5, type: 'storage' },
+            { id: 'mem_seed', label: 'SEED', x: 0.55, y: 0.8, type: 'storage' },
+            { id: 'dec_neuro', label: 'NEURO', x: 0.7, y: 0.5, type: 'decision' },
+            { id: 'out_action', label: 'ACTION', x: 0.9, y: 0.5, type: 'output' }
+        ],
+        links: [
+            { source: 'input_reality', target: 'proc_pilot', type: 'data' },
+            { source: 'proc_pilot', target: 'proc_breath', type: 'signal' },
+            { source: 'proc_breath', target: 'mem_vram', type: 'rw' },
+            { source: 'proc_breath', target: 'mem_pico', type: 'rw' },
+            { source: 'proc_breath', target: 'mem_seed', type: 'rw' },
+            { source: 'mem_vram', target: 'dec_neuro', type: 'ctx' },
+            { source: 'mem_pico', target: 'dec_neuro', type: 'ctx' },
+            { source: 'mem_seed', target: 'dec_neuro', type: 'ctx' },
+            { source: 'dec_neuro', target: 'out_action', type: 'cmd' },
+            { source: 'out_action', target: 'input_reality', type: 'fb', curve: true }
+        ]
+    };
+
+    function getNodeById(id) { return LAYOUT.nodes.find(n => n.id === id); }
+    
+    function getPixelCoords(node) {
+        const rect = svg.getBoundingClientRect();
+        return { x: node.x * rect.width, y: node.y * rect.height };
+    }
+
+    function createPathD(sourceNode, targetNode, isCurve = false) {
+        const s = getPixelCoords(sourceNode);
+        const t = getPixelCoords(targetNode);
+        if (isCurve) {
+            const midX = (s.x + t.x) / 2;
+            const midY = Math.min(s.y, t.y) - 40;
+            return `M ${s.x} ${s.y} Q ${midX} ${midY} ${t.x} ${t.y}`;
+        }
+        return `M ${s.x} ${s.y} L ${t.x} ${t.y}`;
+    }
+
+    function renderStaticGraph() {
+        svg.innerHTML = ''; // Clear
+        
+        const linkGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        svg.appendChild(linkGroup);
+
+        LAYOUT.links.forEach((link, index) => {
+            const source = getNodeById(link.source);
+            const target = getNodeById(link.target);
+            if (!source || !target) return;
+
+            const pathData = createPathD(source, target, link.curve);
+            const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            pathEl.setAttribute("d", pathData);
+            pathEl.setAttribute("class", "link");
+            pathEl.setAttribute("stroke", "#333");
+            pathEl.setAttribute("fill", "none");
+            pathEl.setAttribute("stroke-width", "2");
+            pathEl.dataset.linkIndex = index;
+            linkGroup.appendChild(pathEl);
+        });
+
+        const nodeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        svg.appendChild(nodeGroup);
+
+        LAYOUT.nodes.forEach(node => {
+            const coords = getPixelCoords(node);
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            g.setAttribute("transform", `translate(${coords.x}, ${coords.y})`);
+            g.setAttribute("class", "node");
+            g.dataset.nodeId = node.id;
+
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", "-30");
+            rect.setAttribute("y", "-15");
+            rect.setAttribute("width", "60");
+            rect.setAttribute("height", "30");
+            rect.setAttribute("rx", "4");
+            rect.setAttribute("fill", "#111");
+            rect.setAttribute("stroke", "#333");
+            
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.textContent = node.label;
+            text.setAttribute("dy", "4");
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("fill", "#fff");
+            text.setAttribute("font-size", "8px");
+            text.setAttribute("font-family", "'Courier New', monospace");
+            
+            g.appendChild(rect);
+            g.appendChild(text);
+            nodeGroup.appendChild(g);
+        });
+    }
+
+    // --- CANVAS WAVE RENDERING ---
+    function resizeCanvas() {
+        const container = canvas.parentElement;
+        const rect = container.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.logicalWidth = rect.width;
+        canvas.logicalHeight = rect.height;
+    }
+
+    function drawWave() {
+        if (!canvas.logicalWidth) return;
+        const w = canvas.logicalWidth;
+        const h = canvas.logicalHeight;
+        const mid = h / 2;
+
+        ctx.clearRect(0, 0, w, h);
+        
+        // Draw subtle grid
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for(let i=0; i<w; i+=30) { ctx.moveTo(i, 0); ctx.lineTo(i, h); }
+        for(let i=0; i<h; i+=30) { ctx.moveTo(0, i); ctx.lineTo(w, i); }
+        ctx.stroke();
+
+        // Draw Main Breath Wave
+        ctx.strokeStyle = CONFIG.COLORS.PROCESS;
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = CONFIG.COLORS.PROCESS;
+        
+        ctx.beginPath();
+        for (let x = 0; x <= w; x++) {
+            const angle = (x / w) * Math.PI * 2 + waveOffset;
+            // Amplitude modulated by current intensity
+            const ampMod = 0.5 + (currentPhaseValue * 0.5); 
+            const y = mid - Math.sin(angle) * (mid * 0.4 * ampMod);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        waveOffset += 0.05;
+        requestAnimationFrame(drawWave);
+    }
+
+    // --- PARTICLES & STATE MAPPING ---
+    function spawnParticle(linkIndex, color) {
+        const linkEl = document.querySelector(`.link[data-link-index="${linkIndex}"]`);
+        if (!linkEl) return;
+        const length = linkEl.getTotalLength();
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", "2");
+        circle.setAttribute("fill", color);
+        circle.setAttribute("opacity", "0.8");
+        svg.appendChild(circle); // Append directly to SVG root for simplicity in this demo
+        return { element: circle, progress: 0, speed: CONFIG.PARTICLE_SPEED + (Math.random() * 0.01), linkElement: linkEl, totalLength: length };
+    }
+
+    function updateParticles() {
+        // Clean up old particles from SVG if they exist outside our managed array logic
+        // For this simplified version, we rely on the array management below
+        
+        particles.forEach((p, i) => {
+            p.progress += p.speed;
+            if (p.progress >= 1) {
+                p.element.remove();
+                particles.splice(i, 1);
+                return;
+            }
+            const point = p.linkElement.getPointAtLength(p.progress * p.totalLength);
+            p.element.setAttribute("cx", point.x);
+            p.element.setAttribute("cy", point.y);
+        });
+    }
+
+    function animateLoop() {
+        updateParticles();
+        animationId = requestAnimationFrame(animateLoop);
+    }
+
+    function mapStateToVisuals(data) {
+        if (!data) return;
+
+        const action = String(data.action || 'IDLE').toUpperCase();
+        const intensity = Number(data.intensity || 0);
+        currentPhaseValue = Number(data.phase || 0);
+        
+        // Update Header Clock
+        els.clock.textContent = new Date().toISOString().substring(11, 23) + 'Z';
+
+        // Reset Links
+        document.querySelectorAll('.link').forEach(el => {
+            el.style.stroke = '#333';
+            el.style.opacity = '0.3';
+        });
+
+        const activateLink = (sourceId, targetId, color) => {
+            const linkObj = LAYOUT.links.find(l => l.source === sourceId && l.target === targetId);
+            if (!linkObj) return;
+            const idx = LAYOUT.links.indexOf(linkObj);
+            const el = document.querySelector(`.link[data-link-index="${idx}"]`);
+            if (el) {
+                el.style.stroke = color;
+                el.style.opacity = '1';
+                if (Math.random() < (intensity * 0.3)) {
+                    particles.push(spawnParticle(idx, color));
+                }
+            }
+        };
+
+        // Base Flow
+        activateLink('input_reality', 'proc_pilot', CONFIG.COLORS.INPUT);
+
+        if (action === 'IDLE') {
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.IDLE);
+        } else if (action === 'MAINTAIN') {
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
+            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.PICO);
+            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.SEED);
+            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.PICO);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        } else if (action === 'EXPLORE') {
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
+            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.VRAM);
+            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.VRAM);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        } else if (action === 'SCAN') {
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
+            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.VRAM);
+            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.PICO);
+            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.SEED);
+            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.VRAM);
+            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.PICO);
+            activateLink('mem_seed', 'dec_neuro', CONFIG.COLORS.SEED);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        } else if (action === 'EVOLVE') {
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.OUTPUT);
+            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.OUTPUT);
+            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.OUTPUT);
+            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.OUTPUT);
+            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.OUTPUT);
+            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.OUTPUT);
+            activateLink('mem_seed', 'dec_neuro', CONFIG.COLORS.OUTPUT);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        }
+
+        // Update Text Metrics
+        els.phase.textContent = currentPhaseValue.toFixed(4);
+        els.intensity.textContent = (intensity * 100).toFixed(1) + '%';
+        els.action.textContent = action;
+        els.action.style.color = action === 'IDLE' ? '#666' : CONFIG.COLORS.PROCESS;
+        
+        const lw = data.learned_weights || {};
+        els.stress.textContent = (lw.stress_accumulator || 0).toFixed(2);
+        els.def.textContent = (lw.defense_weight || 1.0).toFixed(2);
+        els.exp.textContent = (lw.explore_weight || 1.0).toFixed(2);
+
+        // Log State Change
+        if (previousAction !== "" && action !== previousAction) {
+            addLog(`STATE TRANSITION: ${previousAction} -> ${action}`, 'state');
+        }
+        previousAction = action;
+    }
+
+    // --- LOGGING ---
+    function addLog(msg, type = 'info') {
+        const nowIso = new Date().toISOString(); 
+        const div = document.createElement('div');
+        div.className = `log-entry log-type-${type}`;
+        div.innerHTML = `<span class="log-time">[${nowIso}]</span><span class="log-msg">${msg}</span>`;
+        els.log.prepend(div);
+        if (els.log.children.length > 50) els.log.removeChild(els.log.lastChild);
+    }
+
+    // --- FETCH ---
+    async function fetchData() {
+        els.spinner.classList.add('active');
+        try {
+            const url = `https://raw.githubusercontent.com/psivicom/psivicom.github.io/main/src/wendy_metabolism.json?t=${Date.now()}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            currentState = data;
+            els.status.textContent = "LIVE";
+            els.status.style.color = CONFIG.COLORS.PROCESS;
+            mapStateToVisuals(data);
+            els.lastUpdate.textContent = `Sync: ${new Date().toISOString()}`;
+        } catch (err) {
+            els.status.textContent = "ERR";
+            els.status.style.color = CONFIG.COLORS.OUTPUT;
+            addLog(`FETCH ERROR: ${err.message}`, 'error');
+        } finally {
+            setTimeout(() => els.spinner.classList.remove('active'), 500);
+        }
+    }
+
+    // --- INIT ---
+    function init() {
+        window.addEventListener('resize', () => {
+            renderStaticGraph();
+            resizeCanvas();
+            if(currentState) mapStateToVisuals(currentState);
+        });
+
+        renderStaticGraph();
+        resizeCanvas();
+        drawWave();
+        animateLoop();
+        
+        addLog("Life-Sign Monitor Initialized.", 'success');
+        fetchData();
+        setInterval(fetchData, CONFIG.REFRESH_MS);
+    }
+
+    init();
+</script>
+
+</body>
+</html>
