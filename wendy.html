@@ -443,14 +443,17 @@
         animationId = requestAnimationFrame(() => drawWave(phase));
     }
 
-    // LOGGING HELPER (Throttled)
+    // LOGGING HELPER (Throttled & Zulu Milliseconds)
     function addLog(msg, type = 'info') {
-        // Prevent spamming identical messages consecutively
-        const now = new Date().toISOString().substring(11,19) + 'Z'; // Zulu Time Format
+        // ISO String gives YYYY-MM-DDTHH:mm:ss.sssZ
+        // We slice to get HH:mm:ss.sssZ
+        const nowIso = new Date().toISOString();
+        const zuluTime = nowIso.substring(11, 23) + 'Z'; 
+        
         const div = document.createElement('div');
         div.className = 'log-entry';
         const msgClass = type === 'error' ? 'log-error' : 'log-msg';
-        div.innerHTML = `<span class="log-time">[${now}]</span><span class="${msgClass}">${msg}</span>`;
+        div.innerHTML = `<span class="log-time">[${zuluTime}]</span><span class="${msgClass}">${msg}</span>`;
         els.log.prepend(div);
         
         if (els.log.children.length > 20) { // Reduced max entries
@@ -546,8 +549,10 @@
         els.weightsSummary.textContent = `D:${defW.toFixed(2)} E:${expW.toFixed(2)}`;
         els.agentsList.textContent = `Stress: ${stress.toFixed(2)}`;
 
-        // Timestamp
-        els.lastUpdate.textContent = `Sync: ${new Date().toISOString().substring(11,19)}Z`; // Zulu Time Format
+        // Timestamp (Zulu Milliseconds)
+        const nowIso = new Date().toISOString();
+        const zuluTime = nowIso.substring(11, 23) + 'Z';
+        els.lastUpdate.textContent = `Sync: ${zuluTime}`; 
 
         // Start Visualizer Loop
         currentPhase = parseFloat(phase) || 0;
