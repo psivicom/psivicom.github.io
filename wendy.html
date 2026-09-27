@@ -45,7 +45,7 @@
         }
 
         h1 {
-            font-size: 1rem; /* Smaller on mobile */
+            font-size: 1rem; 
             letter-spacing: 1px;
             text-transform: uppercase;
             color: var(--accent-green);
@@ -69,6 +69,12 @@
             animation: pulse-border 2s infinite;
             white-space: nowrap;
         }
+        
+        .status-badge.error {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            animation: none;
+        }
 
         @keyframes pulse-border {
             0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.4); }
@@ -80,14 +86,12 @@
         main {
             flex: 1;
             display: grid;
-            /* Mobile First: Single Column */
             grid-template-columns: 1fr; 
             gap: 1rem;
             padding: 1rem;
             width: 100%;
         }
 
-        /* Tablet/Desktop: Multi-Column */
         @media (min-width: 768px) {
             main {
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -99,13 +103,13 @@
         .card {
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px; /* Slightly more rounded for modern feel */
+            border-radius: 8px;
             padding: 1rem;
             display: flex;
             flex-direction: column;
             position: relative;
             transition: border-color 0.3s ease;
-            min-height: 120px; /* Ensure cards aren't too tiny */
+            min-height: 120px;
         }
 
         .card:hover {
@@ -122,7 +126,7 @@
 
         .card-value {
             font-family: var(--font-mono);
-            font-size: 1.5rem; /* Readable on small screens */
+            font-size: 1.5rem;
             font-weight: bold;
             color: var(--text-primary);
             margin-bottom: auto;
@@ -141,11 +145,9 @@
 
         /* SPECIFIC CARDS */
         .breath-card {
-            /* On mobile, this card spans full width naturally due to 1fr grid */
-            /* On desktop, it can span 2 columns if we want, but let's keep it simple/stacked for reliability */
             grid-column: 1 / -1; 
             display: flex;
-            flex-direction: column; /* Stack metrics above wave on mobile */
+            flex-direction: column;
             align-items: stretch;
             justify-content: space-between;
             gap: 1rem;
@@ -153,26 +155,26 @@
 
         @media (min-width: 768px) {
             .breath-card {
-                flex-direction: row; /* Side-by-side on desktop */
+                flex-direction: row;
                 align-items: center;
             }
         }
 
         .visualizer-container {
             width: 100%;
-            height: 150px; /* Taller on mobile for visibility */
+            height: 150px;
             position: relative;
             background: #000;
             border: 1px solid #222;
             border-radius: 4px;
             overflow: hidden;
-            order: 2; /* Put wave below numbers on mobile */
+            order: 2;
         }
 
         @media (min-width: 768px) {
             .visualizer-container {
                 height: 100px;
-                order: 0; /* Default order */
+                order: 0;
                 flex: 1;
             }
         }
@@ -187,7 +189,7 @@
             display: flex;
             justify-content: space-around;
             width: 100%;
-            order: 1; /* Numbers first on mobile */
+            order: 1;
         }
 
         @media (min-width: 768px) {
@@ -204,7 +206,7 @@
         }
 
         .big-number {
-            font-size: 2rem; /* Big enough for touch targets/readability */
+            font-size: 2rem;
             line-height: 1;
             color: var(--accent-green);
         }
@@ -225,7 +227,7 @@
             background: #000;
             border: 1px solid #333;
             font-family: var(--font-mono);
-            font-size: 0.75rem; /* Smaller text fits more logs */
+            font-size: 0.75rem;
             color: var(--accent-green);
             overflow-y: scroll;
             padding: 0.5rem;
@@ -247,6 +249,7 @@
         .log-entry:last-child { opacity: 1; font-weight: bold; }
         .log-time { color: var(--text-secondary); margin-right: 0.5rem; }
         .log-msg { color: var(--text-primary); }
+        .log-error { color: var(--accent-red); }
 
         /* FOOTER */
         footer {
@@ -268,12 +271,6 @@
                 font-size: 0.7rem;
             }
         }
-
-        /* LOADING STATE */
-        .loading {
-            filter: blur(2px);
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
@@ -286,7 +283,7 @@
     <div class="status-badge" id="system-status">INIT...</div>
 </header>
 
-<main id="dashboard-grid" class="loading">
+<main id="dashboard-grid">
     
     <!-- BREATH VISUALIZER -->
     <div class="card breath-card">
@@ -366,8 +363,7 @@
         weightsSummary: document.getElementById('val-weights-summary'),
         agentsList: document.getElementById('val-agents-list'),
         log: document.getElementById('telemetry-log'),
-        lastUpdate: document.getElementById('last-update'),
-        grid: document.getElementById('dashboard-grid')
+        lastUpdate: document.getElementById('last-update')
     };
 
     // CANVAS SETUP WITH RETINA SUPPORT
@@ -375,32 +371,27 @@
     const ctx = canvas.getContext('2d');
     let waveOffset = 0;
     let currentPhase = 0;
+    let animationId = null;
 
     function resizeCanvas() {
         const container = canvas.parentElement;
         const rect = container.getBoundingClientRect();
-        
-        // Handle High DPI Displays (iPhone Retina)
         const dpr = window.devicePixelRatio || 1;
         
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
-        
-        // Scale context to match DPR
         ctx.scale(dpr, dpr);
         
-        // Store logical dimensions for drawing calculations
         canvas.logicalWidth = rect.width;
         canvas.logicalHeight = rect.height;
     }
 
     window.addEventListener('resize', () => {
         resizeCanvas();
-        drawWave(currentPhase); // Redraw immediately
+        drawWave(currentPhase);
     });
     
-    // Initial Resize
-    setTimeout(resizeCanvas, 100); // Small delay to ensure layout is settled
+    setTimeout(resizeCanvas, 100);
 
     function drawWave(phase) {
         if (!canvas.logicalWidth) return;
@@ -448,9 +439,8 @@
         ctx.arc(posX, posY, 4, 0, Math.PI * 2);
         ctx.fill();
         
-        // Animate offset slowly
         waveOffset += 0.02;
-        requestAnimationFrame(() => drawWave(phase));
+        animationId = requestAnimationFrame(() => drawWave(phase));
     }
 
     // LOGGING HELPER
@@ -458,7 +448,8 @@
         const now = new Date().toLocaleTimeString('en-US', {hour12: false, hour: '2-digit', minute:'2-digit'});
         const div = document.createElement('div');
         div.className = 'log-entry';
-        div.innerHTML = `<span class="log-time">[${now}]</span><span class="log-msg">${msg}</span>`;
+        const msgClass = type === 'error' ? 'log-error' : 'log-msg';
+        div.innerHTML = `<span class="log-time">[${now}]</span><span class="${msgClass}">${msg}</span>`;
         els.log.prepend(div);
         
         if (els.log.children.length > 50) {
@@ -469,69 +460,93 @@
     // FETCH DATA
     async function fetchTelemetry() {
         try {
+            // Add cache buster to force fresh data
             const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${FILE_PATH}?t=${Date.now()}`;
+            
+            addLog(`Fetching: ${url.substring(0, 50)}...`);
+            
             const response = await fetch(url);
             
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
             
-            const data = await response.json();
+            const text = await response.text();
+            
+            // Debug: Print first 100 chars of raw JSON to verify structure
+            addLog(`Raw Response Length: ${text.length}`);
+            
+            const data = JSON.parse(text);
+            
             updateUI(data);
             
-            els.grid.classList.remove('loading');
             els.status.textContent = "LIVE";
-            els.status.style.color = "var(--accent-green)";
-            els.status.style.borderColor = "var(--accent-green)";
+            els.status.classList.remove('error');
             
         } catch (error) {
             console.error(error);
             els.status.textContent = "ERR";
-            els.status.style.color = "var(--accent-red)";
-            els.status.style.borderColor = "var(--accent-red)";
-            addLog(`Link lost: ${error.message}`, 'error');
+            els.status.classList.add('error');
+            addLog(`CRITICAL ERROR: ${error.message}`, 'error');
+            
+            // If it's a network error, suggest CORS or URL issue
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                 addLog("Hint: Check Console (F12) for CORS or Network blocks.", 'error');
+            }
         }
     }
 
     function updateUI(data) {
-        // Update Numbers
-        els.phase.textContent = data.phase.toFixed(4);
-        els.intensity.textContent = (data.intensity * 100).toFixed(1) + '%';
-        els.period.textContent = data.period_minutes;
-        els.cycles.textContent = data.total_cycles_completed;
+        // Flexible Parsing Helper
+        const getVal = (obj, keys, defaultVal) => {
+            for (const k of keys) {
+                if (obj[k] !== undefined && obj[k] !== null) return obj[k];
+            }
+            return defaultVal;
+        };
+
+        // Update Numbers with fallbacks for common naming variations
+        const phase = getVal(data, ['phase'], 0);
+        const intensity = getVal(data, ['intensity'], 0);
+        const period = getVal(data, ['period_minutes', 'current_period_minutes', 'base_period_minutes'], '--');
+        const cycles = getVal(data, ['total_cycles_completed', 'cycles_done'], 0);
+        
+        els.phase.textContent = typeof phase === 'number' ? phase.toFixed(4) : phase;
+        els.intensity.textContent = typeof intensity === 'number' ? (intensity * 100).toFixed(1) + '%' : intensity;
+        els.period.textContent = period;
+        els.cycles.textContent = cycles;
         
         // Determine Action Color
         let actionColor = 'var(--text-primary)';
-        if (data.should_act === 'true') {
-            if (data.action === 'SCAN' || data.action === 'EVOLVE') actionColor = 'var(--accent-red)';
-            else if (data.action === 'MAINTAIN') actionColor = 'var(--accent-blue)';
+        const shouldAct = String(getVal(data, ['should_act'], 'false')).toLowerCase() === 'true';
+        const actionStr = getVal(data, ['action'], 'IDLE');
+        
+        if (shouldAct) {
+            if (['SCAN', 'EVOLVE'].includes(actionStr)) actionColor = 'var(--accent-red)';
+            else if (['MAINTAIN', 'EXPLORE'].includes(actionStr)) actionColor = 'var(--accent-blue)';
             else actionColor = 'var(--accent-green)';
         }
         
-        els.action.textContent = data.action;
+        els.action.textContent = actionStr;
         els.action.style.color = actionColor;
-        els.reason.textContent = data.reason;
+        els.reason.textContent = getVal(data, ['reason'], 'Unknown State');
 
         // Learned Weights Display
-        if (data.learned_weights) {
-            const lw = data.learned_weights;
-            els.weightsSummary.textContent = `D:${lw.defense_weight?.toFixed(2)||'-'} E:${lw.explore_weight?.toFixed(2)||'-'}`;
-            els.agentsList.textContent = `Stress: ${(lw.stress_accumulator||0).toFixed(2)}`;
-        }
+        const lw = data.learned_weights || {};
+        const defW = lw.defense_weight || 1.0;
+        const expW = lw.explore_weight || 1.0;
+        const stress = lw.stress_accumulator || 0.0;
+        
+        els.weightsSummary.textContent = `D:${defW.toFixed(2)} E:${expW.toFixed(2)}`;
+        els.agentsList.textContent = `Stress: ${stress.toFixed(2)}`;
 
         // Timestamp
         els.lastUpdate.textContent = `Sync: ${new Date().toLocaleTimeString()}`;
 
-        // Log significant events
-        if (data.should_act === 'true') {
-             addLog(`ACT: ${data.action}`);
-        }
-
-        // Start Visualizer Loop with current phase
-        currentPhase = data.phase;
-        // Only restart animation loop if not already running? 
-        // For simplicity, we just let the existing RAF loop pick up the new phase variable
-        // But we need to ensure drawWave is called at least once if it wasn't started
-        if (els.grid.classList.contains('loading')) {
-             drawWave(currentPhase);
+        // Start Visualizer Loop
+        currentPhase = parseFloat(phase) || 0;
+        if (!animationId) {
+            drawWave(currentPhase);
         }
     }
 
