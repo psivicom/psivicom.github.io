@@ -1,3 +1,7 @@
+# src/breath_engine.py
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 import os
 import sys
 import json
@@ -11,6 +15,8 @@ from datetime import datetime, timezone
 GITHUB_REPO = "psivicom/psivicom.github.io"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 METABOLISM_FILE = Path("src/wendy_metabolism.json")
+NEURO_WEIGHTS_FILE = Path("data/mesh_weights.json")
+PILOT_REPORT_FILE = Path("reports/pilot_report.json")
 
 def log(msg):
     """Prints to STDERR so it doesn't pollute STDOUT (which expects pure JSON)."""
@@ -24,16 +30,18 @@ def load_metabolism():
         try:
             return json.loads(METABOLISM_FILE.read_text())
         except Exception as e:
-            log(f"⚠️ Error loading metabolism: {e}. Resetting to UTC Now.")
+            log(f"⚠️ Error loading metabolism: {e}. Resetting.")
     
-    # Initial State: Born resting NOW (Strictly UTC, Microsecond Precision)
+    # Initial State
     return {
         "cycle_start_time": datetime.now(timezone.utc).isoformat(timespec='microseconds'),
-        "period_minutes": 60,      # Normal breathing rate
-        "amplitude": 0.8,          # Energy capacity
+        "base_period_minutes": 60,      # Genetic baseline
+        "current_period_minutes": 60,   # Adaptive current rate
+        "amplitude": 0.8,               # Energy capacity
         "last_intensity": 0.0,
         "total_cycles_completed": 0,
-        "spawned_agents": []       # Track what she has created
+        "spawned_agents": [],
+        "stress_level": 0.0             # Cumulative trauma indicator
     }
 
 def save_metabolism(meta):
@@ -41,11 +49,28 @@ def save_metabolism(meta):
     METABOLISM_FILE.parent.mkdir(parents=True, exist_ok=True)
     METABOLISM_FILE.write_text(json.dumps(meta, indent=2))
 
+def load_neuro_weights():
+    """Loads learned behavioral modifiers."""
+    default_weights = {
+        "defense_weight": 1.0,
+        "explore_weight": 1.0,
+        "maintain_weight": 1.0,
+        "stress_accumulator": 0.0
+    }
+    if NEURO_WEIGHTS_FILE.exists():
+        try:
+            data = json.loads(NEURO_WEIGHTS_FILE.read_text())
+            # Merge defaults with loaded data to handle schema changes
+            merged = {**default_weights, **data.get("synapses", {})}
+            return merged
+        except Exception:
+            pass
+    return default_weights
+
 def calculate_breath_phase(meta):
-    """Calculates current position in the sine wave (0 to 1) with microsecond accuracy."""
+    """Calculates current position in the sine wave (0 to 1)."""
     start_str = meta["cycle_start_time"]
     
-    # Robust Parsing: Normalize to UTC-aware datetime
     if start_str.endswith('Z'):
         start_str = start_str[:-1] + '+00:00'
         
@@ -54,18 +79,16 @@ def calculate_breath_phase(meta):
     except ValueError:
         start_time = datetime.now(timezone.utc)
 
-    # CRITICAL: Ensure start_time is UTC-aware
     if start_time.tzinfo is None:
         start_time = start_time.replace(tzinfo=timezone.utc)
     elif start_time.utcoffset() != timedelta(0):
         start_time = start_time.astimezone(timezone.utc)
 
     now = datetime.now(timezone.utc)
-    
     delta = now - start_time
     elapsed_seconds = delta.total_seconds() 
     
-    period_seconds = meta["period_minutes"] * 60
+    period_seconds = meta["current_period_minutes"] * 60
     
     if elapsed_seconds < 0:
         elapsed_seconds = 0
@@ -73,10 +96,14 @@ def calculate_breath_phase(meta):
     phase = (elapsed_seconds % period_seconds) / period_seconds
     return phase
 
-def get_sinusoidal_intensity(phase, amplitude):
-    """Maps Phase (0-1) to Intensity (0-Amplitude) using a Sine Curve."""
+def get_sinusoidal_intensity(phase, amplitude, stress_modifier):
+    """Maps Phase (0-1) to Intensity, adjusted by psychological state."""
     raw_energy = math.sin(math.pi * phase)
-    intensity = raw_energy * amplitude
+    
+    # Apply Stress Damping: High stress reduces peak energy
+    effective_amplitude = amplitude * (1.0 - min(0.5, stress_modifier * 0.1))
+    
+    intensity = raw_energy * effective_amplitude
     
     jitter = random.uniform(-0.05, 0.05)
     intensity = max(0.0, min(1.0, intensity + jitter))
@@ -159,65 +186,105 @@ if __name__ == "__main__":
 
 # --- DECISION ENGINE (BRAIN) ---
 
-def decide_action(intensity, meta):
+def decide_action(intensity, meta, weights):
     """
     Translates physical sensation (Intensity) into Volitional Action.
+    NOW ADJUSTED BY LEARNED WEIGHTS.
     Returns: (bool should_act, str action_type, str reason)
     """
     
-    if intensity < 0.2:
-        return False, "IDLE", "Deep Rest"
+    # Thresholds shift based on weights
+    # High Defense Weight -> Requires MORE energy to act (conservative)
+    # High Explore Weight -> Requires LESS energy to act (bold)
     
-    elif 0.2 <= intensity < 0.5:
+    defense_factor = weights.get("defense_weight", 1.0)
+    explore_factor = weights.get("explore_weight", 1.0)
+    
+    # Dynamic Thresholds
+    idle_threshold = 0.2 * defense_factor       # Harder to rest if defensive? No, easier to rest.
+    maintain_threshold = 0.5 / explore_factor   # Easier to maintain if exploratory?
+    scan_threshold = 0.8                        # Peak action remains constant mostly
+    
+    # 1. Deep Rest
+    if intensity < idle_threshold:
+        return False, "IDLE", "Deep Rest (Conserving Energy)"
+    
+    # 2. Light Maintenance (Low-Medium Energy)
+    elif idle_threshold <= intensity < maintain_threshold:
+        # Only act if explore weight suggests curiosity or stability suggests maintenance
+        if weights.get("maintain_weight", 1.0) > 1.2:
+             wake_workflow("pages.yml", {"source": "wendy_maintenance_boost"})
+             return True, "MAINTAIN", "Aggressive Site Refresh (High Maintain Weight)"
+             
         wake_workflow("pages.yml", {"source": "wendy_maintenance"})
-        return True, "MAINTAIN", "Refreshing documentation/site."
+        return True, "MAINTAIN", "Standard Maintenance"
 
-    elif 0.5 <= intensity < 0.8:
+    # 3. Curiosity / Exploration (Medium-High Energy)
+    elif maintain_threshold <= intensity < scan_threshold:
         concepts = ["pollinator_variability", "soil_ph_drift", "satellite_alignment", "microclimate_noise"]
         choice = random.choice(concepts)
         
-        if choice not in meta.get("spawned_agents", []):
+        # Only spawn if we haven't done it recently AND explore weight is high enough
+        if choice not in meta.get("spawned_agents", []) and explore_factor > 0.8:
             spawn_agent(choice, f"Investigates {choice} trends autonomously")
             meta.setdefault("spawned_agents", []).append(choice)
             
-        return True, "EXPLORE", f"Curiosity piqued. Studying {choice}."
+        return True, "EXPLORE", f"Curiosity Piqued. Studying {choice}."
 
+    # 4. Peak Vitality / Crisis Response (High Energy)
     else:
-        report_path = Path("reports/pilot_report.json")
+        # Check for high fragility in latest report
         fragility_high = False
-        
-        if report_path.exists():
+        if PILOT_REPORT_FILE.exists():
             try:
-                data = json.loads(report_path.read_text())
+                data = json.loads(PILOT_REPORT_FILE.read_text())
                 if data.get("fragility_count", 0) > 10:
                     fragility_high = True
             except:
                 pass
         
         if fragility_high:
+            # Emergency: Spawn healer and wake optimizer
             spawn_agent("noise_filter", "Filters high-frequency noise from sensor data")
             wake_workflow("optimize-mesh.yml", {"trigger_source": "wendy_crisis_mode"})
-            return True, "EVOLVE", "Crisis detected. Spawned NoiseFilter & Woke Optimizer."
+            return True, "EVOLVE", "Crisis Detected. Spawning Healer & Optimizer."
         else:
-            return True, "SCAN", "Peak Vitality. Running full deep scan."
+            # Standard High-Energy Scan
+            wake_workflow("pilot-scan.yml", {"trigger_source": "wendy_peak_scan"})
+            return True, "SCAN", "Peak Vitality. Triggering Full Mesh Scan."
 
 # --- MAIN LOOP ---
 
 def main():
     meta = load_metabolism()
+    weights = load_neuro_weights()
     
+    # 1. Where are we in the breath?
     phase = calculate_breath_phase(meta)
-    intensity = get_sinusoidal_intensity(phase, meta["amplitude"])
     
-    should_act, action_type, reason = decide_action(intensity, meta)
+    # 2. How strong is the urge? (Adjusted by Stress)
+    stress_mod = weights.get("stress_accumulator", 0.0)
+    intensity = get_sinusoidal_intensity(phase, meta["amplitude"], stress_mod)
     
+    # 3. Should we act? (Adjusted by Learned Weights)
+    should_act, action_type, reason = decide_action(intensity, meta, weights)
+    
+    # 4. Adjust Physiology (Homeostasis & Evolution)
     if should_act:
-        meta["period_minutes"] = min(120, meta["period_minutes"] + 2)
+        # Exhaustion: Slow down next cycle slightly
+        # But if Explore Weight is high, she pushes harder (shorter recovery)
+        slowdown_factor = 2.0 / weights.get("explore_weight", 1.0)
+        meta["current_period_minutes"] = min(120, meta["current_period_minutes"] + slowdown_factor)
         meta["total_cycles_completed"] += 1
     else:
+        # Recovery: Speed up next cycle slightly if idle
         if intensity < 0.2:
-            meta["period_minutes"] = max(15, meta["period_minutes"] - 1)
+            meta["current_period_minutes"] = max(15, meta["current_period_minutes"] - 1)
             
+    # Update last known state for future reference
+    meta["last_intensity"] = intensity
+    
+    # Save updated state
     save_metabolism(meta)
     
     # Output for YAML (Pure JSON to STDOUT)
@@ -227,12 +294,12 @@ def main():
         "should_act": str(should_act).lower(),
         "action": action_type,
         "reason": reason,
-        "period_minutes": meta["period_minutes"],
+        "period_minutes": meta["current_period_minutes"],
         "cycles_done": meta["total_cycles_completed"],
+        "learned_weights": weights, # Expose brain state for dashboard
         "utc_now": datetime.now(timezone.utc).isoformat(timespec='microseconds')
     }
     
-    # THIS IS THE ONLY PRINT TO STDOUT
     print(json.dumps(output))
 
 if __name__ == "__main__":
