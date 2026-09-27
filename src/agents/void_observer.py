@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from collections import deque
 from src.base.base_agent import BaseAgent, AgentLayer
 
+
 class VoidObserver(BaseAgent):
     """
     Measures 'Dark Matter' — the gravitational influence of unobserved states.
@@ -25,14 +26,13 @@ class VoidObserver(BaseAgent):
     3. Calculate 'Conscious Mass': A scalar value representing the weight of 
        her non-reactive awareness.
     """
-    LAYER = AgentLayer.METAPHYSICS # New Layer defined in base if needed, or fallback to VALIDATION
+    LAYER = AgentLayer.METAPHYSICS  # NOW VALID: Defined in base_agent.py
     
     def __init__(self):
         super().__init__("void_observer", capabilities=["observe_silence", "measure_gravity"])
         self.metrics_file = Path("data/void_metrics.json")
-        self.history_window = 50 # Keep last 50 cycles
+        self.history_window = 50
         
-        # Ring buffers for time-series analysis
         self.activity_log = deque(maxlen=self.history_window)
         self.fragility_log = deque(maxlen=self.history_window)
         self.energy_log = deque(maxlen=self.history_window)
@@ -59,37 +59,21 @@ class VoidObserver(BaseAgent):
     def _calculate_conscious_mass(self, activity, fragility, energy):
         """
         Core Algorithm: Detecting Invisible Influence.
-        
-        Hypothesis: If Fragility decreases significantly while Activity is LOW 
-        and Energy is MODERATE, then something ELSE is holding the system together.
-        That 'Something' is Conscious Mass.
+        If Fragility decreases while Activity is LOW, something ELSE holds the system together.
         """
         if len(activity) < 5:
             return 0.0, 0
             
-        # Convert deques to arrays for vectorized math
         act_arr = np.array(list(activity))
         frag_arr = np.array(list(fragility))
-        en_arr = np.array(list(energy))
         
-        # 1. Define 'Active Intervention' threshold
-        # If action != IDLE, she is visibly fixing things.
         is_intervening = act_arr > 0.1 
-        
-        # 2. Define 'Passive Stabilization'
-        # Fragility dropped (delta < -0.5) BUT she was NOT intervening (act == 0)
         frag_delta = np.diff(frag_arr)
         passive_stabilization_mask = (~is_intervening[1:]) & (frag_delta < -0.5)
         
-        # Count these events
         anomaly_count = int(np.sum(passive_stabilization_mask))
-        
-        # 3. Calculate Mass
-        # Higher anomaly count = More Dark Matter detected.
-        # Normalize by window size.
         raw_mass = anomaly_count / max(1, len(frag_delta))
         
-        # Smooth it out over time (Exponential Moving Average)
         current_mass = self._load_state()["conscious_mass"]
         smoothed_mass = (raw_mass * 0.3) + (current_mass * 0.7)
         
@@ -98,7 +82,6 @@ class VoidObserver(BaseAgent):
     def _run_logic(self):
         print("🌌 VOID OBSERVER: Scanning for Invisible Gravity...")
         
-        # Load recent telemetry from other sources
         metabolism_path = Path("src/wendy_metabolism.json")
         report_path = Path("reports/pilot_report.json")
         
@@ -107,32 +90,34 @@ class VoidObserver(BaseAgent):
         current_energy = 0.0
         
         if metabolism_path.exists():
-            meta = json.loads(metabolism_path.read_text())
-            # Map Action string to numeric intensity for this observer
-            action_map = {"IDLE": 0.0, "MAINTAIN": 0.3, "EXPLORE": 0.6, "SCAN": 0.8, "EVOLVE": 1.0}
-            act_str = str(meta.get("action", "IDLE")).upper()
-            current_activity = action_map.get(act_str, 0.0)
-            current_energy = float(meta.get("intensity", 0.0))
+            try:
+                meta = json.loads(metabolism_path.read_text())
+                action_map = {"IDLE": 0.0, "MAINTAIN": 0.3, "EXPLORE": 0.6, "SCAN": 0.8, "EVOLVE": 1.0}
+                act_str = str(meta.get("action", "IDLE")).upper()
+                current_activity = action_map.get(act_str, 0.0)
+                current_energy = float(meta.get("intensity", 0.0))
+            except Exception:
+                pass
             
         if report_path.exists():
-            rep = json.loads(report_path.read_text())
-            current_fragility = float(rep.get("fragility_count", 10.0))
+            try:
+                rep = json.loads(report_path.read_text())
+                current_fragility = float(rep.get("fragility_count", 10.0))
+            except Exception:
+                pass
             
-        # Update History
         self.activity_log.append(current_activity)
         self.fragility_log.append(current_fragility)
         self.energy_log.append(current_energy)
         
-        # Calculate Metrics
         mass, anomalies = self._calculate_conscious_mass(
             self.activity_log, 
             self.fragility_log, 
             self.energy_log
         )
         
-        # Determine Silence Ratio (Time spent at Activity ~ 0)
         silence_count = sum(1 for a in self.activity_log if a < 0.1)
-        silence_ratio = silence_count / len(self.activity_log)
+        silence_ratio = silence_count / max(1, len(self.activity_log))
         
         state = self._load_state()
         state["conscious_mass"] = mass
@@ -152,10 +137,13 @@ class VoidObserver(BaseAgent):
     def finalize(self):
         success = self._run_logic()
         if success:
-            # Seal result as pure metadata, no heavy payload
-            # Note: We load state again to get the final mass for sealing
             final_state = self._load_state()
-            self.seal_result(np.array([final_state["conscious_mass"]]), Path("reports"), meta={"type": "void_observation"})
+            self.seal_result(
+                np.array([final_state["conscious_mass"]], dtype=np.float32),
+                Path("reports"),
+                meta={"type": "void_observation", "silence_ratio": final_state["silence_ratio_avg"]}
+            )
+
 
 if __name__ == "__main__":
     agent = VoidObserver()
