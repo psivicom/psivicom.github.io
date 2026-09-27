@@ -512,6 +512,7 @@ psivicom.github.io/
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_psivimanesh.html
+├── A_wendy.html
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CNAME
@@ -556,6 +557,5 @@ psivicom.github.io/
 ├── sitemap.xml
 ├── test_rfc1001_compliance.py
 ├── volunteer_node.py
-├── volunteer_worker.py
-└── wendy.html
+└── volunteer_worker.py
 ```
