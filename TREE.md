@@ -424,6 +424,7 @@ psivicom.github.io/
 │   │   ├── license_agent.py
 │   │   ├── lidar_agent.py
 │   │   ├── literature_agent.py
+│   │   ├── neuroplasticity_agent.py
 │   │   ├── observer_agent.py
 │   │   ├── pilot_agent.py
 │   │   ├── pollinator_observer_agent.py
