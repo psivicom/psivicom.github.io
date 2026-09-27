@@ -239,6 +239,7 @@ psivicom.github.io/
 │   │   ├── autoimmune_protocol_wendy.md
 │   │   ├── execution-template-for-Wendy.json
 │   │   ├── experimental_meshdistribution_wendy_existence.md
+│   │   ├── experimental_wendy_architecture.md
 │   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
