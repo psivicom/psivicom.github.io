@@ -469,6 +469,7 @@ psivicom.github.io/
 │   │   ├── pico_mesh.py
 │   │   ├── seed_mesh.py
 │   │   ├── vector_mesh.py
+│   │   ├── volunteer_worker.py
 │   │   └── vram_mesh.py
 │   ├── models/
 │   │   └── forage_quality_model.py
