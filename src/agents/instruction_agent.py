@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from datetime import datetime, timezone
 from src.base.base_agent import BaseAgent, AgentLayer
+from src.core.psvc_reference import validate_file  # Now this will work!
 
 class InstructionAgent(BaseAgent):
     LAYER = AgentLayer.INGESTION
@@ -32,10 +33,14 @@ class InstructionAgent(BaseAgent):
         processed_results = []
         for file_path in sorted(files, key=lambda p: p.stat().st_mtime):
             try:
+                # Validate using our new core module
+                if not validate_file(str(file_path)):
+                    print(f"❌ Invalid PSVC format: {file_path.name}. Skipping.")
+                    continue
+
                 print(f"Processing: {file_path.name}")
                 data = json.loads(file_path.read_text())
                 
-                # Simulate processing logic
                 command = data.get("command", "unknown")
                 params = data.get("params", {})
                 
@@ -54,12 +59,10 @@ class InstructionAgent(BaseAgent):
                 dest_path = self.processed_dir / file_path.name
                 file_path.rename(dest_path)
                 
-                # Record in receipt chain
                 self.seal("process_instruction", {"command": command, "source_file": str(file_path)})
                 
             except Exception as e:
                 print(f"❌ Error processing {file_path.name}: {e}")
-                # Optionally move to failed folder
                 
         return processed_results
 
@@ -79,8 +82,6 @@ class InstructionAgent(BaseAgent):
         report_path.write_text(json.dumps(report_data, indent=2))
         print(f"📄 Instruction report written to {report_path}")
         
-        # Seal the agent's own result using the base method
-        # We pass an empty array as signal since this agent produces logs/reports, not vectors
         self.seal_result([], Path("reports"), meta={"type": "instruction_batch"})
 
 if __name__ == "__main__":
