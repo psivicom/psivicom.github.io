@@ -10,6 +10,7 @@ psivicom.github.io/
 │       ├── critic-agent.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
+│       ├── generate-report.yml
 │       ├── immune-response.yml
 │       ├── instruction-handler.yml
 │       ├── intelligence-agent.yml
