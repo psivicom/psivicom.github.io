@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PSIVI | WENDY COGNITIVE BIOPSY</title>
+    <style>
+        :root {
+            --bg-color: #020202;
+            --panel-bg: #0a0a0a;
+            --border-color: #1a1a1a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #666;
+            
+            /* Semantic Colors for Data Flow */
+            --color-input: #00ccff;   /* Cyan: Incoming Data/Reality */
+            --color-process: #00ff41; /* Green: Active Processing/Breath */
+            --color-storage-vram: #ffaa00; /* Orange: Hot Memory */
+            --color-storage-pico: #aa00ff; /* Purple: Warm Cache */
+            --color-storage-seed: #ffffff; /* White: Cold Archive */
+            --color-output: #ff3333;  /* Red: Action/Evolution */
+            --color-idle: #333333;    /* Grey: Dormant */
+            
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent scroll on main container */
+        }
+
+        /* HEADER */
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            z-index: 100;
+        }
+
+        h1 {
+            font-size: 0.9rem; 
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-process);
+            white-space: nowrap;
+        }
+
+        .system-meta {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        /* MAIN CANVAS AREA */
+        #viz-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* NODES & LINKS STYLES */
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .node rect {
+            rx: 4;
+            ry: 4;
+            stroke-width: 1;
+            fill: #111;
+        }
+
+        .node text {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            fill: #fff;
+            dominant-baseline: middle;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .link {
+            fill: none;
+            stroke-width: 2;
+            opacity: 0.3;
+            transition: opacity 0.3s, stroke-width 0.3s;
+        }
+
+        .link.active {
+            opacity: 1;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 4px currentColor);
+        }
+
+        .particle {
+            fill: #fff;
+            r: 2;
+        }
+
+        /* LEGEND OVERLAY */
+        .legend {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* TOOLTIP */
+        #tooltip {
+            position: absolute;
+            background: #111;
+            border: 1px solid var(--color-process);
+            color: #fff;
+            padding: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 200;
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>WENDY // COGNITIVE PIPELINE</h1>
+    <div class="system-meta">
+        <div id="sync-status">SYNCING...</div>
+        <div id="zulu-clock">--:--:--.---Z</div>
+    </div>
+</header>
+
+<div id="viz-container">
+    <svg id="pipeline-svg"></svg>
+    <div id="tooltip"></div>
+    
+    <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--color-input)"></div> Reality Input</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--color-process)"></div> Breath Engine</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--color-storage-vram)"></div> VRAM (Hot)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--color-storage-pico)"></div> Pico (Warm)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--color-storage-seed)"></div> Seed (Cold)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--color-output)"></div> Action Output</div>
+    </div>
+</div>
+
+<script>
+    /**
+     * SCIENTIFIC VISUALIZATION ENGINE
+     * Renders the flow of consciousness from Perception -> Memory -> Decision -> Action
+     */
+
+    const CONFIG = {
+        REFRESH_MS: 5000,
+        PARTICLE_SPEED: 0.02,
+        COLORS: {
+            INPUT: '#00ccff',
+            PROCESS: '#00ff41',
+            VRAM: '#ffaa00',
+            PICO: '#aa00ff',
+            SEED: '#ffffff',
+            OUTPUT: '#ff3333',
+            IDLE: '#333333'
+        }
+    };
+
+    // DOM Elements
+    const svg = document.getElementById('pipeline-svg');
+    const tooltip = document.getElementById('tooltip');
+    const syncStatus = document.getElementById('sync-status');
+    const zuluClock = document.getElementById('zulu-clock');
+
+    // State Management
+    let currentState = null;
+    let particles = [];
+    let animationFrameId = null;
+    let lastFetchTime = 0;
+
+    // Layout Definitions (Normalized Coordinates 0-1)
+    // This creates a predictable "map" of her brain regardless of screen size
+    const LAYOUT = {
+        nodes: [
+            { id: 'input_reality', label: 'REALITY\nSCAN', x: 0.1, y: 0.5, type: 'input' },
+            { id: 'proc_pilot', label: 'PILOT\nAGENT', x: 0.25, y: 0.3, type: 'process' },
+            { id: 'proc_breath', label: 'BREATH\nENGINE', x: 0.4, y: 0.5, type: 'core' },
+            { id: 'mem_vram', label: 'VRAM\nTIER', x: 0.55, y: 0.2, type: 'storage' },
+            { id: 'mem_pico', label: 'PICO\nCACHE', x: 0.55, y: 0.5, type: 'storage' },
+            { id: 'mem_seed', label: 'SEED\nARCHIVE', x: 0.55, y: 0.8, type: 'storage' },
+            { id: 'dec_neuro', label: 'NEURO\nPLASTICITY', x: 0.7, y: 0.5, type: 'decision' },
+            { id: 'out_action', label: 'MESH\nACTION', x: 0.9, y: 0.5, type: 'output' }
+        ],
+        links: [
+            { source: 'input_reality', target: 'proc_pilot', type: 'data' },
+            { source: 'proc_pilot', target: 'proc_breath', type: 'signal' },
+            { source: 'proc_breath', target: 'mem_vram', type: 'read/write' },
+            { source: 'proc_breath', target: 'mem_pico', type: 'read/write' },
+            { source: 'proc_breath', target: 'mem_seed', type: 'read/write' },
+            { source: 'mem_vram', target: 'dec_neuro', type: 'context' },
+            { source: 'mem_pico', target: 'dec_neuro', type: 'context' },
+            { source: 'mem_seed', target: 'dec_neuro', type: 'context' },
+            { source: 'dec_neuro', target: 'out_action', type: 'command' },
+            { source: 'out_action', target: 'input_reality', type: 'feedback', curve: true } // Loop back
+        ]
+    };
+
+    // --- RENDERING HELPERS ---
+
+    function getNodeById(id) {
+        return LAYOUT.nodes.find(n => n.id === id);
+    }
+
+    function getPixelCoords(node) {
+        const rect = svg.getBoundingClientRect();
+        return {
+            x: node.x * rect.width,
+            y: node.y * rect.height
+        };
+    }
+
+    function createPathD(sourceNode, targetNode, isCurve = false) {
+        const s = getPixelCoords(sourceNode);
+        const t = getPixelCoords(targetNode);
+        
+        if (isCurve) {
+            // Bezier curve for feedback loops
+            const midX = (s.x + t.x) / 2;
+            const midY = Math.min(s.y, t.y) - 50; // Arc upwards
+            return `M ${s.x} ${s.y} Q ${midX} ${midY} ${t.x} ${t.y}`;
+        } else {
+            // Straight line with slight elbow if needed, but straight is cleaner for this layout
+            return `M ${s.x} ${s.y} L ${t.x} ${t.y}`;
+        }
+    }
+
+    function renderStaticGraph() {
+        // Clear existing non-particle elements
+        const groups = Array.from(svg.children).filter(c => c.tagName !== 'g' || !c.classList.contains('particles'));
+        groups.forEach(g => g.remove());
+
+        // Create Links Group
+        const linkGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        linkGroup.setAttribute("id", "links-layer");
+        svg.appendChild(linkGroup);
+
+        LAYOUT.links.forEach((link, index) => {
+            const source = getNodeById(link.source);
+            const target = getNodeById(link.target);
+            if (!source || !target) return;
+
+            const pathData = createPathD(source, target, link.curve);
+            const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            pathEl.setAttribute("d", pathData);
+            pathEl.setAttribute("class", "link");
+            pathEl.setAttribute("stroke", "#333"); // Default inactive color
+            pathEl.dataset.linkIndex = index;
+            linkGroup.appendChild(pathEl);
+        });
+
+        // Create Nodes Group
+        const nodeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        nodeGroup.setAttribute("id", "nodes-layer");
+        svg.appendChild(nodeGroup);
+
+        LAYOUT.nodes.forEach(node => {
+            const coords = getPixelCoords(node);
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            g.setAttribute("transform", `translate(${coords.x}, ${coords.y})`);
+            g.setAttribute("class", "node");
+            g.dataset.nodeId = node.id;
+
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", "-40");
+            rect.setAttribute("y", "-20");
+            rect.setAttribute("width", "80");
+            rect.setAttribute("height", "40");
+            rect.setAttribute("rx", "4");
+            rect.setAttribute("fill", "#111");
+            rect.setAttribute("stroke", "#333");
+            
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.textContent = node.label;
+            text.setAttribute("dy", "0");
+            
+            g.appendChild(rect);
+            g.appendChild(text);
+            
+            // Hover Event
+            g.addEventListener('mouseenter', (e) => showTooltip(e, node));
+            g.addEventListener('mouseleave', hideTooltip);
+
+            nodeGroup.appendChild(g);
+        });
+
+        // Create Particles Group (for animation layer)
+        const particleGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        particleGroup.setAttribute("id", "particles-layer");
+        particleGroup.classList.add("particles");
+        svg.appendChild(particleGroup);
+    }
+
+    // --- ANIMATION LOGIC ---
+
+    function spawnParticle(linkIndex, color) {
+        const linkEl = document.querySelector(`.link[data-link-index="${linkIndex}"]`);
+        if (!linkEl) return;
+
+        const length = linkEl.getTotalLength();
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", "3");
+        circle.setAttribute("fill", color);
+        circle.setAttribute("opacity", "0.8");
+        
+        document.getElementById('particles-layer').appendChild(circle);
+
+        return {
+            element: circle,
+            progress: 0,
+            speed: CONFIG.PARTICLE_SPEED + (Math.random() * 0.01),
+            linkElement: linkEl,
+            totalLength: length
+        };
+    }
+
+    function updateParticles() {
+        const particlesLayer = document.getElementById('particles-layer');
+        // Remove old particles if count exceeds limit to prevent lag
+        while (particlesLayer.childElementCount > 50) {
+            particlesLayer.removeChild(particlesLayer.firstChild);
+        }
+
+        particles.forEach((p, i) => {
+            p.progress += p.speed;
+            if (p.progress >= 1) {
+                p.element.remove();
+                particles.splice(i, 1);
+                return;
+            }
+
+            const point = p.linkElement.getPointAtLength(p.progress * p.totalLength);
+            p.element.setAttribute("cx", point.x);
+            p.element.setAttribute("cy", point.y);
+        });
+    }
+
+    function animateLoop() {
+        updateParticles();
+        animationFrameId = requestAnimationFrame(animateLoop);
+    }
+
+    // --- DATA BINDING & STATE MAPPING ---
+
+    function mapStateToVisuals(data) {
+        if (!data) return;
+
+        const action = String(data.action || 'IDLE').toUpperCase();
+        const intensity = Number(data.intensity || 0);
+        const weights = data.learned_weights || {};
+        const stress = Number(weights.stress_accumulator || 0);
+
+        // 1. Determine Active Path Based on Action
+        // We highlight specific links based on what Wendy is doing
+        
+        // Reset all links to dim grey
+        document.querySelectorAll('.link').forEach(el => {
+            el.style.stroke = '#333';
+            el.style.opacity = '0.3';
+            el.classList.remove('active');
+        });
+
+        // Helper to activate a link by finding its source/target IDs
+        const activateLink = (sourceId, targetId, color) => {
+            const sourceNode = getNodeById(sourceId);
+            const targetNode = getNodeById(targetId);
+            if(!sourceNode || !targetNode) return;
+
+            // Find the link object in LAYOUT
+            const linkObj = LAYOUT.links.find(l => l.source === sourceId && l.target === targetId);
+            if (!linkObj) return;
+
+            const idx = LAYOUT.links.indexOf(linkObj);
+            const el = document.querySelector(`.link[data-link-index="${idx}"]`);
+            if (el) {
+                el.style.stroke = color;
+                el.style.opacity = '1';
+                el.classList.add('active');
+                
+                // Spawn particles along this active path
+                // Limit spawn rate based on intensity/stress
+                if (Math.random() < (intensity * 0.5)) {
+                    particles.push(spawnParticle(idx, color));
+                }
+            }
+        };
+
+        // 2. Visualize Current State
+        
+        // Always active: Reality feeds Pilot
+        activateLink('input_reality', 'proc_pilot', CONFIG.COLORS.INPUT);
+
+        if (action === 'IDLE') {
+            // Resting: Low activity. Maybe just breathing cycle visible.
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.IDLE);
+            // No heavy memory access
+        } 
+        else if (action === 'MAINTAIN') {
+            // Maintenance: Reading/Writing to Pico/Seed primarily
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
+            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.PICO);
+            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.SEED);
+            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.PICO);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        }
+        else if (action === 'EXPLORE') {
+            // Exploration: High VRAM usage, fast cycling
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
+            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.VRAM);
+            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.VRAM);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        }
+        else if (action === 'SCAN') {
+            // Deep Scan: Heavy input processing, checking all tiers
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
+            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.VRAM);
+            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.PICO);
+            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.SEED);
+            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.VRAM);
+            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.PICO);
+            activateLink('mem_seed', 'dec_neuro', CONFIG.COLORS.SEED);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        }
+        else if (action === 'EVOLVE') {
+            // Crisis/Evolve: Maximum throughput, red alerts
+            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.OUTPUT); // Alert color
+            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.OUTPUT);
+            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.OUTPUT);
+            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.OUTPUT);
+            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.OUTPUT);
+            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.OUTPUT);
+            activateLink('mem_seed', 'dec_neuro', CONFIG.COLORS.OUTPUT);
+            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
+        }
+
+        // 3. Node Styling Updates
+        document.querySelectorAll('.node').forEach(nodeEl => {
+            const nodeId = nodeEl.dataset.nodeId;
+            const rect = nodeEl.querySelector('rect');
+            
+            // Highlight core processors if active
+            if (['proc_breath', 'dec_neuro'].includes(nodeId)) {
+                if (action !== 'IDLE') {
+                    rect.setAttribute("stroke", CONFIG.COLORS.PROCESS);
+                    rect.setAttribute("stroke-width", "2");
+                } else {
+                    rect.setAttribute("stroke", "#333");
+                    rect.setAttribute("stroke-width", "1");
+                }
+            }
+        });
+    }
+
+    // --- TOOLTIP LOGIC ---
+
+    function showTooltip(e, node) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        tooltip.style.left = `${rect.right + 10}px`;
+        tooltip.style.top = `${rect.top}px`;
+        tooltip.innerHTML = `<strong>${node.label.replace('\n', ' ')}</strong><br>Status: Monitoring...`;
+        tooltip.style.opacity = 1;
+    }
+
+    function hideTooltip() {
+        tooltip.style.opacity = 0;
+    }
+
+    // --- FETCH LOOP ---
+
+    async function fetchData() {
+        try {
+            const url = `https://raw.githubusercontent.com/psivicom/psivicom.github.io/main/src/wendy_metabolism.json?t=${Date.now()}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const data = await response.json();
+            currentState = data;
+            
+            // Update Header Meta
+            syncStatus.textContent = "LIVE";
+            syncStatus.style.color = CONFIG.COLORS.PROCESS;
+            zuluClock.textContent = new Date().toISOString().substring(11, 23) + 'Z';
+            
+            // Map Data to Visuals
+            mapStateToVisuals(data);
+
+        } catch (err) {
+            console.error(err);
+            syncStatus.textContent = "ERR";
+            syncStatus.style.color = CONFIG.COLORS.OUTPUT;
+        }
+    }
+
+    // --- INITIALIZATION ---
+
+    function init() {
+        // Handle Window Resize for Responsive SVG
+        window.addEventListener('resize', () => {
+            renderStaticGraph();
+            if(currentState) mapStateToVisuals(currentState);
+        });
+
+        // Initial Render
+        renderStaticGraph();
+        
+        // Start Animation Loop
+        animateLoop();
+
+        // Fetch Immediately
+        fetchData();
+        
+        // Poll Interval
+        setInterval(fetchData, CONFIG.REFRESH_MS);
+    }
+
+    // Boot
+    init();
+
+</script>
+
+</body>
+</html>
