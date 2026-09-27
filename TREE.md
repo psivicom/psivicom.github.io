@@ -431,7 +431,8 @@ psivicom.github.io/
 │   │   ├── pollinator_pilot_agent.py
 │   │   ├── report_generator_agent.py
 │   │   ├── self_healing_agent.py
-│   │   └── synthesizer_agent.py
+│   │   ├── synthesizer_agent.py
+│   │   └── void_observer.py
 │   ├── automation/
 │   │   ├── __init__.py
 │   │   ├── ai_planner.py
