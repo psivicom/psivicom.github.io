@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CRITICAL FOR MOBILE: Prevents zooming issues and ensures proper scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PSIVI | WENDY MISSION CONTROL</title>
     <style>
         :root {
@@ -24,37 +25,49 @@
             background-color: var(--bg-color);
             color: var(--text-primary);
             font-family: var(--font-sans);
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden; /* Allow vertical scroll, hide horizontal */
         }
 
         /* HEADER */
         header {
             border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem;
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: linear-gradient(to bottom, #111, #050505);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         h1 {
-            font-size: 1.2rem;
-            letter-spacing: 2px;
+            font-size: 1rem; /* Smaller on mobile */
+            letter-spacing: 1px;
             text-transform: uppercase;
             color: var(--accent-green);
             text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 1.2rem; letter-spacing: 2px; }
+            header { padding: 1rem 2rem; }
         }
 
         .status-badge {
             font-family: var(--font-mono);
-            font-size: 0.9rem;
-            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
             border: 1px solid var(--accent-green);
             color: var(--accent-green);
             animation: pulse-border 2s infinite;
+            white-space: nowrap;
         }
 
         @keyframes pulse-border {
@@ -67,21 +80,32 @@
         main {
             flex: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 2rem;
-            overflow-y: auto;
+            /* Mobile First: Single Column */
+            grid-template-columns: 1fr; 
+            gap: 1rem;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        /* Tablet/Desktop: Multi-Column */
+        @media (min-width: 768px) {
+            main {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                padding: 2rem;
+            }
         }
 
         .card {
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 1.5rem;
+            border-radius: 8px; /* Slightly more rounded for modern feel */
+            padding: 1rem;
             display: flex;
             flex-direction: column;
             position: relative;
             transition: border-color 0.3s ease;
+            min-height: 120px; /* Ensure cards aren't too tiny */
         }
 
         .card:hover {
@@ -89,7 +113,7 @@
         }
 
         .card-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             color: var(--text-secondary);
             letter-spacing: 1px;
@@ -98,34 +122,59 @@
 
         .card-value {
             font-family: var(--font-mono);
-            font-size: 2rem;
+            font-size: 1.5rem; /* Readable on small screens */
             font-weight: bold;
             color: var(--text-primary);
             margin-bottom: auto;
+            word-break: break-word;
+        }
+
+        @media (min-width: 768px) {
+            .card-value { font-size: 2rem; }
         }
 
         .card-sub {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             margin-top: 0.5rem;
         }
 
         /* SPECIFIC CARDS */
         .breath-card {
-            grid-column: span 2;
+            /* On mobile, this card spans full width naturally due to 1fr grid */
+            /* On desktop, it can span 2 columns if we want, but let's keep it simple/stacked for reliability */
+            grid-column: 1 / -1; 
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-around;
+            flex-direction: column; /* Stack metrics above wave on mobile */
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .breath-card {
+                flex-direction: row; /* Side-by-side on desktop */
+                align-items: center;
+            }
         }
 
         .visualizer-container {
             width: 100%;
-            height: 100px;
+            height: 150px; /* Taller on mobile for visibility */
             position: relative;
             background: #000;
             border: 1px solid #222;
+            border-radius: 4px;
             overflow: hidden;
+            order: 2; /* Put wave below numbers on mobile */
+        }
+
+        @media (min-width: 768px) {
+            .visualizer-container {
+                height: 100px;
+                order: 0; /* Default order */
+                flex: 1;
+            }
         }
 
         canvas {
@@ -134,18 +183,38 @@
             height: 100%;
         }
 
+        .metrics-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            order: 1; /* Numbers first on mobile */
+        }
+
+        @media (min-width: 768px) {
+            .metrics-row {
+                flex-direction: column;
+                justify-content: center;
+                width: 200px;
+                order: 0;
+            }
+        }
+
         .metric-group {
             text-align: center;
         }
 
         .big-number {
-            font-size: 3rem;
+            font-size: 2rem; /* Big enough for touch targets/readability */
             line-height: 1;
             color: var(--accent-green);
         }
 
+        @media (min-width: 768px) {
+            .big-number { font-size: 3rem; }
+        }
+
         .unit {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
         }
 
@@ -156,15 +225,24 @@
             background: #000;
             border: 1px solid #333;
             font-family: var(--font-mono);
-            font-size: 0.85rem;
+            font-size: 0.75rem; /* Smaller text fits more logs */
             color: var(--accent-green);
             overflow-y: scroll;
-            padding: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 768px) {
+            .console-card {
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
         }
 
         .log-entry {
             margin-bottom: 0.4rem;
             opacity: 0.8;
+            word-wrap: break-word;
         }
         .log-entry:last-child { opacity: 1; font-weight: bold; }
         .log-time { color: var(--text-secondary); margin-right: 0.5rem; }
@@ -173,11 +251,22 @@
         /* FOOTER */
         footer {
             border-top: 1px solid var(--border-color);
-            padding: 1rem 2rem;
-            font-size: 0.7rem;
+            padding: 1rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            footer {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 1rem 2rem;
+                font-size: 0.7rem;
+            }
         }
 
         /* LOADING STATE */
@@ -190,31 +279,33 @@
 <body>
 
 <header>
-    <div style="display:flex; align-items:center; gap:1rem;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
-        <h1>WENDY // MISSION CONTROL</h1>
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+        <h1>WENDY // CTRL</h1>
     </div>
-    <div class="status-badge" id="system-status">INITIALIZING...</div>
+    <div class="status-badge" id="system-status">INIT...</div>
 </header>
 
 <main id="dashboard-grid" class="loading">
     
     <!-- BREATH VISUALIZER -->
     <div class="card breath-card">
-        <div class="metric-group">
-            <div class="card-label">Current Phase</div>
-            <div class="big-number" id="val-phase">--</div>
-            <div class="unit">/ 1.0 Cycle</div>
+        <div class="metrics-row">
+            <div class="metric-group">
+                <div class="card-label">Phase</div>
+                <div class="big-number" id="val-phase">--</div>
+                <div class="unit">/ 1.0</div>
+            </div>
+            
+            <div class="metric-group">
+                <div class="card-label">Intensity</div>
+                <div class="big-number" id="val-intensity" style="color:var(--accent-blue)">--</div>
+                <div class="unit">% Energy</div>
+            </div>
         </div>
         
         <div class="visualizer-container">
             <canvas id="wave-canvas"></canvas>
-        </div>
-
-        <div class="metric-group">
-            <div class="card-label">Intensity</div>
-            <div class="big-number" id="val-intensity" style="color:var(--accent-blue)">--</div>
-            <div class="unit">% Energy</div>
         </div>
     </div>
 
@@ -226,26 +317,26 @@
     </div>
 
     <div class="card">
-        <div class="card-label">Total Cycles Completed</div>
+        <div class="card-label">Total Cycles</div>
         <div class="card-value" id="val-cycles">--</div>
         <div class="card-sub">Lifetime breaths</div>
     </div>
 
     <div class="card">
-        <div class="card-label">Last Action Taken</div>
-        <div class="card-value" id="val-action" style="font-size:1.5rem; word-break:break-all;">--</div>
-        <div class="card-sub" id="val-reason">Waiting for telemetry...</div>
+        <div class="card-label">Last Action</div>
+        <div class="card-value" id="val-action" style="font-size:1.2rem; word-break:break-all;">--</div>
+        <div class="card-sub" id="val-reason">Waiting...</div>
     </div>
 
     <div class="card">
-        <div class="card-label">Spawned Agents</div>
-        <div class="card-value" id="val-agents-count">0</div>
-        <div class="card-sub" id="val-agents-list">None yet</div>
+        <div class="card-label">Learned Weights</div>
+        <div class="card-value" id="val-weights-summary" style="font-size:0.9rem; font-family:var(--font-mono);">--</div>
+        <div class="card-sub" id="val-agents-list">Def: 1.0 | Exp: 1.0</div>
     </div>
 
     <!-- TELEMETRY LOG -->
     <div class="card console-card" id="telemetry-log">
-        <div class="log-entry"><span class="log-time">[--:--:--]</span><span class="log-msg">Connecting to PSIVI Mesh...</span></div>
+        <div class="log-entry"><span class="log-time">[--:--]</span><span class="log-msg">Connecting...</span></div>
     </div>
 
 </main>
@@ -261,7 +352,7 @@
     const REPO_NAME = 'psivicom.github.io';
     const BRANCH = 'main';
     const FILE_PATH = 'src/wendy_metabolism.json';
-    const REFRESH_INTERVAL_MS = 5000; // Check every 5 seconds
+    const REFRESH_INTERVAL_MS = 5000; 
 
     // DOM ELEMENTS
     const els = {
@@ -272,28 +363,50 @@
         cycles: document.getElementById('val-cycles'),
         action: document.getElementById('val-action'),
         reason: document.getElementById('val-reason'),
-        agentsCount: document.getElementById('val-agents-count'),
+        weightsSummary: document.getElementById('val-weights-summary'),
         agentsList: document.getElementById('val-agents-list'),
         log: document.getElementById('telemetry-log'),
         lastUpdate: document.getElementById('last-update'),
         grid: document.getElementById('dashboard-grid')
     };
 
-    // CANVAS SETUP
+    // CANVAS SETUP WITH RETINA SUPPORT
     const canvas = document.getElementById('wave-canvas');
     const ctx = canvas.getContext('2d');
     let waveOffset = 0;
+    let currentPhase = 0;
 
     function resizeCanvas() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
+        const container = canvas.parentElement;
+        const rect = container.getBoundingClientRect();
+        
+        // Handle High DPI Displays (iPhone Retina)
+        const dpr = window.devicePixelRatio || 1;
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        
+        // Scale context to match DPR
+        ctx.scale(dpr, dpr);
+        
+        // Store logical dimensions for drawing calculations
+        canvas.logicalWidth = rect.width;
+        canvas.logicalHeight = rect.height;
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        drawWave(currentPhase); // Redraw immediately
+    });
+    
+    // Initial Resize
+    setTimeout(resizeCanvas, 100); // Small delay to ensure layout is settled
 
     function drawWave(phase) {
-        const w = canvas.width;
-        const h = canvas.height;
+        if (!canvas.logicalWidth) return;
+        
+        const w = canvas.logicalWidth;
+        const h = canvas.logicalHeight;
         const mid = h / 2;
         
         ctx.clearRect(0, 0, w, h);
@@ -306,7 +419,7 @@
         for(let i=0; i<h; i+=20) { ctx.moveTo(0, i); ctx.lineTo(w, i); }
         ctx.stroke();
 
-        // Draw Sine Wave based on current phase
+        // Draw Sine Wave
         ctx.strokeStyle = '#00ff41';
         ctx.lineWidth = 2;
         ctx.shadowBlur = 10;
@@ -314,10 +427,8 @@
         
         ctx.beginPath();
         const frequency = Math.PI * 2 / w;
-        // Shift wave so the peak aligns roughly with current phase visual
         
         for (let x = 0; x <= w; x++) {
-            // Map x to angle
             const angle = (x / w) * Math.PI * 2 + waveOffset;
             const y = mid - Math.sin(angle) * (mid * 0.8);
             
@@ -344,13 +455,12 @@
 
     // LOGGING HELPER
     function addLog(msg, type = 'info') {
-        const now = new Date().toLocaleTimeString('en-US', {hour12: false});
+        const now = new Date().toLocaleTimeString('en-US', {hour12: false, hour: '2-digit', minute:'2-digit'});
         const div = document.createElement('div');
         div.className = 'log-entry';
         div.innerHTML = `<span class="log-time">[${now}]</span><span class="log-msg">${msg}</span>`;
         els.log.prepend(div);
         
-        // Keep only last 50 logs
         if (els.log.children.length > 50) {
             els.log.removeChild(els.log.lastChild);
         }
@@ -374,10 +484,10 @@
             
         } catch (error) {
             console.error(error);
-            els.status.textContent = "DISCONNECTED";
+            els.status.textContent = "ERR";
             els.status.style.color = "var(--accent-red)";
             els.status.style.borderColor = "var(--accent-red)";
-            addLog(`Error fetching telemetry: ${error.message}`, 'error');
+            addLog(`Link lost: ${error.message}`, 'error');
         }
     }
 
@@ -400,31 +510,36 @@
         els.action.style.color = actionColor;
         els.reason.textContent = data.reason;
 
-        // Agents
-        const agents = data.spawned_agents || [];
-        els.agentsCount.textContent = agents.length;
-        els.agentsList.textContent = agents.length > 0 ? agents.join(', ') : 'None yet';
+        // Learned Weights Display
+        if (data.learned_weights) {
+            const lw = data.learned_weights;
+            els.weightsSummary.textContent = `D:${lw.defense_weight?.toFixed(2)||'-'} E:${lw.explore_weight?.toFixed(2)||'-'}`;
+            els.agentsList.textContent = `Stress: ${(lw.stress_accumulator||0).toFixed(2)}`;
+        }
 
         // Timestamp
-        els.lastUpdate.textContent = `Updated: ${new Date().toLocaleString()}`;
+        els.lastUpdate.textContent = `Sync: ${new Date().toLocaleTimeString()}`;
 
         // Log significant events
         if (data.should_act === 'true') {
-             addLog(`ACTION: ${data.action} (${data.reason})`);
+             addLog(`ACT: ${data.action}`);
         }
 
         // Start Visualizer Loop with current phase
-        drawWave(data.phase);
+        currentPhase = data.phase;
+        // Only restart animation loop if not already running? 
+        // For simplicity, we just let the existing RAF loop pick up the new phase variable
+        // But we need to ensure drawWave is called at least once if it wasn't started
+        if (els.grid.classList.contains('loading')) {
+             drawWave(currentPhase);
+        }
     }
 
     // INIT
     addLog("Mission Control Online.");
-    addLog("Establishing link to PSIVI Mesh...");
+    addLog("Establishing link...");
     
-    // Initial Fetch
     fetchTelemetry();
-    
-    // Polling
     setInterval(fetchTelemetry, REFRESH_INTERVAL_MS);
 
 </script>
