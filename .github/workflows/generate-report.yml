@@ -1,0 +1,65 @@
+# .github/workflows/generate-report.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Generate Scientific Report
+
+on:
+  # Triggered manually or by Wendy's EVOLVE/SCAN actions via repository_dispatch
+  workflow_dispatch:
+  repository_dispatch:
+    types: [wendy_directive] 
+
+permissions:
+  contents: write   # Must be able to commit reports back to repo
+  metadata: read
+
+env:
+  # CRITICAL FIX: Sets the root of the repo as a Python module search path
+  # This allows 'from src...' imports to work correctly when using python -m
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Only install lightweight deps needed for reporting logic
+          pip install numpy pyyaml requests python-dateutil
+
+      - name: Execute Auto Reporter (Module Mode)
+        # CRITICAL FIX: Using '-m' ensures Python treats 'src' as a package.
+        # Direct execution ('python file.py') breaks absolute imports like 'from src.agents...'
+        run: |
+          echo "📊 Generating report via Module Execution..."
+          python -m src.tools.auto_reporter
+
+      - name: Commit Generated Reports
+        if: always() # Attempt commit even if reporter failed, to capture error logs if any were written
+        run: |
+          git config user.name "PSIVI-Reporter"
+          git config user.email "reporter@psivi.com"
+          
+          # Add only the specific output directories to avoid committing unrelated changes
+          git add reports/
+          
+          if ! git diff --staged --quiet; then
+            TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            git commit -m "auto: generated scientific report at ${TIMESTAMP} [skip ci]"
+            git push
+            echo "✅ Report committed and pushed."
+          else
+            echo "ℹ️ No new report files generated to commit."
+          fi
