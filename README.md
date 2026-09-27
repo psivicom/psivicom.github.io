@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-27T20:16:09.670Z | Hash: 72f71845e64074204c61142c6c8fd059c195ff48b2c478f9a1597e0509527089 -->
+<!-- Last updated: 2026-09-27T22:29:06.366Z | Hash: 01fee9ff29870758aeab2f6bb65a182a9f9a5413653d37de65ee18a00ac6a917 -->
 
 ```
 psivicom.github.io/
@@ -357,6 +357,7 @@ psivicom.github.io/
 │   │   ├── ai_to_mesh_bridge.py
 │   │   ├── autoimmune_protocol_wendy.md
 │   │   ├── execution-template-for-Wendy.json
+│   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
 │   │   ├── psivi-mesh-bridge.yml
