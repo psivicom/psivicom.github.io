@@ -220,24 +220,27 @@
             color: var(--text-secondary);
         }
 
-        /* LOG CONSOLE */
+        /* LOG CONSOLE - ENLARGED FOR FULL ZULU TIMESTAMPS */
         .console-card {
             grid-column: 1 / -1;
-            height: 200px;
+            height: 300px; /* Increased from 200px to fit full ISO strings comfortably */
             background: #000;
             border: 1px solid #333;
             font-family: var(--font-mono);
-            font-size: 0.75rem;
+            font-size: 0.7rem; /* Slightly smaller font to ensure long lines fit without wrapping excessively on mobile */
             color: var(--accent-green);
             overflow-y: scroll;
             padding: 0.5rem;
             border-radius: 4px;
+            display: flex;
+            flex-direction: column-reverse; /* Newest at bottom visually if scrolled, but we prepend so newest is top */
         }
 
         @media (min-width: 768px) {
             .console-card {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 padding: 1rem;
+                height: 400px;
             }
         }
 
@@ -245,9 +248,15 @@
             margin-bottom: 0.4rem;
             opacity: 0.8;
             word-wrap: break-word;
+            white-space: normal; /* Allows wrapping for very long timestamps on narrow screens */
+            line-height: 1.4;
         }
         .log-entry:last-child { opacity: 1; font-weight: bold; }
-        .log-time { color: var(--text-secondary); margin-right: 0.5rem; }
+        .log-time { 
+            color: var(--text-secondary); 
+            margin-right: 0.5rem; 
+            white-space: nowrap; /* Keeps the timestamp together */
+        }
         .log-msg { color: var(--text-primary); }
         .log-error { color: var(--accent-red); }
 
@@ -349,7 +358,7 @@
     const REPO_NAME = 'psivicom.github.io';
     const BRANCH = 'main';
     const FILE_PATH = 'src/wendy_metabolism.json';
-    const REFRESH_INTERVAL_MS = 30000; // Increased from 5s to 30s to reduce noise
+    const REFRESH_INTERVAL_MS = 30000; 
     
     // DOM ELEMENTS
     const els = {
@@ -372,7 +381,7 @@
     let waveOffset = 0;
     let currentPhase = 0;
     let animationId = null;
-    let lastKnownStatus = ""; // To prevent duplicate logs
+    let lastKnownStatus = ""; 
 
     function resizeCanvas() {
         const container = canvas.parentElement;
@@ -443,20 +452,18 @@
         animationId = requestAnimationFrame(() => drawWave(phase));
     }
 
-    // LOGGING HELPER (Throttled & Zulu Milliseconds)
+    // LOGGING HELPER (Full Zulu Timestamp YYYY-MM-DDTHH:mm:ss.sssZ)
     function addLog(msg, type = 'info') {
-        // ISO String gives YYYY-MM-DDTHH:mm:ss.sssZ
-        // We slice to get HH:mm:ss.sssZ
-        const nowIso = new Date().toISOString();
-        const zuluTime = nowIso.substring(11, 23) + 'Z'; 
+        const nowIso = new Date().toISOString(); 
         
         const div = document.createElement('div');
         div.className = 'log-entry';
         const msgClass = type === 'error' ? 'log-error' : 'log-msg';
-        div.innerHTML = `<span class="log-time">[${zuluTime}]</span><span class="${msgClass}">${msg}</span>`;
+        // Using nowrap for time to keep it intact, allowing wrap for message
+        div.innerHTML = `<span class="log-time">[${nowIso}]</span><span class="${msgClass}">${msg}</span>`;
         els.log.prepend(div);
         
-        if (els.log.children.length > 20) { // Reduced max entries
+        if (els.log.children.length > 30) { // Increased buffer slightly for larger view
             els.log.removeChild(els.log.lastChild);
         }
     }
@@ -474,7 +481,6 @@
             
             const text = await response.text();
             
-            // DEBUG: If length is suspiciously small, warn once
             if (text.length < 50 && lastKnownStatus !== 'SMALL_DATA') {
                 addLog(`WARNING: Data file too small (${text.length} bytes). Check repo.`, 'error');
                 lastKnownStatus = 'SMALL_DATA';
@@ -484,7 +490,6 @@
             
             updateUI(data);
             
-            // Only log success if status changed from ERROR
             if (lastKnownStatus === 'ERROR' || lastKnownStatus === 'INIT') {
                 addLog("Connection Established. Telemetry Live.");
             }
@@ -498,7 +503,6 @@
             els.status.textContent = "ERR";
             els.status.classList.add('error');
             
-            // Only log error if it's new or different
             if (lastKnownStatus !== 'ERROR') {
                 addLog(`CRITICAL ERROR: ${error.message}`, 'error');
             }
@@ -507,7 +511,6 @@
     }
 
     function updateUI(data) {
-        // Flexible Parsing Helper
         const getVal = (obj, keys, defaultVal) => {
             for (const k of keys) {
                 if (obj[k] !== undefined && obj[k] !== null) return obj[k];
@@ -525,7 +528,6 @@
         els.period.textContent = period;
         els.cycles.textContent = cycles;
         
-        // Determine Action Color
         let actionColor = 'var(--text-primary)';
         const shouldAct = String(getVal(data, ['should_act'], 'false')).toLowerCase() === 'true';
         const actionStr = getVal(data, ['action'], 'IDLE');
@@ -540,7 +542,6 @@
         els.action.style.color = actionColor;
         els.reason.textContent = getVal(data, ['reason'], 'Unknown State');
 
-        // Learned Weights Display
         const lw = data.learned_weights || {};
         const defW = lw.defense_weight || 1.0;
         const expW = lw.explore_weight || 1.0;
@@ -549,12 +550,10 @@
         els.weightsSummary.textContent = `D:${defW.toFixed(2)} E:${expW.toFixed(2)}`;
         els.agentsList.textContent = `Stress: ${stress.toFixed(2)}`;
 
-        // Timestamp (Zulu Milliseconds)
+        // Full Zulu Timestamp in Footer
         const nowIso = new Date().toISOString();
-        const zuluTime = nowIso.substring(11, 23) + 'Z';
-        els.lastUpdate.textContent = `Sync: ${zuluTime}`; 
+        els.lastUpdate.textContent = `Sync: ${nowIso}`; 
 
-        // Start Visualizer Loop
         currentPhase = parseFloat(phase) || 0;
         if (!animationId) {
             drawWave(currentPhase);
