@@ -12,7 +12,7 @@ on:
 
 permissions:
   contents: write   # Must be able to commit reports back to repo
-  actions: read     # Required if this workflow needs to trigger others (optional but good practice)
+  actions: read     # Required if this workflow needs to trigger others
 
 env:
   # CRITICAL FIX: Sets the root of the repo as a Python module search path
@@ -20,7 +20,7 @@ env:
   PYTHONPATH: ${{ github.workspace }}
 
 jobs:
-  pilot-scan:
+  generate-report:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -39,34 +39,31 @@ jobs:
           # Only install lightweight deps needed for reporting logic
           pip install numpy pyyaml requests python-dateutil
 
-      - name: Execute Pilot Agent (Module Mode)
+      - name: Execute Auto Reporter (Module Mode)
         # CRITICAL FIX: Using '-m' ensures Python treats 'src' as a package.
         # Direct execution ('python file.py') breaks absolute imports like 'from src.agents...'
         run: |
-          echo "=== PSIVI PILOT AGENT: OSDR-INSPIRED SCAN ==="
-          python -m src.agents.pilot_agent
+          echo "📊 Generating report via Module Execution..."
+          python -m src.tools.auto_reporter
 
       - name: Commit Generated Reports
         # RESILIENT COMMIT: Uses '|| true' to prevent failure if wildcard patterns match no files
         run: |
-          git config user.name "PSIVI Pilot Agent"
-          git config user.email "pilot@psivi.com"
+          git config user.name "PSIVI-Reporter"
+          git config user.email "reporter@psivi.com"
           
           echo "📦 Staging artifacts..."
           
           # Stage the main report first (this MUST exist)
-          git add reports/pilot_report.json || true
-          git add reports/pilot_result.json || true
-          
-          # Try to stage containers, but don't fail if they don't exist yet
-          git add reports/pico_containers/ || true
+          git add reports/scientific_reports/ || true
+          git add reports/instruction_report.json || true
           
           # Check if there are any staged changes at all
           if ! git diff --staged --quiet; then
             TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-            git commit -m "auto: pilot scan completed at ${TIMESTAMP} [skip ci]"
+            git commit -m "auto: generated scientific report at ${TIMESTAMP} [skip ci]"
             git push
-            echo "✅ Scan results committed."
+            echo "✅ Report committed and pushed."
           else
-            echo "ℹ️ No new files to commit (scan produced identical output)."
+            echo "ℹ️ No new report files generated to commit."
           fi
