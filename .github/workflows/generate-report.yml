@@ -12,7 +12,6 @@ on:
 
 permissions:
   contents: write   # Must be able to commit reports back to repo
-  metadata: read
 
 env:
   # CRITICAL FIX: Sets the root of the repo as a Python module search path
