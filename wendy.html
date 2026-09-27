@@ -28,7 +28,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden; /* Allow vertical scroll, hide horizontal */
+            overflow-x: hidden;
         }
 
         /* HEADER */
@@ -42,6 +42,12 @@
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        .header-left {
+            display:flex; 
+            align-items:center; 
+            gap:0.5rem;
         }
 
         h1 {
@@ -60,26 +66,46 @@
             header { padding: 1rem 2rem; }
         }
 
+        /* STATUS BADGE WITH SPINNER */
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid transparent;
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.2s;
+        }
+
+        .spinner.active {
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .status-badge {
             font-family: var(--font-mono);
             font-size: 0.75rem;
             padding: 0.2rem 0.5rem;
             border: 1px solid var(--accent-green);
             color: var(--accent-green);
-            animation: pulse-border 2s infinite;
             white-space: nowrap;
+            transition: all 0.3s ease;
         }
         
         .status-badge.error {
             border-color: var(--accent-red);
             color: var(--accent-red);
-            animation: none;
-        }
-
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 255, 65, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0); }
         }
 
         /* MAIN GRID */
@@ -108,12 +134,22 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
             min-height: 120px;
         }
 
         .card:hover {
             border-color: var(--accent-blue);
+        }
+
+        /* FLASH EFFECT ON STATE CHANGE */
+        .card.flash {
+            animation: flash-border 0.5s ease-out;
+        }
+
+        @keyframes flash-border {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); border-color: var(--accent-green); }
+            100% { box-shadow: 0 0 0 10px rgba(0, 255, 65, 0); border-color: var(--border-color); }
         }
 
         .card-label {
@@ -220,7 +256,7 @@
             color: var(--text-secondary);
         }
 
-        /* LOG CONSOLE - ENLARGED FOR FULL ZULU TIMESTAMPS */
+        /* LOG CONSOLE */
         .console-card {
             grid-column: 1 / -1;
             height: 300px; 
@@ -259,6 +295,7 @@
         }
         .log-msg { color: var(--text-primary); }
         .log-error { color: var(--accent-red); }
+        .log-success { color: var(--accent-green); }
 
         /* FOOTER */
         footer {
@@ -280,16 +317,25 @@
                 font-size: 0.7rem;
             }
         }
+        
+        .latency-indicator {
+            font-family: var(--font-mono);
+            color: var(--accent-blue);
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="display:flex; align-items:center; gap:0.5rem;">
+    <div class="header-left">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
         <h1>WENDY // CTRL</h1>
     </div>
-    <div class="status-badge" id="system-status">INIT...</div>
+    
+    <div class="status-container">
+        <div class="spinner" id="heartbeat-spinner"></div>
+        <div class="status-badge" id="system-status">INIT...</div>
+    </div>
 </header>
 
 <main id="dashboard-grid">
@@ -328,7 +374,7 @@
         <div class="card-sub">Lifetime breaths</div>
     </div>
 
-    <div class="card">
+    <div class="card" id="action-card">
         <div class="card-label">Current Activity</div>
         <div class="card-value" id="val-action" style="font-size:1.2rem; word-break:break-all;">--</div>
         <div class="card-sub" id="val-reason">Waiting for signal...</div>
@@ -350,6 +396,7 @@
 <footer>
     <div>Source: psivicom.github.io/src/wendy_metabolism.json</div>
     <div id="last-update">Updated: Never</div>
+    <div id="data-latency" class="latency-indicator">Latency: Calculating...</div>
 </footer>
 
 <script>
@@ -358,21 +405,24 @@
     const REPO_NAME = 'psivicom.github.io';
     const BRANCH = 'main';
     const FILE_PATH = 'src/wendy_metabolism.json';
-    const REFRESH_INTERVAL_MS = 30000; 
+    const REFRESH_INTERVAL_MS = 10000; // Faster refresh for better responsiveness (10s)
     
     // DOM ELEMENTS
     const els = {
         status: document.getElementById('system-status'),
+        spinner: document.getElementById('heartbeat-spinner'),
         phase: document.getElementById('val-phase'),
         intensity: document.getElementById('val-intensity'),
         period: document.getElementById('val-period'),
         cycles: document.getElementById('val-cycles'),
+        actionCard: document.getElementById('action-card'),
         action: document.getElementById('val-action'),
         reason: document.getElementById('val-reason'),
         weightsSummary: document.getElementById('val-weights-summary'),
         agentsList: document.getElementById('val-agents-list'),
         log: document.getElementById('telemetry-log'),
-        lastUpdate: document.getElementById('last-update')
+        lastUpdate: document.getElementById('last-update'),
+        latency: document.getElementById('data-latency')
     };
 
     // CANVAS SETUP WITH RETINA SUPPORT
@@ -382,6 +432,7 @@
     let currentPhase = 0;
     let animationId = null;
     let lastKnownStatus = ""; 
+    let previousAction = ""; // To detect state changes
 
     function resizeCanvas() {
         const container = canvas.parentElement;
@@ -452,13 +503,13 @@
         animationId = requestAnimationFrame(() => drawWave(phase));
     }
 
-    // LOGGING HELPER (Full Zulu Timestamp YYYY-MM-DDTHH:mm:ss.sssZ)
+    // LOGGING HELPER
     function addLog(msg, type = 'info') {
         const nowIso = new Date().toISOString(); 
         
         const div = document.createElement('div');
         div.className = 'log-entry';
-        const msgClass = type === 'error' ? 'log-error' : 'log-msg';
+        const msgClass = type === 'error' ? 'log-error' : (type === 'success' ? 'log-success' : 'log-msg');
         div.innerHTML = `<span class="log-time">[${nowIso}]</span><span class="${msgClass}">${msg}</span>`;
         els.log.prepend(div);
         
@@ -469,6 +520,9 @@
 
     // FETCH DATA
     async function fetchTelemetry() {
+        // Activate Spinner
+        els.spinner.classList.add('active');
+        
         try {
             const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${FILE_PATH}?t=${Date.now()}`;
             
@@ -490,7 +544,7 @@
             updateUI(data);
             
             if (lastKnownStatus === 'ERROR' || lastKnownStatus === 'INIT') {
-                addLog("Connection Established. Telemetry Live.");
+                addLog("Connection Established. Telemetry Live.", 'success');
             }
             lastKnownStatus = "LIVE";
             
@@ -506,10 +560,15 @@
                 addLog(`CRITICAL ERROR: ${error.message}`, 'error');
             }
             lastKnownStatus = "ERROR";
+        } finally {
+            // Deactivate Spinner after short delay to show activity
+            setTimeout(() => {
+                els.spinner.classList.remove('active');
+            }, 500);
         }
     }
 
-    // TRANSLATOR: Converts Machine States to Human Language
+    // TRANSLATOR
     function getHumanState(actionCode, rawReason) {
         const reasons = {
             'IDLE': 'Resting & Recharging',
@@ -520,13 +579,9 @@
             'UNKNOWN': 'Thinking...'
         };
         
-        // If we have a specific code, use it. Otherwise, try to guess from reason string or default.
         let label = reasons[actionCode] || reasons['UNKNOWN'];
         
-        // If the backend sent a specific custom reason that isn't just the default, prioritize that for detail,
-        // but keep the main label simple.
         if (rawReason && rawReason !== 'Unknown State' && rawReason !== '') {
-             // Append the specific detail if it adds value, otherwise stick to the clean label
              if (label.includes(':')) {
                  return `${label.split(':')[0]}: ${rawReason}`;
              }
@@ -558,10 +613,19 @@
         const rawAction = String(getVal(data, ['action'], 'IDLE')).toUpperCase();
         const rawReason = String(getVal(data, ['reason'], ''));
         
+        // Detect State Change for Flash Effect
+        if (previousAction !== "" && rawAction !== previousAction) {
+            els.actionCard.classList.remove('flash');
+            void els.actionCard.offsetWidth; // Trigger reflow
+            els.actionCard.classList.add('flash');
+            addLog(`STATE CHANGE: ${previousAction} -> ${rawAction}`, 'success');
+        }
+        previousAction = rawAction;
+
         // Translate to Human Readable
         const humanLabel = getHumanState(rawAction, rawReason);
         
-        // Determine Color based on Intensity/Type
+        // Determine Color
         let actionColor = 'var(--text-primary)';
         const shouldAct = String(getVal(data, ['should_act'], 'false')).toLowerCase() === 'true';
         
@@ -570,13 +634,11 @@
             else if (['MAINTAIN', 'EXPLORE'].includes(rawAction)) actionColor = 'var(--accent-blue)';
             else actionColor = 'var(--accent-green)';
         } else {
-            actionColor = 'var(--text-secondary)'; // Dimmed when idle
+            actionColor = 'var(--text-secondary)';
         }
         
         els.action.textContent = humanLabel;
         els.action.style.color = actionColor;
-        
-        // Show the raw machine reason underneath if it's different from the friendly label
         els.reason.textContent = rawReason && rawReason !== humanLabel ? `[${rawReason}]` : '';
 
         const lw = data.learned_weights || {};
@@ -587,9 +649,35 @@
         els.weightsSummary.textContent = `D:${defW.toFixed(2)} E:${expW.toFixed(2)}`;
         els.agentsList.textContent = `Stress: ${stress.toFixed(2)}`;
 
-        // Full Zulu Timestamp in Footer
+        // Timestamps & Latency Calculation
         const nowIso = new Date().toISOString();
         els.lastUpdate.textContent = `Sync: ${nowIso}`; 
+
+        // Calculate Data Age (Latency)
+        // Assumes the JSON might have a timestamp field, or we use the fetch time vs local time
+        // Since we don't always have a server-side write timestamp in the simple JSON, 
+        // we estimate based on when we fetched it. 
+        // For true scientific monitoring, you'd want 'utc_now' in the JSON.
+        const utcNowStr = getVal(data, ['utc_now', 'timestamp'], null);
+        if (utcNowStr) {
+            try {
+                const dataTime = new Date(utcNowStr);
+                const diffMs = Date.now() - dataTime.getTime();
+                const diffSec = Math.floor(diffMs / 1000);
+                els.latency.textContent = `Data Age: ${diffSec}s`;
+                
+                // Warn if data is stale (> 2 minutes)
+                if (diffSec > 120) {
+                    els.latency.style.color = 'var(--accent-red)';
+                } else {
+                    els.latency.style.color = 'var(--accent-blue)';
+                }
+            } catch(e) {
+                els.latency.textContent = `Data Age: Unknown`;
+            }
+        } else {
+            els.latency.textContent = `Data Age: N/A (No UTC field)`;
+        }
 
         currentPhase = parseFloat(phase) || 0;
         if (!animationId) {
@@ -608,4 +696,3 @@
 
 </body>
 </html>
-```
