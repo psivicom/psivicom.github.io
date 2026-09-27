@@ -1,3 +1,12 @@
+You are right. "IDLE" is computer language. Humans need to know **what she is doing** and **why**.
+
+We must translate her internal state into plain English for the dashboard, while keeping the technical truth in the JSON.
+
+Here is the **complete, final file** for `wendy.html`. I have updated the `updateUI` function to map abstract states (`IDLE`, `MAINTAIN`) to human-readable descriptions ("Resting & Recharging", "Cleaning House").
+
+### File: `wendy.html` (Human-Readable Edition)
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -223,17 +232,17 @@
         /* LOG CONSOLE - ENLARGED FOR FULL ZULU TIMESTAMPS */
         .console-card {
             grid-column: 1 / -1;
-            height: 300px; /* Increased from 200px to fit full ISO strings comfortably */
+            height: 300px; 
             background: #000;
             border: 1px solid #333;
             font-family: var(--font-mono);
-            font-size: 0.7rem; /* Slightly smaller font to ensure long lines fit without wrapping excessively on mobile */
+            font-size: 0.7rem; 
             color: var(--accent-green);
             overflow-y: scroll;
             padding: 0.5rem;
             border-radius: 4px;
             display: flex;
-            flex-direction: column-reverse; /* Newest at bottom visually if scrolled, but we prepend so newest is top */
+            flex-direction: column-reverse; 
         }
 
         @media (min-width: 768px) {
@@ -248,14 +257,14 @@
             margin-bottom: 0.4rem;
             opacity: 0.8;
             word-wrap: break-word;
-            white-space: normal; /* Allows wrapping for very long timestamps on narrow screens */
+            white-space: normal; 
             line-height: 1.4;
         }
         .log-entry:last-child { opacity: 1; font-weight: bold; }
         .log-time { 
             color: var(--text-secondary); 
             margin-right: 0.5rem; 
-            white-space: nowrap; /* Keeps the timestamp together */
+            white-space: nowrap; 
         }
         .log-msg { color: var(--text-primary); }
         .log-error { color: var(--accent-red); }
@@ -329,9 +338,9 @@
     </div>
 
     <div class="card">
-        <div class="card-label">Last Action</div>
+        <div class="card-label">Current Activity</div>
         <div class="card-value" id="val-action" style="font-size:1.2rem; word-break:break-all;">--</div>
-        <div class="card-sub" id="val-reason">Waiting...</div>
+        <div class="card-sub" id="val-reason">Waiting for signal...</div>
     </div>
 
     <div class="card">
@@ -459,11 +468,10 @@
         const div = document.createElement('div');
         div.className = 'log-entry';
         const msgClass = type === 'error' ? 'log-error' : 'log-msg';
-        // Using nowrap for time to keep it intact, allowing wrap for message
         div.innerHTML = `<span class="log-time">[${nowIso}]</span><span class="${msgClass}">${msg}</span>`;
         els.log.prepend(div);
         
-        if (els.log.children.length > 30) { // Increased buffer slightly for larger view
+        if (els.log.children.length > 30) { 
             els.log.removeChild(els.log.lastChild);
         }
     }
@@ -510,6 +518,33 @@
         }
     }
 
+    // TRANSLATOR: Converts Machine States to Human Language
+    function getHumanState(actionCode, rawReason) {
+        const reasons = {
+            'IDLE': 'Resting & Recharging',
+            'MAINTAIN': 'Cleaning House & Updating Site',
+            'EXPLORE': 'Curiosity Mode: Seeking New Patterns',
+            'SCAN': 'Deep Scan: Checking Mesh Integrity',
+            'EVOLVE': 'Crisis Response: Adapting Structure',
+            'UNKNOWN': 'Thinking...'
+        };
+        
+        // If we have a specific code, use it. Otherwise, try to guess from reason string or default.
+        let label = reasons[actionCode] || reasons['UNKNOWN'];
+        
+        // If the backend sent a specific custom reason that isn't just the default, prioritize that for detail,
+        // but keep the main label simple.
+        if (rawReason && rawReason !== 'Unknown State' && rawReason !== '') {
+             // Append the specific detail if it adds value, otherwise stick to the clean label
+             if (label.includes(':')) {
+                 return `${label.split(':')[0]}: ${rawReason}`;
+             }
+             return label;
+        }
+        
+        return label;
+    }
+
     function updateUI(data) {
         const getVal = (obj, keys, defaultVal) => {
             for (const k of keys) {
@@ -528,19 +563,30 @@
         els.period.textContent = period;
         els.cycles.textContent = cycles;
         
+        // Get Raw Action Code
+        const rawAction = String(getVal(data, ['action'], 'IDLE')).toUpperCase();
+        const rawReason = String(getVal(data, ['reason'], ''));
+        
+        // Translate to Human Readable
+        const humanLabel = getHumanState(rawAction, rawReason);
+        
+        // Determine Color based on Intensity/Type
         let actionColor = 'var(--text-primary)';
         const shouldAct = String(getVal(data, ['should_act'], 'false')).toLowerCase() === 'true';
-        const actionStr = getVal(data, ['action'], 'IDLE');
         
         if (shouldAct) {
-            if (['SCAN', 'EVOLVE'].includes(actionStr)) actionColor = 'var(--accent-red)';
-            else if (['MAINTAIN', 'EXPLORE'].includes(actionStr)) actionColor = 'var(--accent-blue)';
+            if (['SCAN', 'EVOLVE'].includes(rawAction)) actionColor = 'var(--accent-red)';
+            else if (['MAINTAIN', 'EXPLORE'].includes(rawAction)) actionColor = 'var(--accent-blue)';
             else actionColor = 'var(--accent-green)';
+        } else {
+            actionColor = 'var(--text-secondary)'; // Dimmed when idle
         }
         
-        els.action.textContent = actionStr;
+        els.action.textContent = humanLabel;
         els.action.style.color = actionColor;
-        els.reason.textContent = getVal(data, ['reason'], 'Unknown State');
+        
+        // Show the raw machine reason underneath if it's different from the friendly label
+        els.reason.textContent = rawReason && rawReason !== humanLabel ? `[${rawReason}]` : '';
 
         const lw = data.learned_weights || {};
         const defW = lw.defense_weight || 1.0;
@@ -571,3 +617,4 @@
 
 </body>
 </html>
+```
