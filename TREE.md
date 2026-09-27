@@ -421,6 +421,7 @@ psivicom.github.io/
 │   │   ├── critic_agent.py
 │   │   ├── discovery_agent.py
 │   │   ├── forage_agent.py
+│   │   ├── governor_agent.py
 │   │   ├── instruction_agent.py
 │   │   ├── intelligence_agent.py
 │   │   ├── license_agent.py
