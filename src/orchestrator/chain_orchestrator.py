@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from src.agents.pilot_agent import PilotAgent
 from src.agents.intelligence_agent import IntelligenceAgent
 from src.agents.neuroplasticity_agent import NeuroplasticityAgent
-from src.agents.void_observer import VoidObserver # NEW IMPORT
+from src.agents.void_observer import VoidObserver 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("Orchestrator")
