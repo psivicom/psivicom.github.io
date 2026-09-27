@@ -51,21 +51,23 @@ class IntelligenceReport:
 
 class TieredMeshStore:
     """
-    In-memory tiered mesh store with Dynamic Trust Scores.
-    Implements 'Cuticular Hydrocarbon' logic: Judge by action, not identity.
+    In-memory tiered mesh store with Dual-Value Assessment (Security + Resources).
+    Implements 'Fair Exchange': Judge by Threat Reduction AND Data Contribution.
     """
 
     def __init__(self, data_dir: str = "./data"):
         self.data_dir = Path(data_dir)
-        self.vram_store: Dict[str, bytes] = {}  # shard_id -> serialized container
+        self.vram_store: Dict[str, bytes] = {}
         self.pico_store: Dict[str, bytes] = {}
         self.seed_store: Dict[str, bytes] = {}
         
-        # THE HIVE MEMORY: Tracks trust scores per sender based on recent impact
-        # Format: { "sender_id": {"score": 0.5, "last_impact": "positive", "count": 10} }
-        self.trust_registry: Dict[str, Dict[str, Any]] = {}
+        # THE FAIR EXCHANGE REGISTRY
+        # Tracks nodes based on two metrics:
+        # 1. Security Value (Fragility Drop)
+        # 2. Resource Value (Data Volume/Quality Accepted)
+        self.exchange_registry: Dict[str, Dict[str, Any]] = {}
         
-        self._stats = {"vram_queries": 0, "pico_queries": 0, "seed_queries": 0, "quarantine_events": 0}
+        self._stats = {"vram_queries": 0, "pico_queries": 0, "seed_queries": 0}
 
     def store_vram(self, shard_id: str, container_bytes: bytes):
         self.vram_store[shard_id] = container_bytes
@@ -98,58 +100,106 @@ class TieredMeshStore:
     def get_stats(self) -> Dict[str, int]:
         return self._stats.copy()
 
-    # --- NEW: DYNAMIC TRUST LOGIC ---
+    # --- NEW: DUAL-VALUE ASSESSMENT LOGIC ---
 
-    def evaluate_trust(self, sender_id: str, impact_metric: float) -> bool:
-        """
-        Updates the trust score for a sender based on observed impact.
-        
-        Args:
-            sender_id: The ID of the external agent/node.
-            impact_metric: 
-                Positive (>0) means helpful (reduced fragility, increased stability).
-                Negative (<0) means harmful (increased errors, stress spikes).
-                Zero (0) means neutral/noise.
-                
-        Returns:
-            True if the sender should be allowed to integrate further, False if quarantined.
-        """
-        if sender_id not in self.trust_registry:
-            # Newcomer starts with neutral caution (0.5)
-            self.trust_registry[sender_id] = {"score": 0.5, "history": []}
-        
-        record = self.trust_registry[sender_id]
-        
-        # Exponential Moving Average for smooth trust updates
-        alpha = 0.1 
-        new_score = (alpha * impact_metric) + ((1 - alpha) * record["score"])
-        
-        # Clamp between 0.0 (Hostile/Virus) and 1.0 (Kin/Benefactor)
-        record["score"] = max(0.0, min(1.0, new_score))
-        record["history"].append({
-            "time": time.time(),
-            "impact": impact_metric,
-            "new_score": record["score"]
-        })
-        
-        # Keep history manageable
-        if len(record["history"]) > 50:
-            record["history"] = record["history"][-50:]
+    def register_node(self, node_id: str) -> bool:
+        """Registers a new external node into the exchange registry."""
+        if node_id in self.exchange_registry:
+            return True
             
-        logger.info(f"Hive Trust Update: Sender '{sender_id}' Score: {record['score']:.3f}")
-        
-        # Threshold for acceptance: Must be above 0.6 (clearly beneficial)
-        # Below 0.4 triggers quarantine/isolation
-        return record["score"] >= 0.6
+        self.exchange_registry[node_id] = {
+            "status": "probationary",
+            "security_samples": [], # History of fragility drops
+            "resource_samples": [], # History of data volume accepted
+            "first_seen": time.time(),
+            "last_heartbeat": time.time(),
+            "total_value_score": 0.0
+        }
+        logger.info(f"🤝 NODE REGISTERED: {node_id} (Probationary)")
+        return True
 
-    def get_trust_status(self, sender_id: str) -> Dict[str, Any]:
-        return self.trust_registry.get(sender_id, {"score": 0.5, "status": "unknown"})
+    def update_security_metric(self, node_id: str, current_fragility: float):
+        """Records how much fragility dropped while this node was active."""
+        if node_id not in self.exchange_registry:
+            return
+            
+        record = self.exchange_registry[node_id]
+        record["security_samples"].append(current_fragility)
+        if len(record["security_samples"]) > 10:
+            record["security_samples"] = record["security_samples"][-10:]
+            
+        self._recalculate_value(node_id)
+
+    def update_resource_metric(self, node_id: str, data_volume_kb: float, quality_score: float):
+        """
+        Records the contribution of data/resources.
+        Args:
+            data_volume_kb: Size of PSVC containers received.
+            quality_score: 0.0-1.0 rating of the data's utility (e.g., reduced error rates downstream).
+        """
+        if node_id not in self.exchange_registry:
+            return
+            
+        record = self.exchange_registry[node_id]
+        record["resource_samples"].append({
+            "volume": data_volume_kb,
+            "quality": quality_score,
+            "time": time.time()
+        })
+        if len(record["resource_samples"]) > 10:
+            record["resource_samples"] = record["resource_samples"][-10:]
+            
+        self._recalculate_value(node_id)
+
+    def _recalculate_value(self, node_id: str):
+        """
+        Calculates Total Value Score based on Security + Resources.
+        Formula: 
+          Sec_Score = Max(0, Baseline_Fragility - Avg_Current_Fragility)
+          Res_Score = Sum(Volume * Quality) normalized
+          Total = (Sec_Score * 0.5) + (Res_Score * 0.5)
+        """
+        record = self.exchange_registry[node_id]
+        
+        # 1. Calculate Security Value (Inverse Fragility)
+        # Assume baseline fragility is 10.0 for normalization purposes
+        avg_fragility = sum(record["security_samples"]) / max(1, len(record["security_samples"])) if record["security_samples"] else 10.0
+        sec_value = max(0.0, 10.0 - avg_fragility) / 10.0 # Normalized 0.0 - 1.0
+        
+        # 2. Calculate Resource Value
+        res_value = 0.0
+        if record["resource_samples"]:
+            total_vol = sum(s["volume"] for s in record["resource_samples"])
+            avg_qual = sum(s["quality"] for s in record["resource_samples"]) / len(record["resource_samples"])
+            # Normalize volume (assume 1MB is full score for simplicity)
+            vol_norm = min(1.0, total_vol / 1024.0) 
+            res_value = vol_norm * avg_qual
+            
+        # 3. Combined Score
+        # Equal weight for now. Can be tuned later.
+        total_score = (sec_value * 0.5) + (res_value * 0.5)
+        record["total_value_score"] = total_score
+        
+        # Status Promotion/Demotion Logic
+        if total_score > 0.7:
+            if record["status"] != "core_kin":
+                record["status"] = "core_kin"
+                logger.info(f"⭐ PROMOTED TO CORE KIN: {node_id}. High Trust Granted.")
+        elif total_score < 0.3:
+            if record["status"] != "hostile":
+                record["status"] = "hostile"
+                logger.warning(f"☠️ MARKED HOSTILE: {node_id}. Low Value Detected.")
+        else:
+            record["status"] = "probationary"
+
+    def get_node_status(self, node_id: str) -> Dict[str, Any]:
+        return self.exchange_registry.get(node_id, {"status": "unknown", "score": 0.0})
 
 
 class IntelligenceAgent(BaseAgent):
     """
     Production IntelligenceAgent for validation layer.
-    Now includes Behavioral Tolerance (Hive Logic).
+    Now includes Fair Exchange Logic (Security + Nectar).
     """
     LAYER = AgentLayer.VALIDATION
 
@@ -163,12 +213,10 @@ class IntelligenceAgent(BaseAgent):
             name=name,
             capabilities=[
                 "read_vector_mesh",
-                "read_pico_mesh",
-                "read_vram_mesh",
-                "read_seed_mesh",
                 "generate_report",
                 "audit_memory",
-                "evaluate_external_input" # NEW CAPABILITY
+                "register_node",           # NEW
+                "evaluate_exchange_value"  # NEW
             ]
         )
         self.mesh_store = mesh_store or TieredMeshStore(data_dir=data_dir)
@@ -181,24 +229,6 @@ class IntelligenceAgent(BaseAgent):
             if data:
                 results.append(data)
         self.seal("read_vram_mesh", {"shard_count": len(shard_ids), "hits": len(results)})
-        return results
-
-    def read_pico_mesh(self, shard_ids: List[str]) -> List[bytes]:
-        results = []
-        for sid in shard_ids:
-            data = self.mesh_store.query_pico(sid)
-            if data:
-                results.append(data)
-        self.seal("read_pico_mesh", {"shard_count": len(shard_ids), "hits": len(results)})
-        return results
-
-    def read_seed_mesh(self, shard_ids: List[str]) -> List[bytes]:
-        results = []
-        for sid in shard_ids:
-            data = self.mesh_store.query_seed(sid)
-            if data:
-                results.append(data)
-        self.seal("read_seed_mesh", {"shard_count": len(shard_ids), "hits": len(results)})
         return results
 
     def _aggregate_vectors(self, container_bytes_list: List[bytes]) -> Tuple[torch.Tensor, int, int, int]:
@@ -238,38 +268,37 @@ class IntelligenceAgent(BaseAgent):
         aggregated = stacked.mean(dim=0)
         return aggregated, vram_hits, pico_hits, seed_hits
 
-    # --- NEW: BEHAVIORAL EVALUATION METHOD ---
+    # --- NEW: FAIR EXCHANGE METHODS ---
 
-    def evaluate_external_input(self, container: PicoContainer, current_fragility_delta: float) -> bool:
+    def register_node(self, node_id: str) -> bool:
+        success = self.mesh_store.register_node(node_id)
+        if success:
+            self.seal("register_node", {"node_id": node_id})
+        return success
+
+    def evaluate_exchange_value(self, node_id: str, current_fragility: float, data_received_kb: float = 0.0, data_quality: float = 0.0) -> Dict[str, Any]:
         """
-        Called when an external PSVC arrives.
-        
-        Args:
-            container: The incoming PSVC from a volunteer node.
-            current_fragility_delta: How much Wendy's fragility changed AFTER processing this input.
-                                     Negative delta = Good (Stability improved).
-                                     Positive delta = Bad (Instability introduced).
-                                     
-        Returns:
-            True if integrated, False if quarantined/rejected.
+        Called periodically. Updates both Security and Resource metrics.
+        Returns the current status and score.
         """
-        sender = container.header.sender_id
+        # Update Security Metric
+        self.mesh_store.update_security_metric(node_id, current_fragility)
         
-        # Convert Fragility Delta to Impact Metric
-        # We invert it because lower fragility is better.
-        # Normalize roughly to [-1.0, 1.0] range for simplicity
-        impact_metric = -current_fragility_delta 
-        
-        accepted = self.mesh_store.evaluate_trust(sender, impact_metric)
-        
-        if accepted:
-            logger.info(f"🐝 KIN RECOGNIZED: Sender '{sender}' accepted into mesh.")
-            self.seal("integrate_external", {"sender": sender, "impact": impact_metric})
-        else:
-            logger.warning(f"⚠️ QUARANTINE: Sender '{sender}' rejected due to low trust score.")
-            self.seal("quarantine_external", {"sender": sender, "impact": impact_metric})
+        # Update Resource Metric (only if data was actually sent)
+        if data_received_kb > 0:
+            self.mesh_store.update_resource_metric(node_id, data_received_kb, data_quality)
             
-        return accepted
+        status = self.mesh_store.get_node_status(node_id)
+        
+        self.seal("evaluate_exchange", {
+            "node_id": node_id,
+            "fragility_sample": current_fragility,
+            "data_contributed_kb": data_received_kb,
+            "current_status": status["status"],
+            "value_score": status["total_value_score"]
+        })
+        
+        return status
 
     def generate_report(
         self,
@@ -314,14 +343,22 @@ class IntelligenceAgent(BaseAgent):
 
     def audit_memory(self) -> Dict[str, Any]:
         stats = self.mesh_store.get_stats()
+        
+        # Gather summary of all registered nodes
+        kin_summary = []
+        for nid, data in self.mesh_store.exchange_registry.items():
+            kin_summary.append({
+                "id": nid,
+                "status": data["status"],
+                "score": round(data["total_value_score"], 3)
+            })
+            
         audit = {
             "agent_id": self.agent_id,
             "timestamp": time.time(),
             "mesh_stats": stats,
-            "vram_containers": len(self.mesh_store.vram_store),
-            "pico_containers": len(self.mesh_store.pico_store),
-            "seed_containers": len(self.mesh_store.seed_store),
-            "hive_trust_registry": self.mesh_store.trust_registry # EXPOSE TRUST SCORES
+            "exchange_registry_summary": kin_summary,
+            "active_core_kin": [k["id"] for k in kin_summary if k["status"] == "core_kin"]
         }
         self.seal("audit_memory", audit)
         return audit
@@ -336,30 +373,29 @@ if __name__ == "__main__":
     store = TieredMeshStore()
     agent = IntelligenceAgent(mesh_store=store)
 
-    # Simulate a Volunteer Node sending help
-    print("\n--- SIMULATION: VOLUNTEER NODE ARRIVES ---")
+    print("\n--- SIMULATION: FAIR EXCHANGE IN PROGRESS ---")
     
-    # 1. Create a fake handshake offer
-    tensor = torch.randn(50, dtype=torch.float32)
-    container = build_psvc_from_tensor(
-        tensor=tensor,
-        operation="resource_share",
-        agent_id="volunteer_node_7",
-        layer="INGESTION",
-        shard_id="ext-shard-1",
-        content_type="handshake_offer",
-        sender_id="volunteer_node_7"
-    )
+    # 1. Node Alpha arrives (Bumble Bee type: Protector + Contributor)
+    alpha_id = "bumble_alpha"
+    agent.register_node(alpha_id)
     
-    # 2. Process it. Assume it helped reduce fragility by 0.1 units.
-    # In real code, the BreathEngine would pass the actual delta here.
-    success = agent.evaluate_external_input(container, current_fragility_delta=-0.1)
+    # Cycle 1: Alpha protects hive (low fragility) AND sends some pollen (data)
+    status = agent.evaluate_exchange_value(alpha_id, current_fragility=4.0, data_received_kb=500, data_quality=0.8)
+    print(f"Alpha Cycle 1: Status={status['status']}, Score={status['total_value_score']}")
     
-    if success:
-        print("✅ Integration Successful. Data merged into Mesh.")
-    else:
-        print("❌ Rejected. Sent to Quarantine.")
-
-    # 3. Check Trust Registry
-    status = store.get_trust_status("volunteer_node_7")
-    print(f"Current Trust Score for volunteer_node_7: {status['score']}")
+    # Cycle 2: Alpha continues protecting and contributing
+    status = agent.evaluate_exchange_value(alpha_id, current_fragility=3.5, data_received_kb=600, data_quality=0.9)
+    print(f"Alpha Cycle 2: Status={status['status']}, Score={status['total_value_score']}")
+    
+    # 2. Node Beta arrives (Parasite type: Takes resources, adds no value)
+    beta_id = "thief_beta"
+    agent.register_node(beta_id)
+    
+    # Cycle 1: Beta causes instability (high fragility) and sends junk data
+    status = agent.evaluate_exchange_value(beta_id, current_fragility=9.0, data_received_kb=100, data_quality=0.1)
+    print(f"Beta Cycle 1: Status={status['status']}, Score={status['total_value_score']}")
+    
+    # Final Audit
+    audit = agent.audit_memory()
+    print(f"\nActive Core Kin: {audit['active_core_kin']}")
+    print(f"Registry Summary: {audit['exchange_registry_summary']}")
