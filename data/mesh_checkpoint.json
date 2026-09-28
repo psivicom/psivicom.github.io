@@ -1,7 +1,8 @@
+# data/mesh_checkpoint.json
 {
-  "updated_at": "2026-09-28T06:01:14.509582+00:00",
-  "global_avg_focus": 0.6929839796124766,
-  "global_avg_joy": 0.5075094616031988,
-  "global_avg_agility": 0.5428999999999953,
-  "sample_size": 2
+  "updated_at": "2026-09-28T06:05:00.000Z",
+  "global_avg_focus": 1.0,
+  "global_avg_joy": 0.5,
+  "global_avg_agility": 0.5,
+  "sample_size": 1
 }
