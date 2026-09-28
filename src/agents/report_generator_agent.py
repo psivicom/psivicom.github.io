@@ -4,119 +4,56 @@
 
 import json
 import logging
-import numpy as np
 from pathlib import Path
-from datetime import datetime, timezone
 from typing import Dict, Any
 
 from src.base.base_agent import BaseAgent, AgentLayer
-from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16
-from src.agents.pilot_agent import PilotAgent
+from src.core.zulu_clock import get_zulu_timestamp_ms
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("REPORT_GENERATOR")
 
 class ReportGeneratorAgent(BaseAgent):
     LAYER = AgentLayer.SYNTHESIS
 
-    def __init__(self, name: str = "report_generator"):
-        super().__init__(name, capabilities=["generate", "synthesize", "seal"])
-        self.output_dir = Path("reports/scientific_reports")
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        # Initialize Pilot with default OSDR path; Pollinator support can be added via config injection later
-        self.pilot = PilotAgent(osdr_data_path="data/osdr_ground_truth.jsonl")
+    def __init__(self, name: str = "report_generator_agent"):
+        super().__init__(name=name, capabilities=["generate_report", "format_markdown", "seal_artifact"])
+        self.reports_dir = Path("reports/scientific_reports")
+        self.reports_dir.mkdir(parents=True, exist_ok=True)
 
-    def generate_report(self, instruction: Dict[str, Any]) -> Path:
-        goal = instruction.get("params", {}).get("topic", "General Mesh Analysis")
-        fmt = instruction.get("params", {}).get("format", "json")
+    def _run_logic(self, data: Dict[str, Any], report_type: str = "scientific") -> str:
+        logger.info(f"Generating {report_type} report...")
         
-        logger.info(f"[{self.agent_id}] Generating report for: {goal} (Format: {fmt})")
+        ts_safe = get_zulu_timestamp_ms().replace(':', '').replace('-', '').replace('.', '')
+        filename = f"report_{report_type}_{ts_safe}.md"
+        filepath = self.reports_dir / filename
         
-        # Execute validation logic to refresh mesh state
-        try:
-            self.pilot._run_logic()
-        except Exception as e:
-            logger.error(f"Failed to run pilot logic during report generation: {e}")
-            # Continue with stale data if possible, or return error
-            
-        frag_count = len(self.pilot.fragility_traps)
-        conc_count = len(self.pilot.concordant_controls)
-        
-        # Determine elasticity based on current state
-        if frag_count > conc_count:
-            elasticity = "EXPAND"
-        elif conc_count > frag_count * 2:
-            elasticity = "CONTRACT"
-        else:
-            elasticity = "STABLE"
+        report_content = f"""# {report_type.replace('_', ' ').title()} Report
+**Generated:** {get_zulu_timestamp_ms()}
+**Agent:** {self.name}
+**Layer:** {self.LAYER.value}
 
-        report_data = {
-            "title": f"PSIVI Mesh Scientific Report: {goal}",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "instruction_source": instruction.get("path", "daemon_auto"),
-            "mesh_state": {
-                "fragility_traps": frag_count,
-                "concordant_controls": conc_count,
-                "elasticity": elasticity
-            },
-            "osdr_ground_truth_loaded": len(self.pilot.osdr_library) > 0,
-            "rfc1001_compliant": True,
-            "generated_by": "WENDY_Authorized_Daemon"
-        }
-        
-        # Create vector representation of the report state
-        report_vector = np.zeros(4096, dtype=np.float32)
-        report_vector[0] = frag_count / 100.0
-        report_vector[1] = conc_count / 100.0
-        report_vector[2] = 1.0 if report_data["osdr_ground_truth_loaded"] else 0.0
-        
-        norm = np.linalg.norm(report_vector)
-        if norm > 0:
-            report_vector /= norm
-        
-        chash = content_hash(report_vector)
-        report_filename = f"report_{chash[:12]}.psvc"
-        report_path = self.output_dir / report_filename
-        
-        # Write binary container
-        write_file(report_vector, report_path, precision=PRECISION_FLOAT16)
-        
-        # Write JSON sidecar
-        sidecar_path = report_path.with_suffix('.json')
-        with open(sidecar_path, 'w', encoding='utf-8') as f:
-            json.dump(report_data, f, indent=2)
-            
-        self.seal("report_generated", {"path": str(report_path), "topic": goal})
-        logger.info(f"✅ Report sealed: {report_path.name}")
-        
-        return report_path
+## Summary
+{json.dumps(data.get('summary', 'No summary provided.'), indent=2)}
 
-    def execute(self, instruction: Dict[str, Any]) -> Path:
-        """
-        Main entry point called by auto_reporter.
-        Expects instruction dict with 'command' and 'params'.
-        """
-        cmd = instruction.get("command")
-        
-        if cmd == "request_report":
-            return self.generate_report(instruction)
-        else:
-            logger.warning(f"Unknown command for ReportGenerator: {cmd}")
-            # Return a dummy path or raise error depending on strictness
-            return Path("reports/scientific_reports/error_no_report.psvc")
+## Data
+{json.dumps(data.get('data', {}), indent=2)}
+
+## Conclusion
+{data.get('conclusion', 'Analysis complete.')}
+"""
+        filepath.write_text(report_content, encoding="utf-8")
+        logger.info(f"✅ Report sealed: {filepath}")
+        return str(filepath)
+
+    def execute(self, data: Dict[str, Any], report_type: str = "scientific") -> Dict[str, Any]:
+        return super().execute(data=data, report_type=report_type)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
     agent = ReportGeneratorAgent()
-    
-    # Simulate WENDY's initial request
-    mock_instruction = {
-        "command": "request_report",
-        "params": {
-            "topic": "Goldstream Fragility Status",
-            "format": "json"
-        },
-        "path": "data/instruction_queue/wendy_initial_request.json"
-    }
-    
-    path = agent.execute(mock_instruction)
-    logger.info(f"Test report generated at: {path}")
+    result = agent.execute({
+        "summary": "Test run completed successfully.", 
+        "data": {"metric": 1.0, "divergence": 0.0}, 
+        "conclusion": "System is harmonious."
+    })
+    print(json.dumps(result, indent=2))
