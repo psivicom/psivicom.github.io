@@ -42,6 +42,7 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
+│       ├── wendy-hyper.yml
 │       ├── wendy.yml 
 │       └── workflow-integrity.yml
 ├── LICENSES/
@@ -183,9 +184,11 @@ psivicom.github.io/
 │   │   ├── datapackage.json
 │   │   └── metadata.json
 │   ├── README.md
+│   ├── mesh_checkpoint.json
 │   ├── osdr_ground_truth.jsonl
 │   ├── osdr_metadata_schema.json
-│   └── pollinator_ground_truth.jsonl
+│   ├── pollinator_ground_truth.jsonl
+│   └── wendy_state.json
 ├── dist/
 │   └── README.md
 ├── docs/
@@ -293,6 +296,8 @@ psivicom.github.io/
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
+│   ├── history/
+│   │   └── snap_merge_000001_1790553906.json
 │   ├── pico_containers/
 │   │   ├── 12ffa2eeedf2.json
 │   │   ├── 12ffa2eeedf2.psvc
@@ -474,6 +479,7 @@ psivicom.github.io/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
 │   ├── kernel/
+│   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
 │   ├── mesh/
 │   │   ├──  __init__.py

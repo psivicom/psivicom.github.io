@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T00:04:15.399Z | Hash: b8402871895782350c6278fb815380ca843165e8b0eb8527bc6a4d27297400ec -->
+<!-- Last updated: 2026-09-28T00:09:14.057Z | Hash: e9a9f4a10ed16cf2db53fd225dff4e99089be0162a6cfbefc251591881655a25 -->
 
 ```
 psivicom.github.io/
@@ -161,6 +161,7 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
+│       ├── wendy-hyper.yml
 │       ├── wendy.yml 
 │       └── workflow-integrity.yml
 ├── LICENSES/
@@ -302,9 +303,11 @@ psivicom.github.io/
 │   │   ├── datapackage.json
 │   │   └── metadata.json
 │   ├── README.md
+│   ├── mesh_checkpoint.json
 │   ├── osdr_ground_truth.jsonl
 │   ├── osdr_metadata_schema.json
-│   └── pollinator_ground_truth.jsonl
+│   ├── pollinator_ground_truth.jsonl
+│   └── wendy_state.json
 ├── dist/
 │   └── README.md
 ├── docs/
@@ -412,6 +415,8 @@ psivicom.github.io/
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
+│   ├── history/
+│   │   └── snap_merge_000001_1790553906.json
 │   ├── pico_containers/
 │   │   ├── 12ffa2eeedf2.json
 │   │   ├── 12ffa2eeedf2.psvc
@@ -593,6 +598,7 @@ psivicom.github.io/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
 │   ├── kernel/
+│   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
 │   ├── mesh/
 │   │   ├──  __init__.py
