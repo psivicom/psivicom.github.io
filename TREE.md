@@ -528,6 +528,7 @@ psivicom.github.io/
 │   │   ├── mesh_router.py
 │   │   ├── pico_mesh.py
 │   │   ├── seed_mesh.py
+│   │   ├── spatial-clustering.js
 │   │   ├── vector_mesh.py
 │   │   ├── volunteer_worker.py
 │   │   └── vram_mesh.py
