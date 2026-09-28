@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-09-28T19:22:55.140074+00:00",
+  "updated_at": "2026-09-28T19:27:35.837797+00:00",
   "node_count": 1,
   "nodes": [
     {
       "node_id": "psivicom-primary",
-      "timestamp": "2026-09-28T19:22:55.086Z",
+      "timestamp": "2026-09-28T19:27:35.788Z",
       "status": "ALIVE",
-      "signature": "d0531bc79a4b4ac4d7a17f428007af2a",
+      "signature": "329eef09116bcb07e1b280ac6c60364f",
       "velocity": 1.0,
       "role": "VOLUNTEER",
       "coords": {
