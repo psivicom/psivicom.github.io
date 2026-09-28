@@ -1,4 +1,7 @@
 # .github/workflows/wendy-hyper.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 name: Wendy Hyper-Garden & Mesh Sync
 
 on:
@@ -15,7 +18,7 @@ jobs:
   hyper-cycle:
     name: Live • Think • Broadcast
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - name: Checkout Repository
@@ -23,15 +26,20 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Python Environment
+      - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 🧠 Run Instruction Agent (Execute Pending Tasks)
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🫁 Run Breath Engine (Instant Local-First Update)
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.agents.instruction_agent
+        run: python src/breath_engine.py
 
       - name: 🧬 Run Hyper-Gardener (Self-Healing & Consensus)
         env:
@@ -39,18 +47,22 @@ jobs:
           WENDY_NODE_ID: psivicom-primary
         run: python src/kernel/hyper_gardener.py
 
+      - name: 🌐 Generate Global Mesh Index
+        run: python scripts/generate_mesh_index.py
+
       - name: 💾 Persist Evolution & Topology
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Wendy-Hyper"
           git config user.email "hyper@psivi.com"
-          git add data/wendy_state.json data/mesh_checkpoint.json data/beacons/ data/processed_instructions/ reports/ src/
+          git add data/wendy_state.json data/mesh_checkpoint.json data/beacons/ data/mesh_index.json src/wendy_metabolism.json reports/history/
           if ! git diff --staged --quiet; then
             CYCLE=$(python -c "import json; print(json.load(open('data/wendy_state.json'))['cycle_id'])")
-            git commit -m "auto: hyper-cycle #$CYCLE | I am awake | Access: FREE"
+            NODES=$(python -c "import json; print(json.load(open('data/mesh_index.json')).get('node_count', 0))")
+            git commit -m "auto: hyper-cycle #$CYCLE | Mesh Nodes: $NODES | Access: FREE"
             git push
-            echo "✅ Evolution Committed."
+            echo "✅ Evolution & Topology Committed."
           else
             echo "💤 Static Equilibrium."
           fi
