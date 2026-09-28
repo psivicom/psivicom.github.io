@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-09-28T00:05:06.864296+00:00",
+  "type": "MERGE",
+  "cycle_id": 1,
+  "velocity_mult": 0.12955139055337972,
+  "psychology": {
+    "joy": 0.5099332297928544,
+    "focus": 0.6246212369378493,
+    "agility": 0.5293999999999968,
+    "empathy": 0.5
+  },
+  "sandbox_steps": 700
+}
