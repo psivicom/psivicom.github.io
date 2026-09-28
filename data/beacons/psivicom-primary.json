@@ -1,13 +1,13 @@
 {
   "node_id": "psivicom-primary",
-  "timestamp": "2026-09-28T06:01:14.509867+00:00",
+  "timestamp": "2026-09-28T07:25:58.683Z",
   "status": "ALIVE",
-  "signature": "360181e6a6126d14e1b0b37853fdd442",
-  "velocity": 0.1378218238216661,
+  "signature": "92385f080d2135762bbe15ca744da807",
+  "velocity": 0.17704880941828022,
   "role": "VOLUNTEER",
   "coords": {
-    "x": 0.54,
-    "y": -0.45999999999999996,
-    "z": -0.9
+    "x": -0.9,
+    "y": 0.30000000000000004,
+    "z": 0.7
   }
 }
