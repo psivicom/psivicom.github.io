@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T00:20:03.173Z | Hash: 52dcf31da1d00e03c45344daa5c3a048072a08574573dea0531faddfa53d2fed -->
+<!-- Last updated: 2026-09-28T00:20:32.534Z | Hash: ebbe3f314b8777ed302d7b7bd7701110d7175382045385212760f9b564947941 -->
 
 ```
 psivicom.github.io/
@@ -153,7 +153,6 @@ psivicom.github.io/
 │       ├── psivi-seed-instruction.yml
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
-│       ├── run-orchestrator.yml
 │       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
 │       ├── test-elastic-evolution.yml
