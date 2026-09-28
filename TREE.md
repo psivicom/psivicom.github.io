@@ -321,6 +321,8 @@ psivicom.github.io/
 ├── maps/
 │   └── forage_forecast.png
 ├── mesh/
+│   ├── agents/
+│   │   └── volunteer-agent.js
 │   ├── workflows/
 │   │   └── aggregate-mesh-v2.js
 │   ├── dynamic-geo.js
@@ -530,8 +532,6 @@ psivicom.github.io/
 │   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
 │   ├── mesh/
-│   │   ├── agents/
-│   │   │   └── volunteer-agent.js
 │   │   ├──  __init__.py
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
