@@ -7,6 +7,7 @@ psivicom.github.io/
 │       ├── auto-report.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
+│       ├── elastic-test.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
 │       ├── generate-report.yml
