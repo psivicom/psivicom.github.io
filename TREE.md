@@ -609,7 +609,6 @@ psivicom.github.io/
 ├── psivimanesh.html
 ├── psvc_cli.py
 ├── psvc_reference.py
-├── requirements.txt
 ├── robots.txt
 ├── sitemap.xml
 ├── test_rfc1001_compliance.py
