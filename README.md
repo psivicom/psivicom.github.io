@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T00:10:23.507Z | Hash: e417ae87945680c7a1a45ec4db5c78302e4a4e328cbec6b84f1a3ea6204822b4 -->
+<!-- Last updated: 2026-09-28T00:12:56.895Z | Hash: 2ebc51f3ccf728690be77b5e9f6af3df928df0898f92728aec12796a51737302 -->
 
 ```
 psivicom.github.io/
@@ -416,6 +416,7 @@ psivicom.github.io/
 │   └── forage_forecast.png
 ├── reports/
 │   ├── history/
+│   │   ├──  __init__.py
 │   │   └── snap_merge_000001_1790553906.json
 │   ├── pico_containers/
 │   │   ├── 12ffa2eeedf2.json
