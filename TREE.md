@@ -321,7 +321,8 @@ psivicom.github.io/
 ├── maps/
 │   └── forage_forecast.png
 ├── mesh/
-│   └── dynamic-geo.js
+│   ├── dynamic-geo.js
+│   └── package.json
 ├── reports/
 │   ├── history/
 │   │   ├──  __init__.py
