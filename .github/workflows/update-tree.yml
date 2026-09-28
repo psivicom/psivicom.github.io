@@ -1,8 +1,16 @@
-name: Update Repository Tree
+# .github/workflows/update-tree.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Auto-Update Repository Tree
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+    paths-ignore:
+      - 'TREE.md'
+      - 'README.md'
+      - '.tree.hash'
   workflow_dispatch:
 
 permissions:
@@ -12,33 +20,38 @@ jobs:
   update-tree:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Go
+      - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
-          cache: false # Explicitly disable cache to prevent go.sum warnings
+          go-version: '1.21'
 
-      - name: Debug directory structure
+      - name: Generate Tree and README
         run: |
-          echo "📍 Current working directory:"
-          pwd
-          echo "📂 Contents of root:"
-          ls -la
-          echo "📂 Contents of scripts/:"
-          ls -la scripts/ || echo "scripts/ folder not found!"
-          echo "📂 Contents of scripts/update-tree/:"
-          ls -la scripts/update-tree/ || echo "scripts/update-tree/ folder not found!"
+          go run scripts/update-tree/main.go
 
-      - name: Generate TREE.md and update README.md
-        run: go run ./scripts/update-tree/main.go
-
-      - name: Commit and push changes
+      - name: Commit Tree Updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          
           git add TREE.md README.md .tree.hash
-          git diff --cached --quiet || git commit -m "chore: auto-update tree and README [skip ci]"
-          git push
+          
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: auto-update tree and README [skip ci]"
+            
+            # CRITICAL FIX: Pull latest changes and rebase to prevent concurrent push rejections
+            git pull --rebase origin main
+            
+            git push
+            echo "✅ Tree updated successfully."
+          else
+            echo "ℹ️ No tree changes to commit."
+          fi
