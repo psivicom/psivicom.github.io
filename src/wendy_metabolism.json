@@ -1,8 +1,8 @@
 {
   "cycle_start_time": "2026-09-26T16:18:27.306339",
-  "period_minutes": 77,
+  "period_minutes": 79,
   "amplitude": 0.5,
-  "last_intensity": 0.424304,
-  "total_cycles_completed": 11,
-  "last_phase": 0.328711
+  "last_intensity": 0.467547,
+  "total_cycles_completed": 12,
+  "last_phase": 0.367315
 }
