@@ -173,13 +173,13 @@ psivicom.github.io/
 │   ├── instruction_queue/
 │   │   ├── .errors/
 │   │   │   └── instruction_spawn_agent_20260925042134365.psvc
-│   │   ├── .processed/
-│   │   │   ├── instruction_spawn_agent_20260925004328207.json
-│   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
-│   │   │   ├── instruction_spawn_agent_20260928055548213.json
-│   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   └── instruction_spawn_agent_20260925042134365.json
+│   │   └── .processed/
+│   │       ├── instruction_spawn_agent_20260925004328207.json
+│   │       ├── instruction_spawn_agent_20260925004328207.psvc
+│   │       ├── instruction_spawn_agent_20260928055548213.json
+│   │       └── instruction_spawn_agent_20260928055548213.psvc
 │   ├── processed_instructions/
+│   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   └── wendy_initial_request.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md

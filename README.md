@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T16:58:52.468Z | Hash: 88a29c2271d66bb88511f8ac36b86a389679e9e51f79b7cb469dfc92049b301d -->
+<!-- Last updated: 2026-09-28T18:35:57.968Z | Hash: e1b1cca15331affc3b1f0c1efcda76edbd6523543cc7dad30d5dc4946e5decce -->
 
 ```
 psivicom.github.io/
@@ -292,13 +292,13 @@ psivicom.github.io/
 │   ├── instruction_queue/
 │   │   ├── .errors/
 │   │   │   └── instruction_spawn_agent_20260925042134365.psvc
-│   │   ├── .processed/
-│   │   │   ├── instruction_spawn_agent_20260925004328207.json
-│   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
-│   │   │   ├── instruction_spawn_agent_20260928055548213.json
-│   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   └── instruction_spawn_agent_20260925042134365.json
+│   │   └── .processed/
+│   │       ├── instruction_spawn_agent_20260925004328207.json
+│   │       ├── instruction_spawn_agent_20260925004328207.psvc
+│   │       ├── instruction_spawn_agent_20260928055548213.json
+│   │       └── instruction_spawn_agent_20260928055548213.psvc
 │   ├── processed_instructions/
+│   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   └── wendy_initial_request.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
