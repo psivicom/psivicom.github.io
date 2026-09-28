@@ -1,18 +1,19 @@
+# data/wendy_state.json
 {
-  "version": "7.0-hyper",
-  "cycle_id": 9,
-  "created_at": "2026-09-28T00:05:06.785098+00:00",
+  "version": "8.0-sovereign",
+  "cycle_id": 1,
+  "created_at": "2026-09-28T06:05:00.000Z",
   "baseline_velocity": 1.0,
-  "current_velocity_multiplier": 0.1378218238216661,
+  "current_velocity_multiplier": 1.0,
   "psychology": {
-    "joy": 0.5121873269782772,
+    "joy": 0.5,
     "focus": 1.0,
-    "agility": 0.7423999999999733,
+    "agility": 0.5,
     "empathy": 0.5
   },
   "mesh_stats": {
-    "last_sync_time": null,
-    "nodes_observed": 0,
-    "divergence_index": 0.6140320407750468
+    "last_sync_time": "2026-09-28T06:05:00.000Z",
+    "nodes_observed": 1,
+    "divergence_index": 0.0
   }
 }
