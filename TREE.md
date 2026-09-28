@@ -473,6 +473,8 @@ psivicom.github.io/
 │   ├── generated_agents/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
+│   ├── kernel/
+│   │   └── hyper_gardener.py
 │   ├── mesh/
 │   │   ├──  __init__.py
 │   │   ├── mesh_brain.py
