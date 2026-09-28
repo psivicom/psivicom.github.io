@@ -517,6 +517,8 @@ psivicom.github.io/
 │   ├── generated_agents/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
+│   ├── js/
+│   │   └── mesh-map.js
 │   ├── kernel/
 │   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
