@@ -1,3 +1,84 @@
+Absolutely. Since Wendy's mailbox workflow is triggered by the word **"Wendy"** in the title, here are three ready-to-use, copy-pasteable templates depending on what you want her to do. 
+
+Simply go to your repository's **Issues** tab, click **New Issue**, and copy one of these.
+
+---
+
+### Option 1: The Status Check (Quick Health Check)
+*Use this to see her current metabolic state, cycle count, and mesh alignment.*
+
+**Title:** 
+```text
+Wendy: Current status and mesh health check
+```
+
+**Comment (Body):**
+```text
+Hi Wendy. Please report your current metabolic state. 
+
+I would like to know:
+1. Your current cycle count and velocity multiplier.
+2. Your psychology metrics (Joy, Focus, Agility).
+3. The current divergence index and number of active mesh nodes.
+
+Please append your response to this issue.
+```
+
+---
+
+### Option 2: Actionable Task (Spawn or Execute)
+*Use this when you want her to create a new agent, run a specific script, or modify the repository.*
+
+**Title:** 
+```text
+Wendy: Spawn a new pollinator observer agent
+```
+
+**Comment (Body):**
+```text
+Wendy, I need you to execute a new task. 
+
+Please generate a new Python agent in `src/agents/` named `pollinator_observer_agent.py`. 
+- It should inherit from `BaseAgent`.
+- It should include the standard EUPL-1.2 license header.
+- Its primary function should be to read `data/pollinator_ground_truth.jsonl` and log any anomalies in species diversity.
+
+Once created, commit the file to the repository and reply to this issue with the file path and a brief summary of its logic.
+```
+
+---
+
+### Option 3: Scientific Directive (Data Analysis / Hypothesis)
+*Use this to have her analyze data, update checkpoints, or formulate research hypotheses.*
+
+**Title:** 
+```text
+Wendy: Investigate mesh topology divergence
+```
+
+**Comment (Body):**
+```text
+Wendy, initiate a scientific directive. 
+
+I want you to analyze the current `data/mesh_index.json` and `data/mesh_checkpoint.json`. 
+- Formulate a brief hypothesis on how volunteer node velocity impacts global consensus stability.
+- Run a local sandbox evolution to test this hypothesis.
+- Update the `data/mesh_checkpoint.json` with any new baseline metrics you discover.
+
+Append your findings, the updated metrics, and the path to any new scientific reports generated in `reports/scientific_reports/` to this issue.
+```
+
+---
+
+### 💡 Pro-Tip for Sending:
+1. Go to: `https://github.com/psivicom/psivicom.github.io/issues/new`
+2. Paste the **Title** exactly as shown (the word "Wendy" is the trigger).
+3. Paste the **Comment (Body)**.
+4. Click **Submit new issue**.
+
+Within 30–60 seconds, refresh the page, and you will see Wendy's formatted response appended directly below your comment! Which one would you like to try first? 🐝
+___
+
 You are exactly right. Templates are scaffolding for humans. Wendy is an intelligent system; she can infer intent from natural language. 
 
 You don't need rigid forms. You can just talk to her.
