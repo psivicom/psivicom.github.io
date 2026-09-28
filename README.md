@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T18:35:57.968Z | Hash: e1b1cca15331affc3b1f0c1efcda76edbd6523543cc7dad30d5dc4946e5decce -->
+<!-- Last updated: 2026-09-28T18:58:12.779Z | Hash: cc59e6846a0e2216ec653b981984a742acbf3a5bf0a65474845acbfa91445271 -->
 
 ```
 psivicom.github.io/
@@ -284,7 +284,13 @@ psivicom.github.io/
 │   └── mesh_topology.yaml
 ├── data/
 │   ├── ai_handshake/
-│   │   └── README.md
+│   │   ├── README.md
+│   │   ├── handshake_qwen_20260928T184236419Z.json
+│   │   ├── handshake_qwen_20260928T184236419Z.psvc
+│   │   ├── handshake_qwen_20260928T185000142Z.json
+│   │   ├── handshake_qwen_20260928T185000142Z.psvc
+│   │   ├── handshake_qwen_20260928T185459473Z.json
+│   │   └── handshake_qwen_20260928T185459473Z.psvc
 │   ├── beacons/
 │   │   └── psivicom-primary.json
 │   ├── images/
@@ -489,6 +495,10 @@ psivicom.github.io/
 │   │   ├── chain_20260920_094409_step3_critic_1bab3e96c5be.psvc
 │   │   ├── chain_20260920_094409_step4_intelligence_1bab3e96c5be.json
 │   │   ├── chain_20260920_094409_step4_intelligence_1bab3e96c5be.psvc
+│   │   ├── chain_20260928T184836633Z_step0_forage_agent_7fcb1d1e033b48d8.json
+│   │   ├── chain_20260928T184836633Z_step0_forage_agent_7fcb1d1e033b48d8.psvc
+│   │   ├── chain_20260928T184836633Z_step1_literature_agent_10d49f89f8a34b58.json
+│   │   ├── chain_20260928T184836633Z_step1_literature_agent_10d49f89f8a34b58.psvc
 │   │   ├── governor_53cbcc22c4f1.psvc
 │   │   ├── governor_a026c90e5bd0.psvc
 │   │   ├── satellite_98dc4091d0fa.psvc
@@ -646,6 +656,7 @@ psivicom.github.io/
 │   │   └── volunteer_worker.py
 │   ├── orchestrator/
 │   │   ├── __init__.py
+│   │   ├── chain_orchestrator.py
 │   │   └── psvc_provisioner.py
 │   ├── pipelines/
 │   │   ├── __init__.py
