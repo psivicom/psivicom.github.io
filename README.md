@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T22:52:04.196Z | Hash: 5440b9e1a865655d3b76709095b38b5d0a76979de97ac266104e2a34be51f01b -->
+<!-- Last updated: 2026-09-28T22:55:08.733Z | Hash: 93e60d69a5bbf9903a7a45677caf3e492067d5896afe57ff92983721bcc54aac -->
 
 ```
 psivicom.github.io/
@@ -641,6 +641,7 @@ psivicom.github.io/
 │   │   └── hyper_gardener.py
 │   ├── mesh/
 │   │   ├──  __init__.py
+│   │   ├── dynamic-geo.js
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
