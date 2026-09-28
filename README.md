@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T00:23:43.837Z | Hash: 1e63e44e9655829df43d82ab0f23684af2bf2ecb8af459cd42000556d7a441ea -->
+<!-- Last updated: 2026-09-28T00:31:00.524Z | Hash: f27288a7b9064f25ae343897172d12ef14569267b5dc85bd7a85851b4c1b0ea0 -->
 
 ```
 psivicom.github.io/
@@ -369,6 +369,7 @@ psivicom.github.io/
 │   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
+│   │   ├── experimental_wendy_trimtolive.md
 │   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
@@ -421,7 +422,8 @@ psivicom.github.io/
 │   ├── history/
 │   │   ├──  __init__.py
 │   │   ├── .gitkeep
-│   │   └── snap_merge_000001_1790553906.json
+│   │   ├── snap_merge_000001_1790553906.json
+│   │   └── snap_merge_000002_1790555180.json
 │   ├── pico_containers/
 │   │   ├── 12ffa2eeedf2.json
 │   │   ├── 12ffa2eeedf2.psvc

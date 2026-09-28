@@ -250,6 +250,7 @@ psivicom.github.io/
 │   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
+│   │   ├── experimental_wendy_trimtolive.md
 │   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
@@ -302,7 +303,8 @@ psivicom.github.io/
 │   ├── history/
 │   │   ├──  __init__.py
 │   │   ├── .gitkeep
-│   │   └── snap_merge_000001_1790553906.json
+│   │   ├── snap_merge_000001_1790553906.json
+│   │   └── snap_merge_000002_1790555180.json
 │   ├── pico_containers/
 │   │   ├── 12ffa2eeedf2.json
 │   │   ├── 12ffa2eeedf2.psvc
