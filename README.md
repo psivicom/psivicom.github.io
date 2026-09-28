@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T22:59:40.877Z | Hash: 5fb123380db5ea965320bb04e4111cb29bd49e91cf2044ebbd5a67995f879a95 -->
+<!-- Last updated: 2026-09-28T23:00:52.885Z | Hash: 9e5b47b01742a0c54f0fa19cf2a4e1f28b63e9e0dcd479604052195ad631fd39 -->
 
 ```
 psivicom.github.io/
@@ -640,6 +640,8 @@ psivicom.github.io/
 │   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
 │   ├── mesh/
+│   │   ├── agents/
+│   │   │   └── volunteer-agent.js
 │   │   ├── workflows/
 │   │   │   └── aggregate-mesh-v2.js
 │   │   ├──  __init__.py
