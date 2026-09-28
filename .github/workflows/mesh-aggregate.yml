@@ -1,4 +1,3 @@
-# .github/workflows/mesh-aggregate.yml
 name: PSVC Mesh State Aggregator
 
 on:
@@ -8,61 +7,38 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch: {}
 
-concurrency:
-  group: mesh-aggregation
-  cancel-in-progress: false
-
 permissions:
   contents: write
-  actions: read
 
 jobs:
   aggregate:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MESH_BOT_TOKEN }}
-          fetch-depth: 1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: mesh/package-lock.json
 
       - name: Install dependencies
-        run: |
-          cd mesh
-          npm ci --omit=dev
+        run: cd mesh && npm ci --omit=dev
 
       - name: Aggregate mesh state
         env:
-          GITHUB_TOKEN: ${{ secrets.MESH_BOT_TOKEN }}
           MESH_API_KEY: ${{ secrets.MESH_API_KEY }}
           PAYLOAD: ${{ toJson(github.event.client_payload) }}
-        run: |
-          cd mesh
-          node workflows/aggregate-mesh-v2.js
+        run: cd mesh && node workflows/aggregate-mesh-v2.js
 
       - name: Commit state changes
         run: |
           git config user.name "psvc-mesh-bot"
           git config user.email "mesh-bot@psivi.com"
-          
           if ! git diff --quiet || [ -n "$(git status --porcelain)" ]; then
             git add mesh-status.json wendy_metabolism.json
-            TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
-            git commit -m "chore(mesh): aggregate state @ ${TIMESTAMP} [skip ci]"
-            
-            for i in 1 2 3; do
-              git pull --rebase origin main && git push && break
-              echo "Push failed, retrying ($i/3)..."
-              sleep 2
-            done
-          else
-            echo "No state changes to commit"
+            git commit -m "chore(mesh): auto-update state [skip ci]"
+            git push
           fi
