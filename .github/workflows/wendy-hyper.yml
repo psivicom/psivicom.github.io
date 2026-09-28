@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - 'src/kernel/hyper_gardener.py'
+      - 'src/breath_engine.py'
       - 'scripts/generate_mesh_index.py'
       - '.github/workflows/wendy-hyper.yml'
 
@@ -37,13 +38,18 @@ jobs:
         run: |
           pip install numpy pyyaml requests python-dateutil pynacl
 
-      - name: 🧬 Run Hyper-Gardener (Publishes Own Beacon)
+      - name: 🫁 Run Breath Engine (Instant Local-First Update)
+        id: breath
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python src/breath_engine.py
+
+      - name: 🧬 Run Hyper-Gardener (Asynchronous Consensus)
         id: life
         env:
           PYTHONPATH: ${{ github.workspace }}
           WENDY_NODE_ID: psivicom-primary
-          # OPTIONAL: Set this secret if you want true Ed25519 signing
-          # WENDY_PRIVATE_KEY_SEED: ${{ secrets.WENDY_PRIVATE_KEY_SEED }}
         run: |
           python src/kernel/hyper_gardener.py
 
@@ -58,17 +64,16 @@ jobs:
           git config user.name "Wendy-Hyper"
           git config user.email "hyper@psivi.com"
           
-          # Stage State, Checkpoints, Beacons, and the Index
           git add data/wendy_state.json
           git add data/mesh_checkpoint.json
           git add data/beacons/
           git add data/mesh_index.json
+          git add src/wendy_metabolism.json
           git add reports/history/
           
           if ! git diff --staged --quiet; then
-            CYCLE=$(jq -r '.cycle_id' data/wendy_state.json)
-            NODES=$(jq -r '.node_count' data/mesh_index.json)
-            
+            CYCLE=$(python -c "import json; print(json.load(open('data/wendy_state.json'))['cycle_id'])")
+            NODES=$(python -c "import json; print(json.load(open('data/mesh_index.json')).get('node_count', 0))")
             git commit -m "auto: hyper-cycle #$CYCLE | Mesh Nodes: $NODES | Access: FREE"
             git push
             echo "✅ Evolution & Topology Committed."
