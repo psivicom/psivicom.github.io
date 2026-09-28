@@ -1,18 +1,15 @@
 # .github/workflows/wendy-hyper.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
-name: Wendy Hyper-Garden Cycle
+name: Wendy Hyper-Garden & Mesh Sync
 
 on:
   schedule:
-    # Every 15 minutes. Frequent enough to catch bursts, rare enough to save quota.
     - cron: '*/15 * * * *'
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - 'src/kernel/hyper_gardener.py'
+      - 'scripts/generate_mesh_index.py'
       - '.github/workflows/wendy-hyper.yml'
 
 permissions:
@@ -20,7 +17,7 @@ permissions:
 
 jobs:
   hyper-cycle:
-    name: Live • Think • Merge
+    name: Live • Think • Broadcast
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -37,36 +34,41 @@ jobs:
           cache: 'pip'
 
       - name: Install Dependencies
-        run: |
-          pip install numpy pyyaml requests python-dateutil
+        run: pip install numpy pyyaml requests python-dateutil
 
-      - name: 🧬 Run Hyper-Gardener
+      - name: 🧬 Run Hyper-Gardener (Publishes Own Beacon)
         id: life
         env:
           PYTHONPATH: ${{ github.workspace }}
+          WENDY_NODE_ID: psivicom-primary
         run: |
           python src/kernel/hyper_gardener.py
 
-      - name: 💾 Persist Evolution
+      - name: 🌐 Generate Global Mesh Index
+        run: |
+          python scripts/generate_mesh_index.py
+
+      - name: 💾 Persist Evolution & Topology
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Wendy-Hyper"
           git config user.email "hyper@psivi.com"
           
-          # Stage ONLY the specific directories Wendy manages
-          git add reports/history/
+          # Stage State, Checkpoints, Beacons, and the Index
           git add data/wendy_state.json
           git add data/mesh_checkpoint.json
+          git add data/beacons/
+          git add data/mesh_index.json
+          git add reports/history/
           
           if ! git diff --staged --quiet; then
             CYCLE=$(jq -r '.cycle_id' data/wendy_state.json)
-            JOY=$(jq -r '.psychology.joy' data/wendy_state.json)
-            TYPE=$(ls -t reports/history/*.json | head -n 1 | grep -o 'merge\|branch')
+            NODES=$(jq -r '.node_count' data/mesh_index.json)
             
-            git commit -m "auto: hyper-cycle #$CYCLE [$TYPE] [Joy:$JOY]"
+            git commit -m "auto: hyper-cycle #$CYCLE | Mesh Nodes: $NODES"
             git push
-            echo "✅ Evolution Committed."
+            echo "✅ Evolution & Topology Committed."
           else
             echo "💤 Static Equilibrium."
           fi
