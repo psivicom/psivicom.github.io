@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T01:41:49.614Z | Hash: db50a0c804b3998e1d294b789345e71d8fd26b6519806aeba15e4997f921d818 -->
+<!-- Last updated: 2026-09-28T05:20:48.111Z | Hash: 55e299640dafafa42a46ce1fd0636fba61e2924a4809ac35433aedc094fc929b -->
 
 ```
 psivicom.github.io/
@@ -411,6 +411,7 @@ psivicom.github.io/
 │   ├── Synopsis_orchestrator_agent.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
+│   ├── experimental_wendy_latency.md
 │   ├── installation-guide-repository-tree.md
 │   ├── make-psvc-guide.md
 │   ├── osdmp.html
