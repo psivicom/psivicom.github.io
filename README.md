@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T22:58:03.874Z | Hash: a71a0f00b9fef3815f2a4cb335dac615820af5a8cdbfbe26c77dc599bf804f00 -->
+<!-- Last updated: 2026-09-28T22:59:40.877Z | Hash: 5fb123380db5ea965320bb04e4111cb29bd49e91cf2044ebbd5a67995f879a95 -->
 
 ```
 psivicom.github.io/
@@ -640,6 +640,8 @@ psivicom.github.io/
 │   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
 │   ├── mesh/
+│   │   ├── workflows/
+│   │   │   └── aggregate-mesh-v2.js
 │   │   ├──  __init__.py
 │   │   ├── dynamic-geo.js
 │   │   ├── mesh_brain.py
@@ -673,8 +675,6 @@ psivicom.github.io/
 │   │   ├── osdr_export.py
 │   │   ├── osdr_query.py
 │   │   └── validate_mesh.py
-│   ├── workflows/
-│   │   └── aggregate-mesh-v2.js
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
