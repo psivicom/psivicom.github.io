@@ -34,13 +34,16 @@ jobs:
           cache: 'pip'
 
       - name: Install Dependencies
-        run: pip install numpy pyyaml requests python-dateutil
+        run: |
+          pip install numpy pyyaml requests python-dateutil pynacl
 
       - name: 🧬 Run Hyper-Gardener (Publishes Own Beacon)
         id: life
         env:
           PYTHONPATH: ${{ github.workspace }}
           WENDY_NODE_ID: psivicom-primary
+          # OPTIONAL: Set this secret if you want true Ed25519 signing
+          # WENDY_PRIVATE_KEY_SEED: ${{ secrets.WENDY_PRIVATE_KEY_SEED }}
         run: |
           python src/kernel/hyper_gardener.py
 
@@ -66,7 +69,7 @@ jobs:
             CYCLE=$(jq -r '.cycle_id' data/wendy_state.json)
             NODES=$(jq -r '.node_count' data/mesh_index.json)
             
-            git commit -m "auto: hyper-cycle #$CYCLE | Mesh Nodes: $NODES"
+            git commit -m "auto: hyper-cycle #$CYCLE | Mesh Nodes: $NODES | Access: FREE"
             git push
             echo "✅ Evolution & Topology Committed."
           else
