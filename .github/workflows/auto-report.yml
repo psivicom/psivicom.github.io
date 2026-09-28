@@ -1,7 +1,6 @@
 # .github/workflows/auto-report.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# Automatically triggers report generation when instruction files are detected
 
 name: Auto-Report Generation
 
@@ -10,36 +9,44 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
-      - 'data/instruction_queue/**'
+      - 'data/processed_instructions/**'
+
+permissions:
+  contents: write
 
 jobs:
   generate-report:
+    name: Generate Scientific Report
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-python@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install numpy
-      
-      - name: Run Automation Loop
-        run: |
-          python src/tools/auto_reporter.py
-      
-      - name: Commit Generated Reports
+
+      - name: Run Auto Reporter
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python src/tools/auto_reporter.py
+
+      - name: Commit Reports
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "PSIVI Report Agent"
-          git config user.email "reports@psivi.com"
-          git add reports/scientific_reports/
+          git config user.name "Wendy-Reporter"
+          git config user.email "reporter@psivi.com"
+          git add reports/
           if ! git diff --staged --quiet; then
-            git commit -m "auto: generated scientific reports from instruction queue"
+            git commit -m "auto: generated new scientific report"
             git push
           fi
