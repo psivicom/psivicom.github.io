@@ -303,6 +303,7 @@ psivicom.github.io/
 │   ├── history/
 │   │   ├──  __init__.py
 │   │   ├── .gitkeep
+│   │   ├── snap_branch_000003_1790556956.json
 │   │   ├── snap_merge_000001_1790553906.json
 │   │   └── snap_merge_000002_1790555180.json
 │   ├── pico_containers/
@@ -428,7 +429,8 @@ psivicom.github.io/
 │   ├── BEGIN.py
 │   ├── BEGIN_PROCESSOR.py
 │   ├── BEGIN_SEALER.py
-│   └── fix_archive_names.py
+│   ├── fix_archive_names.py
+│   └── generate_mesh_index.py
 ├── src/
 │   ├── agents/
 │   │   ├── __init__.py

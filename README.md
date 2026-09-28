@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T00:50:20.998Z | Hash: f27288a7b9064f25ae343897172d12ef14569267b5dc85bd7a85851b4c1b0ea0 -->
+<!-- Last updated: 2026-09-28T00:57:39.585Z | Hash: a194b1b4881f524a419ac2ca2a0c31d5b52cf378c9910d6452a28a87c9bd0d41 -->
 
 ```
 psivicom.github.io/
@@ -422,6 +422,7 @@ psivicom.github.io/
 │   ├── history/
 │   │   ├──  __init__.py
 │   │   ├── .gitkeep
+│   │   ├── snap_branch_000003_1790556956.json
 │   │   ├── snap_merge_000001_1790553906.json
 │   │   └── snap_merge_000002_1790555180.json
 │   ├── pico_containers/
@@ -547,7 +548,8 @@ psivicom.github.io/
 │   ├── BEGIN.py
 │   ├── BEGIN_PROCESSOR.py
 │   ├── BEGIN_SEALER.py
-│   └── fix_archive_names.py
+│   ├── fix_archive_names.py
+│   └── generate_mesh_index.py
 ├── src/
 │   ├── agents/
 │   │   ├── __init__.py
