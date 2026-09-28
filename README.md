@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T23:20:30.114Z | Hash: b8bc75b36c9d805bf9d3a42ed4ec16aa572692425e902cf88fffd95c6e58e57a -->
+<!-- Last updated: 2026-09-28T23:22:42.050Z | Hash: 9824474b20285127981878cc89a61cbb5b7a8796703ed846086f6e53afffcb10 -->
 
 ```
 psivicom.github.io/
@@ -434,6 +434,8 @@ psivicom.github.io/
 │   ├── rfc1001.txt
 │   ├── robotics-automation-notes.md
 │   └── template.html
+├── js/
+│   └── mesh-map.js
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
@@ -636,8 +638,6 @@ psivicom.github.io/
 │   ├── generated_agents/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
-│   ├── js/
-│   │   └── mesh-map.js
 │   ├── kernel/
 │   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
@@ -683,7 +683,8 @@ psivicom.github.io/
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
-│   └── wendy.py
+│   ├── wendy.py
+│   └── wendy_metabolism.json
 ├── tests/
 │   ├── __init__.py
 │   ├── test_elastic_evolution.py

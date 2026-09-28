@@ -315,6 +315,8 @@ psivicom.github.io/
 │   ├── rfc1001.txt
 │   ├── robotics-automation-notes.md
 │   └── template.html
+├── js/
+│   └── mesh-map.js
 ├── maps/
 │   └── forage_forecast.png
 ├── reports/
@@ -517,8 +519,6 @@ psivicom.github.io/
 │   ├── generated_agents/
 │   │   ├── __init__.py
 │   │   └── satellite_agent.py
-│   ├── js/
-│   │   └── mesh-map.js
 │   ├── kernel/
 │   │   ├──  __init__.py
 │   │   └── hyper_gardener.py
@@ -564,7 +564,8 @@ psivicom.github.io/
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
-│   └── wendy.py
+│   ├── wendy.py
+│   └── wendy_metabolism.json
 ├── tests/
 │   ├── __init__.py
 │   ├── test_elastic_evolution.py
