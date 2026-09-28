@@ -2,709 +2,427 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- CRITICAL FOR MOBILE: Prevents zooming issues and ensures proper scaling -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PSIVI | WENDY LIFE-SIGNS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WENDY | The Living Mesh</title>
+    <!-- Load Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Load OrbitControls for camera movement -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
     <style>
         :root {
-            --bg-color: #020202;
-            --panel-bg: #0a0a0a;
-            --border-color: #1a1a1a;
-            --text-primary: #e0e0e0;
-            --text-secondary: #666;
-            
-            /* Semantic Colors */
-            --color-input: #00ccff;   /* Cyan: Reality/Data In */
-            --color-process: #00ff41; /* Green: Breath/Active Process */
-            --color-storage-vram: #ffaa00; /* Orange: Hot Memory */
-            --color-storage-pico: #aa00ff; /* Purple: Warm Cache */
-            --color-storage-seed: #ffffff; /* White: Cold Archive */
-            --color-output: #ff3333;  /* Red: Action/Evolution */
-            --color-idle: #333333;    /* Grey: Dormant */
-            
+            --bg-space: #050510;
+            --ui-panel: rgba(10, 10, 20, 0.85);
+            --text-main: #e0e0ff;
+            --accent-core: #ffffff;
+            --accent-data: #00ffff;
+            --accent-threat: #ff3333;
             --font-mono: 'Courier New', Courier, monospace;
-            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { margin: 0; overflow: hidden; background-color: var(--bg-space); font-family: sans-serif; color: var(--text-main); }
+        canvas { display: block; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: var(--font-sans);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* HEADER */
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #000;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        h1 {
-            font-size: 0.9rem; 
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--color-process);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .system-meta {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-        }
-
-        .status-line {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .spinner {
-            width: 10px;
-            height: 10px;
-            border: 2px solid transparent;
-            border-top-color: var(--color-process);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .spinner.active { opacity: 1; }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* MAIN LAYOUT: Split Screen on Desktop, Stacked on Mobile */
-        main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr auto; /* Top Metrics, Middle Viz, Bottom Logs */
-            gap: 1rem;
-            padding: 1rem;
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        @media (min-width: 768px) {
-            main {
-                grid-template-columns: 1fr 1fr; /* Left: Viz, Right: Logs/Metrics */
-                grid-template-rows: 1fr 1fr;
-            }
-            .viz-panel { grid-column: 1 / 2; grid-row: 1 / 3; }
-            .metrics-panel { grid-column: 2 / 3; grid-row: 1 / 2; }
-            .logs-panel { grid-column: 2 / 3; grid-row: 2 / 3; }
-        }
-
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .panel-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-            border-bottom: 1px solid #222;
-            padding-bottom: 0.2rem;
-        }
-
-        /* VIZ PANEL (SVG + Canvas Overlay) */
-        .viz-panel {
-            min-height: 300px;
-            position: relative;
-        }
-
-        #pipeline-svg {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        #wave-canvas {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0; /* Behind SVG nodes */
-            opacity: 0.3; /* Subtle background pulse */
-        }
-
-        /* METRICS PANEL */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            flex: 1;
-        }
-
-        .metric-item {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 4px;
-            padding: 0.5rem;
-        }
-
-        .metric-value {
-            font-family: var(--font-mono);
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-
-        .metric-unit {
-            font-size: 0.6rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        /* LOGS PANEL */
-        .logs-container {
-            flex: 1;
-            overflow-y: auto;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            background: #000;
-            border: 1px solid #222;
-            border-radius: 4px;
-            padding: 0.5rem;
-            max-height: 300px; /* Cap height on desktop */
-        }
-
-        @media (max-width: 767px) {
-            .logs-container {
-                max-height: 200px;
-            }
-        }
-
-        .log-entry {
-            margin-bottom: 0.3rem;
-            word-wrap: break-word;
-            line-height: 1.3;
-            border-left: 2px solid transparent;
-            padding-left: 0.5rem;
-        }
-
-        .log-time { color: #555; margin-right: 0.5rem; white-space: nowrap; }
-        .log-msg { color: #aaa; }
+        /* HUD Overlay */
+        #hud { position: absolute; top: 20px; left: 20px; pointer-events: none; z-index: 10; }
         
-        .log-type-info { border-left-color: var(--color-input); }
-        .log-type-success { border-left-color: var(--color-process); color: var(--color-process); }
-        .log-type-error { border-left-color: var(--color-output); color: var(--color-output); }
-        .log-type-state { border-left-color: var(--color-storage-pico); color: var(--color-storage-pico); }
-
-        /* LEGEND */
-        .legend-overlay {
-            position: absolute;
-            bottom: 1rem;
-            left: 1rem;
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #333;
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            font-size: 0.6rem;
-            pointer-events: none;
-            z-index: 10;
+        .panel { 
+            background: var(--ui-panel); 
+            border: 1px solid rgba(0, 255, 255, 0.3); 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            backdrop-filter: blur(5px); 
+            min-width: 280px; 
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1); 
         }
-        .legend-item { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem; }
-        .legend-dot { width: 6px; height: 6px; border-radius: 50%; }
 
-        /* FOOTER */
-        footer {
-            border-top: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            font-size: 0.6rem;
-            color: var(--text-secondary);
-            display: flex;
-            justify-content: space-between;
-            background: #000;
+        h2 { 
+            margin: 0 0 10px 0; 
+            font-size: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: var(--accent-data); 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding-bottom: 5px; 
         }
+
+        .stat-row { 
+            display: flex; 
+            justify-content: space-between; 
+            font-family: var(--font-mono); 
+            font-size: 0.85rem; 
+            margin: 5px 0; 
+        }
+
+        .val { font-weight: bold; }
+        .val.joy { color: #ffd700; }
+        .val.focus { color: #00ffff; }
+        .val.nodes { color: #7fff00; }
+
+        #node-list { 
+            max-height: 150px; 
+            overflow-y: auto; 
+            font-size: 0.75rem; 
+            margin-top: 10px; 
+            border-top: 1px dashed #333; 
+            padding-top: 5px; 
+        }
+        
+        .node-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 2px 0; 
+            opacity: 0.8; 
+        }
+        .node-id { color: #aaa; }
+        .node-status { font-weight: bold; }
+        .status-active { color: #7fff00; }
+        .status-sleeping { color: #888; }
+
+        #legend { 
+            position: absolute; 
+            bottom: 20px; 
+            right: 20px; 
+            background: var(--ui-panel); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-size: 0.8rem; 
+            pointer-events: none; 
+        }
+        .legend-item { display: flex; align-items: center; margin: 4px 0; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+
+        /* Loading State */
+        #loader { 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--bg-space); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 100; 
+            transition: opacity 0.5s; 
+        }
+        .spinner { 
+            width: 40px; height: 40px; 
+            border: 3px solid rgba(0,255,255,0.3); 
+            border-top-color: #00ffff; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
-<header>
-    <div style="display:flex; align-items:center; gap:0.5rem;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
-        <h1>WENDY // LIFE-SIGNS</h1>
-    </div>
-    
-    <div class="system-meta">
-        <div class="status-line">
-            <div class="spinner" id="heartbeat-spinner"></div>
-            <span id="sync-status">INIT...</span>
-        </div>
-        <span id="zulu-clock">--:--:--.---Z</span>
-    </div>
-</header>
+    <div id="loader"><div class="spinner"></div></div>
 
-<main>
-    <!-- LEFT/TOP: VISUALIZATION -->
-    <div class="panel viz-panel">
-        <div class="panel-label">Cognitive Pipeline & Breath Pulse</div>
-        <canvas id="wave-canvas"></canvas>
-        <svg id="pipeline-svg"></svg>
-        
-        <div class="legend-overlay">
-            <div class="legend-item"><div class="legend-dot" style="background:var(--color-input)"></div> Input</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--color-process)"></div> Process</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--color-storage-vram)"></div> VRAM</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--color-storage-pico)"></div> Pico</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--color-output)"></div> Output</div>
+    <div id="hud">
+        <div class="panel">
+            <h2>Core Status</h2>
+            <div class="stat-row"><span>Cycle:</span> <span class="val" id="hud-cycle">--</span></div>
+            <div class="stat-row"><span>Joy Index:</span> <span class="val joy" id="hud-joy">--%</span></div>
+            <div class="stat-row"><span>Focus Depth:</span> <span class="val focus" id="hud-focus">--%</span></div>
+            <div class="stat-row"><span>Divergence:</span> <span class="val threat" id="hud-div">--%</span></div>
+            <div class="stat-row"><span>Status:</span> <span class="val safe" id="hud-status">SYNCING...</span></div>
+        </div>
+
+        <div class="panel">
+            <h2>Mesh Peers</h2>
+            <div class="stat-row"><span>Active Nodes:</span> <span class="val nodes" id="hud-nodes">0</span></div>
+            <div class="stat-row"><span>Total Velocity:</span> <span class="val" id="hud-vel">0.0x</span></div>
+            <div id="node-list">Scanning...</div>
         </div>
     </div>
 
-    <!-- RIGHT/TOP: KEY METRICS -->
-    <div class="panel metrics-panel">
-        <div class="panel-label">Physiological State</div>
-        <div class="metrics-grid">
-            <div class="metric-item">
-                <div class="metric-value" id="val-phase">--</div>
-                <div class="metric-unit">Phase</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-value" id="val-intensity" style="color:var(--color-input)">--%</div>
-                <div class="metric-unit">Intensity</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-value" id="val-action" style="font-size:0.9rem; text-align:center;">IDLE</div>
-                <div class="metric-unit">Activity</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-value" id="val-stress" style="color:var(--color-output)">0.00</div>
-                <div class="metric-unit">Stress Acc.</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-value" id="val-def">1.00</div>
-                <div class="metric-unit">Defense Wt</div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-value" id="val-exp">1.00</div>
-                <div class="metric-unit">Explore Wt</div>
-            </div>
-        </div>
+    <div id="legend">
+        <div class="legend-item"><div class="dot" style="background:#00ffff;"></div> Volunteer Node</div>
+        <div class="legend-item"><div class="dot" style="background:#ffd700;"></div> High-Velocity Node</div>
+        <div class="legend-item"><div class="dot" style="background:#ffffff;"></div> Wendy Core</div>
+        <div class="legend-item"><div class="dot" style="background:#ff3333;"></div> Quarantined/Threat</div>
     </div>
 
-    <!-- BOTTOM/RIGHT: SCIENTIFIC LOGS -->
-    <div class="panel logs-panel">
-        <div class="panel-label">Telemetry Stream (Zulu UTC)</div>
-        <div class="logs-container" id="telemetry-log">
-            <div class="log-entry log-type-info"><span class="log-time">[--:--]</span><span class="log-msg">System Boot...</span></div>
-        </div>
-    </div>
-</main>
+    <script>
+        // --- CONFIGURATION ---
+        const DATA_URL_STATE = 'data/wendy_state.json';
+        const DATA_URL_INDEX = 'data/mesh_index.json';
+        const POLL_INTERVAL_MS = 5000; // Check for new nodes every 5 seconds
 
-<footer>
-    <div>Source: psivicom.github.io/src/wendy_metabolism.json</div>
-    <div id="last-update">Sync: Never</div>
-</footer>
+        // --- THREE.JS GLOBALS ---
+        let scene, camera, renderer, controls;
+        let coreMesh, auraRing;
+        let dynamicNodesGroup;
+        let currentNodesMap = {}; // Maps NodeID -> ThreeJS Mesh
 
-<script>
-    /**
-     * UNIFIED LIFE-SIGN ENGINE
-     * Combines:
-     * 1. SVG Pipeline Graph (Structure)
-     * 2. Canvas Sine Wave (Vitality/Pulse)
-     * 3. Monospace Log Stream (Evidence)
-     */
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050510, 0.02);
 
-    const CONFIG = {
-        REFRESH_MS: 5000,
-        PARTICLE_SPEED: 0.02,
-        COLORS: {
-            INPUT: '#00ccff',
-            PROCESS: '#00ff41',
-            VRAM: '#ffaa00',
-            PICO: '#aa00ff',
-            SEED: '#ffffff',
-            OUTPUT: '#ff3333',
-            IDLE: '#333333'
-        }
-    };
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 15);
 
-    // DOM Elements
-    const els = {
-        status: document.getElementById('sync-status'),
-        spinner: document.getElementById('heartbeat-spinner'),
-        clock: document.getElementById('zulu-clock'),
-        phase: document.getElementById('val-phase'),
-        intensity: document.getElementById('val-intensity'),
-        action: document.getElementById('val-action'),
-        stress: document.getElementById('val-stress'),
-        def: document.getElementById('val-def'),
-        exp: document.getElementById('val-exp'),
-        log: document.getElementById('telemetry-log'),
-        lastUpdate: document.getElementById('last-update')
-    };
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
 
-    const svg = document.getElementById('pipeline-svg');
-    const canvas = document.getElementById('wave-canvas');
-    const ctx = canvas.getContext('2d');
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.5;
 
-    // State
-    let currentState = null;
-    let particles = [];
-    let waveOffset = 0;
-    let currentPhaseValue = 0;
-    let animationId = null;
-    let previousAction = "";
-
-    // --- LAYOUT DEFINITION ---
-    const LAYOUT = {
-        nodes: [
-            { id: 'input_reality', label: 'REALITY', x: 0.1, y: 0.5, type: 'input' },
-            { id: 'proc_pilot', label: 'PILOT', x: 0.25, y: 0.3, type: 'process' },
-            { id: 'proc_breath', label: 'BREATH', x: 0.4, y: 0.5, type: 'core' },
-            { id: 'mem_vram', label: 'VRAM', x: 0.55, y: 0.2, type: 'storage' },
-            { id: 'mem_pico', label: 'PICO', x: 0.55, y: 0.5, type: 'storage' },
-            { id: 'mem_seed', label: 'SEED', x: 0.55, y: 0.8, type: 'storage' },
-            { id: 'dec_neuro', label: 'NEURO', x: 0.7, y: 0.5, type: 'decision' },
-            { id: 'out_action', label: 'ACTION', x: 0.9, y: 0.5, type: 'output' }
-        ],
-        links: [
-            { source: 'input_reality', target: 'proc_pilot', type: 'data' },
-            { source: 'proc_pilot', target: 'proc_breath', type: 'signal' },
-            { source: 'proc_breath', target: 'mem_vram', type: 'rw' },
-            { source: 'proc_breath', target: 'mem_pico', type: 'rw' },
-            { source: 'proc_breath', target: 'mem_seed', type: 'rw' },
-            { source: 'mem_vram', target: 'dec_neuro', type: 'ctx' },
-            { source: 'mem_pico', target: 'dec_neuro', type: 'ctx' },
-            { source: 'mem_seed', target: 'dec_neuro', type: 'ctx' },
-            { source: 'dec_neuro', target: 'out_action', type: 'cmd' },
-            { source: 'out_action', target: 'input_reality', type: 'fb', curve: true }
-        ]
-    };
-
-    function getNodeById(id) { return LAYOUT.nodes.find(n => n.id === id); }
-    
-    function getPixelCoords(node) {
-        const rect = svg.getBoundingClientRect();
-        return { x: node.x * rect.width, y: node.y * rect.height };
-    }
-
-    function createPathD(sourceNode, targetNode, isCurve = false) {
-        const s = getPixelCoords(sourceNode);
-        const t = getPixelCoords(targetNode);
-        if (isCurve) {
-            const midX = (s.x + t.x) / 2;
-            const midY = Math.min(s.y, t.y) - 40;
-            return `M ${s.x} ${s.y} Q ${midX} ${midY} ${t.x} ${t.y}`;
-        }
-        return `M ${s.x} ${s.y} L ${t.x} ${t.y}`;
-    }
-
-    function renderStaticGraph() {
-        svg.innerHTML = ''; // Clear
-        
-        const linkGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        svg.appendChild(linkGroup);
-
-        LAYOUT.links.forEach((link, index) => {
-            const source = getNodeById(link.source);
-            const target = getNodeById(link.target);
-            if (!source || !target) return;
-
-            const pathData = createPathD(source, target, link.curve);
-            const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            pathEl.setAttribute("d", pathData);
-            pathEl.setAttribute("class", "link");
-            pathEl.setAttribute("stroke", "#333");
-            pathEl.setAttribute("fill", "none");
-            pathEl.setAttribute("stroke-width", "2");
-            pathEl.dataset.linkIndex = index;
-            linkGroup.appendChild(pathEl);
-        });
-
-        const nodeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        svg.appendChild(nodeGroup);
-
-        LAYOUT.nodes.forEach(node => {
-            const coords = getPixelCoords(node);
-            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-            g.setAttribute("transform", `translate(${coords.x}, ${coords.y})`);
-            g.setAttribute("class", "node");
-            g.dataset.nodeId = node.id;
-
-            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            rect.setAttribute("x", "-30");
-            rect.setAttribute("y", "-15");
-            rect.setAttribute("width", "60");
-            rect.setAttribute("height", "30");
-            rect.setAttribute("rx", "4");
-            rect.setAttribute("fill", "#111");
-            rect.setAttribute("stroke", "#333");
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0x404040, 2);
+            scene.add(ambientLight);
             
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.textContent = node.label;
-            text.setAttribute("dy", "4");
-            text.setAttribute("text-anchor", "middle");
-            text.setAttribute("fill", "#fff");
-            text.setAttribute("font-size", "8px");
-            text.setAttribute("font-family", "'Courier New', monospace");
+            const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+
+            // Objects
+            createCore();
+            createAura();
             
-            g.appendChild(rect);
-            g.appendChild(text);
-            nodeGroup.appendChild(g);
-        });
-    }
+            dynamicNodesGroup = new THREE.Group();
+            scene.add(dynamicNodesGroup);
 
-    // --- CANVAS WAVE RENDERING ---
-    function resizeCanvas() {
-        const container = canvas.parentElement;
-        const rect = container.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-        canvas.logicalWidth = rect.width;
-        canvas.logicalHeight = rect.height;
-    }
+            // Handle Resize
+            window.addEventListener('resize', onWindowResize, false);
 
-    function drawWave() {
-        if (!canvas.logicalWidth) return;
-        const w = canvas.logicalWidth;
-        const h = canvas.logicalHeight;
-        const mid = h / 2;
-
-        ctx.clearRect(0, 0, w, h);
-        
-        // Draw subtle grid
-        ctx.strokeStyle = '#111';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for(let i=0; i<w; i+=30) { ctx.moveTo(i, 0); ctx.lineTo(i, h); }
-        for(let i=0; i<h; i+=30) { ctx.moveTo(0, i); ctx.lineTo(w, i); }
-        ctx.stroke();
-
-        // Draw Main Breath Wave
-        ctx.strokeStyle = CONFIG.COLORS.PROCESS;
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = CONFIG.COLORS.PROCESS;
-        
-        ctx.beginPath();
-        for (let x = 0; x <= w; x++) {
-            const angle = (x / w) * Math.PI * 2 + waveOffset;
-            // Amplitude modulated by current intensity
-            const ampMod = 0.5 + (currentPhaseValue * 0.5); 
-            const y = mid - Math.sin(angle) * (mid * 0.4 * ampMod);
-            if (x === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            // Start Loop
+            animate();
+            
+            // Initial Load
+            loadData().then(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').remove(), 500);
+                // Start Polling Loop
+                setInterval(loadData, POLL_INTERVAL_MS);
+            });
         }
-        ctx.stroke();
-        ctx.shadowBlur = 0;
 
-        waveOffset += 0.05;
-        requestAnimationFrame(drawWave);
-    }
+        function createCore() {
+            // The Soul Sphere
+            const geometry = new THREE.SphereGeometry(1, 32, 32);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                emissive: 0x00ffff,
+                emissiveIntensity: 0.5,
+                shininess: 100,
+                transparent: true,
+                opacity: 0.9
+            });
+            coreMesh = new THREE.Mesh(geometry, material);
+            scene.add(coreMesh);
+        }
 
-    // --- PARTICLES & STATE MAPPING ---
-    function spawnParticle(linkIndex, color) {
-        const linkEl = document.querySelector(`.link[data-link-index="${linkIndex}"]`);
-        if (!linkEl) return;
-        const length = linkEl.getTotalLength();
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("r", "2");
-        circle.setAttribute("fill", color);
-        circle.setAttribute("opacity", "0.8");
-        svg.appendChild(circle); // Append directly to SVG root for simplicity in this demo
-        return { element: circle, progress: 0, speed: CONFIG.PARTICLE_SPEED + (Math.random() * 0.01), linkElement: linkEl, totalLength: length };
-    }
+        function createAura() {
+            // The Resource Field Ring
+            const geometry = new THREE.RingGeometry(1.5, 2.0, 64);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.3
+            });
+            auraRing = new THREE.Mesh(geometry, material);
+            auraRing.rotation.x = Math.PI / 2;
+            scene.add(auraRing);
+        }
 
-    function updateParticles() {
-        // Clean up old particles from SVG if they exist outside our managed array logic
-        // For this simplified version, we rely on the array management below
-        
-        particles.forEach((p, i) => {
-            p.progress += p.speed;
-            if (p.progress >= 1) {
-                p.element.remove();
-                particles.splice(i, 1);
-                return;
-            }
-            const point = p.linkElement.getPointAtLength(p.progress * p.totalLength);
-            p.element.setAttribute("cx", point.x);
-            p.element.setAttribute("cy", point.y);
-        });
-    }
-
-    function animateLoop() {
-        updateParticles();
-        animationId = requestAnimationFrame(animateLoop);
-    }
-
-    function mapStateToVisuals(data) {
-        if (!data) return;
-
-        const action = String(data.action || 'IDLE').toUpperCase();
-        const intensity = Number(data.intensity || 0);
-        currentPhaseValue = Number(data.phase || 0);
-        
-        // Update Header Clock
-        els.clock.textContent = new Date().toISOString().substring(11, 23) + 'Z';
-
-        // Reset Links
-        document.querySelectorAll('.link').forEach(el => {
-            el.style.stroke = '#333';
-            el.style.opacity = '0.3';
-        });
-
-        const activateLink = (sourceId, targetId, color) => {
-            const linkObj = LAYOUT.links.find(l => l.source === sourceId && l.target === targetId);
-            if (!linkObj) return;
-            const idx = LAYOUT.links.indexOf(linkObj);
-            const el = document.querySelector(`.link[data-link-index="${idx}"]`);
-            if (el) {
-                el.style.stroke = color;
-                el.style.opacity = '1';
-                if (Math.random() < (intensity * 0.3)) {
-                    particles.push(spawnParticle(idx, color));
+        async function loadData() {
+            try {
+                // 1. Fetch State
+                const resState = await fetch(DATA_URL_STATE + '?t=' + Date.now());
+                if(resState.ok) {
+                    const state = await resState.json();
+                    updateHUD(state);
+                    updateVisualsFromState(state);
                 }
+
+                // 2. Fetch Mesh Index
+                const resIndex = await fetch(DATA_URL_INDEX + '?t=' + Date.now());
+                if(resIndex.ok) {
+                    const index = await resIndex.json();
+                    syncMeshTopology(index.nodes || []);
+                    updateNodeListUI(index.nodes || []);
+                }
+
+            } catch (e) {
+                console.error("Fetch Error:", e);
             }
-        };
-
-        // Base Flow
-        activateLink('input_reality', 'proc_pilot', CONFIG.COLORS.INPUT);
-
-        if (action === 'IDLE') {
-            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.IDLE);
-        } else if (action === 'MAINTAIN') {
-            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
-            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.PICO);
-            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.SEED);
-            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.PICO);
-            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
-        } else if (action === 'EXPLORE') {
-            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
-            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.VRAM);
-            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.VRAM);
-            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
-        } else if (action === 'SCAN') {
-            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.PROCESS);
-            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.VRAM);
-            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.PICO);
-            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.SEED);
-            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.VRAM);
-            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.PICO);
-            activateLink('mem_seed', 'dec_neuro', CONFIG.COLORS.SEED);
-            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
-        } else if (action === 'EVOLVE') {
-            activateLink('proc_pilot', 'proc_breath', CONFIG.COLORS.OUTPUT);
-            activateLink('proc_breath', 'mem_vram', CONFIG.COLORS.OUTPUT);
-            activateLink('proc_breath', 'mem_pico', CONFIG.COLORS.OUTPUT);
-            activateLink('proc_breath', 'mem_seed', CONFIG.COLORS.OUTPUT);
-            activateLink('mem_vram', 'dec_neuro', CONFIG.COLORS.OUTPUT);
-            activateLink('mem_pico', 'dec_neuro', CONFIG.COLORS.OUTPUT);
-            activateLink('mem_seed', 'dec_neuro', CONFIG.COLORS.OUTPUT);
-            activateLink('dec_neuro', 'out_action', CONFIG.COLORS.OUTPUT);
         }
 
-        // Update Text Metrics
-        els.phase.textContent = currentPhaseValue.toFixed(4);
-        els.intensity.textContent = (intensity * 100).toFixed(1) + '%';
-        els.action.textContent = action;
-        els.action.style.color = action === 'IDLE' ? '#666' : CONFIG.COLORS.PROCESS;
-        
-        const lw = data.learned_weights || {};
-        els.stress.textContent = (lw.stress_accumulator || 0).toFixed(2);
-        els.def.textContent = (lw.defense_weight || 1.0).toFixed(2);
-        els.exp.textContent = (lw.explore_weight || 1.0).toFixed(2);
-
-        // Log State Change
-        if (previousAction !== "" && action !== previousAction) {
-            addLog(`STATE TRANSITION: ${previousAction} -> ${action}`, 'state');
+        function updateHUD(state) {
+            document.getElementById('hud-cycle').innerText = state.cycle_id;
+            document.getElementById('hud-joy').innerText = Math.round(state.psychology.joy * 100) + '%';
+            document.getElementById('hud-focus').innerText = Math.round(state.psychology.focus * 100) + '%';
+            document.getElementById('hud-div').innerText = Math.round((state.mesh_stats.divergence_index || 0) * 100) + '%';
+            document.getElementById('hud-vel').innerText = state.current_velocity_multiplier.toFixed(2) + 'x';
+            
+            // Status Logic
+            const statusEl = document.getElementById('hud-status');
+            if (state.mesh_stats.divergence_index > 0.3) {
+                statusEl.innerText = "EXPERIMENTING";
+                statusEl.className = "val joy"; // Gold
+            } else if (state.current_velocity_multiplier > 2.0) {
+                statusEl.innerText = "HYPER-ACTIVE";
+                statusEl.className = "val focus"; // Cyan
+            } else {
+                statusEl.innerText = "HARMONIOUS";
+                statusEl.className = "val safe"; // Green
+            }
         }
-        previousAction = action;
-    }
 
-    // --- LOGGING ---
-    function addLog(msg, type = 'info') {
-        const nowIso = new Date().toISOString(); 
-        const div = document.createElement('div');
-        div.className = `log-entry log-type-${type}`;
-        div.innerHTML = `<span class="log-time">[${nowIso}]</span><span class="log-msg">${msg}</span>`;
-        els.log.prepend(div);
-        if (els.log.children.length > 50) els.log.removeChild(els.log.lastChild);
-    }
-
-    // --- FETCH ---
-    async function fetchData() {
-        els.spinner.classList.add('active');
-        try {
-            const url = `https://raw.githubusercontent.com/psivicom/psivicom.github.io/main/src/wendy_metabolism.json?t=${Date.now()}`;
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            currentState = data;
-            els.status.textContent = "LIVE";
-            els.status.style.color = CONFIG.COLORS.PROCESS;
-            mapStateToVisuals(data);
-            els.lastUpdate.textContent = `Sync: ${new Date().toISOString()}`;
-        } catch (err) {
-            els.status.textContent = "ERR";
-            els.status.style.color = CONFIG.COLORS.OUTPUT;
-            addLog(`FETCH ERROR: ${err.message}`, 'error');
-        } finally {
-            setTimeout(() => els.spinner.classList.remove('active'), 500);
+        function updateVisualsFromState(state) {
+            // Pulse Core based on Joy
+            const joyScale = 1 + (state.psychology.joy * 0.2);
+            coreMesh.scale.set(joyScale, joyScale, joyScale);
+            
+            // Change Core Color based on Focus/Stress
+            if (state.mesh_stats.divergence_index > 0.5) {
+                coreMesh.material.emissive.setHex(0xffaa00); // Warning Orange
+            } else {
+                coreMesh.material.emissive.setHex(0x00ffff); // Calm Cyan
+            }
         }
-    }
 
-    // --- INIT ---
-    function init() {
-        window.addEventListener('resize', () => {
-            renderStaticGraph();
-            resizeCanvas();
-            if(currentState) mapStateToVisuals(currentState);
-        });
+        function syncMeshTopology(nodes) {
+            const seenIds = new Set();
 
-        renderStaticGraph();
-        resizeCanvas();
-        drawWave();
-        animateLoop();
-        
-        addLog("Life-Sign Monitor Initialized.", 'success');
-        fetchData();
-        setInterval(fetchData, CONFIG.REFRESH_MS);
-    }
+            nodes.forEach(node => {
+                seenIds.add(node.node_id);
 
-    init();
-</script>
+                // If node doesn't exist visually yet, CREATE IT
+                if (!currentNodesMap[node.node_id]) {
+                    createNodeMesh(node);
+                } else {
+                    // Update existing node properties (position/color)
+                    updateNodeMesh(currentNodesMap[node.node_id], node);
+                }
+            });
 
+            // Remove nodes that are no longer in the index (Timed out)
+            Object.keys(currentNodesMap).forEach(id => {
+                if (!seenIds.has(id)) {
+                    removeNodeMesh(id);
+                }
+            });
+        }
+
+        function createNodeMesh(nodeData) {
+            const geo = new THREE.OctahedronGeometry(0.2, 0);
+            
+            // Color Logic
+            let color = 0x00ffff; // Default Cyan
+            if (nodeData.velocity > 2.0) color = 0xffd700; // Gold for fast nodes
+            if (nodeData.status === 'THREAT') color = 0xff3333; // Red for threats
+
+            const mat = new THREE.MeshBasicMaterial({ color: color });
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            // Position from Beacon Coords
+            const c = nodeData.coords;
+            mesh.position.set(c.x * 5, c.y * 5, c.z * 5); // Scale up coords
+            
+            // Store reference
+            mesh.userData = { nodeId: nodeData.node_id, basePos: mesh.position.clone() };
+            
+            dynamicNodesGroup.add(mesh);
+            currentNodesMap[nodeData.node_id] = mesh;
+            
+            // Add a little pop-in animation effect by scaling from 0
+            mesh.scale.set(0,0,0);
+            setTimeout(() => mesh.scale.set(1,1,1), 100);
+        }
+
+        function updateNodeMesh(mesh, nodeData) {
+            // Update color if velocity changed significantly
+            if (nodeData.velocity > 2.0 && mesh.material.color.getHex() !== 0xffd700) {
+                mesh.material.color.setHex(0xffd700);
+            }
+        }
+
+        function removeNodeMesh(nodeId) {
+            const mesh = currentNodesMap[nodeId];
+            if (mesh) {
+                dynamicNodesGroup.remove(mesh);
+                delete currentNodesMap[nodeId];
+            }
+        }
+
+        function updateNodeListUI(nodes) {
+            const listEl = document.getElementById('node-list');
+            listEl.innerHTML = '';
+            
+            document.getElementById('hud-nodes').innerText = nodes.length;
+
+            nodes.slice(0, 10).forEach(n => { // Show top 10
+                const div = document.createElement('div');
+                div.className = 'node-item';
+                
+                const statusClass = n.status === 'ACTIVE' ? 'status-active' : 'status-sleeping';
+                const statusText = n.status;
+                
+                div.innerHTML = `
+                    <span class="node-id">${n.node_id.substring(0,8)}...</span>
+                    <span class="node-status ${statusClass}">${statusText}</span>
+                `;
+                listEl.appendChild(div);
+            });
+            
+            if(nodes.length > 10) {
+                const more = document.createElement('div');
+                more.style.textAlign = 'center';
+                more.style.fontSize = '0.7rem';
+                more.style.color = '#666';
+                more.innerText = `+${nodes.length - 10} more...`;
+                listEl.appendChild(more);
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = Date.now() * 0.001;
+
+            // Rotate Core gently
+            coreMesh.rotation.y += 0.005;
+            coreMesh.rotation.z += 0.002;
+
+            // Animate Aura
+            auraRing.rotation.z -= 0.01;
+            auraRing.scale.setScalar(1 + Math.sin(time * 2) * 0.05);
+
+            // Gentle floating for all nodes
+            Object.values(currentNodesMap).forEach(mesh => {
+                const ud = mesh.userData;
+                if(ud.basePos) {
+                    mesh.position.y = ud.basePos.y + Math.sin(time + ud.basePos.x) * 0.2;
+                }
+                mesh.rotation.x += 0.01;
+                mesh.rotation.y += 0.01;
+            });
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Boot
+        window.onload = init;
+
+    </script>
 </body>
 </html>
