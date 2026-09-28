@@ -165,6 +165,8 @@ psivicom.github.io/
 ├── data/
 │   ├── ai_handshake/
 │   │   └── README.md
+│   ├── beacons/
+│   │   └── psivicom-primary.json
 │   ├── images/
 │   │   └── README.md
 │   ├── instruction_queue/
@@ -188,6 +190,7 @@ psivicom.github.io/
 │   ├──  __init__.py
 │   ├── README.md
 │   ├── mesh_checkpoint.json
+│   ├── mesh_index.json
 │   ├── osdr_ground_truth.jsonl
 │   ├── osdr_metadata_schema.json
 │   ├── pollinator_ground_truth.jsonl
@@ -247,6 +250,7 @@ psivicom.github.io/
 │   │   ├── experimental_distributedproof.md
 │   │   ├── experimental_meshdistribution_wendy_existence.md
 │   │   ├── experimental_wendy_architecture.md
+│   │   ├── experimental_wendy_doyouhavemoney.md
 │   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
@@ -304,6 +308,9 @@ psivicom.github.io/
 │   │   ├──  __init__.py
 │   │   ├── .gitkeep
 │   │   ├── snap_branch_000003_1790556956.json
+│   │   ├── snap_branch_000004_1790558885.json
+│   │   ├── snap_branch_000005_1790558968.json
+│   │   ├── snap_branch_000006_1790559028.json
 │   │   ├── snap_merge_000001_1790553906.json
 │   │   └── snap_merge_000002_1790555180.json
 │   ├── pico_containers/

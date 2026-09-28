@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T01:05:21.362Z | Hash: a194b1b4881f524a419ac2ca2a0c31d5b52cf378c9910d6452a28a87c9bd0d41 -->
+<!-- Last updated: 2026-09-28T01:35:39.881Z | Hash: db50a0c804b3998e1d294b789345e71d8fd26b6519806aeba15e4997f921d818 -->
 
 ```
 psivicom.github.io/
@@ -284,6 +284,8 @@ psivicom.github.io/
 ├── data/
 │   ├── ai_handshake/
 │   │   └── README.md
+│   ├── beacons/
+│   │   └── psivicom-primary.json
 │   ├── images/
 │   │   └── README.md
 │   ├── instruction_queue/
@@ -307,6 +309,7 @@ psivicom.github.io/
 │   ├──  __init__.py
 │   ├── README.md
 │   ├── mesh_checkpoint.json
+│   ├── mesh_index.json
 │   ├── osdr_ground_truth.jsonl
 │   ├── osdr_metadata_schema.json
 │   ├── pollinator_ground_truth.jsonl
@@ -366,6 +369,7 @@ psivicom.github.io/
 │   │   ├── experimental_distributedproof.md
 │   │   ├── experimental_meshdistribution_wendy_existence.md
 │   │   ├── experimental_wendy_architecture.md
+│   │   ├── experimental_wendy_doyouhavemoney.md
 │   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
@@ -423,6 +427,9 @@ psivicom.github.io/
 │   │   ├──  __init__.py
 │   │   ├── .gitkeep
 │   │   ├── snap_branch_000003_1790556956.json
+│   │   ├── snap_branch_000004_1790558885.json
+│   │   ├── snap_branch_000005_1790558968.json
+│   │   ├── snap_branch_000006_1790559028.json
 │   │   ├── snap_merge_000001_1790553906.json
 │   │   └── snap_merge_000002_1790555180.json
 │   ├── pico_containers/
