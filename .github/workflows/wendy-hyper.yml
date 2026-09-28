@@ -24,7 +24,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # CRITICAL: Fetch full history so rebase works
 
       - name: Setup Python 3.11
         uses: actions/setup-python@v5
@@ -57,10 +57,13 @@ jobs:
           git config user.name "Wendy-Hyper"
           git config user.email "hyper@psivi.com"
           git add data/wendy_state.json data/mesh_checkpoint.json data/beacons/ data/mesh_index.json src/wendy_metabolism.json reports/history/
+          
           if ! git diff --staged --quiet; then
-            CYCLE=$(python -c "import json; print(json.load(open('data/wendy_state.json'))['cycle_id'])")
-            NODES=$(python -c "import json; print(json.load(open('data/mesh_index.json')).get('node_count', 0))")
-            git commit -m "auto: hyper-cycle #$CYCLE | Mesh Nodes: $NODES | Access: FREE"
+            git commit -m "auto: hyper-cycle | Mesh Nodes: 1 | Access: FREE"
+            
+            # CRITICAL FIX: Pull latest changes and rebase to prevent concurrent push rejections
+            git pull --rebase origin main
+            
             git push
             echo "✅ Evolution & Topology Committed."
           else
