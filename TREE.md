@@ -320,6 +320,8 @@ psivicom.github.io/
 │   └── mesh-map.js
 ├── maps/
 │   └── forage_forecast.png
+├── mesh/
+│   └── dynamic-geo.js
 ├── reports/
 │   ├── history/
 │   │   ├──  __init__.py
@@ -529,7 +531,6 @@ psivicom.github.io/
 │   │   ├── workflows/
 │   │   │   └── aggregate-mesh-v2.js
 │   │   ├──  __init__.py
-│   │   ├── dynamic-geo.js
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
