@@ -266,6 +266,7 @@ psivicom.github.io/
 │   │   ├── python_helper_for_wendy.py
 │   │   ├── python_protocol_qwen.md
 │   │   ├── qwenwanttorememberwendyprompts.md
+│   │   ├── talking_to_wendy.md
 │   │   ├── theifealsystemwendyprompt.md
 │   │   ├── wendyandaethermesh.json
 │   │   └── wendyisbreathing.md
