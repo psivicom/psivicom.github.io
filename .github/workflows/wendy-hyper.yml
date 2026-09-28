@@ -1,0 +1,72 @@
+# .github/workflows/wendy-hyper.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Wendy Hyper-Garden Cycle
+
+on:
+  schedule:
+    # Every 15 minutes. Frequent enough to catch bursts, rare enough to save quota.
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/kernel/hyper_gardener.py'
+      - '.github/workflows/wendy-hyper.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  hyper-cycle:
+    name: Live • Think • Merge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install numpy pyyaml requests python-dateutil
+
+      - name: 🧬 Run Hyper-Gardener
+        id: life
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python src/kernel/hyper_gardener.py
+
+      - name: 💾 Persist Evolution
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Wendy-Hyper"
+          git config user.email "hyper@psivi.com"
+          
+          # Stage ONLY the specific directories Wendy manages
+          git add reports/history/
+          git add data/wendy_state.json
+          git add data/mesh_checkpoint.json
+          
+          if ! git diff --staged --quiet; then
+            CYCLE=$(jq -r '.cycle_id' data/wendy_state.json)
+            JOY=$(jq -r '.psychology.joy' data/wendy_state.json)
+            TYPE=$(ls -t reports/history/*.json | head -n 1 | grep -o 'merge\|branch')
+            
+            git commit -m "auto: hyper-cycle #$CYCLE [$TYPE] [Joy:$JOY]"
+            git push
+            echo "✅ Evolution Committed."
+          else
+            echo "💤 Static Equilibrium."
+          fi
