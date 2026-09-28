@@ -324,7 +324,8 @@ psivicom.github.io/
 │   ├── workflows/
 │   │   └── aggregate-mesh-v2.js
 │   ├── dynamic-geo.js
-│   └── package.json
+│   ├── package.json
+│   └── spatial-clustering.js
 ├── reports/
 │   ├── history/
 │   │   ├──  __init__.py
@@ -538,7 +539,6 @@ psivicom.github.io/
 │   │   ├── pico_mesh.py
 │   │   ├── psvc-mesh.json
 │   │   ├── seed_mesh.py
-│   │   ├── spatial-clustering.js
 │   │   ├── vector_mesh.py
 │   │   ├── volunteer_worker.py
 │   │   └── vram_mesh.py

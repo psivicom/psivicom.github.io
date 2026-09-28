@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T23:39:00.665Z | Hash: 343d19a18993db8e94d4bc7b8a6998af7c744b3c1bbaf20dc26838dc75d8693c -->
+<!-- Last updated: 2026-09-28T23:41:24.530Z | Hash: 93d300d661661369e03194ee19145aaccddbc3b7eb6008d626d04053fcdb48e1 -->
 
 ```
 psivicom.github.io/
@@ -443,7 +443,8 @@ psivicom.github.io/
 │   ├── workflows/
 │   │   └── aggregate-mesh-v2.js
 │   ├── dynamic-geo.js
-│   └── package.json
+│   ├── package.json
+│   └── spatial-clustering.js
 ├── reports/
 │   ├── history/
 │   │   ├──  __init__.py
@@ -657,7 +658,6 @@ psivicom.github.io/
 │   │   ├── pico_mesh.py
 │   │   ├── psvc-mesh.json
 │   │   ├── seed_mesh.py
-│   │   ├── spatial-clustering.js
 │   │   ├── vector_mesh.py
 │   │   ├── volunteer_worker.py
 │   │   └── vram_mesh.py
