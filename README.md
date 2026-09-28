@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-28T23:13:06.958Z | Hash: 220be2e07403e4b83835470ab98480d522bf3448a2e53f38c241c8a6e8d8aeea -->
+<!-- Last updated: 2026-09-28T23:20:30.114Z | Hash: b8bc75b36c9d805bf9d3a42ed4ec16aa572692425e902cf88fffd95c6e58e57a -->
 
 ```
 psivicom.github.io/
@@ -683,8 +683,7 @@ psivicom.github.io/
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
-│   ├── wendy.py
-│   └── wendy_metabolism.json
+│   └── wendy.py
 ├── tests/
 │   ├── __init__.py
 │   ├── test_elastic_evolution.py
@@ -746,7 +745,8 @@ psivicom.github.io/
 ├── test_rfc1001_compliance.py
 ├── volunteer_node.py
 ├── volunteer_worker.py
-└── wendy.html
+├── wendy.html
+└── wendy_metabolism.json
 ```
 <!-- AUTO_TREE_END -->
 

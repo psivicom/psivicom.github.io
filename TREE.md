@@ -564,8 +564,7 @@ psivicom.github.io/
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
-│   ├── wendy.py
-│   └── wendy_metabolism.json
+│   └── wendy.py
 ├── tests/
 │   ├── __init__.py
 │   ├── test_elastic_evolution.py
@@ -627,5 +626,6 @@ psivicom.github.io/
 ├── test_rfc1001_compliance.py
 ├── volunteer_node.py
 ├── volunteer_worker.py
-└── wendy.html
+├── wendy.html
+└── wendy_metabolism.json
 ```
