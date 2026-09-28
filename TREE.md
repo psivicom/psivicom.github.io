@@ -41,6 +41,7 @@ psivicom.github.io/
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
 │       ├── wendy-hyper.yml
+│       ├── wendy-mailbox.yml
 │       ├── wendy.yml 
 │       └── workflow-integrity.yml
 ├── LICENSES/
