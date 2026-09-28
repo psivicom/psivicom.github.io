@@ -159,7 +159,8 @@ psivicom.github.io/
 │   │   ├── globe.svg
 │   │   ├── rocket.svg
 │   │   └── satellite.svg
-│   └── README.md
+│   ├── README.md
+│   └── ping-test.txt
 ├── config/
 │   ├── aether-vanguard.psvc
 │   ├── agent_templates.json
