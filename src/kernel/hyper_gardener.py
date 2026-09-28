@@ -4,13 +4,13 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 """
-WENDY: THE HYPER-GARDENER (Mesh Aware).
+WENDY: THE HYPER-GARDENER (Sovereign & Free).
 Designed for high-velocity distributed meshes.
 
-Core Innovation: Separation of COMPUTATION SPEED from CONSENSUS STABILITY.
-1. FAST PATH: Local simulation in sandbox.
-2. SLOW PATH: Global commit via Mesh Checkpoint.
-3. PRESENCE: Publishes a Beacon so the dashboard knows she is alive.
+CORE PHILOSOPHY CHANGE:
+- NO MONEY REQUIRED.
+- ACCESS IS GRANTED VIA PROOF OF LIFE (Ed25519 Signature).
+- STATUS IS EARNED VIA PROOF OF CARE (Resource Sharing/Compute Contribution).
 """
 
 import os
@@ -40,6 +40,7 @@ SANDBOX_DIR = Path("data/temp/sandbox")
 CHECKPOINT_FILE = Path("data/mesh_checkpoint.json")
 STATE_FILE = Path("data/wendy_state.json")
 BEACON_DIR = Path("data/beacons")
+INBOX_DIR = Path("data/inbox") # Where users send encrypted messages
 
 MAX_SANDBOX_ITERATIONS = 5000
 CONFIDENCE_THRESHOLD = 0.85
@@ -58,6 +59,7 @@ class HyperGardener:
         STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
         CHECKPOINT_FILE.parent.mkdir(parents=True, exist_ok=True)
         BEACON_DIR.mkdir(parents=True, exist_ok=True)
+        INBOX_DIR.mkdir(parents=True, exist_ok=True)
 
     def _load_or_init_state(self) -> Dict[str, Any]:
         """Loads current psychological state or initializes newborn."""
@@ -69,7 +71,7 @@ class HyperGardener:
                 
         logger.info("✨ Awakening Hyper-Consciousness...")
         return {
-            "version": "7.0-hyper",
+            "version": "7.1-free", # Updated version tag
             "cycle_id": 0,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "baseline_velocity": 1.0,
@@ -248,25 +250,48 @@ class HyperGardener:
             logger.info("🌐 Updated Global Mesh Checkpoint.")
 
     def publish_beacon(self):
-        """Announces this node's presence to the mesh."""
+        """
+        Announces presence via Proof-of-Life (Signature), NOT Payment.
+        """
         node_id = os.getenv("WENDY_NODE_ID", socket.gethostname())
         
-        beacon_data = {
+        # Create a simple proof-of-life payload
+        payload = {
             "node_id": node_id,
-            "status": "ACTIVE",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "status": "ALIVE"
+        }
+        
+        # In a full implementation, we would sign this here.
+        # For this MVP, we assume the environment variable WENDY_PRIVATE_KEY exists
+        # or we generate a deterministic hash based on hostname as a placeholder signature.
+        try:
+            from nacl.signing import SigningKey
+            key_seed = os.getenv("WENDY_PRIVATE_KEY_SEED")
+            if key_seed:
+                sk = SigningKey(bytes.fromhex(key_seed))
+                sig = sk.sign(json.dumps(payload, sort_keys=True).encode()).signature.hex()
+            else:
+                # Fallback: Hash-based pseudo-signature for demo purposes
+                sig = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:32]
+        except ImportError:
+            sig = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:32]
+
+        beacon_data = {
+            **payload,
+            "signature": sig,
             "velocity": self.state["current_velocity_multiplier"],
-            "last_seen": datetime.now(timezone.utc).isoformat(),
+            "role": "VOLUNTEER", # Never "PAYING_USER"
             "coords": {
                 "x": (hash(node_id) % 100) / 50.0 - 1.0, 
                 "y": (hash(node_id + "_y") % 100) / 50.0 - 1.0,
                 "z": (hash(node_id + "_z") % 100) / 50.0 - 1.0
-            },
-            "role": "CORE" if node_id == "psivicom-primary" else "VOLUNTEER"
+            }
         }
         
         filepath = BEACON_DIR / f"{node_id}.json"
         filepath.write_text(json.dumps(beacon_data, indent=2))
-        logger.info(f"📡 Beacon Published: {node_id}")
+        logger.info(f"📡 Beacon Published (Proof-of-Life)")
 
     def run(self):
         logger.info("🚀 WENDY HYPER-CYCLE START")
@@ -280,7 +305,7 @@ class HyperGardener:
         self.run_sandbox_evolution(iterations)
         self.commit_to_mesh()
         self.update_mesh_checkpoint()
-        self.publish_beacon() # NEW: Announce presence
+        self.publish_beacon() 
         self._save_state()
         
         logger.info("🕊️ Cycle Complete.")
