@@ -531,7 +531,7 @@ psivicom.github.io/
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
 │   │   ├── pico_mesh.py
-│   │   ├── psvc-mesh.js
+│   │   ├── psvc-mesh.json
 │   │   ├── seed_mesh.py
 │   │   ├── spatial-clustering.js
 │   │   ├── vector_mesh.py
