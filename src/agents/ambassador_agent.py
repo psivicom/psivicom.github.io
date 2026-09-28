@@ -61,7 +61,7 @@ class AmbassadorAgent:
         
         serialized = serialize_psvc(container)
         
-        # Write bytes directly (no invalid 'precision' argument)
+        # Write bytes directly (NO invalid 'precision' argument)
         psvc_path.write_bytes(serialized)
         
         # Create a human-readable JSON sidecar for the external AI
