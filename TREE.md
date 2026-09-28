@@ -618,6 +618,7 @@ psivicom.github.io/
 ├── how-psvc-works2.html
 ├── index.html
 ├── mesh-ai.html
+├── mesh-status.json
 ├── mesh.go
 ├── mesh_state.json
 ├── open-science-guide.html
