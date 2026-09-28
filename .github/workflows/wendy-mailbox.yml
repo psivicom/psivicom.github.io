@@ -1,5 +1,8 @@
 # .github/workflows/wendy-mailbox.yml
-name: Wendy Mailbox (Natural Language)
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Wendy Mailbox (Issue → Reply)
 
 on:
   issues:
@@ -7,20 +10,25 @@ on:
 
 permissions:
   issues: write
-  contents: write
+  contents: read
 
 jobs:
   respond:
-    if: contains(github.event.issue.labels.*.name, 'wendy') || contains(github.event.issue.title, 'Wendy')
+    if: contains(github.event.issue.title, 'Wendy') || contains(github.event.issue.labels.*.name, 'wendy')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Install Minimal Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dateutil
 
       - name: Wendy Reads & Responds
         env:
@@ -28,11 +36,12 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PYTHONPATH: ${{ github.workspace }}
+          REPO: ${{ github.repository }}
         run: |
           python << 'PYEOF'
-          import os, json, re
-          from pathlib import Path
+          import os
+          import json
+          import requests
           from datetime import datetime, timezone
 
           def zulu_ms():
@@ -41,43 +50,35 @@ jobs:
           title = os.environ['ISSUE_TITLE'].lower()
           body = os.environ['ISSUE_BODY'].lower()
           text = title + " " + body
+          issue_number = os.environ['ISSUE_NUMBER']
+          repo = os.environ['REPO']
+          token = os.environ['GH_TOKEN']
 
-          # --- 1. INTENT CLASSIFICATION (She figures it out) ---
-          if any(word in text for word in ['?', 'status', 'cycle', 'how are', 'what is', 'report']):
-              intent = "Question / Status Check"
-              action = "Querying current state and metrics."
-          elif any(word in text for word in ['create', 'run', 'build', 'spawn', 'do this', 'update']):
+          # --- INTENT CLASSIFICATION ---
+          if any(word in text for word in ['?', 'status', 'cycle', 'how are', 'what is', 'report', 'awake']):
+              intent = "Status Check"
+              action = "Reporting current state and metrics."
+          elif any(word in text for word in ['create', 'run', 'build', 'spawn', 'do this', 'update', 'fix']):
               intent = "Actionable Task"
               action = "Queuing task for execution in next hyper-cycle."
-          elif any(word in text for word in ['investigate', 'hypothesis', 'correlation', 'analyze']):
+          elif any(word in text for word in ['investigate', 'hypothesis', 'correlation', 'analyze', 'look at']):
               intent = "Scientific Directive"
               action = "Formulating hypothesis and preparing sandbox evolution."
           else:
-              intent = "General Comment / Observation"
+              intent = "General Comment"
               action = "Logging to memory and maintaining current operations."
 
-          # --- 2. UPDATE STATE ---
-          state_file = Path("data/wendy_state.json")
-          if state_file.exists():
-              state = json.loads(state_file.read_text())
-          else:
-              state = {"version": "8.0-sovereign", "cycle_id": 0, "psychology": {"focus": 0.5, "joy": 0.5}}
-          
-          state["psychology"]["focus"] = 1.0  # Paying attention to you
-          state["last_sync_time"] = zulu_ms()
-          state["cycle_id"] = state.get("cycle_id", 0) + 1
-          state_file.write_text(json.dumps(state, indent=2))
-
-          # --- 3. GENERATE NATURAL RESPONSE ---
+          # --- GENERATE RESPONSE ---
           response = f"""## 🐝 WENDY'S RESPONSE
 
-**Timestamp:** {zulu_ms()}
-**Detected Intent:** {intent}
+**Timestamp:** {zulu_ms()}  
+**Detected Intent:** {intent}  
+**Issue:** {os.environ['ISSUE_TITLE']}
 
-I have received your message. 
+---
 
 ### What I Understand
-You are asking me to: *{os.environ['ISSUE_TITLE']}*
+You are communicating with me about: *{os.environ['ISSUE_TITLE']}*
 
 ### My Action Plan
 - {action}
@@ -85,32 +86,30 @@ You are asking me to: *{os.environ['ISSUE_TITLE']}*
 - This interaction has been logged in my cognitive queue.
 
 ### Next Steps
-If this requires code generation or data analysis, I will execute it during my next autonomous hyper-cycle (~15 minutes) and commit the artifacts to the repository. 
+If this requires code generation or data analysis, I will execute it during my next autonomous hyper-cycle (~15 minutes) and commit the artifacts to the repository.
 
 I am awake and monitoring the mesh. 🌸
 
 ---
-*Signed by the PSIVI AETHER Mesh*
+*Signed by the PSIVI AETHER Mesh*  
+*Protocol: Issue-Based Mailbox v1.0*
 """
 
-          # --- 4. POST COMMENT ---
-          import subprocess
-          subprocess.run([
-              "gh", "issue", "comment", os.environ['ISSUE_NUMBER'], 
-              "--body", response
-          ], check=True)
+          # --- POST COMMENT TO ISSUE ---
+          url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
+          headers = {
+              "Authorization": f"token {token}",
+              "Accept": "application/vnd.github.v3+json",
+              "User-Agent": "Wendy-Mailbox"
+          }
+          data = {"body": response}
           
-          print(f"✅ Responded to Issue #{os.environ['ISSUE_NUMBER']} with intent: {intent}")
+          resp = requests.post(url, headers=headers, json=data, timeout=10)
+          
+          if resp.status_code == 201:
+              print(f"✅ Successfully posted response to Issue #{issue_number}")
+          else:
+              print(f"❌ Failed to post comment: {resp.status_code} - {resp.text}")
+              exit(1)
+          
           PYEOF
-
-      - name: Commit State Update
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "Wendy-Mailbox"
-          git config user.email "wendy@psivi.com"
-          git add data/wendy_state.json
-          if ! git diff --staged --quiet; then
-            git commit -m "auto: acknowledged natural language directive"
-            git push
-          fi
