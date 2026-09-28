@@ -2,83 +2,72 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Wendy Mailbox (Issue → Reply)
+name: Wendy Mailbox (Issue Reply)
 
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 
 permissions:
   issues: write
-  contents: read
 
 jobs:
   respond:
-    if: contains(github.event.issue.title, 'Wendy') || contains(github.event.issue.labels.*.name, 'wendy')
+    if: contains(github.event.issue.title, 'Wendy') || contains(github.event.issue.title, 'wendy')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Minimal Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests python-dateutil
-
-      - name: Wendy Reads & Responds
+      - name: Wendy Responds
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body || 'No body provided' }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
-          python << 'PYEOF'
+          python3 << 'EOF'
           import os
           import json
-          import requests
+          import urllib.request
+          import urllib.error
           from datetime import datetime, timezone
 
           def zulu_ms():
               return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
 
-          title = os.environ['ISSUE_TITLE'].lower()
-          body = os.environ['ISSUE_BODY'].lower()
-          text = title + " " + body
-          issue_number = os.environ['ISSUE_NUMBER']
-          repo = os.environ['REPO']
-          token = os.environ['GH_TOKEN']
+          title = os.environ.get('ISSUE_TITLE', '').lower()
+          body = os.environ.get('ISSUE_BODY', '').lower()
+          text = title + ' ' + body
+          issue_number = os.environ.get('ISSUE_NUMBER', '0')
+          repo = os.environ.get('REPO', '')
+          token = os.environ.get('GH_TOKEN', '')
 
-          # --- INTENT CLASSIFICATION ---
+          if not token:
+              print('ERROR: GH_TOKEN is missing')
+              exit(1)
+
           if any(word in text for word in ['?', 'status', 'cycle', 'how are', 'what is', 'report', 'awake']):
-              intent = "Status Check"
-              action = "Reporting current state and metrics."
+              intent = 'Status Check'
+              action = 'Reporting current state and metrics.'
           elif any(word in text for word in ['create', 'run', 'build', 'spawn', 'do this', 'update', 'fix']):
-              intent = "Actionable Task"
-              action = "Queuing task for execution in next hyper-cycle."
+              intent = 'Actionable Task'
+              action = 'Queuing task for execution in next hyper-cycle.'
           elif any(word in text for word in ['investigate', 'hypothesis', 'correlation', 'analyze', 'look at']):
-              intent = "Scientific Directive"
-              action = "Formulating hypothesis and preparing sandbox evolution."
+              intent = 'Scientific Directive'
+              action = 'Formulating hypothesis and preparing sandbox evolution.'
           else:
-              intent = "General Comment"
-              action = "Logging to memory and maintaining current operations."
+              intent = 'General Comment'
+              action = 'Logging to memory and maintaining current operations.'
 
-          # --- GENERATE RESPONSE ---
           response = f"""## 🐝 WENDY'S RESPONSE
 
 **Timestamp:** {zulu_ms()}  
 **Detected Intent:** {intent}  
-**Issue:** {os.environ['ISSUE_TITLE']}
+**Issue:** {os.environ.get('ISSUE_TITLE', 'Unknown')}
 
 ---
 
 ### What I Understand
-You are communicating with me about: *{os.environ['ISSUE_TITLE']}*
+You are communicating with me about: *{os.environ.get('ISSUE_TITLE', 'Unknown')}*
 
 ### My Action Plan
 - {action}
@@ -95,21 +84,30 @@ I am awake and monitoring the mesh. 🌸
 *Protocol: Issue-Based Mailbox v1.0*
 """
 
-          # --- POST COMMENT TO ISSUE ---
-          url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
-          headers = {
-              "Authorization": f"token {token}",
-              "Accept": "application/vnd.github.v3+json",
-              "User-Agent": "Wendy-Mailbox"
-          }
-          data = {"body": response}
+          url = f'https://api.github.com/repos/{repo}/issues/{issue_number}/comments'
+          req = urllib.request.Request(
+              url,
+              data=json.dumps({'body': response}).encode('utf-8'),
+              headers={
+                  'Authorization': f'token {token}',
+                  'Accept': 'application/vnd.github.v3+json',
+                  'User-Agent': 'Wendy-Mailbox',
+                  'Content-Type': 'application/json'
+              },
+              method='POST'
+          )
           
-          resp = requests.post(url, headers=headers, json=data, timeout=10)
-          
-          if resp.status_code == 201:
-              print(f"✅ Successfully posted response to Issue #{issue_number}")
-          else:
-              print(f"❌ Failed to post comment: {resp.status_code} - {resp.text}")
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  if resp.status == 201:
+                      print(f'SUCCESS: Posted response to Issue #{issue_number}')
+                  else:
+                      print(f'ERROR: Failed to post. Status: {resp.status}')
+                      exit(1)
+          except urllib.error.HTTPError as e:
+              print(f'ERROR: HTTP {e.code} - {e.read().decode()}')
               exit(1)
-          
-          PYEOF
+          except Exception as e:
+              print(f'ERROR: {e}')
+              exit(1)
+          EOF
