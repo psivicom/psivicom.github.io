@@ -18,6 +18,7 @@ class AgentLayer(Enum):
     GOVERNANCE = "governance"
     VALIDATION = "validation"
     ORCHESTRATION = "orchestration"
+    OPTIMIZATION = "optimization"
 
 class BaseAgent(ABC):
     LAYER: AgentLayer = AgentLayer.PERCEPTION
