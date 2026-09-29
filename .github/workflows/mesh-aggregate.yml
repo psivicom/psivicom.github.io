@@ -25,7 +25,8 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: cd mesh && npm ci --omit=dev
+        # Changed from 'npm ci' to 'npm install' to fix the lockfile error
+        run: cd mesh && npm install
 
       - name: Aggregate mesh state
         env:
