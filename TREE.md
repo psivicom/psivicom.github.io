@@ -296,6 +296,7 @@ psivicom.github.io/
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
+│   ├── AETHER_MESH_PSVC_WENDY.md
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR-mapping.md
 │   ├── FAIR_CHECKLIST.md

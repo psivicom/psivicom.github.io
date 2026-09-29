@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-29T19:05:51.463Z | Hash: bab0ed874a88af2eaf7dedb8ab145908028125ae286a89675b081257bbfcb1ca -->
+<!-- Last updated: 2026-09-29T19:10:05.470Z | Hash: a236f235bdd29ffa029ce8c5674bc09824ebed9c7fbce32d7cd163c4448023cb -->
 
 ```
 psivicom.github.io/
@@ -415,6 +415,7 @@ psivicom.github.io/
 │   ├── WEBSITE_PLAN/
 │   │   ├── README.md
 │   │   └── mistral-AI-website-plan.md
+│   ├── AETHER_MESH_PSVC_WENDY.md
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR-mapping.md
 │   ├── FAIR_CHECKLIST.md
