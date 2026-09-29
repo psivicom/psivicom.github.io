@@ -4,7 +4,7 @@
     "dependencies": ["src/core/zulu_clock.py"],
     "runtime": "python-3.11-minimal",
     "health_check": "calculate_breath_phase",
-    "vector_dim": 16
+    "vector_dim": 64
   },
   "wendy-gardener": {
     "entry_point": "src/kernel/hyper_gardener.py",
