@@ -39,6 +39,41 @@ class PilotAgent(BaseAgent):
                     except json.JSONDecodeError:
                         continue
 
+    def seal(self, action: str, metadata: Dict, fragility: bool = False):
+        """Records a state seal to the receipt chain to prevent AttributeError."""
+        if not hasattr(self, 'receipt_chain'):
+            self.receipt_chain = []
+        
+        receipt = {
+            "action": action,
+            "metadata": metadata,
+            "fragility": fragility,
+            "timestamp": self.creation_time
+        }
+        self.receipt_chain.append(receipt)
+
+    def seal_result(self, signal_vector: np.ndarray, output_dir: Path, meta: Dict):
+        """Writes the final signal vector and metadata to a receipt file."""
+        if not hasattr(self, 'receipt_chain'):
+            self.receipt_chain = []
+            
+        import hashlib
+        sig_hash = hashlib.sha256(signal_vector.tobytes()).hexdigest()
+        
+        receipt_data = {
+            "signal_hash": sig_hash,
+            "meta": meta,
+            "timestamp": self.creation_time
+        }
+        
+        safe_time = self.creation_time.replace(':', '-').replace('.', '-')
+        receipt_path = output_dir / f"receipt_{self.name}_{safe_time}.json"
+        
+        with open(receipt_path, 'w') as f:
+            json.dump(receipt_data, f, indent=2)
+            
+        self.receipt_chain.append(str(receipt_path))
+
     def _run_logic(self) -> np.ndarray:
         container_dir = Path("reports/pico_containers")
         if not container_dir.exists():
