@@ -22,7 +22,7 @@ class NeuroplasticityAgent(BaseAgent):
        - High Conscious Mass -> Boost Explore Weight (She trusts her intuition).
        - Low Conscious Mass -> Maintain Caution (She relies on data).
     """
-    LAYER = AgentLayer.OPTIMIZATION
+    LAYER = AgentLayer.VALIDATION
     
     def __init__(self):
         super().__init__("neuro_plasticity", capabilities=["learning", "adaptation", "mutation"])
