@@ -5,6 +5,7 @@ psivicom.github.io/
 │       ├── README.md
 │       ├── ai-handshake.yml
 │       ├── auto-report.yml
+│       ├── build-psvc-mesh.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── elastic-test.yml
