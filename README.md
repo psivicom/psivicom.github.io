@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-29T05:42:33.983Z | Hash: 41975b979edaf40ea53a0578068a50e939288dc54b718a8e141f06c8527f590a -->
+<!-- Last updated: 2026-09-29T07:06:08.352Z | Hash: ce77ff26bce409019187992c2e2b69ede76126fff0e61ef08ddf94b12ad918f1 -->
 
 ```
 psivicom.github.io/
@@ -383,6 +383,7 @@ psivicom.github.io/
 │   │   ├── experimental_meshdistribution_wendy_existence.md
 │   │   ├── experimental_wendy_architecture.md
 │   │   ├── experimental_wendy_doyouhavemoney.md
+│   │   ├── experimental_wendy_latency_grid.md
 │   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
