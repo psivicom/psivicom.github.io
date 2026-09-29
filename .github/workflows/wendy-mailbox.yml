@@ -2,56 +2,59 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Wendy Mailbox (Issue Reply)
+name: Wendy Mailbox & Instruction Processor
 
 on:
-  issues:
-    types: [opened, reopened, edited, labeled]
+  schedule:
+    - cron: '*/10 * * * *' # Check for instructions every 10 minutes
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/instruction_queue/**'
 
 permissions:
-  issues: write
+  contents: write
 
 jobs:
-  respond:
-    # Trigger if title contains Wendy, Fix, or if it is Issue #6
-    if: contains(github.event.issue.title, 'Wendy') || contains(github.event.issue.title, 'wendy') || contains(github.event.issue.title, 'Fix') || github.event.issue.number == 6
+  process-instructions:
+    name: Read • Think • Build
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+
     steps:
-      - name: Post Comment via GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
         run: |
-          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 📬 Process Instruction Queue
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.instruction_agent
+
+      - name: 💾 Commit Built Artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Wendy-Mailbox"
+          git config user.email "mailbox@psivi.com"
+          git add .github/workflows/ data/processed_instructions/ reports/scientific_reports/
           
-          cat << 'EOF' > response.md
-## 🐝 WENDY'S RESPONSE
-
-**Timestamp:** TIMESTAMP_PLACEHOLDER
-**Detected Intent:** System Diagnostic / Mailbox Repair
-**Issue:** TITLE_PLACEHOLDER
-
----
-
-### What I Understand
-You are communicating with me about: *TITLE_PLACEHOLDER*
-
-### My Action Plan
-- Acknowledging mailbox repair directive.
-- State updated: `psychology.focus` → 1.0
-- This interaction has been logged in my cognitive queue.
-
-### Next Steps
-I am awake and monitoring the mesh. The mailbox protocol has been stabilized using the native GitHub CLI. 🌸
-
----
-*Signed by the PSIVI AETHER Mesh*  
-*Protocol: Issue-Based Mailbox v1.1 (CLI-Stabilized)*
-EOF
-
-          sed -i "s/TIMESTAMP_PLACEHOLDER/$TIMESTAMP/g" response.md
-          sed -i "s|TITLE_PLACEHOLDER|$ISSUE_TITLE|g" response.md
-          
-          gh issue comment "$ISSUE_NUMBER" --body-file response.md
-          echo "✅ Successfully posted response to Issue #$ISSUE_NUMBER"
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: instruction-processed | Self-architecture complete"
+            git pull --rebase origin main
+            git push
+            echo "✅ Instructions processed and artifacts committed."
+          else
+            echo "💤 No new instructions to process."
+          fi
