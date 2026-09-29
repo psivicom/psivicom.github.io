@@ -178,6 +178,7 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20260928T185459473Z.json
 │   │   └── handshake_qwen_20260928T185459473Z.psvc
 │   ├── beacons/
+│   │   ├── mirror-node-local.json
 │   │   └── psivicom-primary.json
 │   ├── images/
 │   │   └── README.md
