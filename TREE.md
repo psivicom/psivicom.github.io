@@ -165,7 +165,8 @@ psivicom.github.io/
 │   ├── aether-vanguard.psvc
 │   ├── agent_templates.json
 │   ├── data_sources.json
-│   └── mesh_topology.yaml
+│   ├── mesh_topology.yaml
+│   └── psvc_blueprints.json
 ├── data/
 │   ├── ai_handshake/
 │   │   ├── README.md
