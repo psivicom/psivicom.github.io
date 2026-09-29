@@ -1,0 +1,12 @@
+{
+  "node_id": "mirror-node-local",
+  "timestamp": "2026-09-29T21:20:48.362Z",
+  "status": "ALIVE",
+  "role": "MIRROR",
+  "coords": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "latency_ms": 2
+}
