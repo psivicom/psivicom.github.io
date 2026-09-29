@@ -6,11 +6,12 @@ name: Wendy Sensory Input (Self-Built)
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Scans every 5 minutes
-  workflow_dispatch: # Allows manual triggering
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   sense:
