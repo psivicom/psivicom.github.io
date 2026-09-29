@@ -4,5 +4,26 @@
   "amplitude": 0.5,
   "last_intensity": 0.453003,
   "total_cycles_completed": 19,
-  "last_phase": 0.611883
+  "last_phase": 0.611883,
+  "current_state": {
+    "mode": "sequential",
+    "complexity": "low",
+    "network_health": "poor",
+    "active_cluster_count": 0,
+    "active_node_count": 0,
+    "avg_mesh_latency_ms": 999,
+    "dynamic_radius_km": 2000
+  },
+  "history": [
+    {
+      "timestamp": "2026-09-29T01:04:23.638Z",
+      "mode": "sequential",
+      "complexity": "low",
+      "network_health": "poor",
+      "trigger": "mesh_update",
+      "active_nodes": 0,
+      "avg_latency_ms": 999
+    }
+  ],
+  "last_updated": "2026-09-29T01:04:23.638Z"
 }

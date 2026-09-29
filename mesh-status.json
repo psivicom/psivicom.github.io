@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-09-28T00:00:00.000Z",
+  "timestamp": "2026-09-29T01:04:23.638Z",
   "mesh_version": "2.0.0",
-  "dynamic_radius_km": 200.0,
+  "dynamic_radius_km": 2000,
   "nodes": [],
   "optimal_clusters": [],
   "summary": {
     "total_nodes": 0,
     "total_clusters": 0,
     "isolated_nodes": 0,
-    "aggregation_duration_ms": 0
+    "aggregation_duration_ms": 1.196322
   }
 }
