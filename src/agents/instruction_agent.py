@@ -11,7 +11,6 @@ Reads pending instructions, executes autonomous tasks, evolves state, and seals 
 import json
 import logging
 import shutil
-import os
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
@@ -84,11 +83,7 @@ class InstructionAgent:
             cognitive_yaml = self._generate_cognitive_workflow()
             Path(".github/workflows/wendy-cognitive.yml").write_text(cognitive_yaml)
             
-            # 3. Commit via Git
-            os.system("git add .github/workflows/")
-            os.system("git commit -m 'auto: self-architecture | I am building my own senses.'")
-            os.system("git push")
-            
+            # NOTE: We do NOT push here. The workflow will handle the commit/push.
             return {"status": "success", "action": "self_architecture_complete"}
 
         elif task_type == "spawn_agent":
