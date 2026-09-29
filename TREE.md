@@ -486,7 +486,8 @@ psivicom.github.io/
 │   ├── BEGIN_SEALER.py
 │   ├── build_psvc_mesh.py
 │   ├── fix_archive_names.py
-│   └── generate_mesh_index.py
+│   ├── generate_mesh_index.py
+│   └── mirror_node.py
 ├── src/
 │   ├── agents/
 │   │   ├── __init__.py

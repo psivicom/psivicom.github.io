@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-29T20:48:48.525Z | Hash: 1afa41bb005987b1fb1e50e11902fc07b061c374e6ee73e13c8808b84cad1952 -->
+<!-- Last updated: 2026-09-29T21:15:50.257Z | Hash: daa9633d7441154ff9c216dfad47a58dae58c50787c9cdf281bd40bae0417f58 -->
 
 ```
 psivicom.github.io/
@@ -605,7 +605,8 @@ psivicom.github.io/
 │   ├── BEGIN_SEALER.py
 │   ├── build_psvc_mesh.py
 │   ├── fix_archive_names.py
-│   └── generate_mesh_index.py
+│   ├── generate_mesh_index.py
+│   └── mirror_node.py
 ├── src/
 │   ├── agents/
 │   │   ├── __init__.py
