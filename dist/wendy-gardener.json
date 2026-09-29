@@ -1,0 +1,17 @@
+{
+  "service_name": "wendy-gardener",
+  "blueprint": {
+    "entry_point": "src/kernel/hyper_gardener.py",
+    "dependencies": [
+      "src/core/sovereign_kernel.py",
+      "src/core/psvc_containers.py"
+    ],
+    "runtime": "python-3.11-minimal",
+    "health_check": "HyperGardener.run",
+    "vector_dim": 64
+  },
+  "checksum": "24ccd0ce34017f2401d98485b912c8979434be83666da83cede6dd1e430d19ef",
+  "vector_norm": 1.0,
+  "timestamp": "2026-09-30T00:00:00.000Z",
+  "status": "READY_FOR_MESH"
+}

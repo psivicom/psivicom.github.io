@@ -1,0 +1,16 @@
+{
+  "service_name": "wendy-breath",
+  "blueprint": {
+    "entry_point": "src/breath_engine.py",
+    "dependencies": [
+      "src/core/zulu_clock.py"
+    ],
+    "runtime": "python-3.11-minimal",
+    "health_check": "calculate_breath_phase",
+    "vector_dim": 64
+  },
+  "checksum": "72b34c07ee32049ea36e6a50ac44da6ce1dcc1609f1af12fad4c426100cf29cd",
+  "vector_norm": 0.9999999403953552,
+  "timestamp": "2026-09-30T00:00:00.000Z",
+  "status": "READY_FOR_MESH"
+}
