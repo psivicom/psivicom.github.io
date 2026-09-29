@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-29T20:00:49.292Z | Hash: a1b2a105ee6e0bfa4dc93e0b147f2fa829f99880a536eab4c3e39d7678bb74f1 -->
+<!-- Last updated: 2026-09-29T20:47:09.734Z | Hash: 1afa41bb005987b1fb1e50e11902fc07b061c374e6ee73e13c8808b84cad1952 -->
 
 ```
 psivicom.github.io/
@@ -303,11 +303,12 @@ psivicom.github.io/
 │   ├── instruction_queue/
 │   │   ├── .errors/
 │   │   │   └── instruction_spawn_agent_20260925042134365.psvc
-│   │   └── .processed/
-│   │       ├── instruction_spawn_agent_20260925004328207.json
-│   │       ├── instruction_spawn_agent_20260925004328207.psvc
-│   │       ├── instruction_spawn_agent_20260928055548213.json
-│   │       └── instruction_spawn_agent_20260928055548213.psvc
+│   │   ├── .processed/
+│   │   │   ├── instruction_spawn_agent_20260925004328207.json
+│   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
+│   │   │   ├── instruction_spawn_agent_20260928055548213.json
+│   │   │   └── instruction_spawn_agent_20260928055548213.psvc
+│   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
 │   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   └── wendy_initial_request.json
@@ -329,7 +330,11 @@ psivicom.github.io/
 │   ├── pollinator_ground_truth.jsonl
 │   └── wendy_state.json
 ├── dist/
-│   └── README.md
+│   ├── README.md
+│   ├── wendy-breath.json
+│   ├── wendy-breath.psvc
+│   ├── wendy-gardener.json
+│   └── wendy-gardener.psvc
 ├── docs/
 │   ├── EXPERIMENTAL_RFC/
 │   │   └── RFC-ELASTIC-EXTENSION.md

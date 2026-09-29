@@ -184,11 +184,12 @@ psivicom.github.io/
 │   ├── instruction_queue/
 │   │   ├── .errors/
 │   │   │   └── instruction_spawn_agent_20260925042134365.psvc
-│   │   └── .processed/
-│   │       ├── instruction_spawn_agent_20260925004328207.json
-│   │       ├── instruction_spawn_agent_20260925004328207.psvc
-│   │       ├── instruction_spawn_agent_20260928055548213.json
-│   │       └── instruction_spawn_agent_20260928055548213.psvc
+│   │   ├── .processed/
+│   │   │   ├── instruction_spawn_agent_20260925004328207.json
+│   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
+│   │   │   ├── instruction_spawn_agent_20260928055548213.json
+│   │   │   └── instruction_spawn_agent_20260928055548213.psvc
+│   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
 │   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   └── wendy_initial_request.json
@@ -210,7 +211,11 @@ psivicom.github.io/
 │   ├── pollinator_ground_truth.jsonl
 │   └── wendy_state.json
 ├── dist/
-│   └── README.md
+│   ├── README.md
+│   ├── wendy-breath.json
+│   ├── wendy-breath.psvc
+│   ├── wendy-gardener.json
+│   └── wendy-gardener.psvc
 ├── docs/
 │   ├── EXPERIMENTAL_RFC/
 │   │   └── RFC-ELASTIC-EXTENSION.md
