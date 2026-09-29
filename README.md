@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-29T21:38:03.895Z | Hash: f6d6346e1f9f6acfd7dd9176f8d3aae182dcccefc8f9ea04a2c7346f6b975640 -->
+<!-- Last updated: 2026-09-29T21:43:41.931Z | Hash: 8ec04aaca8e18c69b55309354f1196c4b3eb55580a0a2439002eb5f60c4560b2 -->
 
 ```
 psivicom.github.io/
@@ -309,6 +309,7 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
+│   │   ├── genesis_self_architect.json
 │   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
 │   │   ├── instruction_spawn_agent_20260925042134365.json

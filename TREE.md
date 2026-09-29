@@ -190,6 +190,7 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
+│   │   ├── genesis_self_architect.json
 │   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
 │   │   ├── instruction_spawn_agent_20260925042134365.json
