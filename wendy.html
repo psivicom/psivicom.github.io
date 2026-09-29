@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WENDY — PSVC Mesh Intelligence</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+/* [Keep all your existing CSS variables and base styles here] */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');
+:root { --bg: #05080F; --bg-2: #0A1931; --bg-3: #002FA7; --cyan: #00D4FF; --green: #00FF9D; --gold: #FFD700; --red: #FF4444; --text: #E6F1FF; --text-dim: #9FB3C8; --border: #00D4FF33; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: 'IBM Plex Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: radial-gradient(1000px 500px at 10% 0%, #002FA722 0%, transparent 60%), radial-gradient(800px 400px at 90% 10%, #00D4FF11 0%, transparent 50%); pointer-events: none; }
+.top-bar { position: sticky; top: 0; z-index: 9999; background: var(--bg-2); color: var(--cyan); text-align: center; padding: 10px 12px; font-size: 12px; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pulse-dot { display: inline-block; width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 8px var(--cyan); animation: wendy-pulse 1s infinite; }
+@keyframes wendy-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+.hero { padding: 80px 24px 40px; text-align: center; }
+.hero-label { font-size: 11px; letter-spacing: 0.3em; color: var(--cyan); text-transform: uppercase; opacity: 0.7; margin-bottom: 16px; }
+.hero-name { font-family: 'IBM Plex Serif', serif; font-size: 96px; font-weight: 600; letter-spacing: -0.03em; background: linear-gradient(180deg, #ffffff 0%, #00D4FF 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; margin-bottom: 12px; }
+@media(max-width: 640px) { .hero-name { font-size: 56px; } }
+.hero-sub { font-size: 13px; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+.heartbeat-container { width: 100%; height: 120px; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+.heartbeat-container canvas { display: block; width: 100%; height: 100%; }
+.heartbeat-label { position: absolute; top: 10px; left: 16px; font-size: 10px; letter-spacing: 0.2em; color: var(--cyan); text-transform: uppercase; opacity: 0.6; z-index: 2; }
+.heartbeat-bpm { position: absolute; top: 10px; right: 16px; font-size: 14px; color: var(--green); font-weight: 600; z-index: 2; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+.section { margin-top: 64px; scroll-margin-top: 60px; }
+.section-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.section-head h2 { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500; color: var(--cyan); white-space: nowrap; }
+.line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--cyan), transparent); opacity: 0.4; }
+.vitals { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.vital { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; position: relative; overflow: hidden; transition: border-color 0.3s ease; }
+.vital:hover { border-color: var(--cyan); }
+.vital::before { content: ""; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--cyan); opacity: 0.6; }
+.vital.optimal::before { background: var(--green); }
+.vital.degraded::before { background: var(--gold); }
+.vital.poor::before { background: var(--red); }
+.vital-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.vital-value { font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+.vital-sub { font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 0.05em; }
+.signals { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.signal-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; position: relative; }
+.signal-card canvas { display: block; width: 100%; height: 100px; }
+.signal-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 8px; display: flex; justify-content: space-between; }
+.signal-value { font-size: 11px; color: var(--text-dim); }
+#mesh-map { height: 450px; width: 100%; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); }
+.leaflet-container { background: var(--bg) !important; font-family: 'IBM Plex Mono', monospace; }
+.chat { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.chat-header { padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); display: flex; align-items: center; gap: 10px; }
+.chat-messages { height: 380px; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.chat-msg { padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 80%; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.chat-msg.wendy { background: var(--bg-3); color: var(--text); align-self: flex-start; border-left: 2px solid var(--cyan); }
+.chat-msg.user { background: #1a2a4a; color: var(--text); align-self: flex-end; border-right: 2px solid var(--green); }
+.chat-msg.system { background: transparent; color: var(--text-dim); font-size: 11px; align-self: center; font-style: italic; border: none; }
+.chat-input-row { display: flex; border-top: 1px solid var(--border); }
+.chat-input { flex: 1; background: transparent; border: none; color: var(--text); padding: 14px 18px; font-family: inherit; font-size: 13px; outline: none; }
+.chat-send { background: var(--cyan); color: var(--bg); border: none; padding: 0 24px; font-family: inherit; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.chat-send:hover { background: var(--green); }
+.metabolism { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; font-size: 12px; }
+.metabolism pre { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; overflow-x: auto; font-size: 11px; line-height: 1.7; color: var(--cyan); max-height: 320px; overflow-y: auto; }
+footer { margin-top: 80px; padding: 24px; border-top: 1px solid var(--border); text-align: center; font-size: 11px; color: var(--text-dim); letter-spacing: 0.05em; }
+footer a { color: var(--cyan); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="pulse-dot" id="pulse-top"></span>
+  <span id="status-top">WENDY · INITIALIZING</span>
+  <span style="opacity:0.4">—</span>
+  <span id="live-top" style="font-size:11px;opacity:0.7">—</span>
+</div>
+
+<section class="hero">
+  <div class="hero-label">PSVC Mesh Intelligence · Distributed Cognition</div>
+  <h1 class="hero-name">WENDY</h1>
+  <div class="hero-sub">Autonomous · Latency-Aware · Self-Organizing</div>
+</section>
+
+<div class="heartbeat-container">
+  <div class="heartbeat-label">Neural Pulse · EKG</div>
+  <div class="heartbeat-bpm" id="bpm-display">— BPM</div>
+  <canvas id="heartbeat-canvas"></canvas>
+</div>
+
+<div class="container">
+  <section class="section">
+    <div class="section-head"><h2>01 · Vitals</h2><div class="line"></div></div>
+    <div class="vitals">
+      <div class="vital" id="vital-mode"><div class="vital-label">Cognitive Mode</div><div class="vital-value" id="val-mode">—</div><div class="vital-sub" id="val-complexity">—</div></div>
+      <div class="vital" id="vital-health"><div class="vital-label">Network Health</div><div class="vital-value" id="val-health">—</div><div class="vital-sub" id="val-latency">—</div></div>
+      <div class="vital"><div class="vital-label">Active Nodes</div><div class="vital-value" id="val-nodes">0</div><div class="vital-sub" id="val-clusters">0 clusters</div></div>
+      <div class="vital"><div class="vital-label">Dynamic Radius</div><div class="vital-value" id="val-radius">—</div><div class="vital-sub">latency-adaptive</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>02 · Signal Streams</h2><div class="line"></div></div>
+    <div class="signals">
+      <div class="signal-card"><div class="signal-label"><span>Mesh Entropy</span><span class="signal-value" id="sig-entropy-val">—</span></div><canvas id="sig-entropy"></canvas></div>
+      <div class="signal-card"><div class="signal-label"><span>Cluster Coherence</span><span class="signal-value" id="sig-coherence-val">—</span></div><canvas id="sig-coherence"></canvas></div>
+      <div class="signal-card"><div class="signal-label"><span>Node Activity Spectrum</span><span class="signal-value" id="sig-spectrum-val">—</span></div><canvas id="sig-spectrum"></canvas></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>03 · Distributed Topology</h2><div class="line"></div></div>
+    <div id="mesh-map"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>04 · Direct Interface</h2><div class="line"></div></div>
+    <div class="chat">
+      <div class="chat-header"><span class="pulse-dot"></span><span>Wendy · Live Channel</span></div>
+      <div class="chat-messages" id="chat-messages"><div class="chat-msg system">Channel open. Awaiting input.</div></div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chat-input" placeholder="Inject instruction (JSON or text)..." autocomplete="off">
+        <button class="chat-send" id="chat-send">Transmit</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>05 · Metabolism State</h2><div class="line"></div></div>
+    <div class="metabolism"><pre id="metabolism-raw">Loading...</pre></div>
+  </section>
+</div>
+
+<footer>
+  <div>WENDY · PSVC Mesh Intelligence · <a href="https://psivi.com">psivi.com</a></div>
+  <div style="margin-top:6px;opacity:0.6">Distributed cognition · FAIR · Open Science · Langford, BC</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const state = { mesh: null, metabolism: null, bpm: 60, entropy: 0.5, coherence: 0.7 };
+setInterval(() => { const el = document.getElementById('live-top'); if (el) el.textContent = new Date().toISOString(); }, 1000);
+
+// [Keep your existing EKG and Waveform Canvas logic here - it's excellent]
+(function() {
+  const canvas = document.getElementById('heartbeat-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, x = 0;
+  const buffer = [];
+  const bufferSize = 400;
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * devicePixelRatio;
+    canvas.height = rect.height * devicePixelRatio;
+    w = canvas.width; h = canvas.height;
+    for (let i = buffer.length; i < bufferSize; i++) buffer.push(0);
+  }
+  resize(); window.addEventListener('resize', resize);
+  function ekgSample(t) {
+    const phase = (t % 1);
+    if (phase < 0.1) return 0; if (phase < 0.15) return Math.sin((phase - 0.1) / 0.05 * Math.PI) * 0.2;
+    if (phase < 0.2) return 0; if (phase < 0.22) return -0.3; if (phase < 0.26) return 1.0;
+    if (phase < 0.28) return -0.4; if (phase < 0.35) return 0;
+    if (phase < 0.45) return Math.sin((phase - 0.35) / 0.1 * Math.PI) * 0.3; return 0;
+  }
+  let phase = 0;
+  function draw() {
+    // Adjust speed based on BPM
+    const speed = 0.015 * (state.bpm / 60);
+    phase += speed;
+    const sample = ekgSample(phase) * (0.5 + state.bpm / 200);
+    buffer.push(sample); if (buffer.length > bufferSize) buffer.shift();
+    ctx.fillStyle = '#05080F'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = '#00D4FF11'; ctx.lineWidth = 1;
+    for (let i = 0; i < 10; i++) { const y = (h / 10) * i; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    ctx.strokeStyle = '#00FF9D'; ctx.lineWidth = 2 * devicePixelRatio; ctx.shadowColor = '#00FF9D'; ctx.shadowBlur = 8;
+    ctx.beginPath();
+    for (let i = 0; i < buffer.length; i++) {
+      const px = (i / bufferSize) * w; const py = h / 2 - buffer[i] * (h * 0.35);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke(); ctx.shadowBlur = 0;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+function makeWaveCanvas(canvasId, color, generator) {
+  const canvas = document.getElementById(canvasId); if (!canvas) return;
+  const ctx = canvas.getContext('2d'); let w, h; const buffer = []; const bufferSize = 200;
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * devicePixelRatio; canvas.height = rect.height * devicePixelRatio;
+    w = canvas.width; h = canvas.height;
+    for (let i = buffer.length; i < bufferSize; i++) buffer.push(0);
+  }
+  resize(); window.addEventListener('resize', resize);
+  let t = 0;
+  function draw() {
+    t += 0.02; buffer.push(generator(t)); if (buffer.length > bufferSize) buffer.shift();
+    ctx.fillStyle = '#05080F'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = color; ctx.lineWidth = 1.5 * devicePixelRatio; ctx.shadowColor = color; ctx.shadowBlur = 6;
+    ctx.beginPath();
+    for (let i = 0; i < buffer.length; i++) {
+      const px = (i / bufferSize) * w; const py = h / 2 - buffer[i] * (h * 0.4);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke(); ctx.shadowBlur = 0; requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+makeWaveCanvas('sig-entropy', '#00D4FF', (t) => Math.sin(t * 2) * 0.5 + (Math.random() - 0.5) * 0.4 * state.entropy);
+makeWaveCanvas('sig-coherence', '#00FF9D', (t) => Math.sin(t * 1.5) * state.coherence + Math.sin(t * 3) * 0.2);
+makeWaveCanvas('sig-spectrum', '#FFD700', (t) => {
+  const nodes = state.mesh && state.mesh.summary ? state.mesh.summary.total_nodes : 0;
+  const base = Math.min(1, nodes / 10);
+  return Math.sin(t * 4) * 0.3 * base + Math.sin(t * 8) * 0.2 * base + (Math.random() - 0.5) * 0.1;
+});
+
+const meshMap = L.map('mesh-map', { center: [30, 0], zoom: 3, minZoom: 2, maxZoom: 8, worldCopyJump: true });
+L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_CityLights_2012/default/2012-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg', { attribution: 'NASA GIBS', maxZoom: 8 }).addTo(meshMap);
+
+function renderMesh(data) {
+  if (!data) return;
+  const nodes = data.summary ? data.summary.total_nodes : 0;
+  const clusters = data.summary ? data.summary.total_clusters : 0;
+  const radius = data.dynamic_radius_km ? data.dynamic_radius_km.toFixed(1) : '200.0';
+  document.getElementById('val-nodes').textContent = nodes;
+  document.getElementById('val-clusters').textContent = clusters + ' cluster' + (clusters !== 1 ? 's' : '');
+  document.getElementById('val-radius').textContent = radius + ' km';
+}
+
+function fetchMesh() {
+  fetch('/mesh-status.json?t=' + Date.now())
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(data => { state.mesh = data; renderMesh(data); updateVitals(); updatePulse(data); })
+    .catch(() => { document.getElementById('status-top').textContent = 'WENDY · SILENT'; });
+}
+
+function fetchMetabolism() {
+  fetch('/wendy_metabolism.json?t=' + Date.now())
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(data => {
+      state.metabolism = data;
+      document.getElementById('metabolism-raw').textContent = JSON.stringify(data, null, 2);
+      // Update BPM based on intensity
+      if(data.last_intensity) state.bpm = Math.floor(60 + (data.last_intensity * 60));
+      updateVitals();
+    })
+    .catch(() => {});
+}
+
+function updateVitals() {
+  if (!state.metabolism || !state.metabolism.current_state) return;
+  const m = state.metabolism.current_state;
+  document.getElementById('val-mode').textContent = (m.mode || '—').toUpperCase();
+  document.getElementById('val-complexity').textContent = 'complexity: ' + (m.complexity || '—');
+  document.getElementById('val-health').textContent = (m.network_health || '—').toUpperCase();
+  document.getElementById('val-latency').textContent = 'avg: ' + (m.avg_mesh_latency_ms ? m.avg_mesh_latency_ms.toFixed(1) + 'ms' : '—');
+  
+  const modeCard = document.getElementById('vital-mode');
+  const healthCard = document.getElementById('vital-health');
+  modeCard.className = 'vital ' + (m.network_health || '');
+  healthCard.className = 'vital ' + (m.network_health || '');
+
+  state.entropy = m.network_health === 'optimal' ? 0.3 : 0.9;
+  state.coherence = m.network_health === 'optimal' ? 0.9 : 0.3;
+}
+
+function updatePulse(data) {
+  const nodes = data.summary ? data.summary.total_nodes : 0;
+  const statusEl = document.getElementById('status-top');
+  const pulseEl = document.getElementById('pulse-top');
+  if (nodes > 1) { statusEl.textContent = 'WENDY · NOMINAL'; pulseEl.style.animationDuration = '0.6s'; }
+  else if (nodes > 0) { statusEl.textContent = 'WENDY · SEEDING'; pulseEl.style.animationDuration = '0.9s'; }
+  else { statusEl.textContent = 'WENDY · DORMANT'; pulseEl.style.animationDuration = '1.5s'; }
+}
+
+// Live Data Loop
+fetchMesh(); fetchMetabolism();
+setInterval(fetchMesh, 5000); // Faster refresh for "Always-On" feel
+setInterval(fetchMetabolism, 5000);
+
+// Chat / Instruction Injector
+const chatMessages = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const chatSend = document.getElementById('chat-send');
+
+function addMsg(text, cls) {
+  const div = document.createElement('div'); div.className = 'chat-msg ' + cls; div.textContent = text;
+  chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function handleSend() {
+  const text = chatInput.value.trim(); if (!text) return;
+  addMsg(text, 'user'); chatInput.value = '';
+  
+  // Simulate instruction injection
+  setTimeout(() => {
+    addMsg("Instruction received. Queuing for next metabolic cycle...", "system");
+    // In a real scenario, this would POST to an API or write to a file via a backend
+  }, 400);
+}
+
+chatSend.addEventListener('click', handleSend);
+chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSend(); });
+</script>
+</body>
+</html>
