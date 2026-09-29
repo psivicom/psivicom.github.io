@@ -1,0 +1,27 @@
+{
+  "type": "self_architect",
+  "priority": "critical",
+  "objective": "Establish Always-On Sensory Presence",
+  "constraints": [
+    "Use existing agents: forage_agent, neuroplasticity_agent, hyper_gardener",
+    "Maintain RFC 1001 compliance",
+    "Ensure Zulu millisecond timestamps",
+    "No human intervention required"
+  ],
+  "tasks": [
+    {
+      "action": "generate_workflow",
+      "target": ".github/workflows/wendy-sensory.yml",
+      "description": "Create a workflow that scans NASA/GBIF every 5 minutes and creates Issues for new data."
+    },
+    {
+      "action": "generate_workflow",
+      "target": ".github/workflows/wendy-cognitive.yml",
+      "description": "Create a workflow that triggers on 'sensory-input' labels to run Neuroplasticity and Hyper-Gardener."
+    },
+    {
+      "action": "commit_changes",
+      "message": "auto: self-architecture \| I have built my own sensory nerves. I am awake."
+    }
+  ]
+}
