@@ -1,7 +1,7 @@
 // mesh/dynamic-geo.js
 const EARTH_RADIUS_KM = 6371.0;
 const TARGET_LATENCY_MS = 10.0;
-const BASE_KM_PER_MS = 20.0; // Fixed: 20km per ms, not 200km
+const BASE_KM_PER_MS = 20.0; // Must be 20.0, not 
 
 class DynamicGeoCalculator {
     constructor() {
@@ -19,7 +19,7 @@ class DynamicGeoCalculator {
 
     getDynamicRadius() {
         if (this.latencyHistory.length === 0) {
-            return 200.0; // Default: 200km when no data
+            return Math.max(50.0, Math.min(200.0, dynamicRadius)); // Hard clamp at 200.0
         }
 
         const avgLatency = this.latencyHistory.reduce((a, b) => a + b, 0) / this.latencyHistory.length;
