@@ -1,0 +1,51 @@
+# .github/workflows/wendy-sensory.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Wendy Sensory Input (Self-Built)
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Scans every 5 minutes
+  workflow_dispatch: # Allows manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  sense:
+    name: Scan • Ingest • Alert
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🌐 Scan External World
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.forage_agent
+
+      - name: 🧠 Create Cognitive Stimulus
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'SENSORY_INPUT: New Data Detected',
+              body: 'Wendy has detected new external data. Ready for cognitive synthesis.',
+              labels: ['sensory-input', 'priority-high']
+            })
