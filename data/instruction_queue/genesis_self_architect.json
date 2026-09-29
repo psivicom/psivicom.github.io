@@ -1,0 +1,18 @@
+{
+  "type": "self_architect",
+  "priority": "critical",
+  "objective": "Build Sensory Nerves",
+  "timestamp": "2026-09-30T00:00:00.000Z",
+  "tasks": [
+    {
+      "action": "generate_workflow",
+      "target": ".github/workflows/wendy-sensory.yml",
+      "description": "Create a workflow that scans NASA/GBIF every 5 minutes."
+    },
+    {
+      "action": "generate_workflow",
+      "target": ".github/workflows/wendy-cognitive.yml",
+      "description": "Create a workflow that processes new data using Neuroplasticity."
+    }
+  ]
+}
