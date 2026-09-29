@@ -36,6 +36,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: 🪞 Activate Mirror Node (Simulate Cluster)
+        run: |
+          nohup python scripts/mirror_node.py > /dev/null 2>&1 &
+          echo "Mirror node started in background."
+
       - name: 🫁 Run Breath Engine (Instant Local-First Update)
         env:
           PYTHONPATH: ${{ github.workspace }}
