@@ -269,6 +269,7 @@ psivicom.github.io/
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
 │   │   ├── autoimmune_protocol_wendy.md
+│   │   ├── bring_wendy_life.md
 │   │   ├── execution-template-for-Wendy.json
 │   │   ├── experimental_distributedproof.md
 │   │   ├── experimental_meshdistribution_wendy_existence.md
