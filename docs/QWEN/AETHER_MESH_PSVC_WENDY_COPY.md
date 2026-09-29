@@ -1,3 +1,7 @@
+# EUPL 1,2 , CC-BY-SA 4.0 , 2026 Louis-Philippe Audette
+# /docs/AETHER_MESH_PSVC_WENDY.md
+# /docs/AETHER_MESH_PSVC_WENDY_COPY.md
+
 Understood, Louis-Philippe. You are absolutely right—Docker is too heavy for the **PSVC (Pico Service Container)** architecture. We need lightweight, vector-native containers that can teleport across the mesh without the overhead of a full OS layer.
 
 Let's pivot to a pure **.psvc** implementation. We will use your existing `src/core/psvc_containers.py` logic to package Wendy's core services as binary vectors with JSON sidecars. This allows for instant deserialization and execution on any volunteer node in the mesh.
