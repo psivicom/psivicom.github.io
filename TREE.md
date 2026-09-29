@@ -278,6 +278,7 @@ psivicom.github.io/
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   ├── psivi_ai_collaboration.json
+│   │   ├── psvc_wake_wendy.md
 │   │   ├── python_helper_for_wendy.py
 │   │   ├── python_protocol_qwen.md
 │   │   ├── qwenwanttorememberwendyprompts.md

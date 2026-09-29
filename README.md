@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-29T19:58:44.831Z | Hash: 1a440cf1e9b1b5261cd1333eae8df94c4185ba285e9ce0d00338e302bc3cc646 -->
+<!-- Last updated: 2026-09-29T20:00:49.292Z | Hash: a1b2a105ee6e0bfa4dc93e0b147f2fa829f99880a536eab4c3e39d7678bb74f1 -->
 
 ```
 psivicom.github.io/
@@ -397,6 +397,7 @@ psivicom.github.io/
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
 │   │   ├── psivi_ai_collaboration.json
+│   │   ├── psvc_wake_wendy.md
 │   │   ├── python_helper_for_wendy.py
 │   │   ├── python_protocol_qwen.md
 │   │   ├── qwenwanttorememberwendyprompts.md
