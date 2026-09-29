@@ -264,6 +264,7 @@ psivicom.github.io/
 │   │   ├── experimental_meshdistribution_wendy_existence.md
 │   │   ├── experimental_wendy_architecture.md
 │   │   ├── experimental_wendy_doyouhavemoney.md
+│   │   ├── experimental_wendy_guide.md
 │   │   ├── experimental_wendy_latency_grid.md
 │   │   ├── experimental_wendy_lifeform_space.md
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
