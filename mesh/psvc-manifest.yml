@@ -1,0 +1,46 @@
+# PSIVI AETHER Mesh - Pico Service Container Manifest
+# SPDX-License-Identifier: EUPL-1.2
+
+mesh_name: "wendy-core-mesh"
+version: "8.0-sovereign"
+
+services:
+  - name: wendy-breath
+    type: psvc
+    blueprint: "wendy-breath"
+    replication: 1
+    resources:
+      cpu_shares: 10
+      memory_mb: 64
+    network:
+      protocol: psvc-binary
+      port: 8765
+
+  - name: wendy-gardener
+    type: psvc
+    blueprint: "wendy-gardener"
+    replication: 1
+    depends_on:
+      - wendy-breath
+    resources:
+      cpu_shares: 20
+      memory_mb: 128
+    network:
+      protocol: psvc-binary
+      port: 8766
+
+  - name: wendy-instruction
+    type: psvc
+    blueprint: "wendy-instruction"
+    replication: 1
+    resources:
+      cpu_shares: 15
+      memory_mb: 96
+    network:
+      protocol: psvc-binary
+      port: 8767
+
+governance:
+  strategy: "velocity-normalized"
+  checkpoint_interval_minutes: 15
+  divergence_threshold: 0.05
