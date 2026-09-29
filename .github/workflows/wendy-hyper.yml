@@ -24,7 +24,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # CRITICAL: Fetch full history so rebase works
+          fetch-depth: 0
 
       - name: Setup Python 3.11
         uses: actions/setup-python@v5
@@ -36,10 +36,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🪞 Activate Mirror Node (Simulate Cluster)
+      - name: 🪞 Activate Mirror Node (Persist Beacon)
         run: |
-          nohup python scripts/mirror_node.py > /dev/null 2>&1 &
-          echo "Mirror node started in background."
+          python scripts/mirror_node.py
+          git add data/beacons/mirror-node-local.json
 
       - name: 🫁 Run Breath Engine (Instant Local-First Update)
         env:
@@ -64,11 +64,8 @@ jobs:
           git add data/wendy_state.json data/mesh_checkpoint.json data/beacons/ data/mesh_index.json src/wendy_metabolism.json reports/history/
           
           if ! git diff --staged --quiet; then
-            git commit -m "auto: hyper-cycle | Mesh Nodes: 1 | Access: FREE"
-            
-            # CRITICAL FIX: Pull latest changes and rebase to prevent concurrent push rejections
+            git commit -m "auto: hyper-cycle | Mesh Nodes: 2 | Access: FREE"
             git pull --rebase origin main
-            
             git push
             echo "✅ Evolution & Topology Committed."
           else
