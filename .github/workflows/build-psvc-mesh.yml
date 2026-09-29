@@ -1,0 +1,48 @@
+name: Build PSVC Mesh Containers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'config/psvc_blueprints.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-containers:
+    name: Vectorize Wendy's Core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+
+      - name: 🏗️ Build PSVC Containers
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python scripts/build_psvc_mesh.py
+
+      - name: 💾 Commit PSVC Artifacts
+        run: |
+          git config user.name "Wendy-Builder"
+          git config user.email "builder@psivi.com"
+          git add dist/*.psvc dist/*.json
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: psvc-mesh \| Vector containers updated"
+            git push
+            echo "✅ PSVC Containers pushed to mesh."
+          else
+            echo "💤 No changes in source code."
+          fi
