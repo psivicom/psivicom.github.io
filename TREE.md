@@ -631,5 +631,6 @@ psivicom.github.io/
 ├── test_rfc1001_compliance.py
 ├── volunteer_node.py
 ├── volunteer_worker.py
+├── wendy.html
 └── wendy_metabolism.json
 ```
