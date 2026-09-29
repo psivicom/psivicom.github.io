@@ -2,48 +2,32 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
+"""
+Base Agent: The foundational class for all PSIVI AETHER Mesh agents.
+Defines common properties, logging, and layer classification.
+"""
+
+import logging
 from enum import Enum
-from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Dict, Any, Optional
+
+logger = logging.getLogger("WENDY_AGENT")
 
 class AgentLayer(Enum):
-    PERCEPTION = "perception"
-    FORAGE = "forage"
-    LITERATURE = "literature"
-    SATELLITE = "satellite"
-    CRITIC = "critic"
-    INTELLIGENCE = "intelligence"
-    SYNTHESIS = "synthesis"
-    REPORTING = "reporting"
-    GOVERNANCE = "governance"
-    VALIDATION = "validation"
+    """Defines the operational layers of the mesh."""
+    INGESTION = "ingestion"
     ORCHESTRATION = "orchestration"
-    OPTIMIZATION = "optimization"
+    VALIDATION = "validation"
+    COGNITION = "cognition"
 
-class BaseAgent(ABC):
-    LAYER: AgentLayer = AgentLayer.PERCEPTION
-
-    def __init__(self, name: str, capabilities: Optional[List[str]] = None):
+class BaseAgent:
+    def __init__(self, name: str, capabilities: list):
         self.name = name
-        self.capabilities = capabilities or []
+        self.capabilities = capabilities
         self.state: Dict[str, Any] = {}
+        logger.info(f"🤖 Agent {name} initialized with capabilities: {capabilities}")
 
-    @abstractmethod
-    def _run_logic(self, *args: Any, **kwargs: Any) -> Any:
-        pass
-
-    def execute(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
-        try:
-            result = self._run_logic(*args, **kwargs)
-            return {
-                "status": "success", 
-                "agent": self.name, 
-                "layer": self.LAYER.value, 
-                "result": result
-            }
-        except Exception as e:
-            return {
-                "status": "error", 
-                "agent": self.name, 
-                "error": str(e)
-            }
+    def execute(self, instruction: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Main entry point for agent execution."""
+        logger.info(f"⚙️ Agent {self.name} executing...")
+        return {"status": "success", "agent": self.name}
