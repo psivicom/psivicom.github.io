@@ -330,6 +330,7 @@ psivicom.github.io/
 │   │   └── aggregate-mesh-v2.js
 │   ├── dynamic-geo.js
 │   ├── package.json
+│   ├── psvc-manifest.yml
 │   └── spatial-clustering.js
 ├── reports/
 │   ├── history/
