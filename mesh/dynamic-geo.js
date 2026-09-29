@@ -1,20 +1,8 @@
-/**
- * mesh/dynamic-geo.js
- * 
- * Dynamic Geographic & Network Feasibility Calculator for "Wendy"
- * 
- * This module treats Wendy's live connection like a surgical robot:
- * 1. Physics-based radius (Akamai rule of thumb: RTT * 100 / 2.1)
- * 2. Latency trust tiers (Preferred, Acceptable, Risky, Experimental)
- * 3. Hop/TTL feasibility checks
- * 4. Surgical safety constraints for live control vs. async data
- */
+// mesh/dynamic-geo.js
 
 const EARTH_RADIUS_KM = 6371.0;
 
 // --- PHYSICS CONSTANTS (Based on Internet Fiber Research) ---
-// Speed of light in fiber is ~200,000 km/s (200 km/ms)
-// Internet tortuosity factor (refraction + physical routing) is ~2.1
 const INTERNET_TORTUOSITY_FACTOR = 2.1;
 
 // --- APP BOUNDARIES ---
@@ -36,9 +24,6 @@ class DynamicGeoCalculator {
         this.maxHistory = 50;
     }
 
-    /**
-     * Records a new latency sample (Round Trip Time in ms).
-     */
     recordLatency(latencyMs) {
         if (typeof latencyMs !== 'number' || isNaN(latencyMs) || latencyMs <= 0) return;
         this.latencyHistory.push(latencyMs);
@@ -47,17 +32,11 @@ class DynamicGeoCalculator {
         }
     }
 
-    /**
-     * Calculates the average latency from the history buffer.
-     */
     getAverageLatency() {
         if (this.latencyHistory.length === 0) return 0;
         return this.latencyHistory.reduce((a, b) => a + b, 0) / this.latencyHistory.length;
     }
 
-    /**
-     * Classifies the latency into a trust tier.
-     */
     classifyLatency(latencyMs) {
         if (!Number.isFinite(latencyMs) || latencyMs <= 0) return "unknown";
         if (latencyMs < PREFERRED_LATENCY_MS) return "preferred";
@@ -66,53 +45,41 @@ class DynamicGeoCalculator {
         return "experimental";
     }
 
-    /**
-     * Calculates the maximum physical radius based on the speed of light in fiber.
-     * Formula derived from Akamai/Internet research: Distance ≈ (RTT * 100) / 2.1
-     */
     getPhysicsBasedRadius(latencyMs) {
         if (!Number.isFinite(latencyMs) || latencyMs <= 0) return MIN_RADIUS_KM;
-
-        // Calculate absolute physical limit based on Round-Trip Time (RTT)
         const absolutePhysicalRadius = (latencyMs * 100.0) / INTERNET_TORTUOSITY_FACTOR;
-        
-        // Clamp between app minimum and global maximum
         return Math.max(MIN_RADIUS_KM, Math.min(GLOBAL_MAX_RADIUS_KM, absolutePhysicalRadius));
     }
 
-    /**
-     * Legacy method name kept for compatibility, now uses physics-based calculation.
-     */
-    getDynamicRadius() {
-        const avgLatency = this.getAverageLatency();
-        return this.getPhysicsBasedRadius(avgLatency);
+    getOperationalSearchRadius(avgLatencyMs) {
+        const TARGET_LATENCY_MS = 10.0;
+        if (!Number.isFinite(avgLatencyMs) || avgLatencyMs <= 0) {
+            return GLOBAL_MAX_RADIUS_KM;
+        }
+        const congestionFactor = Math.min(1.0, TARGET_LATENCY_MS / Math.max(avgLatencyMs, 1.0));
+        const desiredRadius = GLOBAL_MAX_RADIUS_KM * congestionFactor;
+        return Math.max(MIN_RADIUS_KM, Math.min(GLOBAL_MAX_RADIUS_KM, desiredRadius));
     }
 
-    /**
-     * Checks if the TTL and hop count are feasible for the connection.
-     */
+    getDynamicRadius() {
+        const avgLatency = this.getAverageLatency();
+        return this.getOperationalSearchRadius(avgLatency);
+    }
+
     checkTtlFeasibility(initialTtl, observedHops) {
         if (!Number.isFinite(initialTtl) || !Number.isFinite(observedHops)) {
             return { ok: false, reason: "UNKNOWN_HOPS", remainingHops: null };
         }
-
         const remainingHops = initialTtl - observedHops;
-
         if (remainingHops <= 0) {
             return { ok: false, reason: "TTL_EXCEEDED", remainingHops };
         }
-
         if (remainingHops < 5) {
             return { ok: true, warning: "LOW_TTL_MARGIN", remainingHops };
         }
-
         return { ok: true, reason: "HEALTHY", remainingHops };
     }
 
-    /**
-     * Evaluates the full connection health for Wendy (Surgical Robot rules).
-     * @param {Object} metrics - { ttl, hops, isVolunteerNode, requiresSurgicalLink }
-     */
     evaluateConnection(metrics = {}) {
         const { 
             ttl, 
@@ -124,12 +91,12 @@ class DynamicGeoCalculator {
         const latencyMs = this.getAverageLatency();
         const trust = this.classifyLatency(latencyMs);
         const radiusKm = this.getPhysicsBasedRadius(latencyMs);
+        const operationalRadiusKm = this.getOperationalSearchRadius(latencyMs);
         const ttlCheck = this.checkTtlFeasibility(ttl, hops);
 
         let safetyStatus = "NORMAL";
         let action = "PROCEED";
 
-        // Surgical Robot / Wendy Live Rules
         if (requiresSurgicalLink) {
             if (trust === "risky" || trust === "experimental" || trust === "unknown") {
                 safetyStatus = "UNSAFE_LATENCY_FOR_LIVE";
@@ -145,7 +112,6 @@ class DynamicGeoCalculator {
                 action = "SAFE_HOLD_OR_REJECT";
             }
         } else {
-            // Non-surgical (data, telemetry, async, Moon plane)
             if (trust === "experimental") {
                 action = "ALLOW_ASYNC_ONLY";
             } else if (!ttlCheck.ok) {
@@ -157,6 +123,7 @@ class DynamicGeoCalculator {
             latencyMs,
             trust,
             radiusKm,
+            operationalRadiusKm,
             ttlCheck,
             safetyStatus,
             action,
@@ -164,9 +131,6 @@ class DynamicGeoCalculator {
         };
     }
 
-    /**
-     * Calculates the great-circle distance between two points on Earth.
-     */
     haversineDistance(point1, point2) {
         const toRad = (deg) => deg * (Math.PI / 180);
         const dLat = toRad(point2.lat - point1.lat);
