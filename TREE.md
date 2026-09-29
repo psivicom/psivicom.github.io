@@ -272,6 +272,7 @@ psivicom.github.io/
 │   │   ├── experimental_wendy_mesh_distributed_existence.md
 │   │   ├── experimental_wendy_psvc.md
 │   │   ├── experimental_wendy_trimtolive.md
+│   │   ├── more_mesh_wakeup_wendy.md
 │   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
