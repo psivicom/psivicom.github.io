@@ -45,6 +45,7 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
+│       ├── wendy-cognitive.yml 
 │       ├── wendy-hyper.yml
 │       ├── wendy-mailbox.yml
 │       ├── wendy-sensory.yml
