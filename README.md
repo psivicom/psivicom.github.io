@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-30T01:57:42.490Z | Hash: 17cef32b1736b884d94aef3bc045ad3c5080b9969aafd7eded6d2c91c5cc74d0 -->
+<!-- Last updated: 2026-09-30T03:14:21.088Z | Hash: 66c3a434689a7189cca6d951d8d418675f7c29b4c8b012cad3b6cf0d7bb688f9 -->
 
 ```
 psivicom.github.io/
@@ -727,6 +727,7 @@ psivicom.github.io/
 ├── A4_wendy.html
 ├── A5_wendy.html
 ├── A6_wendy.html
+├── A7_wendy.html
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_psivimanesh.html
@@ -777,7 +778,6 @@ psivicom.github.io/
 ├── test_rfc1001_compliance.py
 ├── volunteer_node.py
 ├── volunteer_worker.py
-├── wendy.html
 ├── wendy1.html
 ├── wendy2.html
 └── wendy_metabolism.json
