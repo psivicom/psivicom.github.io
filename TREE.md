@@ -180,7 +180,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20260928T185000142Z.json
 │   │   ├── handshake_qwen_20260928T185000142Z.psvc
 │   │   ├── handshake_qwen_20260928T185459473Z.json
-│   │   └── handshake_qwen_20260928T185459473Z.psvc
+│   │   ├── handshake_qwen_20260928T185459473Z.psvc
+│   │   ├── handshake_qwen_20260930T044047580Z.json
+│   │   └── handshake_qwen_20260930T044047580Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   └── psivicom-primary.json
