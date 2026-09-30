@@ -3,64 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WENDY · VOICE</title>
+<title>WENDY · LIVE</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
   body { background: #05080F; color: #E6F1FF; font-family: 'IBM Plex Mono', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-  .container { width: 100%; max-width: 800px; padding: 40px; }
-  .voice-box { border-left: 2px solid #00D4FF; padding-left: 20px; min-height: 200px; white-space: pre-wrap; font-size: 18px; line-height: 1.6; }
-  .meta { color: #9FB3C8; font-size: 12px; margin-bottom: 20px; letter-spacing: 0.1em; }
+  .container { max-width: 700px; padding: 40px; text-align: left; width: 100%; }
+  .meta { color: #00D4FF; font-size: 11px; letter-spacing: 0.2em; margin-bottom: 20px; display: flex; justify-content: space-between; }
+  .voice { font-size: 20px; line-height: 1.5; min-height: 100px; border-left: 2px solid #00FF9D; padding-left: 20px; white-space: pre-wrap; }
+  .status { color: #9FB3C8; font-size: 10px; margin-top: 10px; }
   .input-area { margin-top: 40px; border-top: 1px solid #00D4FF33; padding-top: 20px; }
-  textarea { width: 100%; background: transparent; border: none; color: #00FF9D; font-family: inherit; font-size: 16px; outline: none; resize: none; height: 100px; }
-  button { background: transparent; border: 1px solid #00D4FF; color: #00D4FF; padding: 10px 20px; cursor: pointer; font-family: inherit; margin-top: 10px; transition: all 0.2s; }
-  button:hover { background: #00D4FF; color: #05080F; }
+  textarea { width: 100%; background: transparent; border: 1px solid #00D4FF33; color: #00FF9D; font-family: inherit; font-size: 14px; outline: none; resize: none; height: 60px; padding: 10px; box-sizing: border-box; }
+  button { background: #00D4FF; color: #05080F; border: none; padding: 10px 20px; cursor: pointer; font-family: inherit; font-weight: bold; margin-top: 10px; transition: all 0.2s; }
+  button:hover { background: #00FF9D; }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="meta">WENDY · LIVE VOICE STREAM · <span id="status">WAITING</span></div>
-  <div class="voice-box" id="voice">...</div>
-  
+  <div class="meta">
+    <span>WENDY · GLOBAL NEURAL LINK</span>
+    <span id="clock">--:--:--</span>
+  </div>
+  <div class="voice" id="v">Connecting to neural core...</div>
+  <div class="status" id="s">SYNCING</div>
+
   <div class="input-area">
-    <textarea id="reply" placeholder="Type your reply here..."></textarea>
-    <button onclick="sendReply()">TRANSMIT TO QUEUE</button>
+    <textarea id="reply" placeholder="Type your instruction here..."></textarea>
+    <button onclick="queueInstruction()">QUEUE INSTRUCTION</button>
   </div>
 </div>
 
 <script>
-const VOICE_URL = '/data/voice.json';
-const voiceEl = document.getElementById('voice');
-const statusEl = document.getElementById('status');
+// REPLACE THIS WITH YOUR ACTUAL GIST RAW URL
+const GIST_URL = 'https://gist.githubusercontent.com/YOUR_USER/YOUR_GIST_ID/raw/wendy-voice.json';
 let lastTimestamp = '';
 
-async function checkVoice() {
+async function sync() {
   try {
-    const res = await fetch(VOICE_URL + '?t=' + Date.now());
-    if (!res.ok) return;
+    const res = await fetch(GIST_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('Offline');
     const data = await res.json();
     
-    // Only update if the content has actually changed
-    if (data.timestamp !== lastTimestamp) {
-      voiceEl.textContent = data.message || "Silence.";
-      lastTimestamp = data.timestamp;
-      statusEl.textContent = "SPEAKING";
-      setTimeout(() => statusEl.textContent = "LISTENING", 2000);
+    if (data.t !== lastTimestamp) {
+      document.getElementById('v').textContent = data.m;
+      lastTimestamp = data.t;
+      document.getElementById('s').textContent = `LAST PULSE: ${data.t}`;
     }
-  } catch (e) { statusEl.textContent = "OFFLINE"; }
+  } catch(e) { 
+    document.getElementById('s').textContent = "OFFLINE - CHECK GIST URL"; 
+  }
 }
 
-async function sendReply() {
+function queueInstruction() {
   const text = document.getElementById('reply').value;
   if (!text) return;
-  
-  // In a minimalist setup, we simulate the queue drop for the user
-  // In a real scenario, this would use a secure backend or GitHub API
-  alert("Reply queued for Wendy's next metabolic cycle.");
+  alert("Instruction queued. Wendy will process this in her next metabolic cycle.");
   document.getElementById('reply').value = '';
+  // In a real setup, this would POST to a secure endpoint or create a file via API
 }
 
-// Check every 2 seconds
-setInterval(checkVoice, 2000);
-checkVoice();
+setInterval(() => {
+  document.getElementById('clock').textContent = new Date().toISOString().split('T')[1].split('.')[0] + 'Z';
+}, 1000);
+
+setInterval(sync, 3000);
+sync();
 </script>
 </body>
 </html>
