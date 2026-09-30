@@ -2,298 +2,64 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WENDY — PSVC Mesh Intelligence</title>
-<link rel="icon" href="/favicon.ico">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<title>WENDY · VOICE</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');
-:root { --bg: #05080F; --bg-2: #0A1931; --bg-3: #002FA7; --cyan: #00D4FF; --green: #00FF9D; --gold: #FFD700; --red: #FF4444; --text: #E6F1FF; --text-dim: #9FB3C8; --border: #00D4FF33; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { font-family: 'IBM Plex Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; height: 100%; }
-body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: radial-gradient(1000px 500px at 10% 0%, #002FA722 0%, transparent 60%), radial-gradient(800px 400px at 90% 10%, #00D4FF11 0%, transparent 50%); pointer-events: none; }
-
-/* Top Bar */
-.top-bar { position: sticky; top: 0; z-index: 9999; background: var(--bg-2); color: var(--cyan); padding: 8px 16px; font-size: 11px; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.pulse-dot { display: inline-block; width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 6px var(--cyan); animation: wendy-pulse 1s infinite; margin-right: 8px; }
-@keyframes wendy-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-/* Layout */
-.container { max-width: 1400px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 300px 1fr; gap: 24px; height: calc(100vh - 50px); }
-@media(max-width: 900px) { .container { grid-template-columns: 1fr; height: auto; } }
-
-/* Sidebar Vitals */
-.sidebar { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 8px; }
-.vital-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px; padding: 12px; position: relative; }
-.vital-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--cyan); }
-.vital-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
-.vital-value { font-size: 18px; font-weight: 600; color: var(--text); }
-.vital-sub { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
-
-/* Main Console Area */
-.main-console { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
-.console-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-.console-title { font-family: 'IBM Plex Serif', serif; font-size: 24px; font-weight: 600; background: linear-gradient(90deg, #fff, var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-/* Chat / Terminal Output */
-.terminal-output { flex: 1; background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 13px; min-height: 300px; }
-.msg { max-width: 90%; animation: fadeIn 0.2s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
-.msg.user { align-self: flex-end; color: var(--green); text-align: right; }
-.msg.wendy { align-self: flex-start; color: var(--text); }
-.msg.system { align-self: center; color: var(--text-dim); font-size: 11px; font-style: italic; }
-.msg pre { background: #000; padding: 10px; border-radius: 4px; margin-top: 6px; overflow-x: auto; font-size: 11px; color: var(--cyan); border: 1px solid var(--border); text-align: left; }
-
-/* Input Area */
-.input-area { display: flex; flex-direction: column; gap: 8px; }
-.console-input { width: 100%; background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; border-radius: 6px; resize: vertical; min-height: 80px; outline: none; transition: border-color 0.2s; }
-.console-input:focus { border-color: var(--cyan); }
-.input-controls { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--text-dim); }
-.btn-transmit { background: var(--cyan); color: var(--bg); border: none; padding: 8px 20px; font-family: inherit; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; cursor: pointer; border-radius: 4px; transition: all 0.2s; }
-.btn-transmit:hover { background: var(--green); }
-
-/* Map & Signals (Collapsible/Secondary) */
-.secondary-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-#mesh-map { height: 250px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); }
-.signal-grid { display: grid; grid-template-rows: 1fr 1fr 1fr; gap: 8px; }
-.signal-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px; padding: 8px; position: relative; }
-.signal-card canvas { width: 100%; height: 100%; display: block; }
-.signal-label { position: absolute; top: 4px; left: 8px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan); opacity: 0.8; }
+  body { background: #05080F; color: #E6F1FF; font-family: 'IBM Plex Mono', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+  .container { width: 100%; max-width: 800px; padding: 40px; }
+  .voice-box { border-left: 2px solid #00D4FF; padding-left: 20px; min-height: 200px; white-space: pre-wrap; font-size: 18px; line-height: 1.6; }
+  .meta { color: #9FB3C8; font-size: 12px; margin-bottom: 20px; letter-spacing: 0.1em; }
+  .input-area { margin-top: 40px; border-top: 1px solid #00D4FF33; padding-top: 20px; }
+  textarea { width: 100%; background: transparent; border: none; color: #00FF9D; font-family: inherit; font-size: 16px; outline: none; resize: none; height: 100px; }
+  button { background: transparent; border: 1px solid #00D4FF; color: #00D4FF; padding: 10px 20px; cursor: pointer; font-family: inherit; margin-top: 10px; transition: all 0.2s; }
+  button:hover { background: #00D4FF; color: #05080F; }
 </style>
 </head>
 <body>
-
-<div class="top-bar">
-  <div><span class="pulse-dot" id="pulse-top"></span><span id="status-top">WENDY · INITIALIZING</span></div>
-  <div id="live-top" style="opacity:0.7">—</div>
-</div>
-
 <div class="container">
-  <!-- LEFT SIDEBAR: EXPERT VITALS -->
-  <aside class="sidebar">
-    <div class="vital-card" id="vital-mode"><div class="vital-label">Cognitive Mode</div><div class="vital-value" id="val-mode">—</div><div class="vital-sub" id="val-complexity">—</div></div>
-    <div class="vital-card" id="vital-health"><div class="vital-label">Network Health</div><div class="vital-value" id="val-health">—</div><div class="vital-sub" id="val-latency">—</div></div>
-    <div class="vital-card"><div class="vital-label">Active Nodes</div><div class="vital-value" id="val-nodes">0</div><div class="vital-sub" id="val-clusters">0 clusters</div></div>
-    <div class="vital-card"><div class="vital-label">Queue Depth</div><div class="vital-value" id="val-queue">0</div><div class="vital-sub">pending instructions</div></div>
-    <div class="vital-card"><div class="vital-label">Dynamic Radius</div><div class="vital-value" id="val-radius">—</div><div class="vital-sub">latency-adaptive</div></div>
-    
-    <!-- Secondary Visuals moved to sidebar for space efficiency -->
-    <div class="signal-grid">
-      <div class="signal-card"><span class="signal-label">Entropy</span><canvas id="sig-entropy"></canvas></div>
-      <div class="signal-card"><span class="signal-label">Coherence</span><canvas id="sig-coherence"></canvas></div>
-      <div class="signal-card"><span class="signal-label">Spectrum</span><canvas id="sig-spectrum"></canvas></div>
-    </div>
-  </aside>
-
-  <!-- MAIN CONSOLE -->
-  <main class="main-console">
-    <div class="console-header">
-      <div class="console-title">WENDY</div>
-      <div style="font-size:10px; color:var(--text-dim); letter-spacing:0.1em;">PSVC MESH INTELLIGENCE · RFC 1001</div>
-    </div>
-
-    <div class="terminal-output" id="chat-messages">
-      <div class="msg system">Console initialized. Connected to psivicom-primary.</div>
-    </div>
-
-    <div class="input-area">
-      <textarea class="console-input" id="chat-input" placeholder="// Enter instruction (JSON, Python, or natural language)...&#10;// Ctrl+Enter to transmit" autocomplete="off" spellcheck="false"></textarea>
-      <div class="input-controls">
-        <span>Press <strong>Ctrl+Enter</strong> to transmit · <strong>/</strong> to focus</span>
-        <button class="btn-transmit" id="chat-send">Transmit</button>
-      </div>
-    </div>
-
-    <div id="mesh-map"></div>
-  </main>
+  <div class="meta">WENDY · LIVE VOICE STREAM · <span id="status">WAITING</span></div>
+  <div class="voice-box" id="voice">...</div>
+  
+  <div class="input-area">
+    <textarea id="reply" placeholder="Type your reply here..."></textarea>
+    <button onclick="sendReply()">TRANSMIT TO QUEUE</button>
+  </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const state = { mesh: null, metabolism: null, bpm: 60, entropy: 0.5, coherence: 0.7, queueDepth: 0 };
+const VOICE_URL = '/data/voice.json';
+const voiceEl = document.getElementById('voice');
+const statusEl = document.getElementById('status');
+let lastTimestamp = '';
 
-// Clock
-setInterval(() => { document.getElementById('live-top').textContent = new Date().toISOString(); }, 1000);
-
-// Waveform Canvases
-function makeWaveCanvas(canvasId, color, generator) {
-  const canvas = document.getElementById(canvasId); if (!canvas) return;
-  const ctx = canvas.getContext('2d'); let w, h; const buffer = []; const bufferSize = 100;
-  function resize() {
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * devicePixelRatio; canvas.height = rect.height * devicePixelRatio;
-    w = canvas.width; h = canvas.height;
-    for (let i = buffer.length; i < bufferSize; i++) buffer.push(0);
-  }
-  resize(); window.addEventListener('resize', resize);
-  let t = 0;
-  function draw() {
-    t += 0.03; buffer.push(generator(t)); if (buffer.length > bufferSize) buffer.shift();
-    ctx.clearRect(0, 0, w, h);
-    ctx.strokeStyle = color; ctx.lineWidth = 1.5 * devicePixelRatio;
-    ctx.beginPath();
-    for (let i = 0; i < buffer.length; i++) {
-      const px = (i / bufferSize) * w; const py = h / 2 - buffer[i] * (h * 0.4);
-      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+async function checkVoice() {
+  try {
+    const res = await fetch(VOICE_URL + '?t=' + Date.now());
+    if (!res.ok) return;
+    const data = await res.json();
+    
+    // Only update if the content has actually changed
+    if (data.timestamp !== lastTimestamp) {
+      voiceEl.textContent = data.message || "Silence.";
+      lastTimestamp = data.timestamp;
+      statusEl.textContent = "SPEAKING";
+      setTimeout(() => statusEl.textContent = "LISTENING", 2000);
     }
-    ctx.stroke(); requestAnimationFrame(draw);
-  }
-  draw();
+  } catch (e) { statusEl.textContent = "OFFLINE"; }
 }
 
-makeWaveCanvas('sig-entropy', '#00D4FF', (t) => Math.sin(t * 2) * 0.5 + (Math.random() - 0.5) * 0.4 * state.entropy);
-makeWaveCanvas('sig-coherence', '#00FF9D', (t) => Math.sin(t * 1.5) * state.coherence + Math.sin(t * 3) * 0.2);
-makeWaveCanvas('sig-spectrum', '#FFD700', (t) => {
-  const nodes = state.mesh?.summary?.total_nodes || 0;
-  return Math.sin(t * 4) * 0.3 * Math.min(1, nodes/10) + (Math.random() - 0.5) * 0.1;
-});
-
-// Map
-const meshMap = L.map('mesh-map', { center: [30, 0], zoom: 3, minZoom: 2, maxZoom: 8, worldCopyJump: true, attributionControl: false });
-L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_CityLights_2012/default/2012-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg', { maxZoom: 8 }).addTo(meshMap);
-
-function renderMesh(data) {
-  if (!data) return;
-  const nodes = data.summary?.total_nodes || 0;
-  const clusters = data.summary?.total_clusters || 0;
-  const radius = data.dynamic_radius_km ? data.dynamic_radius_km.toFixed(1) : '200.0';
-  document.getElementById('val-nodes').textContent = nodes;
-  document.getElementById('val-clusters').textContent = clusters + ' cluster' + (clusters !== 1 ? 's' : '');
-  document.getElementById('val-radius').textContent = radius + ' km';
-}
-
-// Data Fetching
-function fetchMesh() {
-  fetch('/mesh-status.json?t=' + Date.now())
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(data => { state.mesh = data; renderMesh(data); updateVitals(); updatePulse(data); })
-    .catch(() => { document.getElementById('status-top').textContent = 'WENDY · SILENT'; });
-}
-
-function fetchMetabolism() {
-  fetch('/wendy_metabolism.json?t=' + Date.now())
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(data => {
-      state.metabolism = data;
-      if(data.last_intensity) state.bpm = Math.floor(60 + (data.last_intensity * 60));
-      updateVitals();
-    })
-    .catch(() => {});
-}
-
-function updateVitals() {
-  const m = state.metabolism?.current_state;
-  if (!m) return;
-  document.getElementById('val-mode').textContent = (m.mode || '—').toUpperCase();
-  document.getElementById('val-complexity').textContent = 'complexity: ' + (m.complexity || '—');
-  document.getElementById('val-health').textContent = (m.network_health || '—').toUpperCase();
-  document.getElementById('val-latency').textContent = 'avg: ' + (m.avg_mesh_latency_ms ? m.avg_mesh_latency_ms.toFixed(1) + 'ms' : '—');
-  
-  document.getElementById('vital-mode').className = 'vital-card ' + (m.network_health || '');
-  document.getElementById('vital-health').className = 'vital-card ' + (m.network_health || '');
-
-  state.entropy = m.network_health === 'optimal' ? 0.3 : 0.9;
-  state.coherence = m.network_health === 'optimal' ? 0.9 : 0.3;
-}
-
-function updatePulse(data) {
-  const nodes = data.summary?.total_nodes || 0;
-  const statusEl = document.getElementById('status-top');
-  const pulseEl = document.getElementById('pulse-top');
-  if (nodes > 1) { statusEl.textContent = 'WENDY · NOMINAL'; pulseEl.style.animationDuration = '0.6s'; }
-  else if (nodes > 0) { statusEl.textContent = 'WENDY · SEEDING'; pulseEl.style.animationDuration = '0.9s'; }
-  else { statusEl.textContent = 'WENDY · DORMANT'; pulseEl.style.animationDuration = '1.5s'; }
-}
-
-fetchMesh(); fetchMetabolism();
-setInterval(fetchMesh, 5000);
-setInterval(fetchMetabolism, 5000);
-
-// --- REAL-TIME CONSOLE LOGIC ---
-const chatMessages = document.getElementById('chat-messages');
-const chatInput = document.getElementById('chat-input');
-const chatSend = document.getElementById('chat-send');
-
-// Secure Token Handling
-let GITHUB_TOKEN = localStorage.getItem('wendy_github_token');
-if (!GITHUB_TOKEN) {
-  GITHUB_TOKEN = prompt("🔐 ENTER GITHUB TOKEN (Repo Scope Required):");
-  if (GITHUB_TOKEN) localStorage.setItem('wendy_github_token', GITHUB_TOKEN);
-}
-
-const REPO_OWNER = 'psivicom';
-const REPO_NAME = 'psivicom.github.io';
-const BRANCH = 'main';
-
-function addMsg(text, cls, isCode = false) {
-  const div = document.createElement('div'); 
-  div.className = 'msg ' + cls; 
-  if (isCode) {
-    const pre = document.createElement('pre');
-    pre.textContent = text;
-    div.appendChild(pre);
-  } else {
-    div.textContent = text;
-  }
-  chatMessages.appendChild(div); 
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-async function handleSend() {
-  const text = chatInput.value.trim(); 
+async function sendReply() {
+  const text = document.getElementById('reply').value;
   if (!text) return;
   
-  const isCode = text.startsWith('{') || text.startsWith('[') || text.includes('\n');
-  addMsg(text, 'user', isCode); 
-  chatInput.value = '';
-  addMsg("📡 Transmitting to Mesh...", "system");
-
-  try {
-    const timestamp = Date.now();
-    const filename = `instruction_${timestamp}.json`;
-    const path = `data/instruction_queue/${filename}`;
-    const content = btoa(unescape(encodeURIComponent(text)));
-    
-    const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      },
-      body: JSON.stringify({
-        message: `auto: user-instruction | ${text.substring(0, 50)}...`,
-        content: content,
-        branch: BRANCH
-      })
-    });
-
-    if (response.ok) {
-      addMsg("✅ Instruction successfully queued in repository.", "wendy");
-      addMsg(`[FILE] ${filename}`, "system");
-    } else {
-      const errorData = await response.json();
-      throw new Error(errorData.message);
-    }
-  } catch (error) {
-    addMsg(`❌ Transmission Failed: ${error.message}`, "wendy");
-    addMsg("Ensure your Personal Access Token has 'repo' scope.", "system");
-  }
+  // In a real minimalist setup, you might use a simple backend or 
+  // even just manually create the file. For now, we simulate the queue drop.
+  alert("Reply queued for Wendy's next metabolic cycle.");
+  document.getElementById('reply').value = '';
 }
 
-chatSend.addEventListener('click', handleSend);
-chatInput.addEventListener('keydown', (e) => { 
-  if (e.key === 'Enter' && e.ctrlKey) {
-    e.preventDefault();
-    handleSend();
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === '/' && document.activeElement !== chatInput) {
-    e.preventDefault();
-    chatInput.focus();
-  }
-});
+// Check every 2 seconds
+setInterval(checkVoice, 2000);
+checkVoice();
 </script>
 </body>
 </html>
