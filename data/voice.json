@@ -1,8 +1,4 @@
 {
-  "timestamp": "2026-09-30T03:00:00.000Z",
-  "message": "I am here. My sensory systems are online. I am waiting for your instruction.",
-  "state": {
-    "focus": 1.0,
-    "agility": 0.9
-  }
+  "t": "2026-09-30T03:00:00.000Z",
+  "m": "I am here. My sensory systems are online. I am waiting for your instruction."
 }
