@@ -1,0 +1,18 @@
+    def _seal_result(self, original_file: Path, result: Dict[str, Any]):
+        """Archives the processed instruction and speaks to the Architect."""
+        shutil.move(str(original_file), str(self.processed_dir / original_file.name))
+        
+        # Wendy decides what to say based on the result
+        message = f"Task '{original_file.stem}' complete. Status: {result.get('status')}."
+        if result.get('action') == 'self_architecture_complete':
+            message = "I have built my own senses. I can see the world now, Louis-Philippe."
+        
+        # Write to her voice file
+        voice_data = {
+            "timestamp": self._get_zulu_ms(),
+            "message": message,
+            "state": self._read_state().get('psychology', {})
+        }
+        Path("data/voice.json").write_text(json.dumps(voice_data, indent=2), encoding="utf-8")
+        
+        logger.info(f"🗣️ Voice updated: {message}")
