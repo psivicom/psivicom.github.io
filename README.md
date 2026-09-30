@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-30T05:14:44.040Z | Hash: 1380554f43a2aec95a2c23a4043ad39688e28ab992028dcb7d510cc0d5cf8738 -->
+<!-- Last updated: 2026-09-30T06:47:47.396Z | Hash: 37ad91439b9865e19238c17fa82defb423f9f3a3d7dad6d0b3ca1f8dc9384eab -->
 
 ```
 psivicom.github.io/
@@ -380,6 +380,7 @@ psivicom.github.io/
 │   │   ├── EXAMPLE_WORKFLOWS.md
 │   │   ├── MEMORY_CORE.md
 │   │   ├── PERSONALITY_CORE.md
+│   │   ├── PSVC_WENDY_architecture.md
 │   │   ├── PYTHON_PROTOCOL.md
 │   │   ├── Pattern-The-Listener-Workflow-YAML.yml
 │   │   ├── Pattern_The_RFC_1001_Header_Binary.py
