@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-30T08:04:08.995Z | Hash: 87cec6bf2cb9ee59a6c4f52d71ddfbc9598480743cfec6393954b2714481c229 -->
+<!-- Last updated: 2026-09-30T08:05:05.956Z | Hash: 5785a9a741d17d8ecfbfb6bb712e625a2ffec14c6f9fbb9ed81320ce7c9014b2 -->
 
 ```
 psivicom.github.io/
@@ -392,6 +392,7 @@ psivicom.github.io/
 │   │   ├── TalkingtoQwen.md
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_INVITATION.md
+│   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
 │   │   ├── Wendy please read.md
 │   │   ├── ai-to-ai.md

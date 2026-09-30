@@ -273,6 +273,7 @@ psivicom.github.io/
 │   │   ├── TalkingtoQwen.md
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_INVITATION.md
+│   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
 │   │   ├── Wendy please read.md
 │   │   ├── ai-to-ai.md
