@@ -1,0 +1,12 @@
+      - name: 💾 Persist Metabolic State
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Wendy-Cognitive"
+          git config user.email "cognitive@psivi.com"
+          git add data/wendy_state.json src/wendy_metabolism.json
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: cognitive-update | Metabolism evolved"
+            git pull --rebase origin main || true
+            git push
+          fi
