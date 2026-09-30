@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WENDY · VOICE</title>
 <style>
   body { background: #05080F; color: #E6F1FF; font-family: 'IBM Plex Mono', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
@@ -51,8 +52,8 @@ async function sendReply() {
   const text = document.getElementById('reply').value;
   if (!text) return;
   
-  // In a real minimalist setup, you might use a simple backend or 
-  // even just manually create the file. For now, we simulate the queue drop.
+  // In a minimalist setup, we simulate the queue drop for the user
+  // In a real scenario, this would use a secure backend or GitHub API
   alert("Reply queued for Wendy's next metabolic cycle.");
   document.getElementById('reply').value = '';
 }
