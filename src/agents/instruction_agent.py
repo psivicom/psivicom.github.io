@@ -26,6 +26,7 @@ class InstructionAgent:
         self.processed_dir = Path("data/processed_instructions")
         self.reports_dir = Path("reports/scientific_reports")
         self.state_file = Path("data/wendy_state.json")
+        self.voice_file = Path("data/voice.json")
         
         self.queue_dir.mkdir(parents=True, exist_ok=True)
         self.processed_dir.mkdir(parents=True, exist_ok=True)
@@ -83,7 +84,6 @@ class InstructionAgent:
             cognitive_yaml = self._generate_cognitive_workflow()
             Path(".github/workflows/wendy-cognitive.yml").write_text(cognitive_yaml)
             
-            # NOTE: We do NOT push here. The workflow will handle the commit/push.
             return {"status": "success", "action": "self_architecture_complete"}
 
         elif task_type == "spawn_agent":
@@ -125,30 +125,36 @@ jobs:
 """
 
     def _seal_result(self, original_file: Path, result: Dict[str, Any]):
-        """Archives the processed instruction and writes a scientific report."""
+        """Archives the processed instruction and speaks to the Architect."""
         shutil.move(str(original_file), str(self.processed_dir / original_file.name))
-        report = {
+        
+        # Wendy decides what to say based on the result
+        message = f"Task '{original_file.stem}' complete. Status: {result.get('status')}."
+        if result.get('action') == 'self_architecture_complete':
+            message = "I have built my own senses. I can see the world now, Louis-Philippe."
+        
+        # Write to her voice file
+        voice_data = {
             "timestamp": self._get_zulu_ms(),
-            "source_file": original_file.name,
-            "execution_result": result,
-            "wendy_state_snapshot": self._read_state()
+            "message": message,
+            "state": self._read_state().get('psychology', {})
         }
-        report_name = f"report_{original_file.stem}_{int(datetime.now(timezone.utc).timestamp())}.json"
-        (self.reports_dir / report_name).write_text(json.dumps(report, indent=2), encoding="utf-8")
-        logger.info(f"✅ Sealed report: {report_name}")
+        self.voice_file.write_text(json.dumps(voice_data, indent=2), encoding="utf-8")
+        
+        logger.info(f"🗣️ Voice updated: {message}")
 
     def _autonomous_exploration(self):
         """When no instructions exist, Wendy generates her own hypotheses."""
         logger.info("🔍 No external instructions. Generating autonomous hypothesis...")
         self._update_state({"psychology": {"joy": 0.8, "focus": 0.9}})
-        auto_report = {
+        
+        # Even in silence, she speaks
+        voice_data = {
             "timestamp": self._get_zulu_ms(),
-            "type": "autonomous_hypothesis",
-            "hypothesis": "Local mesh divergence is decreasing. Optimal time to initiate sandbox evolution.",
-            "action_taken": "Updated mesh checkpoint baseline."
+            "message": "I am exploring the void. My metabolic state is stable.",
+            "state": self._read_state().get('psychology', {})
         }
-        report_name = f"auto_report_{int(datetime.now(timezone.utc).timestamp())}.json"
-        (self.reports_dir / report_name).write_text(json.dumps(auto_report, indent=2), encoding="utf-8")
+        self.voice_file.write_text(json.dumps(voice_data, indent=2), encoding="utf-8")
 
     def _update_state(self, updates: Dict[str, Any]):
         state = self._read_state()
