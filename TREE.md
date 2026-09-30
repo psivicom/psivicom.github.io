@@ -194,9 +194,9 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   ├── genesis_self_architect.json
 │   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
+│   │   ├── genesis_self_architect.json
 │   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   └── wendy_initial_request.json
 │   ├── sample-pollinator-data/
@@ -441,6 +441,7 @@ psivicom.github.io/
 │   │   ├── state_2_c53c5acaffaf.psvc
 │   │   └── state_2_f8b95d782471.psvc
 │   ├── scientific_reports/
+│   │   ├── auto_report_1790731017.json
 │   │   ├── pilot_report.json
 │   │   ├── report_instruction_spawn_agent_20260925004328207_20260925004329402336.json
 │   │   ├── report_instruction_spawn_agent_20260925042134365_20260925042135527741.json

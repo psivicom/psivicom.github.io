@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-30T00:17:41.585Z | Hash: 6471f89879be250ab953f1d941b0521891fed28f8dc74b9ec40f2ca96446d053 -->
+<!-- Last updated: 2026-09-30T01:26:03.280Z | Hash: 45be183824817daa90e7bbdff6f01238a2347d2bea092cea72b1870b20cb517a -->
 
 ```
 psivicom.github.io/
@@ -313,9 +313,9 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   ├── genesis_self_architect.json
 │   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
+│   │   ├── genesis_self_architect.json
 │   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   └── wendy_initial_request.json
 │   ├── sample-pollinator-data/
@@ -560,6 +560,7 @@ psivicom.github.io/
 │   │   ├── state_2_c53c5acaffaf.psvc
 │   │   └── state_2_f8b95d782471.psvc
 │   ├── scientific_reports/
+│   │   ├── auto_report_1790731017.json
 │   │   ├── pilot_report.json
 │   │   ├── report_instruction_spawn_agent_20260925004328207_20260925004329402336.json
 │   │   ├── report_instruction_spawn_agent_20260925042134365_20260925042135527741.json
