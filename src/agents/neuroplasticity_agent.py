@@ -139,7 +139,7 @@ class NeuroplasticityAgent(BaseAgent):
         synapses["defense_weight"] *= random.uniform(0.9, 1.1)
         synapses["explore_weight"] *= random.uniform(0.9, 1.1)
         synapses["stagnation_counter"] = 0
-        self.seal("mutation_event", {"reason": "Stagnation detected", "new_novelty": synapses["novelty_seeker"]})
+        self.seal_result(np.array([0.0]), Path("reports"), meta={"type": "mutation_event", "new_novelty": synapses["novelty_seeker"]})
 
     def _run_logic(self):
         print("🧠 Neuroplasticity Agent: Analyzing Synaptic Connections, Evolutionary Drift & Void Gravity...")
