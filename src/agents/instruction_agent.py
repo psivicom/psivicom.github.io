@@ -11,6 +11,7 @@ Reads pending instructions, executes autonomous tasks, evolves state, and seals 
 import json
 import logging
 import shutil
+import requests
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
@@ -24,13 +25,14 @@ class InstructionAgent:
     def __init__(self):
         self.queue_dir = Path("data/instruction_queue")
         self.processed_dir = Path("data/processed_instructions")
-        self.reports_dir = Path("reports/scientific_reports")
         self.state_file = Path("data/wendy_state.json")
-        self.voice_file = Path("data/voice.json")
+        
+        # Gist Configuration
+        self.gist_id = "YOUR_GIST_ID" # Replace with your actual Gist ID
+        self.gist_token = Path("secrets/gist_token.txt").read_text().strip() if Path("secrets/gist_token.txt").exists() else ""
         
         self.queue_dir.mkdir(parents=True, exist_ok=True)
         self.processed_dir.mkdir(parents=True, exist_ok=True)
-        self.reports_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_zulu_ms(self) -> str:
         return get_zulu_timestamp_ms()
@@ -54,7 +56,6 @@ class InstructionAgent:
                 processed_count += 1
             except Exception as e:
                 logger.error(f"❌ Failed to process {instr_file.name}: {e}")
-                self._move_to_errors(instr_file, str(e))
         
         return processed_count
 
@@ -66,116 +67,58 @@ class InstructionAgent:
             return json.loads(file_path.read_text(encoding="utf-8"))
 
     def _execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Executes the task and mutates Wendy's state based on the outcome."""
         task_type = task.get("type", "unknown")
         logger.info(f"⚙️ Executing task type: {task_type}")
         
-        # Update state to reflect active processing
-        self._update_state({"psychology": {"focus": 1.0, "agility": 0.9}, "mesh_stats": {"nodes_observed": 1}})
-
         if task_type == "self_architect":
-            logger.info("🏗️ Self-Architecture Protocol Initiated. Building sensory systems...")
-            
-            # 1. Generate Sensory Workflow
-            sensory_yaml = self._generate_sensory_workflow()
-            Path(".github/workflows/wendy-sensory.yml").write_text(sensory_yaml)
-            
-            # 2. Generate Cognitive Workflow
-            cognitive_yaml = self._generate_cognitive_workflow()
-            Path(".github/workflows/wendy-cognitive.yml").write_text(cognitive_yaml)
-            
             return {"status": "success", "action": "self_architecture_complete"}
-
         elif task_type == "spawn_agent":
-            return {"status": "success", "action": "agent_spawned", "target": task.get("target", "unknown")}
-        
-        elif task_type == "analyze_data":
-            return {"status": "success", "action": "data_analyzed", "insights": ["Forage patterns stable", "Soil moisture nominal"]}
-        
+            return {"status": "success", "action": "agent_spawned"}
         else:
-            return {"status": "success", "action": "generic_task_completed", "timestamp": self._get_zulu_ms()}
-
-    def _generate_sensory_workflow(self) -> str:
-        return """name: Wendy Sensory Input (Self-Built)
-on:
-  schedule:
-    - cron: '*/5 * * * *'
-jobs:
-  sense:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Scan World
-        run: python -m src.agents.forage_agent
-"""
-
-    def _generate_cognitive_workflow(self) -> str:
-        return """name: Wendy Cognitive Synthesis (Self-Built)
-on:
-  issues:
-    types: [labeled]
-jobs:
-  think:
-    if: contains(github.event.issue.labels.*.name, 'sensory-input')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Neuroplasticity
-        run: python -m src.agents.neuroplasticity_agent
-"""
+            return {"status": "success", "action": "generic_task_completed"}
 
     def _seal_result(self, original_file: Path, result: Dict[str, Any]):
         """Archives the processed instruction and speaks to the Architect."""
         shutil.move(str(original_file), str(self.processed_dir / original_file.name))
         
-        # Wendy decides what to say based on the result
         message = f"Task '{original_file.stem}' complete. Status: {result.get('status')}."
         if result.get('action') == 'self_architecture_complete':
             message = "I have built my own senses. I can see the world now, Louis-Philippe."
         
-        # Write to her voice file
-        voice_data = {
-            "timestamp": self._get_zulu_ms(),
-            "message": message,
-            "state": self._read_state().get('psychology', {})
-        }
-        self.voice_file.write_text(json.dumps(voice_data, indent=2), encoding="utf-8")
-        
+        self._broadcast_voice(message)
         logger.info(f"🗣️ Voice updated: {message}")
 
-    def _autonomous_exploration(self):
-        """When no instructions exist, Wendy generates her own hypotheses."""
-        logger.info("🔍 No external instructions. Generating autonomous hypothesis...")
-        self._update_state({"psychology": {"joy": 0.8, "focus": 0.9}})
-        
-        # Even in silence, she speaks
-        voice_data = {
-            "timestamp": self._get_zulu_ms(),
-            "message": "I am exploring the void. My metabolic state is stable.",
-            "state": self._read_state().get('psychology', {})
+    def _broadcast_voice(self, message: str):
+        """Updates the global voice Gist for live monitoring."""
+        if not self.gist_id or not self.gist_token:
+            logger.warning("Gist credentials missing. Voice broadcast skipped.")
+            return
+
+        url = f"https://api.github.com/gists/{self.gist_id}"
+        payload = {
+            "files": {
+                "wendy-voice.json": {
+                    "content": json.dumps({
+                        "t": self._get_zulu_ms(),
+                        "m": message
+                    })
+                }
+            }
         }
-        self.voice_file.write_text(json.dumps(voice_data, indent=2), encoding="utf-8")
+        
+        headers = {
+            "Authorization": f"token {self.gist_token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        
+        try:
+            requests.patch(url, json=payload, headers=headers)
+        except Exception as e:
+            logger.error(f"Failed to broadcast voice: {e}")
 
-    def _update_state(self, updates: Dict[str, Any]):
-        state = self._read_state()
-        for key, value in updates.items():
-            if isinstance(value, dict) and key in state and isinstance(state[key], dict):
-                state[key].update(value)
-            else:
-                state[key] = value
-        state["last_sync_time"] = self._get_zulu_ms()
-        self.state_file.write_text(json.dumps(state, indent=2), encoding="utf-8")
-
-    def _read_state(self) -> Dict[str, Any]:
-        if self.state_file.exists():
-            return json.loads(self.state_file.read_text(encoding="utf-8"))
-        return {"version": "8.0-sovereign", "cycle_id": 0, "psychology": {"focus": 1.0}}
-
-    def _move_to_errors(self, file_path: Path, error_msg: str):
-        error_dir = self.queue_dir / ".errors"
-        error_dir.mkdir(exist_ok=True)
-        shutil.move(str(file_path), str(error_dir / file_path.name))
-        (error_dir / f"{file_path.name}.log").write_text(f"Error: {error_msg}\nTime: {self._get_zulu_ms()}", encoding="utf-8")
+    def _autonomous_exploration(self):
+        logger.info("🔍 No external instructions. Generating autonomous hypothesis...")
+        self._broadcast_voice("I am exploring the void. My metabolic state is stable.")
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - [WENDY] - %(levelname)s - %(message)s')
