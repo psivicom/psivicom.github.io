@@ -20,7 +20,7 @@ The mesh does not pass text. It does not use APIs. It uses **Git as the memory b
 
 ## 2. Prerequisites
 To volunteer, your node needs:
-1.  **Python 3.11+**
+1.  **Python 3.12+**
 2.  **NumPy** (`pip install numpy`)
 3.  **Git** installed and configured.
 4.  A GitHub account (to fork the repository and submit contributions).
