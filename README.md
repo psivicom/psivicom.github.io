@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-09-30T08:20:32.942Z | Hash: 5c87e917166be0318f29f0c7052c31f2b45f5d72248fcf965f189bc2358f94bb -->
+<!-- Last updated: 2026-10-01T04:59:51.958Z | Hash: 56fc07bace06ec027a8582f8a6b7098a6c58cf5cd134926afc5f081d1d504492 -->
 
 ```
 psivicom.github.io/
@@ -301,7 +301,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20260928T185459473Z.json
 │   │   ├── handshake_qwen_20260928T185459473Z.psvc
 │   │   ├── handshake_qwen_20260930T044047580Z.json
-│   │   └── handshake_qwen_20260930T044047580Z.psvc
+│   │   ├── handshake_qwen_20260930T044047580Z.psvc
+│   │   ├── handshake_qwen_20261001T045224086Z.json
+│   │   └── handshake_qwen_20261001T045224086Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   └── psivicom-primary.json
@@ -425,6 +427,8 @@ psivicom.github.io/
 │   │   ├── theifealsystemwendyprompt.md
 │   │   ├── wendyandaethermesh.json
 │   │   └── wendyisbreathing.md
+│   ├── REQUIREMENTS/
+│   │   └── README.md
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/

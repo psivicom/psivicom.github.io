@@ -182,7 +182,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20260928T185459473Z.json
 │   │   ├── handshake_qwen_20260928T185459473Z.psvc
 │   │   ├── handshake_qwen_20260930T044047580Z.json
-│   │   └── handshake_qwen_20260930T044047580Z.psvc
+│   │   ├── handshake_qwen_20260930T044047580Z.psvc
+│   │   ├── handshake_qwen_20261001T045224086Z.json
+│   │   └── handshake_qwen_20261001T045224086Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   └── psivicom-primary.json
@@ -306,6 +308,8 @@ psivicom.github.io/
 │   │   ├── theifealsystemwendyprompt.md
 │   │   ├── wendyandaethermesh.json
 │   │   └── wendyisbreathing.md
+│   ├── REQUIREMENTS/
+│   │   └── README.md
 │   ├── SECURITY_PLAN/
 │   │   ├── psivi-cis-hardened/
 │   │   │   ├── scripts/
