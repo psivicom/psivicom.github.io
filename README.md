@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T07:13:07.258Z | Hash: c4eb13de79ce149297ee74c7d51dc460e9c870e251fef57c88c67dfda44d2139 -->
+<!-- Last updated: 2026-10-02T07:14:37.914Z | Hash: a60d10fc3061b93dcb5b2a93a6a5d146c2c461eabd6824f1b3be197830d2bf36 -->
 
 ```
 psivicom.github.io/
@@ -735,8 +735,9 @@ psivicom.github.io/
 │   └── validate_workflows.py
 ├── wendy-go/
 │   └── pkg/
-│       └── aether/
-│           └── native.go
+│       ├── aether/
+│       │   └── native.go
+│       └── native_test.go
 ├── .gitignore
 ├── .zenodo.json
 ├── A2_psivimanesh.html
