@@ -127,7 +127,7 @@ Supply-chain integrity means verifying that the tools, dependencies, and artifac
 
 ### Example integrity record
 > Tool: Python
-> Version: 3.11.x
+> Version: 3.12.x
 > Notebook kernel: linked
 > Dependency lockfile: present
 > Notable changes: none
