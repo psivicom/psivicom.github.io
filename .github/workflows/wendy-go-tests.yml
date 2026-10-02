@@ -1,9 +1,10 @@
 name: WENDY Pure Go Mesh Tests
 
 on:
+  workflow_dispatch: # <-- THIS ADDS THE "RUN WORKFLOW" BUTTON
   push:
     paths:
-      - 'wendy-go/**'  # <-- No leading slash. This is perfect.
+      - 'wendy-go/**'
   pull_request:
     paths:
       - 'wendy-go/**'
