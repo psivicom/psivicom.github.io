@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T00:48:45.000Z | Hash: 56fc07bace06ec027a8582f8a6b7098a6c58cf5cd134926afc5f081d1d504492 -->
+<!-- Last updated: 2026-10-02T07:13:07.258Z | Hash: c4eb13de79ce149297ee74c7d51dc460e9c870e251fef57c88c67dfda44d2139 -->
 
 ```
 psivicom.github.io/
@@ -303,7 +303,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20260930T044047580Z.json
 │   │   ├── handshake_qwen_20260930T044047580Z.psvc
 │   │   ├── handshake_qwen_20261001T045224086Z.json
-│   │   └── handshake_qwen_20261001T045224086Z.psvc
+│   │   ├── handshake_qwen_20261001T045224086Z.psvc
+│   │   ├── handshake_qwen_20261002T044306888Z.json
+│   │   └── handshake_qwen_20261002T044306888Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   └── psivicom-primary.json
@@ -731,6 +733,10 @@ psivicom.github.io/
 ├── tools/
 │   ├── fix_timestamps.py
 │   └── validate_workflows.py
+├── wendy-go/
+│   └── pkg/
+│       └── aether/
+│           └── native.go
 ├── .gitignore
 ├── .zenodo.json
 ├── A2_psivimanesh.html
