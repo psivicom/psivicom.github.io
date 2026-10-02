@@ -2,7 +2,7 @@
 # FILE: test_elastic_evolution.py
 # PATH: psivicom.github.io/tests/test_elastic_evolution.py
 # DESCRIPTION: Security Validation Test for Elastic PSVC Mesh
-#              Formatted with shorter lines for safe mobile copy-pasting.
+#             Formatted with shorter lines for safe mobile copy-pasting.
 # LICENSE: EUPL-1.2 | COMPLIANCE: NIST SP 800-218, FAIR Open Science
 # ==============================================================================
 
