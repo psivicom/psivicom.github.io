@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T08:13:51.495Z | Hash: 67d35618f18e9fa219d454948fd2410fde991f5e0f7c86c67af2194fcb060e62 -->
+<!-- Last updated: 2026-10-02T08:16:54.024Z | Hash: 6e193f09c0bfc7f58f7fb439dec64b377f5cd65d54d1cfe6383eedd18ec74fa9 -->
 
 ```
 psivicom.github.io/
@@ -737,7 +737,6 @@ psivicom.github.io/
 ├── wendy-go/
 │   ├── pkg/
 │   │   └── aether/
-│   │       ├── __init__.py
 │   │       ├── native.go
 │   │       └── native_test.go
 │   └── go.mod
@@ -777,7 +776,6 @@ psivicom.github.io/
 ├── TRUST_AND_PROVENANCE
 ├── VOLUNTEER_GUIDE.md
 ├── VOLUNTEER_PROTOCOL.md
-├── __init__.py
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json

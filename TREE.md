@@ -618,7 +618,6 @@ psivicom.github.io/
 ├── wendy-go/
 │   ├── pkg/
 │   │   └── aether/
-│   │       ├── __init__.py
 │   │       ├── native.go
 │   │       └── native_test.go
 │   └── go.mod
@@ -658,7 +657,6 @@ psivicom.github.io/
 ├── TRUST_AND_PROVENANCE
 ├── VOLUNTEER_GUIDE.md
 ├── VOLUNTEER_PROTOCOL.md
-├── __init__.py
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json
