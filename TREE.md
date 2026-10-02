@@ -617,10 +617,11 @@ psivicom.github.io/
 │   └── validate_workflows.py
 ├── wendy-go/
 │   ├── pkg/
-│   │   └── aether/
-│   │       ├── __init__.py
-│   │       ├── native.go
-│   │       └── native_test.go
+│   │   ├── aether/
+│   │   │   ├── __init__.py
+│   │   │   ├── native.go
+│   │   │   └── native_test.go
+│   │   └── __init__.py
 │   ├── __init__.py
 │   └── go.mod
 ├── .gitignore
