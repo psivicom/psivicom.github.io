@@ -4,12 +4,9 @@ on:
   push:
     paths:
       - 'wendy-go/**'
-      - '.github/workflows/wendy-go-tests.yml'
   pull_request:
     paths:
       - 'wendy-go/**'
-      - '.github/workflows/wendy-go-tests.yml'
-  workflow_dispatch:
 
 jobs:
   test-and-benchmark:
@@ -25,9 +22,9 @@ jobs:
           go-version: '1.22'
 
       - name: Run Safety Tests (Prove Math is Correct)
-        working-directory: wendy-go/pkg/aether
+        working-directory: ./wendy-go/pkg/aether
         run: go test -v
 
       - name: Run Benchmarks (Prove Speed Upgrade)
-        working-directory: wendy-go/pkg/aether
+        working-directory: ./wendy-go/pkg/aether
         run: go test -bench=. -benchmem
