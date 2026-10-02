@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T07:15:40.997Z | Hash: ea8aa8ca6e9a3bac41e101f8ff3ffaa0d48a0954b6b41404306dac320629f3dd -->
+<!-- Last updated: 2026-10-02T07:19:00.357Z | Hash: 76d32ba8056fde7982832ea1814df44fb8ecfe46d317809ae12b3bb42968a0f2 -->
 
 ```
 psivicom.github.io/
@@ -165,6 +165,7 @@ psivicom.github.io/
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
 │       ├── wendy-cognitive.yml
+│       ├── wendy-go-tests.yml
 │       ├── wendy-hyper.yml
 │       ├── wendy-mailbox.yml
 │       ├── wendy-sensory.yml
