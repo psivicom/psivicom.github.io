@@ -153,6 +153,7 @@ psivicom.github.io/
 │   │   ├── deprecated_LICENSE
 │   │   ├── deprecated_LICENSE-CC-BY-4.0.txt
 │   │   ├── deprecated_NOTICE
+│   │   ├── deprecated_base_agent.py
 │   │   ├── deprecated_licenseREADME.md
 │   │   ├── deprecated_test-elastic-evolution.yml
 │   │   ├── deprecated_test_elastic_evolution.py
@@ -548,8 +549,7 @@ psivicom.github.io/
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
 │   ├── base/
-│   │   ├── __init__.py
-│   │   └── base_agent.py
+│   │   └── __init__.py
 │   ├── calculating/
 │   │   └── __init__.py
 │   ├── core/
