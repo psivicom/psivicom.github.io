@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T10:48:11.038Z | Hash: 6e193f09c0bfc7f58f7fb439dec64b377f5cd65d54d1cfe6383eedd18ec74fa9 -->
+<!-- Last updated: 2026-10-02T18:16:05.398Z | Hash: 645e366ddfeb211f3eab6ae8e712a3622e9d024d02519aebef512cc29a55a904 -->
 
 ```
 psivicom.github.io/
@@ -548,6 +548,10 @@ psivicom.github.io/
 │   │   ├── chain_20260928T184836633Z_step0_forage_agent_7fcb1d1e033b48d8.psvc
 │   │   ├── chain_20260928T184836633Z_step1_literature_agent_10d49f89f8a34b58.json
 │   │   ├── chain_20260928T184836633Z_step1_literature_agent_10d49f89f8a34b58.psvc
+│   │   ├── chain_20261002T105708342Z_step0_forage_agent_c64b29af22384c5d.json
+│   │   ├── chain_20261002T105708342Z_step0_forage_agent_c64b29af22384c5d.psvc
+│   │   ├── chain_20261002T105708343Z_step1_literature_agent_1a78f850e1d945c4.json
+│   │   ├── chain_20261002T105708343Z_step1_literature_agent_1a78f850e1d945c4.psvc
 │   │   ├── governor_53cbcc22c4f1.psvc
 │   │   ├── governor_a026c90e5bd0.psvc
 │   │   ├── satellite_98dc4091d0fa.psvc

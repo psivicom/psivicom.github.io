@@ -429,6 +429,10 @@ psivicom.github.io/
 │   │   ├── chain_20260928T184836633Z_step0_forage_agent_7fcb1d1e033b48d8.psvc
 │   │   ├── chain_20260928T184836633Z_step1_literature_agent_10d49f89f8a34b58.json
 │   │   ├── chain_20260928T184836633Z_step1_literature_agent_10d49f89f8a34b58.psvc
+│   │   ├── chain_20261002T105708342Z_step0_forage_agent_c64b29af22384c5d.json
+│   │   ├── chain_20261002T105708342Z_step0_forage_agent_c64b29af22384c5d.psvc
+│   │   ├── chain_20261002T105708343Z_step1_literature_agent_1a78f850e1d945c4.json
+│   │   ├── chain_20261002T105708343Z_step1_literature_agent_1a78f850e1d945c4.psvc
 │   │   ├── governor_53cbcc22c4f1.psvc
 │   │   ├── governor_a026c90e5bd0.psvc
 │   │   ├── satellite_98dc4091d0fa.psvc
