@@ -23,6 +23,7 @@ class AgentLayer(Enum):
     ORCHESTRATION = "orchestration"
     VALIDATION = "validation"
     COGNITION = "cognition"
+    SYNTHESIS = "synthesis"  # <-- ADDED: Fixes the ReportGeneratorAgent AttributeError
 
 class BaseAgent:
     def __init__(self, name: str, capabilities: list):
