@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T07:55:28.144Z | Hash: 9a32e65650d2c7ffe01554a51419aed4f87dcf4d41f16ff4538ecd93a9e61ef5 -->
+<!-- Last updated: 2026-10-02T08:13:28.977Z | Hash: e0dd360a6900cc48443f0f76e3f1a6eca37d2f5b3a8ff04938692b71bba6fa68 -->
 
 ```
 psivicom.github.io/
@@ -741,7 +741,6 @@ psivicom.github.io/
 │   │   │   ├── native.go
 │   │   │   └── native_test.go
 │   │   └── __init__.py
-│   ├── __init__.py
 │   └── go.mod
 ├── .gitignore
 ├── .zenodo.json

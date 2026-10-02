@@ -622,7 +622,6 @@ psivicom.github.io/
 │   │   │   ├── native.go
 │   │   │   └── native_test.go
 │   │   └── __init__.py
-│   ├── __init__.py
 │   └── go.mod
 ├── .gitignore
 ├── .zenodo.json
