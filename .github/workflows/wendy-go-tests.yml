@@ -4,9 +4,12 @@ on:
   push:
     paths:
       - 'wendy-go/**'
+      - '.github/workflows/wendy-go-tests.yml'
   pull_request:
     paths:
       - 'wendy-go/**'
+      - '.github/workflows/wendy-go-tests.yml'
+  workflow_dispatch:
 
 jobs:
   test-and-benchmark:
