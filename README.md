@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T21:07:13.471Z | Hash: 51c139bebf0a9ce8c1a6cf801202a3f4d091b6f91f9368726efd748cd12968bb -->
+<!-- Last updated: 2026-10-02T21:21:30.198Z | Hash: 0fa677127a78f86cc1e0121f88773bb407d05fea655b3469f72ef2207d1f70e6 -->
 
 ```
 psivicom.github.io/
@@ -267,6 +267,7 @@ psivicom.github.io/
 │   │   ├── deprecated-LICENSE_COMPLIANCE2.md
 │   │   ├── deprecated-teamai.html
 │   │   ├── deprecated-teamai.md
+│   │   ├── deprecated_2_base_agent.py
 │   │   ├── deprecated_AI-MORAL-Evolution.md
 │   │   ├── deprecated_APACHE-2.0.txt
 │   │   ├── deprecated_LICENSE
@@ -668,8 +669,7 @@ psivicom.github.io/
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
 │   ├── base/
-│   │   ├── __init__.py
-│   │   └── base_agent.py
+│   │   └── __init__.py
 │   ├── calculating/
 │   │   └── __init__.py
 │   ├── core/
