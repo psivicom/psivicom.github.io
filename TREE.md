@@ -46,6 +46,7 @@ psivicom.github.io/
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
 │       ├── wendy-cognitive.yml
+│       ├── wendy-go-tests.yml
 │       ├── wendy-hyper.yml
 │       ├── wendy-mailbox.yml
 │       ├── wendy-sensory.yml
