@@ -13,12 +13,12 @@ jobs:
       contents: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -26,19 +26,13 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Execute Neuroplasticity Agent
-        run: |
-          if [ -f "src/agents/neuroplasticity_agent.py" ]; then
-            python src/agents/neuroplasticity_agent.py
-          else
-            echo "Neuroplasticity agent not found"
-            exit 1
-          fi
+        run: python -m src.agents.neuroplasticity_agent
 
       - name: Validate Ledger Before Commit (Circuit Breaker)
-        run: python src/core/ledger_validator.py reports/pilot_report.json
+        run: python -m src.core.ledger_validator reports/pilot_report.json
 
       - name: Commit State Changes
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore(mesh): neuroplasticity vector update"
           branch: main
