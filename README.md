@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T07:34:40.531Z | Hash: 76d32ba8056fde7982832ea1814df44fb8ecfe46d317809ae12b3bb42968a0f2 -->
+<!-- Last updated: 2026-10-02T07:42:48.782Z | Hash: 6e193f09c0bfc7f58f7fb439dec64b377f5cd65d54d1cfe6383eedd18ec74fa9 -->
 
 ```
 psivicom.github.io/
@@ -735,10 +735,11 @@ psivicom.github.io/
 │   ├── fix_timestamps.py
 │   └── validate_workflows.py
 ├── wendy-go/
-│   └── pkg/
-│       └── aether/
-│           ├── native.go
-│           └── native_test.go
+│   ├── pkg/
+│   │   └── aether/
+│   │       ├── native.go
+│   │       └── native_test.go
+│   └── go.mod
 ├── .gitignore
 ├── .zenodo.json
 ├── A2_psivimanesh.html

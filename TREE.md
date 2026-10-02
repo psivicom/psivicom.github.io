@@ -616,10 +616,11 @@ psivicom.github.io/
 │   ├── fix_timestamps.py
 │   └── validate_workflows.py
 ├── wendy-go/
-│   └── pkg/
-│       └── aether/
-│           ├── native.go
-│           └── native_test.go
+│   ├── pkg/
+│   │   └── aether/
+│   │       ├── native.go
+│   │       └── native_test.go
+│   └── go.mod
 ├── .gitignore
 ├── .zenodo.json
 ├── A2_psivimanesh.html
