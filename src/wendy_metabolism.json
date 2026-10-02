@@ -2,9 +2,9 @@
   "cycle_start_time": "2026-09-28T19:11:13.251Z",
   "period_minutes": 120,
   "amplitude": 1.0,
-  "last_intensity": 0.96772,
-  "total_cycles_completed": 124,
+  "last_intensity": 0.235039,
+  "total_cycles_completed": 125,
   "spawned_agents": [],
   "last_known_checkpoint": {},
-  "last_phase": 0.40662
+  "last_phase": 0.077594
 }
