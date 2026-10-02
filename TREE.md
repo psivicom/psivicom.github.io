@@ -155,6 +155,7 @@ psivicom.github.io/
 │   │   ├── deprecated_NOTICE
 │   │   ├── deprecated_licenseREADME.md
 │   │   ├── deprecated_test-elastic-evolution.yml
+│   │   ├── deprecated_test_elastic_evolution.py
 │   │   └── license_agent.py
 │   └── README.md
 ├── assets/
@@ -616,7 +617,6 @@ psivicom.github.io/
 │   └── wendy_metabolism.json
 ├── tests/
 │   ├── __init__.py
-│   ├── test_elastic_evolution.py
 │   └── test_pixelizer_fidelity.py
 ├── tools/
 │   ├── fix_timestamps.py

@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T19:20:45.231Z | Hash: ee15a7b08080afeed81ed8b741d345a140f2809420006efa369fa6277a164cc5 -->
+<!-- Last updated: 2026-10-02T19:23:52.231Z | Hash: 94dcacc95572aae9440fa25d44796cd9c6f96aa7483b1da4bc9096f54adeb107 -->
 
 ```
 psivicom.github.io/
@@ -274,6 +274,7 @@ psivicom.github.io/
 │   │   ├── deprecated_NOTICE
 │   │   ├── deprecated_licenseREADME.md
 │   │   ├── deprecated_test-elastic-evolution.yml
+│   │   ├── deprecated_test_elastic_evolution.py
 │   │   └── license_agent.py
 │   └── README.md
 ├── assets/
@@ -735,7 +736,6 @@ psivicom.github.io/
 │   └── wendy_metabolism.json
 ├── tests/
 │   ├── __init__.py
-│   ├── test_elastic_evolution.py
 │   └── test_pixelizer_fidelity.py
 ├── tools/
 │   ├── fix_timestamps.py
