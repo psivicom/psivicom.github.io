@@ -549,7 +549,8 @@ psivicom.github.io/
 │   │   ├── auto_integrator.py
 │   │   └── capability_resolver.py
 │   ├── base/
-│   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   └── base_agent.py
 │   ├── calculating/
 │   │   └── __init__.py
 │   ├── core/
