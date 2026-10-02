@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-10-02T10:49:46.225345+00:00",
+  "updated_at": "2026-10-02T10:58:18.296999+00:00",
   "node_count": 2,
   "nodes": [
     {
       "node_id": "mirror-node-local",
-      "timestamp": "2026-10-02T10:49:45.720Z",
+      "timestamp": "2026-10-02T10:58:18.023Z",
       "status": "ALIVE",
       "role": "MIRROR",
       "coords": {
@@ -16,9 +16,9 @@
     },
     {
       "node_id": "psivicom-primary",
-      "timestamp": "2026-10-02T10:49:46.174Z",
+      "timestamp": "2026-10-02T10:58:18.254Z",
       "status": "ALIVE",
-      "signature": "67a310ea4465cbfd768185cf050c6784",
+      "signature": "caf29ec0aefad5807c5e7704df805262",
       "velocity": 1.0,
       "role": "VOLUNTEER",
       "coords": {
