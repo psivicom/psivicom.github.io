@@ -1,0 +1,11 @@
+{
+  "chain_id": "52b89a408d6b46fb",
+  "step_index": 0,
+  "agent": "forage_agent",
+  "status": "SUCCESS",
+  "output": {
+    "result": "Processed by forage_agent",
+    "chain_id": "52b89a408d6b46fb"
+  },
+  "timestamp": "2026-10-02T10:57:08.342Z"
+}
