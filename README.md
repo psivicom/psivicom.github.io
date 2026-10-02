@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T18:16:05.398Z | Hash: 645e366ddfeb211f3eab6ae8e712a3622e9d024d02519aebef512cc29a55a904 -->
+<!-- Last updated: 2026-10-02T19:20:45.231Z | Hash: ee15a7b08080afeed81ed8b741d345a140f2809420006efa369fa6277a164cc5 -->
 
 ```
 psivicom.github.io/
@@ -160,7 +160,6 @@ psivicom.github.io/
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
-│       ├── test-elastic-evolution.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
@@ -274,6 +273,7 @@ psivicom.github.io/
 │   │   ├── deprecated_LICENSE-CC-BY-4.0.txt
 │   │   ├── deprecated_NOTICE
 │   │   ├── deprecated_licenseREADME.md
+│   │   ├── deprecated_test-elastic-evolution.yml
 │   │   └── license_agent.py
 │   └── README.md
 ├── assets/
@@ -338,6 +338,7 @@ psivicom.github.io/
 │   ├── README.md
 │   ├── mesh_checkpoint.json
 │   ├── mesh_index.json
+│   ├── mesh_weights.json
 │   ├── osdr_ground_truth.jsonl
 │   ├── osdr_metadata_schema.json
 │   ├── pollinator_ground_truth.jsonl
@@ -617,6 +618,7 @@ psivicom.github.io/
 │   ├── governor_log.md
 │   ├── license_audit.md
 │   ├── mesh_status.txt
+│   ├── neuro_plasticity_result_1790965601.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md

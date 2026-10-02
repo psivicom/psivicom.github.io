@@ -41,7 +41,6 @@ psivicom.github.io/
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml
 │       ├── synthesizer-agent.yml
-│       ├── test-elastic-evolution.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
@@ -155,6 +154,7 @@ psivicom.github.io/
 │   │   ├── deprecated_LICENSE-CC-BY-4.0.txt
 │   │   ├── deprecated_NOTICE
 │   │   ├── deprecated_licenseREADME.md
+│   │   ├── deprecated_test-elastic-evolution.yml
 │   │   └── license_agent.py
 │   └── README.md
 ├── assets/
@@ -219,6 +219,7 @@ psivicom.github.io/
 │   ├── README.md
 │   ├── mesh_checkpoint.json
 │   ├── mesh_index.json
+│   ├── mesh_weights.json
 │   ├── osdr_ground_truth.jsonl
 │   ├── osdr_metadata_schema.json
 │   ├── pollinator_ground_truth.jsonl
@@ -498,6 +499,7 @@ psivicom.github.io/
 │   ├── governor_log.md
 │   ├── license_audit.md
 │   ├── mesh_status.txt
+│   ├── neuro_plasticity_result_1790965601.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
