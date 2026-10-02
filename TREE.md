@@ -503,6 +503,7 @@ psivicom.github.io/
 │   ├── license_audit.md
 │   ├── mesh_status.txt
 │   ├── neuro_plasticity_result_1790965601.json
+│   ├── neuro_plasticity_result_1790979978.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md

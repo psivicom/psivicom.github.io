@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-02T21:23:24.270Z | Hash: a9afbfb85021a3541c3bbc366a79f5e6d4beac2fe4ae9cff5c6ec2119626a137 -->
+<!-- Last updated: 2026-10-02T23:29:23.031Z | Hash: ca19bd1dad3e6d4a3aa405ec43e3b964e617d85bf6e4af0c1a17bbc7b05fcc63 -->
 
 ```
 psivicom.github.io/
@@ -622,6 +622,7 @@ psivicom.github.io/
 │   ├── license_audit.md
 │   ├── mesh_status.txt
 │   ├── neuro_plasticity_result_1790965601.json
+│   ├── neuro_plasticity_result_1790979978.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
