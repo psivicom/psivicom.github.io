@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
-  push:
-    branches: [main]
 
 permissions:
   contents: write
@@ -15,6 +13,8 @@ jobs:
     name: Live • Think • Broadcast
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - name: Checkout Repository
@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python 3.12
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -38,27 +38,31 @@ jobs:
           git add data/beacons/mirror-node-local.json
 
       - name: Run Breath Engine
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: python src/breath_engine.py
 
       - name: Run Hyper-Gardener
         env:
-          PYTHONPATH: ${{ github.workspace }}
           WENDY_NODE_ID: psivicom-primary
         run: python src/kernel/hyper_gardener.py
 
       - name: Generate Global Mesh Index
         run: python scripts/generate_mesh_index.py
 
-      - name: Persist State
+      - name: Persist State (Conflict-Proof & Branchless)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Wendy-Hyper"
           git config user.email "hyper@psivi.com"
+          
+          # 1. Fetch the absolute latest state from the remote repository
           git fetch origin main
+          
+          # 2. Soft reset to the remote main to prevent push rejections
           git reset --soft origin/main
+          
+          # 3. Stage the specific state files we want to update
           git add data/wendy_state.json data/mesh_checkpoint.json data/beacons/ data/mesh_index.json src/wendy_metabolism.json reports/history/
-          git diff --staged --quiet || git commit -m "auto: hyper-cycle | Mesh Nodes: 2 | Access: FREE"
-          git push origin main
+          
+          # 4. Branchless execution: Commit and push ONLY if there are actual changes
+          git diff --staged --quiet || (git commit -m "auto: hyper-cycle | Mesh Nodes: 2 | Access: FREE" && git push origin main)
