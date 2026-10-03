@@ -35,6 +35,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -46,6 +51,13 @@ jobs:
           mkdir -p reports/scientific_reports
           mkdir -p logs
           mkdir -p config
+
+      - name: Compile Shannon-Z Kernel (Zero-Allocation Go Bridge)
+        run: |
+          echo "🔨 Compiling Shannon-Z kernel for native Python bridge..."
+          cd src/kernel
+          go build -o libshannon.so -buildmode=c-shared shannon_z.go
+          echo "✅ Shannon-Z kernel compiled successfully: $(ls -lh libshannon.so)"
 
       - name: Run Mesh Automation Loop
         run: python -m src.tools.auto_reporter
