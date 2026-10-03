@@ -30,22 +30,20 @@ jobs:
       - name: Run Mesh Router
         run: python -m src.mesh.mesh_router
         
-      - name: Commit Status (Conflict-Proof & Branchless)
+      - name: Commit Status (Conflict-Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Mesh Router"
           git config user.email "mesh-router@users.noreply.github.com"
           
-          # 1. Fetch the absolute latest state from the remote repository
+          # CRITICAL: Sync with remote before committing
           git fetch origin main
-          
-          # 2. Soft reset to the remote main to prevent push rejections
           git reset --soft origin/main
           
-          # 3. Run the router again to capture the latest status and stage it
+          # Generate and stage the new report
           python -m src.mesh.mesh_router > reports/mesh_status.txt 2>&1
           git add reports/mesh_status.txt
           
-          # 4. Branchless execution: Commit and push ONLY if there are actual changes
+          # Branchless commit and push ONLY if changes exist
           git diff --staged --quiet || (git commit -m "mesh: updated status report" && git push origin main)
