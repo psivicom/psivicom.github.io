@@ -5,9 +5,10 @@
 import json
 import logging
 import re
+import numpy as np
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16
@@ -62,19 +63,8 @@ class SelfHealingAgent(BaseAgent):
                     self.repairs_log.append({
                         "file": str(file_path),
                         "action": "removed_sys_path_hack",
-                        "timestamp": datetime.utcnow().isoformat() + "Z"
+                        "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
                     })
-
-                # 2. Fix Relative Imports to Absolute Imports
-                # This is a simplified heuristic. In production, AST parsing is preferred.
-                # We look for 'from .' or 'import .' patterns at the start of lines
-                # and attempt to resolve them based on file depth.
-                
-                # Note: Full AST rewriting is complex for regex. 
-                # For this autonomous loop, we flag severe violations but only auto-fix obvious sys.path issues
-                # to prevent breaking logic with incorrect absolute paths without context.
-                # However, we can safely remove 'import sys' if it's ONLY used for path manipulation? 
-                # Risky. Better to just strip the path lines.
 
                 if changes_made:
                     # Atomic Write
@@ -102,14 +92,18 @@ class SelfHealingAgent(BaseAgent):
             "status": "success",
             "files_repaired": count,
             "repairs_detail": self.repairs_log[-10:] if self.repairs_log else [],
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         }
         
         # Seal a report of the healing action
         if count > 0:
-            vector = [0.0] * 4096
+            # Use numpy array for proper vector math
+            vector = np.zeros(4096, dtype=np.float32)
             vector[0] = float(count) / 100.0
-            vector /= max(1e-9, sum(x*x for x in vector)**0.5)
+            
+            norm = np.linalg.norm(vector)
+            if norm > 1e-9:
+                vector /= norm
             
             output_dir = Path("reports/scientific_reports")
             output_dir.mkdir(parents=True, exist_ok=True)
