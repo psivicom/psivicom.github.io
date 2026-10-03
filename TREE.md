@@ -589,7 +589,8 @@ psivicom.github.io/
 │   │   └── satellite_agent.py
 │   ├── kernel/
 │   │   ├──  __init__.py
-│   │   └── hyper_gardener.py
+│   │   ├── hyper_gardener.py
+│   │   └── shannon_z.go
 │   ├── mesh/
 │   │   ├──  __init__.py
 │   │   ├── mesh_brain.py
