@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-03T00:08:03.391Z | Hash: d0a9fd7e50b1f31b937b804a0f73b3962d425a0963731c5a5ada88b6661a4203 -->
+<!-- Last updated: 2026-10-02T21:23:24.270Z | Hash: a9afbfb85021a3541c3bbc366a79f5e6d4beac2fe4ae9cff5c6ec2119626a137 -->
 
 ```
 psivicom.github.io/
@@ -129,6 +129,7 @@ psivicom.github.io/
 │       ├── build-psvc-mesh.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
+│       ├── elastic-test.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
 │       ├── generate-report.yml
@@ -273,7 +274,6 @@ psivicom.github.io/
 │   │   ├── deprecated_LICENSE-CC-BY-4.0.txt
 │   │   ├── deprecated_NOTICE
 │   │   ├── deprecated_base_agent.py
-│   │   ├── deprecated_elastic-test.yml
 │   │   ├── deprecated_licenseREADME.md
 │   │   ├── deprecated_test-elastic-evolution.yml
 │   │   ├── deprecated_test_elastic_evolution.py
@@ -622,7 +622,6 @@ psivicom.github.io/
 │   ├── license_audit.md
 │   ├── mesh_status.txt
 │   ├── neuro_plasticity_result_1790965601.json
-│   ├── neuro_plasticity_result_1790979978.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
