@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-03T06:25:09.851Z | Hash: 5b5fce6859a580d2604948518cfa2533f33d8147f8bb9a47511fdc07ac361a47 -->
+<!-- Last updated: 2026-10-03T17:54:27.315Z | Hash: 22ee9125baeba6c72edb6b8bbf9fa1de02155aba579d936246c3fb0ffe906744 -->
 
 ```
 psivicom.github.io/
@@ -314,7 +314,8 @@ psivicom.github.io/
 │   │   └── handshake_qwen_20261003T042529106Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
-│   │   └── psivicom-primary.json
+│   │   ├── psivicom-primary.json
+│   │   └── runnervm8df0l.json
 │   ├── images/
 │   │   └── README.md
 │   ├── instruction_queue/
@@ -626,6 +627,8 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1790965601.json
 │   ├── neuro_plasticity_result_1790979978.json
 │   ├── neuro_plasticity_result_1791005622.json
+│   ├── neuro_plasticity_result_1791028431.json
+│   ├── neuro_plasticity_result_1791045330.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
