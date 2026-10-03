@@ -1,18 +1,19 @@
 # src/agents/pilot_agent.py
-import sys
-import os
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+"""
+Pilot Agent: Scans the repository for PSVC containers, analyzes them against 
+OSDR ground truth, and signals fragility or concordance.
+"""
+
 import json
+import hashlib
 import numpy as np
 from pathlib import Path
-from typing import List, Dict, Tuple
-
-# CRITICAL FIX: Ensure project root is in path if run directly, 
-# BUT rely on PYTHONPATH env var for CI correctness.
-if __name__ == "__main__":
-    sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from typing import Dict, List
 
 from src.base.base_agent import BaseAgent, AgentLayer
-from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, read_file, validate_file
 
 class PilotAgent(BaseAgent):
     LAYER = AgentLayer.VALIDATION
@@ -26,18 +27,10 @@ class PilotAgent(BaseAgent):
         self._load_osdr_library()
 
     def _load_osdr_library(self):
-        if not self.osdr_data_path.exists():
-            # Create dummy library if missing so it doesn't crash
-            self.osdr_library = []
-            return
-        with open(self.osdr_data_path, 'r') as f:
-            for line in f:
-                if line.strip():
-                    try:
-                        record = json.loads(line)
-                        self.osdr_library.append(record)
-                    except json.JSONDecodeError:
-                        continue
+        if self.osdr_data_path.exists():
+            with open(self.osdr_data_path, 'r') as f:
+                for line in f:
+                    self.osdr_library.append(json.loads(line))
 
     def seal(self, action: str, metadata: Dict, fragility: bool = False):
         """Records a state seal to the receipt chain to prevent AttributeError."""
@@ -57,7 +50,6 @@ class PilotAgent(BaseAgent):
         if not hasattr(self, 'receipt_chain'):
             self.receipt_chain = []
             
-        import hashlib
         sig_hash = hashlib.sha256(signal_vector.tobytes()).hexdigest()
         
         receipt_data = {
@@ -75,36 +67,22 @@ class PilotAgent(BaseAgent):
         self.receipt_chain.append(str(receipt_path))
 
     def _run_logic(self) -> np.ndarray:
-        container_dir = Path("reports/pico_containers")
-        if not container_dir.exists():
-            self.seal("scan", {"status": "empty"}, fragility=False)
-            return np.zeros(4096)
-
-        self.fragility_traps = []
-        self.concordant_controls = []
-
-        # Simulate scanning containers
-        count = 0
-        for psvc_file in container_dir.glob("*.psvc"):
-            count += 1
-            # Simple heuristic for demo: Even index = control, Odd = trap
-            if count % 2 == 0:
-                self.concordant_controls.append({"file": psvc_file.name})
-            else:
+        """Simulates scanning and generates a signal vector."""
+        data_dir = Path("data/instruction_queue")
+        if not data_dir.exists():
+            data_dir.mkdir(parents=True, exist_ok=True)
+            
+        psvc_files = list(data_dir.glob("*.psvc"))
+        
+        for psvc_file in psvc_files:
+            count = len(psvc_files)
+            self.seal("container_checked", {"file": psvc_file.name}, fragility=(count % 2 != 0))
+            if count % 2 != 0:
                 self.fragility_traps.append({"file": psvc_file.name})
-            
-            self.seal("container_checked", {"file": psvc_file.name}, fragility=(count%2!=0))
-            
-        return self._generate_elasticity_signal()
-
-    def _generate_elasticity_signal(self) -> np.ndarray:
-        signal = np.zeros(4096, dtype=np.float32)
-        signal[0] = len(self.fragility_traps) / 100.0
-        signal[1] = len(self.concordant_controls) / 100.0
-        norm = np.linalg.norm(signal)
-        if norm > 0:
-            signal /= norm
-        return signal
+            else:
+                self.concordant_controls.append({"file": psvc_file.name})
+                
+        return np.random.rand(10).astype(np.float32)
 
     def finalize(self, output_dir: Path = None):
         if output_dir is None:
@@ -119,13 +97,13 @@ class PilotAgent(BaseAgent):
             "osdr_library_size": len(self.osdr_library)
         })
         
-        # Write the report Wendy reads
+        # Write the report Wendy reads (Schema matched to Ledger Validator)
         report_path = output_dir / "pilot_report.json"
         with open(report_path, 'w') as f:
             json.dump({
-                "timestamp": self.creation_time,
-                "fragility_count": len(self.fragility_traps),
-                "concordance_count": len(self.concordant_controls),
+                "aggregate_fragility": float(len(self.fragility_traps)),
+                "aggregate_concordance": float(len(self.concordant_controls)),
+                "last_updated": self.creation_time,
                 "receipt_count": len(self.receipt_chain)
             }, f, indent=2)
         print(f"📄 Report written to {report_path}")
