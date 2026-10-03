@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-03T20:05:38.769Z | Hash: 8b06c14a52a344d3fdd093310ec82100dea941ad8fef1c59f57b3e7e2761bfea -->
+<!-- Last updated: 2026-10-03T20:17:44.595Z | Hash: dcf539c4c347d09184bc1aa68ee3ca60d56817df737772ea3f3b9dd870273523 -->
 
 ```
 psivicom.github.io/
@@ -465,6 +465,7 @@ psivicom.github.io/
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── Synopsis_orchestrator_agent.md
+│   ├── WENDY_SELF_OPTIMIZATION_PROTOCOL.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── experimental_wendy_latency.md
@@ -587,6 +588,8 @@ psivicom.github.io/
 │   │   └── state_2_f8b95d782471.psvc
 │   ├── scientific_reports/
 │   │   ├── auto_report_1790731017.json
+│   │   ├── healing_report_4307a992cdba.json
+│   │   ├── healing_vector_4307a992cdba.npy
 │   │   ├── pilot_report.json
 │   │   ├── report_instruction_spawn_agent_20260925004328207_20260925004329402336.json
 │   │   ├── report_instruction_spawn_agent_20260925042134365_20260925042135527741.json

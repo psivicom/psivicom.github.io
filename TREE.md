@@ -346,6 +346,7 @@ psivicom.github.io/
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── Synopsis_orchestrator_agent.md
+│   ├── WENDY_SELF_OPTIMIZATION_PROTOCOL.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── experimental_wendy_latency.md
@@ -468,6 +469,8 @@ psivicom.github.io/
 │   │   └── state_2_f8b95d782471.psvc
 │   ├── scientific_reports/
 │   │   ├── auto_report_1790731017.json
+│   │   ├── healing_report_4307a992cdba.json
+│   │   ├── healing_vector_4307a992cdba.npy
 │   │   ├── pilot_report.json
 │   │   ├── report_instruction_spawn_agent_20260925004328207_20260925004329402336.json
 │   │   ├── report_instruction_spawn_agent_20260925042134365_20260925042135527741.json
