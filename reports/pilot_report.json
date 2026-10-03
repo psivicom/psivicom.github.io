@@ -1,18 +1,6 @@
 {
-  "last_updated": "2026-09-28T05:55:49.445Z",
-  "total_processed_instructions": 2,
-  "aggregate_fragility": 0,
-  "aggregate_concordance": 20,
-  "recent_events": [
-    {
-      "time": "2026-09-25T04:21:35.527Z",
-      "fragility_delta": 0,
-      "concordance_delta": 10
-    },
-    {
-      "time": "2026-09-28T05:55:49.445Z",
-      "fragility_delta": 0,
-      "concordance_delta": 10
-    }
-  ]
+  "aggregate_fragility": 0.0,
+  "aggregate_concordance": 0.0,
+  "last_updated": "2026-10-03T06:28:36.138Z",
+  "receipt_count": 1
 }
