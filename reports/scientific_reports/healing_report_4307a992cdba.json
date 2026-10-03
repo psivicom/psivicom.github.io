@@ -1,0 +1,57 @@
+{
+  "status": "success",
+  "files_repaired": 11,
+  "repairs_detail": [
+    {
+      "file": "src/pipelines/research_pipeline.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.227131Z"
+    },
+    {
+      "file": "src/agents/consolidator_agent.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.227604Z"
+    },
+    {
+      "file": "src/agents/literature_agent.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.228738Z"
+    },
+    {
+      "file": "src/agents/critic_agent.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.228979Z"
+    },
+    {
+      "file": "src/agents/pollinator_pilot_agent.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.229189Z"
+    },
+    {
+      "file": "src/agents/pollinator_observer_agent.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.229487Z"
+    },
+    {
+      "file": "src/agents/forage_agent.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.230451Z"
+    },
+    {
+      "file": "src/automation/ai_planner.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.231123Z"
+    },
+    {
+      "file": "src/automation/capability_resolver.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.231681Z"
+    },
+    {
+      "file": "src/core/spatio_temporal.py",
+      "action": "removed_sys_path_hack",
+      "timestamp": "2026-10-03T20:08:46.233018Z"
+    }
+  ],
+  "timestamp": "2026-10-03T20:08:46.233837Z"
+}

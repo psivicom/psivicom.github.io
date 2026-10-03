@@ -8,8 +8,6 @@ import numpy as np
 from pathlib import Path
 from typing import List, Dict
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from base.base_agent import BaseAgent, AgentLayer
 from core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, validate_file
 

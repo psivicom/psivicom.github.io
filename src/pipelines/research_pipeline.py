@@ -10,7 +10,6 @@ from typing import List, Dict, Any
 from datetime import datetime
 
 # Add project root to path for absolute imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # Root level imports
 from psvc_reference import write_file, read_file, validate_file, content_hash, PRECISION_FLOAT16

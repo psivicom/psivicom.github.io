@@ -8,8 +8,6 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 class SpatioTemporalEngine:
     """
     Deterministic engine for spatio-temporal reasoning.

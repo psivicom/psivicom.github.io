@@ -9,8 +9,6 @@ from pathlib import Path
 from typing import List, Dict
 from datetime import datetime
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from base.base_agent import BaseAgent, AgentLayer
 
 logger = logging.getLogger(__name__)

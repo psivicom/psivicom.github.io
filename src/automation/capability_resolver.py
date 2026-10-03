@@ -10,8 +10,6 @@ import importlib
 from pathlib import Path
 from typing import Dict, Any, Optional, Type
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 from src.base.base_agent import BaseAgent, AgentLayer
 
 logger = logging.getLogger(__name__)

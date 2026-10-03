@@ -7,8 +7,6 @@ import sys
 import logging
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 from src.agents.ambassador_agent import AmbassadorAgent
 
 logger = logging.getLogger(__name__)

@@ -10,8 +10,6 @@ import numpy as np
 from pathlib import Path
 from typing import List, Dict, Any
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 logger = logging.getLogger(__name__)
 
 class AIPlanner:
