@@ -9,7 +9,6 @@ resource optimizations to maintain peak efficiency and self-scaling.
 
 import json
 import logging
-import numpy as np
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -23,7 +22,6 @@ class OptimizationAgent(BaseAgent):
     def __init__(self, name: str = "optimizer"):
         super().__init__(name, capabilities=["analyze", "optimize", "rebalance"])
         self.mesh_index_path = Path("data/mesh_index.json")
-        self.wendy_state_path = Path("data/wendy_state.json")
         self.optimization_report_path = Path("reports/optimization_report.json")
 
     def _load_mesh_state(self) -> Dict[str, Any]:
@@ -35,8 +33,8 @@ class OptimizationAgent(BaseAgent):
                 state["nodes"] = len(data.get("nodes", []))
                 state["active_agents"] = len(data.get("agents", []))
         
-        # Simulate or read actual latency from mesh_status if available
-        state["latency_ms"] = 12.5 # Placeholder: replace with actual parsing of reports/mesh_status.txt
+        # Placeholder: In a real scenario, parse actual latency from reports/mesh_status.txt
+        state["latency_ms"] = 12.5 
         state["health"] = "optimal" if state["latency_ms"] < 50.0 else "degraded"
         return state
 
@@ -44,7 +42,6 @@ class OptimizationAgent(BaseAgent):
         """Evaluates state and generates optimization directives."""
         proposals = []
         
-        # Rule 1: If node count is low, propose scaling up volunteer nodes
         if state["nodes"] < 3:
             proposals.append({
                 "action": "SCALE_UP",
@@ -53,7 +50,6 @@ class OptimizationAgent(BaseAgent):
                 "priority": "high"
             })
             
-        # Rule 2: If latency is high, propose shedding non-critical agents
         if state["latency_ms"] > 50.0:
             proposals.append({
                 "action": "SCALE_DOWN",
@@ -62,7 +58,6 @@ class OptimizationAgent(BaseAgent):
                 "priority": "critical"
             })
             
-        # Rule 3: Routine maintenance seal
         proposals.append({
             "action": "MAINTENANCE",
             "target": "vector_memory",
@@ -87,7 +82,6 @@ class OptimizationAgent(BaseAgent):
             "status": "completed"
         }
         
-        # Write the report so the mesh can act on it (or a human can review it)
         self.optimization_report_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.optimization_report_path, 'w') as f:
             json.dump(report, f, indent=2)
