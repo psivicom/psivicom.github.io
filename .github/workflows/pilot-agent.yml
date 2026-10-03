@@ -7,7 +7,7 @@ on:
 
 jobs:
   pilot-scan:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     env:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -24,16 +24,31 @@ jobs:
           python-version: '3.12'
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Execute Pilot Agent
+      - name: Execute Pilot Agent (Module Mode)
         run: python -m src.agents.pilot_agent
 
       - name: Validate Ledger Before Commit (Circuit Breaker)
         run: python -m src.core.ledger_validator reports/pilot_report.json
 
-      - name: Commit State Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore(mesh): pilot agent fragility scan"
-          branch: main
+      - name: Commit State Changes (Conflict-Proof)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "PSIVI Pilot Agent"
+          git config user.email "pilot@psivi.com"
+          
+          # 1. Fetch the absolute latest state from the remote repository
+          git fetch origin main
+          
+          # 2. Soft reset to the remote main to prevent push rejections
+          git reset --soft origin/main
+          
+          # 3. Stage the specific files the pilot agent updates
+          git add reports/pilot_report.json reports/pico_containers/ || true
+          
+          # 4. Branchless execution: Commit and push ONLY if there are actual changes
+          git diff --staged --quiet || (git commit -m "chore(mesh): pilot agent fragility scan" && git push origin main)
