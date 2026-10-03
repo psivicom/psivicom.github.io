@@ -544,6 +544,7 @@ psivicom.github.io/
 │   │   ├── literature_agent.py
 │   │   ├── neuroplasticity_agent.py
 │   │   ├── observer_agent.py
+│   │   ├── optimization_agent.py
 │   │   ├── pilot_agent.py
 │   │   ├── pollinator_observer_agent.py
 │   │   ├── pollinator_pilot_agent.py
