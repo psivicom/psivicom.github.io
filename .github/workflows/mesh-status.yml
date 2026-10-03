@@ -30,7 +30,7 @@ jobs:
       - name: Run Mesh Router
         run: python -m src.mesh.mesh_router
         
-      - name: Commit Status (Conflict-Proof)
+      - name: Commit Status (Conflict-Proof & Branchless)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -43,9 +43,9 @@ jobs:
           # 2. Soft reset to the remote main to prevent push rejections
           git reset --soft origin/main
           
-          # 3. Run the router again to capture the latest status
+          # 3. Run the router again to capture the latest status and stage it
           python -m src.mesh.mesh_router > reports/mesh_status.txt 2>&1
           git add reports/mesh_status.txt
           
-          # 4. Commit and push only if there are actual changes
+          # 4. Branchless execution: Commit and push ONLY if there are actual changes
           git diff --staged --quiet || (git commit -m "mesh: updated status report" && git push origin main)
