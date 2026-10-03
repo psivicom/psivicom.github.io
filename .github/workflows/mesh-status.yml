@@ -37,13 +37,11 @@ jobs:
           git config user.name "PSIVI Mesh Router"
           git config user.email "mesh-router@users.noreply.github.com"
           
-          # CRITICAL: Sync with remote before committing
+          # THESE TWO LINES ARE THE MAGIC FIX:
           git fetch origin main
           git reset --soft origin/main
           
-          # Generate and stage the new report
           python -m src.mesh.mesh_router > reports/mesh_status.txt 2>&1
           git add reports/mesh_status.txt
           
-          # Branchless commit and push ONLY if changes exist
           git diff --staged --quiet || (git commit -m "mesh: updated status report" && git push origin main)
