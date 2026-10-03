@@ -10,7 +10,6 @@ psivicom.github.io/
 │       ├── build-psvc-mesh.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
-│       ├── elastic-test.yml
 │       ├── fix-all-timestamps.yml
 │       ├── forage-agent.yml
 │       ├── generate-report.yml
@@ -49,7 +48,7 @@ psivicom.github.io/
 │       ├── wendy-hyper.yml
 │       ├── wendy-mailbox.yml
 │       ├── wendy-sensory.yml
-│       ├── wendy.yml 
+│       ├── wendy.yml
 │       └── workflow-integrity.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
@@ -155,6 +154,7 @@ psivicom.github.io/
 │   │   ├── deprecated_LICENSE-CC-BY-4.0.txt
 │   │   ├── deprecated_NOTICE
 │   │   ├── deprecated_base_agent.py
+│   │   ├── deprecated_elastic-test.yml
 │   │   ├── deprecated_licenseREADME.md
 │   │   ├── deprecated_test-elastic-evolution.yml
 │   │   ├── deprecated_test_elastic_evolution.py
@@ -503,6 +503,7 @@ psivicom.github.io/
 │   ├── license_audit.md
 │   ├── mesh_status.txt
 │   ├── neuro_plasticity_result_1790965601.json
+│   ├── neuro_plasticity_result_1790979978.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
