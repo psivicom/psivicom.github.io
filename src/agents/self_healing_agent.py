@@ -97,29 +97,42 @@ class SelfHealingAgent(BaseAgent):
             if norm > 1e-9:
                 vector /= norm
             
-            # 4. RFC PRECISION SCALING: Cast down to float16 (or float8/int8 depending on data type)
-            # This enforces strict VRAM Dim enforcement and minimizes mesh bandwidth.
-            # PRECISION_FLOAT16 maps to np.float16 in the PSVC reference.
+            # 4. RFC PRECISION SCALING: Cast down to float16
             vector = vector.astype(np.float16)
             
             output_dir = Path("reports/scientific_reports")
             output_dir.mkdir(parents=True, exist_ok=True)
             
-            timestamp = int(datetime.now(timezone.utc).timestamp())
-            
             # 5. Generate cryptographic content hash of the exact precision-scaled binary
             chash = content_hash(vector.tobytes())
             
-            # 6. Save the pure mathematical vector (preserving exact float16 binary precision)
-            vector_path = output_dir / f"healing_vector_{chash[:12]}.npy"
-            np.save(vector_path, vector)
+            # 6. COMPRESS VIA SHANNON-Z KERNEL (Zero-allocation Go bridge)
+            try:
+                from src.kernel.shannon_bridge import ShannonZBridge
+                
+                # Initialize bridge (loads the compiled .so library)
+                bridge = ShannonZBridge(lib_path="src/kernel/libshannon.so")
+                
+                # Compress the vector to pure entropy bytes
+                compressed_bytes = bridge.compress(vector)
+                
+                # Save the compressed binary (Massive I/O and VRAM savings)
+                vector_path = output_dir / f"healing_vector_{chash[:12]}.sz"
+                with open(vector_path, 'wb') as f:
+                    f.write(compressed_bytes)
+                    
+                logger.info(f"[SelfHealingAgent] Sealed Shannon-Z compressed vector ({len(compressed_bytes)} bytes): {vector_path.name}")
+            except Exception as e:
+                # Fallback to standard numpy save if Go kernel is not compiled yet
+                logger.warning(f"[SelfHealingAgent] Go kernel unavailable ({e}). Falling back to standard np.save.")
+                vector_path = output_dir / f"healing_vector_{chash[:12]}.npy"
+                np.save(vector_path, vector)
+                logger.info(f"[SelfHealingAgent] Sealed precision-scaled vector ({vector.dtype}): {vector_path.name}")
             
             # 7. Save the metadata sidecar
             meta_path = output_dir / f"healing_report_{chash[:12]}.json"
             with open(meta_path, 'w') as f:
                 json.dump(result, f, indent=2)
-                
-            logger.info(f"[SelfHealingAgent] Sealed precision-scaled vector ({vector.dtype}): {vector_path.name}")
 
         return result
 
