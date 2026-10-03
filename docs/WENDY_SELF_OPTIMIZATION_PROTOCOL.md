@@ -1,3 +1,5 @@
+path: ./docs/WENDY_SELF_OPTIMIZATION_PROTOCOL.md 
+
 # WENDY Self-Optimization & Healing Protocol
 **SPDX-License-Identifier:** EUPL-1.2  
 **SPDX-FileCopyrightText:** 2026 Louis-Philippe Audette | PSIVI.COM  
