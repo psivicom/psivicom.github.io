@@ -11,10 +11,16 @@ permissions:
 jobs:
   check-status:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           
@@ -22,18 +28,24 @@ jobs:
         run: pip install -r requirements.txt
         
       - name: Run Mesh Router
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: python -m src.mesh.mesh_router
         
-      - name: Commit status
+      - name: Commit Status (Conflict-Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PYTHONPATH: ${{ github.workspace }}
         run: |
           git config user.name "PSIVI Mesh Router"
           git config user.email "mesh-router@users.noreply.github.com"
+          
+          # 1. Fetch the absolute latest state from the remote repository
+          git fetch origin main
+          
+          # 2. Soft reset to the remote main to prevent push rejections
+          git reset --soft origin/main
+          
+          # 3. Run the router again to capture the latest status
           python -m src.mesh.mesh_router > reports/mesh_status.txt 2>&1
           git add reports/mesh_status.txt
-          git diff --staged --quiet || git commit -m "mesh: updated status report"
-          git push
+          
+          # 4. Commit and push only if there are actual changes
+          git diff --staged --quiet || (git commit -m "mesh: updated status report" && git push origin main)
