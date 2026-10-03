@@ -28,8 +28,9 @@ class AgentLayer(Enum):
 class BaseAgent:
     def __init__(self, name: str, capabilities: list):
         self.name = name
-        self.agent_id = name  # Ensures compatibility with agents expecting agent_id
+        self.agent_id = name
         self.capabilities = capabilities
+        self.creation_time = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
         self.state: Dict[str, Any] = {"seals": []}
         logger.info(f"🤖 Agent {name} initialized with capabilities: {capabilities}")
 
@@ -43,7 +44,7 @@ class BaseAgent:
         seal_record = {
             "action": action,
             "data": data or {},
-            "timestamp": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+            "timestamp": self.creation_time
         }
         self.state["seals"].append(seal_record)
         logger.debug(f"🔒 Sealed action: {action}")
@@ -51,7 +52,7 @@ class BaseAgent:
     def seal_result(self, data: np.ndarray, output_dir: Path, meta: Optional[Dict[str, Any]] = None):
         """Seals the agent's result into a JSON report for the mesh."""
         output_dir.mkdir(parents=True, exist_ok=True)
-        timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+        timestamp = self.creation_time
         
         report = {
             "timestamp": timestamp,
