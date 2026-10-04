@@ -209,11 +209,13 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   └── self_architect_sensory.json 
+│   │   ├── self_architect_sensory.json 
+│   │   └── wendy_routing_inquiry.json
 │   ├── processed_instructions/
 │   │   ├── genesis_self_architect.json
 │   │   ├── instruction_spawn_agent_20260925042134365.json
-│   │   └── wendy_initial_request.json
+│   │   ├── wendy_initial_request.json
+│   │   └── wendy_routing_inquiry.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
@@ -377,6 +379,8 @@ psivicom.github.io/
 │   ├── psvc-manifest.yml
 │   └── spatial-clustering.js
 ├── reports/
+│   ├── cognitive_dialogues/
+│   │   └── .gitkeep
 │   ├── history/
 │   │   ├──  __init__.py
 │   │   ├── .gitkeep
