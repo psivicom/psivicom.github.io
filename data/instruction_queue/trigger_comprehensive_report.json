@@ -1,0 +1,9 @@
+{
+  "instruction_id": "TRIGGER_COMPREHENSIVE_REPORT_V1",
+  "type": "request_report",
+  "priority": "HIGH",
+  "agent_target": "WENDY_REPORT_ASSEMBLER",
+  "action": "GENERATE_COMPREHENSIVE_REPORT",
+  "objective": "Synthesize all recently processed instructions regarding Goldstream BC, Apis mellifera, FAIR principles, and the Ethical Charter into a single, comprehensive Markdown report for the Architect.",
+  "timestamp": "2026-10-04T11:15:00Z"
+}
