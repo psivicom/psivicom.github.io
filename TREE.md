@@ -209,22 +209,7 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   ├── convo_architectural_self_critique.json
-│   │   ├── convo_daily_briefing.json
-│   │   ├── self_architect_sensory.json 
-│   │   ├── wendy_autonomous_ingestion.json
-│   │   ├── wendy_dca_microclimate.json
-│   │   ├── wendy_ethical_legal_charter.json
-│   │   ├── wendy_fair_discovery_ingestion.json
-│   │   ├── wendy_foraging_flight_zones.json
-│   │   ├── wendy_genesis_blueprint.json
-│   │   ├── wendy_jupyter_assembler.json
-│   │   ├── wendy_open_science_fair_discovery_ingestion.json
-│   │   ├── wendy_open_science_guardian.json
-│   │   ├── wendy_osdmp_optimization.json
-│   │   ├── wendy_routing_inquiry.json
-│   │   ├── wendy_self_training_cycle.json
-│   │   └── wendy_tops_interoperability.json
+│   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
 │   │   ├── convo_architectural_self_critique.json
 │   │   ├── convo_daily_briefing.json

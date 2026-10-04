@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-04T10:52:30.759Z | Hash: 6423033a4b27cbd9e2eeca28c77b001ddc2f736038537a782e3e5ad5810146c9 -->
+<!-- Last updated: 2026-10-04T11:02:22.948Z | Hash: e0a0c994433865c67f208cca6e9c4633617ddc7c1bb859e983362e6deb82f5b0 -->
 
 ```
 psivicom.github.io/
@@ -328,22 +328,7 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   ├── convo_architectural_self_critique.json
-│   │   ├── convo_daily_briefing.json
-│   │   ├── self_architect_sensory.json 
-│   │   ├── wendy_autonomous_ingestion.json
-│   │   ├── wendy_dca_microclimate.json
-│   │   ├── wendy_ethical_legal_charter.json
-│   │   ├── wendy_fair_discovery_ingestion.json
-│   │   ├── wendy_foraging_flight_zones.json
-│   │   ├── wendy_genesis_blueprint.json
-│   │   ├── wendy_jupyter_assembler.json
-│   │   ├── wendy_open_science_fair_discovery_ingestion.json
-│   │   ├── wendy_open_science_guardian.json
-│   │   ├── wendy_osdmp_optimization.json
-│   │   ├── wendy_routing_inquiry.json
-│   │   ├── wendy_self_training_cycle.json
-│   │   └── wendy_tops_interoperability.json
+│   │   └── self_architect_sensory.json 
 │   ├── processed_instructions/
 │   │   ├── convo_architectural_self_critique.json
 │   │   ├── convo_daily_briefing.json
