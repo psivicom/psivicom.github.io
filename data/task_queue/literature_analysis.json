@@ -1,0 +1,8 @@
+{
+  "task_id": "APIS_MELLIFERA_LITERATURE_V1",
+  "domain": "scientific_research",
+  "modality": "LITERATURE_TEXT",
+  "objective": "Extract and map key stressors on Apis mellifera from recent ecological papers.",
+  "vector_dim": 1024,
+  "operations": ["normalize"]
+}
