@@ -218,7 +218,6 @@ psivicom.github.io/
 │   │   ├── wendy_foraging_flight_zones.json
 │   │   ├── wendy_jupyter_assembler.json
 │   │   ├── wendy_open_science_fair_discovery_ingestion.json
-│   │   ├── wendy_open_science_guardian.json
 │   │   ├── wendy_routing_inquiry.json
 │   │   ├── wendy_self_training_cycle.json
 │   │   └── wendy_tops_interoperability.json
@@ -234,7 +233,6 @@ psivicom.github.io/
 │   │   ├── wendy_foraging_flight_zones.json
 │   │   ├── wendy_initial_request.json
 │   │   ├── wendy_jupyter_assembler.json
-│   │   ├── wendy_open_science_fair_discovery_ingestion.json
 │   │   ├── wendy_routing_inquiry.json
 │   │   └── wendy_self_training_cycle.json
 │   ├── sample-pollinator-data/
