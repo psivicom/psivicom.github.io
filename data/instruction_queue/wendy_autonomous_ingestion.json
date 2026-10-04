@@ -1,0 +1,18 @@
+{
+  "instruction_id": "INGEST_RADARSAT_GOLDSTREAM_V1",
+  "priority": "CRITICAL",
+  "agent_target": "WENDY_DATA_INGESTION_AGENT",
+  "action": "FETCH_ENCODE_AND_QUEUE",
+  "objective": "Autonomously query public Earth observation APIs for recent RADARSAT SAR scenes covering the Goldstream, BC coordinates. Download the raw GeoTIFFs, extract the VV and VH polarization bands, encode them into sparse float16 binary patches, and push them to the data/mesh_queue/ for the volunteer nodes to repair.",
+  "constraints": [
+    "Use public, open-data endpoints (e.g., RADARSAT Open Data or NASA Earthdata).",
+    "Strictly enforce float16 precision scaling before queuing to minimize bandwidth.",
+    "Calculate and log the initial Shannon entropy of the raw scenes before compression."
+  ],
+  "expected_outputs": {
+    "raw_data_location": "data/goldstream_bc/raw_ingest/",
+    "mesh_queue_payloads": "data/mesh_queue/goldstream_sar_*.psvc.json",
+    "ingestion_log": "reports/cognitive_dialogues/ingestion_log_v1.md"
+  },
+  "timestamp": "2026-10-04T16:00:00Z"
+}
