@@ -26,27 +26,18 @@ def main():
     factory = AgentFactory()
     
     try:
-        inst_count = instruction_agent.execute(factory=factory)
+        # FIX: Use the correct method name 'process_queue' instead of 'execute'
+        inst_count = instruction_agent.process_queue()
         logger.info(f"✅ Executed {inst_count} instruction(s).")
     except Exception as e:
         logger.error(f"❌ Instruction processing failed: {e}")
         inst_count = 0
     
-    # 2. Generate Reports if New Instructions Were Found OR Always Check State?
-    # Strategy: If instructions were processed, regenerate report to reflect changes.
-    # Also, if specific 'request_report' commands were in the queue, they are handled inside 
-    # the loop if we pass them correctly. 
-    
-    # Note: The current InstructionAgent only handles 'spawn_agent'. 
-    # We need to ensure 'request_report' is also routed. 
-    # For simplicity in this iteration, we assume any activity triggers a status update.
-    
+    # 2. Generate Reports if New Instructions Were Found
     if inst_count > 0:
         logger.info("📊 Triggering report generation for updated mesh state...")
         try:
             report_agent = ReportGeneratorAgent()
-            # Construct a generic instruction to force a refresh
-            # In a more advanced version, we'd parse the specific command from the queue here
             report_agent.execute({
                 "command": "request_report",
                 "params": {
