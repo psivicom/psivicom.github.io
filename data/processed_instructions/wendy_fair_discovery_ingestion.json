@@ -1,0 +1,19 @@
+{
+  "instruction_id": "FAIR_DISCOVERY_INGESTION_V1",
+  "priority": "CRITICAL",
+  "agent_target": "WENDY_OPEN_SCIENCE_AGENT",
+  "action": "QUERY_AND_INGEST_FAIR_DATA",
+  "objective": "Autonomously query open-source scientific repositories (e.g., NASA Earthdata, ESA Copernicus Open Access Hub, Dryad) for datasets relevant to Apis mellifera foraging, soil moisture, and topographic elevation in the Langford, BC region. Ingest the data strictly adhering to FAIR principles.",
+  "fair_constraints": {
+    "Findable": "Query using precise keywords: 'Apis mellifera', 'soil moisture', 'Langford BC', 'RADARSAT', 'DEM'. Record the DOI or persistent identifier of every dataset found.",
+    "Accessible": "Utilize open API endpoints or anonymous FTP/HTTPS protocols. Log the exact access URL and any required open-access authentication tokens.",
+    "Interoperable": "Identify the native format (e.g., NetCDF, GeoTIFF, CSV) and map its schema to WENDY's internal PSVC metadata standard.",
+    "Reusable": "Extract and store the dataset's license (e.g., CC-BY 4.0, Public Domain) and full citation metadata."
+  },
+  "expected_outputs": {
+    "ingested_raw_data": "data/goldstream_bc/open_science_ingest/",
+    "fair_metadata_catalog": "data/goldstream_bc/fair_dataset_catalog.json",
+    "discovery_report": "reports/cognitive_dialogues/fair_discovery_log_v1.md"
+  },
+  "timestamp": "2026-10-04T19:00:00Z"
+}
