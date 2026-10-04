@@ -1,0 +1,24 @@
+{
+  "instruction_id": "WENDY_GENESIS_BLUEPRINT_V1",
+  "priority": "CRITICAL",
+  "agent_target": "WENDY_DOCUMENTATION_ARCHITECT",
+  "action": "GENERATE_REPRODUCIBLE_JUPYTER_NOTEBOOK",
+  "objective": "Introspect the entire psivicom.github.io repository and generate a comprehensive, executable Jupyter Notebook (.ipynb) that serves as the definitive reproduction blueprint for WENDY's cognitive AI existence. This document must enable any researcher to bootstrap the PSVC mesh from zero.",
+  "blueprint_requirements": {
+    "part_1_architecture": "Markdown and diagrammatic explanation of the PSVC (Pico Service Containers) mesh, the VRAM Mesh allocator, and the Elastic Provisioner.",
+    "part_2_mathematics": "Detailed explanation of the Shannon-Z entropy compression kernel, including why float16 precision and binary WebSocket frames are mandatory for high-throughput, low-bandwidth environments.",
+    "part_3_execution": "Executable Python code cells that allow a user to clone the repo, install dependencies, and spin up a local Mesh Brain and a Volunteer Node to process a sample task.",
+    "part_4_scaling": "A dedicated section detailing how this exact architecture scales to global voluntary internet nodes and deep-space Delay-Tolerant Networking (DTN), emphasizing asynchronous binary payload routing and zero-allocation compute."
+  },
+  "fair_compliance": [
+    "Include a 'Data Provenance' cell citing all open-source scientific repositories used in WENDY's ecological models.",
+    "Ensure all generated code cells include the SPDX-License-Identifier: EUPL-1.2 header.",
+    "Write in clear, professional, space-agency-level technical English."
+  ],
+  "expected_outputs": {
+    "reproduction_notebook": "docs/wendy_genesis_blueprint.ipynb",
+    "architecture_summary": "docs/ARCHITECTURE_SUMMARY.md",
+    "generation_log": "reports/cognitive_dialogues/blueprint_generation_log.md"
+  },
+  "timestamp": "2026-10-04T20:00:00Z"
+}
