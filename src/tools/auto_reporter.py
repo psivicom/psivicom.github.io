@@ -26,7 +26,7 @@ def main():
     factory = AgentFactory()
     
     try:
-        # FIX: Use the correct method name 'process_queue' instead of 'execute'
+        # Use the correct method name 'process_queue' to read the JSON files
         inst_count = instruction_agent.process_queue()
         logger.info(f"✅ Executed {inst_count} instruction(s).")
     except Exception as e:
@@ -38,11 +38,13 @@ def main():
         logger.info("📊 Triggering report generation for updated mesh state...")
         try:
             report_agent = ReportGeneratorAgent()
+            
+            # Pass the instruction dictionary directly to the execute method
             report_agent.execute({
                 "command": "request_report",
                 "params": {
                     "topic": "Post-Instruction Status Refresh",
-                    "format": "json"
+                    "format": "markdown"
                 },
                 "path": "internal_trigger"
             })
