@@ -22,6 +22,7 @@ torchvision>=0.20.0
 torchaudio>=2.5.0
 jax>=0.4.31
 jaxlib>=0.4.31
+websockets>=11.0
 
 # ── Hugging Face / Qwen stack ──
 # Bumped for full NumPy 2.x ABI compatibility
