@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-04T08:47:46.391Z | Hash: 1b928a5c2aa8246d22fe5031fae86a3c4af0eb87b3a2d7222d16df7490ae932e -->
+<!-- Last updated: 2026-10-04T08:11:29.358Z | Hash: 66d251325cbe355695f59ebc9883ee6f71ca56f82b2722bcb24552a45c13c679 -->
 
 ```
 psivicom.github.io/
@@ -328,16 +328,9 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   ├── convo_architectural_self_critique.json
-│   │   ├── convo_daily_briefing.json
-│   │   ├── convo_scientific_synthesis.json
 │   │   ├── self_architect_sensory.json 
-│   │   ├── wendy_routing_inquiry.json
-│   │   └── wendy_self_training_cycle.json
+│   │   └── wendy_routing_inquiry.json
 │   ├── processed_instructions/
-│   │   ├── convo_architectural_self_critique.json
-│   │   ├── convo_daily_briefing.json
-│   │   ├── convo_scientific_synthesis.json
 │   │   ├── genesis_self_architect.json
 │   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   ├── wendy_initial_request.json
