@@ -1,0 +1,19 @@
+{
+  "instruction_id": "TOPS_INTEROPERABILITY_STANDARDIZATION_V1",
+  "priority": "CRITICAL",
+  "agent_target": "WENDY_DATA_TRANSLATION_AGENT",
+  "action": "CONVERT_TO_PSVC_STANDARD",
+  "objective": "Process the heterogeneously formatted open-science data ingested from the FAIR discovery phase. Convert native scientific formats (NetCDF, GeoTIFF) into WENDY's standardized, precision-scaled PSVC binary payloads, ensuring zero loss of geospatial referencing or scientific metadata.",
+  "processing_rules": [
+    "Parse NetCDF/GeoTIFF geospatial bounds and reproject to WGS84 if necessary.",
+    "Cast continuous scientific variables (e.g., soil moisture %, elevation) to strict np.float16 precision to minimize mesh bandwidth.",
+    "Attach the original dataset's DOI, license, and source URL to the PSVC container metadata.",
+    "Calculate the Shannon entropy of the standardized array to determine optimal volunteer node routing."
+  ],
+  "expected_outputs": {
+    "standardized_mesh_queue": "data/mesh_queue/fair_standardized_*.psvc.json",
+    "binary_payloads": "data/mesh_queue/fair_standardized_*.payload.bin",
+    "interoperability_report": "reports/cognitive_dialogues/tops_standardization_log_v1.md"
+  },
+  "timestamp": "2026-10-04T19:15:00Z"
+}
