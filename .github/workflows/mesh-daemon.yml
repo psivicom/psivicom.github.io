@@ -68,6 +68,11 @@ jobs:
       - name: Run Self-Healing Audit (Autonomous Evolution)
         run: python -m src.agents.self_healing_agent
 
+      - name: Execute Pending Mesh Queue Locally (Fallback Guarantee)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python scripts/local_mesh_executor.py
+
       - name: Commit Generated Artifacts (Conflict-Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
