@@ -1,3 +1,7 @@
+# .github/workflows/mesh_evolution.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 name: Mesh Evolution
 
 on:
@@ -12,22 +16,31 @@ jobs:
   evolve:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install Dependencies
-        run: pip install -r requirements.txt
-      - name: Run Mesh Evolution
+        run: |
+          echo "📦 Installing core requirements..."
+          pip install -r requirements.txt
+          echo "🔒 Explicitly ensuring websockets is installed..."
+          pip install --upgrade websockets>=11.0
+
+      - name: Run Mesh Brain
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.mesh.mesh_brain
-      - name: Commit evolution report
+
+      - name: Commit Evolution Report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Mesh Evolution"
-          git config user.email "evolution@users.noreply.github.com"
+          git config user.email "evolution@psivi.com"
           git add reports/
-          git diff --staged --quiet || git commit -m "evolution: executed weekly mesh brain update"
-          git push
+          git diff --staged --quiet || (git commit -m "evolution: executed weekly mesh brain update [skip ci]" && git push)
