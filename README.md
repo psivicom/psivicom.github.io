@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-04T08:52:49.256Z | Hash: 2847118b4de0d38a10db6aefa34eaee8705f7b90bd4d3d2b1c332ff81f2388c9 -->
+<!-- Last updated: 2026-10-04T08:11:29.358Z | Hash: 66d251325cbe355695f59ebc9883ee6f71ca56f82b2722bcb24552a45c13c679 -->
 
 ```
 psivicom.github.io/
@@ -328,21 +328,13 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
-│   │   ├── convo_architectural_self_critique.json
-│   │   ├── convo_daily_briefing.json
 │   │   ├── self_architect_sensory.json 
-│   │   ├── wendy_autonomous_ingestion.json
-│   │   ├── wendy_routing_inquiry.json
-│   │   └── wendy_self_training_cycle.json
+│   │   └── wendy_routing_inquiry.json
 │   ├── processed_instructions/
-│   │   ├── convo_architectural_self_critique.json
-│   │   ├── convo_daily_briefing.json
-│   │   ├── convo_scientific_synthesis.json
 │   │   ├── genesis_self_architect.json
 │   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   ├── wendy_initial_request.json
-│   │   ├── wendy_routing_inquiry.json
-│   │   └── wendy_self_training_cycle.json
+│   │   └── wendy_routing_inquiry.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
