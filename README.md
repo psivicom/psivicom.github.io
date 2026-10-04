@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-04T10:16:52.116Z | Hash: 175487cb4c4ab67895eec91c79a9358d31117e355f2b57856e34d08e70232c9a -->
+<!-- Last updated: 2026-10-04T09:26:57.256Z | Hash: c35ea9b359558e412ac390e7966774135ebdbd4642e13c938591baf8df1065aa -->
 
 ```
 psivicom.github.io/
@@ -333,14 +333,10 @@ psivicom.github.io/
 │   │   ├── self_architect_sensory.json 
 │   │   ├── wendy_autonomous_ingestion.json
 │   │   ├── wendy_dca_microclimate.json
-│   │   ├── wendy_ethical_legal_charter.json
 │   │   ├── wendy_fair_discovery_ingestion.json
 │   │   ├── wendy_foraging_flight_zones.json
-│   │   ├── wendy_genesis_blueprint.json
 │   │   ├── wendy_jupyter_assembler.json
 │   │   ├── wendy_open_science_fair_discovery_ingestion.json
-│   │   ├── wendy_open_science_guardian.json
-│   │   ├── wendy_osdmp_optimization.json
 │   │   ├── wendy_routing_inquiry.json
 │   │   ├── wendy_self_training_cycle.json
 │   │   └── wendy_tops_interoperability.json
@@ -354,15 +350,10 @@ psivicom.github.io/
 │   │   ├── wendy_dca_microclimate.json
 │   │   ├── wendy_fair_discovery_ingestion.json
 │   │   ├── wendy_foraging_flight_zones.json
-│   │   ├── wendy_genesis_blueprint.json
 │   │   ├── wendy_initial_request.json
 │   │   ├── wendy_jupyter_assembler.json
-│   │   ├── wendy_open_science_fair_discovery_ingestion.json
-│   │   ├── wendy_open_science_guardian.json
-│   │   ├── wendy_osdmp_optimization.json
 │   │   ├── wendy_routing_inquiry.json
-│   │   ├── wendy_self_training_cycle.json
-│   │   └── wendy_tops_interoperability.json
+│   │   └── wendy_self_training_cycle.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
