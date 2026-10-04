@@ -24,12 +24,14 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install Core Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Force Install WebSockets
         run: |
-          echo "📦 Installing core requirements..."
-          pip install -r requirements.txt
-          echo "🔒 Explicitly ensuring websockets is installed..."
-          pip install --upgrade websockets>=11.0
+          echo "🔒 Forcing explicit installation of websockets to bypass pip resolver quirks..."
+          python -m pip install --force-reinstall websockets>=11.0
+          python -c "import websockets; print(f'✅ websockets {websockets.__version__} successfully loaded!')"
 
       - name: Run Mesh Brain
         env:
