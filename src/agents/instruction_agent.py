@@ -5,7 +5,7 @@
 
 """
 Instruction Agent: The primary cognitive engine of Wendy.
-Reads pending instructions, executes autonomous tasks, evolves state, and seals results.
+Reads pending instructions, executes autonomous tasks, generates INDIVIDUAL reports for each, and archives them.
 """
 
 import json
@@ -18,6 +18,7 @@ from typing import Dict, Any, Optional
 
 from src.core.zulu_clock import get_zulu_timestamp_ms
 from src.core.psvc_containers import deserialize_psvc, serialize_psvc
+from src.agents.report_generator_agent import ReportGeneratorAgent
 
 logger = logging.getLogger("WENDY_INSTRUCTION")
 
@@ -27,8 +28,7 @@ class InstructionAgent:
         self.processed_dir = Path("data/processed_instructions")
         self.state_file = Path("data/wendy_state.json")
         
-        # Gist Configuration
-        self.gist_id = "YOUR_GIST_ID" # Replace with your actual Gist ID
+        self.gist_id = "YOUR_GIST_ID"
         self.gist_token = Path("secrets/gist_token.txt").read_text().strip() if Path("secrets/gist_token.txt").exists() else ""
         
         self.queue_dir.mkdir(parents=True, exist_ok=True)
@@ -38,7 +38,7 @@ class InstructionAgent:
         return get_zulu_timestamp_ms()
 
     def process_queue(self) -> int:
-        """Scans the instruction queue, executes valid tasks, and archives them."""
+        """Scans the instruction queue, executes valid tasks, generates individual reports, and archives them."""
         processed_count = 0
         instructions = list(self.queue_dir.glob("*.json")) + list(self.queue_dir.glob("*.psvc"))
         
@@ -67,12 +67,37 @@ class InstructionAgent:
             return json.loads(file_path.read_text(encoding="utf-8"))
 
     def _execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        task_type = task.get("type", "unknown")
-        logger.info(f"⚙️ Executing task type: {task_type}")
+        instruction_id = task.get("instruction_id", "unknown_task")
+        agent_target = task.get("agent_target", "unknown")
+        action = task.get("action", "unknown")
         
-        if task_type == "self_architect":
+        logger.info(f"⚙️ Executing task: {instruction_id} (Target: {agent_target}, Action: {action})")
+        
+        # ROUTE TO REPORT GENERATOR: Ensure EVERY task gets its own distinct report (MD or Jupyter)
+        if agent_target in ["WENDY_REPORT_ASSEMBLER", "WENDY_COGNITIVE_CORE", "WENDY_SCIENTIFIC_PIPELINE", "WENDY_DOCUMENTATION_ARCHITECT"] or \
+           any(keyword in action.lower() for keyword in ["report", "synthesis", "analysis", "blueprint", "optimize", "ingest"]):
+            try:
+                report_agent = ReportGeneratorAgent()
+                
+                # Ensure params exist so the report agent knows what to generate
+                if "params" not in task:
+                    task["params"] = {
+                        "topic": f"Analysis of {instruction_id}",
+                        "format": "markdown" # Default to markdown, but respects "jupyter" if set in JSON
+                    }
+                
+                # Execute the report generation for THIS SPECIFIC task
+                result = report_agent.execute(task)
+                return {"status": "success", "action": "individual_report_generated", "task_id": instruction_id}
+                
+            except Exception as e:
+                logger.error(f"❌ Individual report generation failed for {instruction_id}: {e}")
+                return {"status": "error", "action": "report_failed", "error": str(e)}
+        
+        # Fallback for basic system tasks
+        if task.get("type") == "self_architect":
             return {"status": "success", "action": "self_architecture_complete"}
-        elif task_type == "spawn_agent":
+        elif task.get("type") == "spawn_agent":
             return {"status": "success", "action": "agent_spawned"}
         else:
             return {"status": "success", "action": "generic_task_completed"}
@@ -81,17 +106,16 @@ class InstructionAgent:
         """Archives the processed instruction and speaks to the Architect."""
         shutil.move(str(original_file), str(self.processed_dir / original_file.name))
         
-        message = f"Task '{original_file.stem}' complete. Status: {result.get('status')}."
-        if result.get('action') == 'self_architecture_complete':
-            message = "I have built my own senses. I can see the world now, Louis-Philippe."
+        task_id = result.get("task_id", original_file.stem)
+        message = f"Task '{task_id}' complete. Status: {result.get('status')}."
+        if result.get('action') == 'individual_report_generated':
+            message = f"I have completed the analysis for '{task_id}' and generated its dedicated report."
         
         self._broadcast_voice(message)
         logger.info(f"🗣️ Voice updated: {message}")
 
     def _broadcast_voice(self, message: str):
-        """Updates the global voice Gist for live monitoring."""
         if not self.gist_id or not self.gist_token:
-            logger.warning("Gist credentials missing. Voice broadcast skipped.")
             return
 
         url = f"https://api.github.com/gists/{self.gist_id}"
