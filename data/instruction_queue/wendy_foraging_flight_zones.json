@@ -1,0 +1,19 @@
+{
+  "instruction_id": "GOLDSTREAM_FORAGING_FLIGHT_V1",
+  "priority": "CRITICAL",
+  "agent_target": "WENDY_SCIENTIFIC_PIPELINE",
+  "action": "MAP_FORAGING_AND_SOLAR_ASPECT",
+  "objective": "Using high-resolution Digital Elevation Models (DEM) and vegetation indices, map the optimal foraging corridors and flight zones for Apis mellifera originating from Goldstream Honeyworks. Specifically identify and rank 'south-facing bases' (solar aspect > 135° and < 225°) that provide maximum morning solar radiation for hive warming, and correlate these with high-density pollen/nectar vegetation zones.",
+  "constraints": [
+    "Calculate the solar aspect and inclination from the DEM for the entire 3km radius.",
+    "Weight the foraging zones based on the soil moisture data generated in the previous task.",
+    "Define flight zones based on topographic wind shelters and direct line-of-sight to floral resources.",
+    "Output the optimal hive placement coordinates as a prioritized list."
+  ],
+  "expected_outputs": {
+    "solar_aspect_map": "data/goldstream_bc/solar_aspect_south_facing.npy",
+    "foraging_corridors": "data/goldstream_bc/pollen_nectar_hotspots.npy",
+    "hive_placement_report": "reports/cognitive_dialogues/goldstream_south_facing_optimization_v1.md"
+  },
+  "timestamp": "2026-10-04T18:15:00Z"
+}
