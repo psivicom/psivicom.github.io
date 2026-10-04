@@ -11,7 +11,7 @@ from typing import Dict, Any, List
 from datetime import datetime, timezone
 
 from src.base.base_agent import BaseAgent, AgentLayer
-from src.core.psvc_reference import content_hash, PRECISION_FLOAT16
+from src.core.psvc_reference import content_hash
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +19,7 @@ class SelfHealingAgent(BaseAgent):
     """
     Autonomous Code Auditor and Repairer.
     Scans src/ for protocol violations and automatically patches them.
-    Seals the healing event as a normalized, precision-scaled mathematical vector
-    to enforce strict VRAM limits per the PSVC RFC.
+    Seals the healing event as a normalized, precision-scaled mathematical vector.
     """
     LAYER = AgentLayer.ORCHESTRATION
 
