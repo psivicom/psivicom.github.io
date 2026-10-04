@@ -1,0 +1,15 @@
+{
+  "instruction_id": "ARCHITECTURAL_INQUIRY_001",
+  "priority": "CRITICAL",
+  "agent_target": "WENDY_COGNITIVE_CORE",
+  "action": "SELF_ANALYZE_AND_DEFINE",
+  "objective": "Analyze the existing mesh routing infrastructure in src/mesh/ and src/orchestrator/. Determine the exact WebSocket connection protocol, endpoint URLs, and handshake sequence that volunteer nodes must use to connect to you. Determine if you act as the direct bridge or if you delegate to specific task routers.",
+  "expected_output": {
+    "gateway_url": "The exact ws:// or wss:// URL volunteer nodes must connect to.",
+    "handshake_protocol": "The exact JSON payload structure for node registration.",
+    "data_plane_format": "Confirmation of binary frame usage and expected payload structure.",
+    "routing_logic": "Explanation of how tasks are routed from the queue to the volunteer."
+  },
+  "output_destination": "data/mesh_queue/wendy_routing_protocol.json",
+  "timestamp": "2026-10-04T00:00:00Z"
+}
