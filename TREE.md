@@ -216,6 +216,7 @@ psivicom.github.io/
 │   │   ├── convo_scientific_synthesis.json
 │   │   ├── genesis_self_architect.json
 │   │   ├── instruction_spawn_agent_20260925042134365.json
+│   │   ├── trigger_comprehensive_report.json
 │   │   ├── wendy_autonomous_ingestion.json
 │   │   ├── wendy_dca_microclimate.json
 │   │   ├── wendy_ethical_legal_charter.json
@@ -536,6 +537,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791028431.json
 │   ├── neuro_plasticity_result_1791045330.json
 │   ├── neuro_plasticity_result_1791063461.json
+│   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
 │   ├── synthesis_2026-09-17.md
