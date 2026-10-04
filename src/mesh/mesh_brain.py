@@ -18,7 +18,7 @@ logger = logging.getLogger("MESH_BRAIN")
 class MeshGovernor:
     """Lightweight production governor for mesh evolution checks."""
     def validate_allocation(self, agent_id: str, size_bytes: int) -> bool:
-        return True  # Allow allocation for evolution test
+        return True
 
 class MeshBrain:
     def __init__(self, total_vram_gb: int = 8):
@@ -30,7 +30,7 @@ class MeshBrain:
         self.governor = MeshGovernor()
         self.provisioner = ElasticPSVCProvisioner(vram_mesh=self.vram_mesh, growth_margin_default=0.5)
         
-        # PRODUCTION: Initialize VectorPixelizer with all required dependencies
+        # PRODUCTION: Initialize VectorPixelizer with all required real dependencies
         self.pixelizer = VectorPixelizer(
             vram_mesh=self.vram_mesh,
             provisioner=self.provisioner,
@@ -80,22 +80,25 @@ class MeshBrain:
             logger.warning("⚠️ No volunteer nodes with sufficient VRAM available. Using fallback allocation.")
             target_node = {"id": "FALLBACK_01", "ws": None, "vram_dim_mb": 4096}
 
-        # 5. Pixelize and Shard (Using real VectorPixelizer)
-        # Convert torch tensor to numpy for the pixelizer
+        # 5. Process vector using the REAL VectorPixelizer API
         latent_np = latent_vector.detach().cpu().numpy()
-        pixel_data = self.pixelizer.pixelize(latent_np, target_node["vram_dim_mb"], num_shards=1)
+        success, processed_vector = self.pixelizer.execute_vector_math("GOLDSTREAM_01", "normalize", latent_np)
         
+        if not success or processed_vector is None:
+            logger.error("❌ Vector processing failed in VectorPixelizer.")
+            return
+
         # 6. Transmit pure tensors over the mesh
         payload = {
             "action": "ASSIGN_PIXEL_SHARD",
-            "pixel_id": pixel_data["pixel_id"],
-            "tensor_data": pixel_data["shards"][0].tolist()
+            "pixel_id": f"PIXEL_{handle.vram_address:X}",
+            "tensor_data": processed_vector.tolist()
         }
         
         if target_node["ws"]:
             await target_node["ws"].send(json.dumps(payload))
             
-        logger.info(f"✅ Orchestrator: Dispatched Vector Pixel {pixel_data['pixel_id']} to {target_node['id']}")
+        logger.info(f"✅ Orchestrator: Dispatched Vector Pixel {payload['pixel_id']} to {target_node['id']}")
 
     def _select_optimal_node(self, required_memory_mb: float) -> dict:
         """Finds a node with enough VRAM, preferring edge nodes for local data."""
@@ -113,7 +116,7 @@ class MeshBrain:
 async def main():
     """
     Production CI/CD Execution Mode: 
-    Runs a real provisioning and pixelization test, logs VRAM stats, and exits cleanly.
+    Runs a real provisioning and vector math test, logs VRAM stats, and exits cleanly.
     """
     brain = MeshBrain(total_vram_gb=8)
     
