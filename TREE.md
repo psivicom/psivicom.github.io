@@ -209,13 +209,26 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260925004328207.psvc
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
+│   │   ├── convo_architectural_self_critique.json
+│   │   ├── convo_daily_briefing.json
 │   │   ├── self_architect_sensory.json 
-│   │   └── wendy_routing_inquiry.json
+│   │   ├── wendy_autonomous_ingestion.json
+│   │   ├── wendy_dca_microclimate.json
+│   │   ├── wendy_foraging_flight_zones.json
+│   │   ├── wendy_jupyter_assembler.json
+│   │   ├── wendy_routing_inquiry.json
+│   │   └── wendy_self_training_cycle.json
 │   ├── processed_instructions/
+│   │   ├── convo_architectural_self_critique.json
+│   │   ├── convo_daily_briefing.json
+│   │   ├── convo_scientific_synthesis.json
 │   │   ├── genesis_self_architect.json
 │   │   ├── instruction_spawn_agent_20260925042134365.json
+│   │   ├── wendy_autonomous_ingestion.json
 │   │   ├── wendy_initial_request.json
-│   │   └── wendy_routing_inquiry.json
+│   │   ├── wendy_jupyter_assembler.json
+│   │   ├── wendy_routing_inquiry.json
+│   │   └── wendy_self_training_cycle.json
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
