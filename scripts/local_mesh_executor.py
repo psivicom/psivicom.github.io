@@ -4,29 +4,33 @@
 
 import json
 import logging
-import torch
-import torch.nn.functional as F
 import numpy as np
+from numpy.lib.stride_tricks import sliding_window_view
 from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | LOCAL_EXECUTOR | %(levelname)s | %(message)s')
 logger = logging.getLogger("LOCAL_EXECUTOR")
 
-def execute_sar_spatial_repair(tensor: torch.Tensor) -> torch.Tensor:
+def execute_sar_spatial_repair(tensor_np: np.ndarray) -> np.ndarray:
     """
     Real mathematical repair for sparse RADARSAT SAR data.
     Applies a 3x3 Lee-filter style convolution to reduce speckle noise.
-    (Identical to the logic used by remote volunteer nodes).
+    Implemented in pure, vectorized NumPy for maximum CI/CD speed and zero bloat.
     """
-    x = tensor.unsqueeze(0).unsqueeze(0).float() 
-    kernel = torch.tensor([
+    kernel = np.array([
         [0.1, 0.1, 0.1],
         [0.1, 0.2, 0.1],
         [0.1, 0.1, 0.1]
-    ], dtype=torch.float32).reshape(1, 1, 3, 3)
+    ], dtype=np.float32)
     
-    repaired_x = F.conv2d(x, kernel, padding=1)
-    return repaired_x.squeeze(0).squeeze(0).to(tensor.dtype)
+    # Pad the array to handle borders (edge reflection)
+    padded = np.pad(tensor_np.astype(np.float32), pad_width=1, mode='edge')
+    
+    # Vectorized 2D convolution using sliding windows (Blazing fast)
+    windows = sliding_window_view(padded, window_shape=(3, 3))
+    repaired = np.sum(windows * kernel, axis=(-2, -1))
+    
+    return repaired.astype(tensor_np.dtype)
 
 def process_local_queue():
     """Scans the mesh queue and processes any pending .psvc work units locally."""
@@ -68,7 +72,7 @@ def process_local_queue():
             
             # 3. Reconstruct Tensor
             sparse_array = np.frombuffer(raw_bytes, dtype=np_dtype).copy()
-            sparse_tensor = torch.from_numpy(sparse_array).reshape(shape)
+            sparse_tensor = sparse_array.reshape(shape)
             logger.info(f"📥 Loaded {task_id} | Shape: {shape} | Size: {len(raw_bytes)} bytes")
             
             # 4. Execute Real Mathematical Repair
@@ -76,11 +80,8 @@ def process_local_queue():
             
             # 5. Save Repaired Output for Jupyter Assembly
             output_path = reports_dir / f"{task_id}_repaired.npy"
-            np.save(output_path, repaired_tensor.numpy())
+            np.save(output_path, repaired_tensor)
             logger.info(f"✅ Successfully repaired and saved: {output_path}")
-            
-            # 6. (Optional) Mark as processed by removing from queue, or move to an 'archive' folder
-            # For now, we leave it to show the workflow history, but in production you might archive it.
             
         except Exception as e:
             logger.error(f"❌ Failed to process {json_path.name}: {e}")
