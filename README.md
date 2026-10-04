@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-04T09:26:57.256Z | Hash: c35ea9b359558e412ac390e7966774135ebdbd4642e13c938591baf8df1065aa -->
+<!-- Last updated: 2026-10-04T09:28:07.422Z | Hash: c38a8e251ce7abef6f80b3ba6d51dadaf155ac2fe49f9b30c5c95c5a603d0e1a -->
 
 ```
 psivicom.github.io/
@@ -337,6 +337,7 @@ psivicom.github.io/
 │   │   ├── wendy_foraging_flight_zones.json
 │   │   ├── wendy_jupyter_assembler.json
 │   │   ├── wendy_open_science_fair_discovery_ingestion.json
+│   │   ├── wendy_open_science_guardian.json
 │   │   ├── wendy_routing_inquiry.json
 │   │   ├── wendy_self_training_cycle.json
 │   │   └── wendy_tops_interoperability.json
@@ -352,6 +353,7 @@ psivicom.github.io/
 │   │   ├── wendy_foraging_flight_zones.json
 │   │   ├── wendy_initial_request.json
 │   │   ├── wendy_jupyter_assembler.json
+│   │   ├── wendy_open_science_fair_discovery_ingestion.json
 │   │   ├── wendy_routing_inquiry.json
 │   │   └── wendy_self_training_cycle.json
 │   ├── sample-pollinator-data/
