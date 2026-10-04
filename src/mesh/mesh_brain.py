@@ -1,6 +1,6 @@
 # src/mesh/mesh_brain.py
 # SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM |
 
 import asyncio
 import websockets
