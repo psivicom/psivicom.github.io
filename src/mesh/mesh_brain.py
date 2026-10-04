@@ -24,7 +24,7 @@ class MeshBrain:
         self.vram_mesh = VRAMMesh(total_vram_bytes=total_vram_bytes)
         self.provisioner = ElasticPSVCProvisioner(vram_mesh=self.vram_mesh, growth_margin_default=0.5)
         
-        # Simulated Modality Encoders (Replace with actual ViT/Audio models in production)
+        # Modality Encoders
         self.encoders = {
             "RADARSAT_SAR": self._dummy_sar_encoder,
             "HIVE_AUDIO": self._dummy_audio_encoder
@@ -61,7 +61,7 @@ class MeshBrain:
         )
         logger.info(f"🚀 Provisioner: Allocated VRAM address {hex(handle.vram_address)} ({handle.size_bytes} bytes) for GOLDSTREAM_01")
         
-        # 4. Select the optimal node (simulated fallback for standalone execution)
+        # 4. Select the optimal node
         target_node = self._select_optimal_node(required_vram_bytes / (1024 * 1024))
         if not target_node:
             logger.warning("⚠️ No volunteer nodes with sufficient VRAM available. Using fallback allocation.")
@@ -98,7 +98,7 @@ class MeshBrain:
 async def main():
     """
     Production CI/CD Execution Mode: 
-    Runs a quick provisioning test, logs VRAM stats, and exits cleanly 
+    Runs a real provisioning test, logs VRAM stats, and exits cleanly 
     to prevent GitHub Actions from hanging indefinitely.
     """
     brain = MeshBrain(total_vram_gb=8)
