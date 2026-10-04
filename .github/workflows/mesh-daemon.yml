@@ -48,6 +48,7 @@ jobs:
       - name: Ensure Directories Exist
         run: |
           mkdir -p data/instruction_queue
+          mkdir -p data/processed_instructions
           mkdir -p reports/scientific_reports
           mkdir -p logs
           mkdir -p config
@@ -86,8 +87,8 @@ jobs:
           # 2. Soft reset to the remote main to prevent push rejections
           git reset --soft origin/main
           
-          # 3. Stage all autonomous changes
-          git add src/agents/*_agent.py reports/scientific_reports/ data/instruction_queue/ config/*.json config/*.yaml src/ || true
+          # 3. Stage all autonomous changes (Now includes data/processed_instructions/)
+          git add src/agents/*_agent.py reports/ data/instruction_queue/ data/processed_instructions/ config/*.json config/*.yaml src/ || true
           
           # 4. Branchless execution: Commit and push ONLY if there are actual changes
           git diff --staged --quiet || (git commit -m "auto: daemon processed instructions, optimized system, healed code, and generated artifacts [skip ci]" && git push origin main)
