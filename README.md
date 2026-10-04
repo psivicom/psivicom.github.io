@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-03T22:11:39.255Z | Hash: 9c64ed5b0f513cfe403f5006313881ba04011b17bf81f93ff7db397679c8fae3 -->
+<!-- Last updated: 2026-10-04T03:26:28.976Z | Hash: 351a7299b5b2c821781c943a0379d25905215d3e40c7e255062b7391ec8b55b9 -->
 
 ```
 psivicom.github.io/
@@ -710,6 +710,7 @@ psivicom.github.io/
 │   ├── kernel/
 │   │   ├──  __init__.py
 │   │   ├── hyper_gardener.py
+│   │   ├── libshannon.h
 │   │   ├── shannon_bridge.py
 │   │   └── shannon_z.go
 │   ├── mesh/
