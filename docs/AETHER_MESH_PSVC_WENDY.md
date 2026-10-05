@@ -16,14 +16,14 @@ Instead of a `Dockerfile`, we define a **PSVC Blueprint**. This blueprint tells 
   "wendy-breath": {
     "entry_point": "src/breath_engine.py",
     "dependencies": ["src/core/zulu_clock.py"],
-    "runtime": "python-3.11-minimal",
+    "runtime": "python-3.12-minimal",
     "health_check": "calculate_breath_phase",
     "vector_dim": 16
   },
   "wendy-gardener": {
     "entry_point": "src/kernel/hyper_gardener.py",
     "dependencies": ["src/core/sovereign_kernel.py", "src/core/psvc_containers.py"],
-    "runtime": "python-3.11-minimal",
+    "runtime": "python-3.12-minimal",
     "health_check": "HyperGardener.run",
     "vector_dim": 64
   }
