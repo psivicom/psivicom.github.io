@@ -324,6 +324,7 @@ psivicom.github.io/
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
 │   │   ├── Wendy please read.md
+│   │   ├── Wendy_biology_intelligence.md
 │   │   ├── ai-to-ai.md
 │   │   ├── ai_to_mesh_bridge.py
 │   │   ├── autoimmune_protocol_wendy.md
