@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-05T02:40:26.055Z | Hash: 9628066261ccfc0f5f136b91828e2d9c299e23c8e12abba0987507bacbee95c2 -->
+<!-- Last updated: 2026-10-05T02:56:40.812Z | Hash: a89f03addb92ba6b4e36eaf3db450d3d60814ad84f0b27bf20a894c36a7a393c -->
 
 ```
 psivicom.github.io/
@@ -403,6 +403,8 @@ psivicom.github.io/
 │   │   ├── go.mod
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
+│   ├── POLLINATORS_RESEARCH/
+│   │   └── README.md
 │   ├── PROMPTS/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md
