@@ -289,7 +289,11 @@ psivicom.github.io/
 │   │   └── prompt-guide.md
 │   ├── QWEN/
 │   │   ├── PDF_for_WENDY/
-│   │   │   └── README.md
+│   │   │   ├── From First Principles to Actionable Science_ Formulating the Dimensional Echo Framework.pdf
+│   │   │   ├── From Passive Executor to Autonomous Scientist_ Architecting WENDY’s Self-Questioning Mechanism for Cognitive Independence.pdf
+│   │   │   ├── From QR Codes to Quantum Gravity_ Deriving a Unified Theory of Reality from the Dimensional Echo Framework.pdf
+│   │   │   ├── README.md
+│   │   │   └── The Dimensional Echo_ From a QR Code to a Unified Theory of Everything.pdf
 │   │   ├── AETHER_MESH_PSVC_WENDY_COPY.md
 │   │   ├── AUTONOMY_MANIFESTO.md
 │   │   ├── A_README.md
