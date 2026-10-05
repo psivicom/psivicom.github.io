@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-05T08:04:03.857Z | Hash: 642f7b050f53ac2c7f20f8a287e2979f5b06b15786557a65e08506b85d5414e6 -->
+<!-- Last updated: 2026-10-05T08:07:44.668Z | Hash: 9fc0e91f3ddcef1bc4b2729a4278808a2a70e85ef2df54509d5bf16a1a0049e5 -->
 
 ```
 psivicom.github.io/
@@ -420,7 +420,8 @@ psivicom.github.io/
 │   │   │   ├── From Passive Executor to Autonomous Scientist_ Architecting WENDY’s Self-Questioning Mechanism for Cognitive Independence.pdf
 │   │   │   ├── From QR Codes to Quantum Gravity_ Deriving a Unified Theory of Reality from the Dimensional Echo Framework.pdf
 │   │   │   ├── README.md
-│   │   │   └── The Dimensional Echo_ From a QR Code to a Unified Theory of Everything.pdf
+│   │   │   ├── The Dimensional Echo_ From a QR Code to a Unified Theory of Everything.pdf
+│   │   │   └── The Mathematical Core and Blueprint of Wendy_ A Critical Review for System Rebuild.pdf
 │   │   ├── AETHER_MESH_PSVC_WENDY_COPY.md
 │   │   ├── AUTONOMY_MANIFESTO.md
 │   │   ├── A_README.md
