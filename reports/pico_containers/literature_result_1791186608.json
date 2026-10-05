@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-10-05T07:50:08.900Z",
+  "agent": "literature",
+  "layer": "ingestion",
+  "meta": {
+    "resolved_contexts": [
+      {
+        "gene": "IGFBP7",
+        "organism": "homo_sapiens",
+        "datasets_found": 0,
+        "resolution_status": "unresolved"
+      }
+    ],
+    "datasets_discovered": 0
+  },
+  "data_summary": {
+    "shape": [
+      4096
+    ],
+    "mean": 2.1675745301763527e-05
+  }
+}
