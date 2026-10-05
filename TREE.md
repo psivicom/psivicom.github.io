@@ -288,6 +288,8 @@ psivicom.github.io/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md
 │   ├── QWEN/
+│   │   ├── PDF_for_WENDY/
+│   │   │   └── README.md
 │   │   ├── AETHER_MESH_PSVC_WENDY_COPY.md
 │   │   ├── AUTONOMY_MANIFESTO.md
 │   │   ├── A_README.md
