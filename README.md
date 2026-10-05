@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-05T02:58:23.882Z | Hash: a89f03addb92ba6b4e36eaf3db450d3d60814ad84f0b27bf20a894c36a7a393c -->
+<!-- Last updated: 2026-10-05T03:02:02.880Z | Hash: efc13b8820f44b00e6c0164bb0eab6d4fc36a206024f263431278c8dd8ae379f -->
 
 ```
 psivicom.github.io/
@@ -404,7 +404,11 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── POLLINATORS_RESEARCH/
-│   │   └── README.md
+│   │   ├── Basic Beekeeping - 2 - The Bee Hives.pdf
+│   │   ├── Ch10FallandWinter.pdf
+│   │   ├── README.md
+│   │   ├── UADA BeeCourse_Lesson_01.pdf
+│   │   └── polinator_habitat_guide_-_2021.pdf
 │   ├── PROMPTS/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md

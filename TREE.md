@@ -285,7 +285,11 @@ psivicom.github.io/
 │   │   ├── update-tree.yml
 │   │   └── usethisinreadme.md
 │   ├── POLLINATORS_RESEARCH/
-│   │   └── README.md
+│   │   ├── Basic Beekeeping - 2 - The Bee Hives.pdf
+│   │   ├── Ch10FallandWinter.pdf
+│   │   ├── README.md
+│   │   ├── UADA BeeCourse_Lesson_01.pdf
+│   │   └── polinator_habitat_guide_-_2021.pdf
 │   ├── PROMPTS/
 │   │   ├── function_zulu_time.py
 │   │   └── prompt-guide.md
