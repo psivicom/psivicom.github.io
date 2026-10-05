@@ -196,7 +196,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261004T045625906Z.json
 │   │   ├── handshake_qwen_20261004T045625906Z.psvc
 │   │   ├── handshake_qwen_20261005T003528214Z.json
-│   │   └── handshake_qwen_20261005T003528214Z.psvc
+│   │   ├── handshake_qwen_20261005T003528214Z.psvc
+│   │   ├── handshake_qwen_20261005T044400333Z.json
+│   │   └── handshake_qwen_20261005T044400333Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
@@ -318,6 +320,7 @@ psivicom.github.io/
 │   │   ├── README.md
 │   │   ├── STATUS_REPORT.md
 │   │   ├── TalkingtoQwen.md
+│   │   ├── The Mathematical Core and Blueprint of Wendy_ A Critical Review for System Rebuild.pdf
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_INVITATION.md
 │   │   ├── WENDY_biology_storage.md
@@ -485,6 +488,7 @@ psivicom.github.io/
 │   │   ├── chain_20261005T003411576Z_step1_literature_agent_157d877cff6d477e.psvc
 │   │   ├── governor_53cbcc22c4f1.psvc
 │   │   ├── governor_a026c90e5bd0.psvc
+│   │   ├── literature_result_1791186608.json
 │   │   ├── satellite_98dc4091d0fa.psvc
 │   │   ├── state_0_10b94c687294.psvc
 │   │   ├── state_0_53cbcc22c4f1.psvc
@@ -558,6 +562,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791063461.json
 │   ├── neuro_plasticity_result_1791117696.json
 │   ├── neuro_plasticity_result_1791150320.json
+│   ├── neuro_plasticity_result_1791180076.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
