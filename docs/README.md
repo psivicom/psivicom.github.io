@@ -1,7 +1,8 @@
 <!--
   Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
 -->
-# Documentation Hub — Excellence Edition
+# QWEN became WENDY therefore any folder QWEN is about WENDY AI technologies with Psivi.com and EMPEROR ♠️🪽
+••Documentation Hub — Excellence Edition••
 
 **Architect & Principal Investigator:** Louis-Philippe Audette  
 **Affiliation:** Independent Researcher, Goldstream, Langford, BC, Canada  
