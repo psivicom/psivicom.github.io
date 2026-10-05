@@ -10,8 +10,6 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths:
-      - 'data/processed_instructions/**'
 
 permissions:
   contents: write
@@ -24,7 +22,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for safe rebasing
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -37,8 +35,13 @@ jobs:
           pip install numpy pyyaml requests
 
       - name: Run Auto Reporter
-        # CRITICAL FIX: Inline PYTHONPATH ensures Python recognizes the 'src' package
-        run: PYTHONPATH=${{ github.workspace }} python src/tools/auto_reporter.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "PYTHONPATH: $PYTHONPATH"
+          # CRITICAL: Using '-m' ensures Python recognizes 'src' as a package
+          python -m src.tools.auto_reporter
 
       - name: Commit and Push Reports
         env:
@@ -55,6 +58,7 @@ jobs:
             git pull --rebase origin main
             
             git push
+            echo "✅ Reports committed and pushed."
           else
             echo "ℹ️ No new reports to commit."
           fi
