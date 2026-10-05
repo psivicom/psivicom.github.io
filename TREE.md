@@ -194,7 +194,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261003T042529106Z.json
 │   │   ├── handshake_qwen_20261003T042529106Z.psvc
 │   │   ├── handshake_qwen_20261004T045625906Z.json
-│   │   └── handshake_qwen_20261004T045625906Z.psvc
+│   │   ├── handshake_qwen_20261004T045625906Z.psvc
+│   │   ├── handshake_qwen_20261005T003528214Z.json
+│   │   └── handshake_qwen_20261005T003528214Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
@@ -464,6 +466,10 @@ psivicom.github.io/
 │   │   ├── chain_20261002T105708342Z_step0_forage_agent_c64b29af22384c5d.psvc
 │   │   ├── chain_20261002T105708343Z_step1_literature_agent_1a78f850e1d945c4.json
 │   │   ├── chain_20261002T105708343Z_step1_literature_agent_1a78f850e1d945c4.psvc
+│   │   ├── chain_20261005T003411576Z_step0_forage_agent_ecffb816a75f45c8.json
+│   │   ├── chain_20261005T003411576Z_step0_forage_agent_ecffb816a75f45c8.psvc
+│   │   ├── chain_20261005T003411576Z_step1_literature_agent_157d877cff6d477e.json
+│   │   ├── chain_20261005T003411576Z_step1_literature_agent_157d877cff6d477e.psvc
 │   │   ├── governor_53cbcc22c4f1.psvc
 │   │   ├── governor_a026c90e5bd0.psvc
 │   │   ├── satellite_98dc4091d0fa.psvc
