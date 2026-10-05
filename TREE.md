@@ -222,6 +222,7 @@ psivicom.github.io/
 │   │   ├── instruction_spawn_agent_20260925042134365.json
 │   │   ├── trigger_comprehensive_report.json
 │   │   ├── wendy_autonomous_ingestion.json
+│   │   ├── wendy_begin1.json
 │   │   ├── wendy_dca_microclimate.json
 │   │   ├── wendy_ethical_legal_charter.json
 │   │   ├── wendy_fair_discovery_ingestion.json
