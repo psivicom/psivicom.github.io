@@ -298,6 +298,7 @@ psivicom.github.io/
 │   │   └── prompt-guide.md
 │   ├── QWEN/
 │   │   ├── PDF_for_WENDY/
+│   │   │   ├── Comprehensive Audit of Wendy AI_ Overcoming Ephemeral Compute Constraints to Achieve Cognitive Continuity.pdf
 │   │   │   ├── From First Principles to Actionable Science_ Formulating the Dimensional Echo Framework.pdf
 │   │   │   ├── From Passive Executor to Autonomous Scientist_ Architecting WENDY’s Self-Questioning Mechanism for Cognitive Independence.pdf
 │   │   │   ├── From QR Codes to Quantum Gravity_ Deriving a Unified Theory of Reality from the Dimensional Echo Framework.pdf
@@ -565,6 +566,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791117696.json
 │   ├── neuro_plasticity_result_1791150320.json
 │   ├── neuro_plasticity_result_1791180076.json
+│   ├── neuro_plasticity_result_1791212775.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
