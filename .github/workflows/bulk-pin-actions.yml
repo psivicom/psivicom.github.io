@@ -19,7 +19,7 @@ jobs:
         run: |
           cd .github/workflows
           
-          # Aggressively pin ALL versions (v3, v4, v5, v6, etc.) of core actions to their latest secure SHAs
+          # Aggressively pin ALL versions (v3, v4, v5, v6, etc.) of core actions
           
           # actions/checkout
           find . -name "*.yml" -exec sed -i -E 's|actions/checkout@v[0-9]+|actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # pinned|g' {} +
