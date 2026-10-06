@@ -10,7 +10,6 @@ on:
 
 jobs:
   heartbeat:
-    # Pinned to survive the upcoming GitHub OS upgrade
     runs-on: ubuntu-22.04
     
     steps:
@@ -57,7 +56,20 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
-          cache-dependency-path: wendy-go/go.sum
+
+      # --- NEW STEP: Automatically fix go.sum ---
+      - name: Tidy Go Modules
+        run: |
+          cd wendy-go
+          go mod tidy
+
+      - name: Commit go.sum
+        run: |
+          git config user.name "Wendy-Heartbeat"
+          git config user.email "heartbeat@psivi.com"
+          git add wendy-go/go.sum
+          git commit -m "chore: auto-update go.sum for unix dependency" || true
+          git push || true
 
       - name: Build Wendy Core
         run: |
