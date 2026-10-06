@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"wendy-go/pkg/twin" // Adjust if your go.mod module name is different (e.g., github.com/psivicom/psivicom.github.io/wendy-go)
+	"github.com/psivicom/wendy-go/pkg/twin"
 )
 
 func main() {
