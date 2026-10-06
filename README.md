@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-06T03:04:09.313Z | Hash: fd4bedf1127e92bf63271942e37c000500ac9485a372caf0b92550dd828b894e -->
+<!-- Last updated: 2026-10-06T03:05:26.750Z | Hash: cab250ba842d96b190645eb03289346c4dbde89863aaaf57e9b516cf6839f1dc -->
 
 ```
 psivicom.github.io/
@@ -885,6 +885,7 @@ psivicom.github.io/
 ├── psvc_cli.py
 ├── psvc_reference.py
 ├── requirements-core.txt
+├── requirements-ml.txt
 ├── requirements.txt
 ├── robots.txt
 ├── sitemap.xml
