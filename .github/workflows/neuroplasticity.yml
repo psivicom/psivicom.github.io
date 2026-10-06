@@ -31,8 +31,11 @@ jobs:
       - name: Validate Ledger Before Commit (Circuit Breaker)
         run: python -m src.core.ledger_validator reports/pilot_report.json
 
-      - name: Commit State Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore(mesh): neuroplasticity vector update"
-          branch: main
+      - name: Commit State Changes (In-House)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Wendy-Neuroplasticity"
+          git config user.email "neuro@psivi.com"
+          git add -A
+          git diff --staged --quiet || (git commit -m "chore(mesh): neuroplasticity vector update" && git push origin main)
