@@ -5,8 +5,9 @@ package twin
 
 import (
 	"os"
-	"syscall"
 	"unsafe"
+
+	"golang.org/x/sys/unix"
 )
 
 // PSVCHeader is the 64-byte immutable header of the cognitive twin.
@@ -42,8 +43,8 @@ func Resurrect(path string) (*Twin, error) {
 		return nil, err
 	}
 
-	// Zero-copy memory map: PROT_READ|PROT_WRITE, MAP_SHARED
-	data, err := syscall.Mmap(int(f.Fd()), 0, int(stat.Size()), syscall.PROT_READ|syscall.PROT_WRITE, syscall.MAP_SHARED)
+	// Zero-copy memory map using modern unix package
+	data, err := unix.Mmap(int(f.Fd()), 0, int(stat.Size()), unix.PROT_READ|unix.PROT_WRITE, unix.MAP_SHARED)
 	if err != nil {
 		return nil, err
 	}
@@ -65,5 +66,5 @@ func Resurrect(path string) (*Twin, error) {
 // Seal updates the timestamp and ensures the mmap is synced to disk.
 func (t *Twin) Seal() error {
 	t.Header.Timestamp = 1700000000000000000 
-	return syscall.Msync(t.Data, syscall.MS_SYNC)
+	return unix.Msync(t.Data, unix.MS_SYNC)
 }
