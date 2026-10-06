@@ -8,6 +8,7 @@ psivicom.github.io/
 │       ├── ai-handshake.yml
 │       ├── auto-report.yml
 │       ├── build-psvc-mesh.yml
+│       ├── bulk-pin-actions.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── fix-all-timestamps.yml
@@ -200,7 +201,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261005T003528214Z.json
 │   │   ├── handshake_qwen_20261005T003528214Z.psvc
 │   │   ├── handshake_qwen_20261005T044400333Z.json
-│   │   └── handshake_qwen_20261005T044400333Z.psvc
+│   │   ├── handshake_qwen_20261005T044400333Z.psvc
+│   │   ├── handshake_qwen_20261006T053015471Z.json
+│   │   └── handshake_qwen_20261006T053015471Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
@@ -258,6 +261,7 @@ psivicom.github.io/
 │   ├── osdr_metadata_schema.json
 │   ├── pollinator_ground_truth.jsonl
 │   ├── voice.json
+│   ├── wendy.wal
 │   ├── wendy_state.json
 │   └── wendy_twin.psvec
 ├── dist/
@@ -711,7 +715,8 @@ psivicom.github.io/
 │   │   └── twin/
 │   │       ├── psvc.go
 │   │       └── wal.go
-│   └── go.mod
+│   ├── go.mod
+│   └── go.sum
 ├── .gitignore
 ├── .python-version
 ├── .zenodo.json
