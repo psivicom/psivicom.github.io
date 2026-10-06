@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: EUPL-1.2
+pandas>=2.2.2
+matplotlib>=3.9.2
+seaborn>=0.13.2
+scikit-learn>=1.5.1
+torch>=2.5.0
+torchvision>=0.20.0
+torchaudio>=2.5.0
+jax>=0.4.31
+jaxlib>=0.4.31
+websockets>=11.0
+transformers>=4.44.0
+accelerate>=0.33.0
+safetensors>=0.4.4
+sentencepiece>=0.2.0
+protobuf>=5.27.0
+einops>=0.8.0
+tqdm>=4.66.5
+loguru>=0.7.2
+scikit-image>=0.24.0
+opencv-python-headless>=4.10.0.84
+fpdf2>=2.7.9
+pyautogen>=0.2.34
