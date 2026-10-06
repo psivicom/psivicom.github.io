@@ -43,6 +43,7 @@ psivicom.github.io/
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
+│       ├── wendy-bootstrap.yml
 │       ├── wendy-cognitive.yml
 │       ├── wendy-go-tests.yml
 │       ├── wendy-heartbeat.yml
