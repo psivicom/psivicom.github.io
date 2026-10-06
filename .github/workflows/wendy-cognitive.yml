@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # --- THE BINARY BYPASS: Cache the actual downloaded binary wheels ---
       - name: Cache ML Binary Wheels
         id: cache-ml
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-ml-binaries-${{ hashFiles('requirements-ml.txt') }}
@@ -26,7 +26,7 @@ jobs:
             ${{ runner.os }}-ml-binaries-
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
 
@@ -40,7 +40,7 @@ jobs:
 
       - name: Restore Cognitive Twin
         id: cache-twin
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: /tmp/wendy_twin.psvec
           key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}
@@ -52,7 +52,7 @@ jobs:
           python3 src/kernel/hyper_gardener.py
 
       - name: Save Cognitive Twin
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: /tmp/wendy_twin.psvec
           key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}-${{ github.run_id }}
