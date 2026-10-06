@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  workflows: write  # <-- This explicitly allows updating other workflow files
 
 jobs:
   pin-actions:
