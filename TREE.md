@@ -684,8 +684,7 @@ psivicom.github.io/
 │   │   ├── osdr_query.py
 │   │   └── validate_mesh.py
 │   ├── twin/
-│   │   ├── psvc.go
-│   │   └── wal.go
+│   │   └── psvc.go
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
