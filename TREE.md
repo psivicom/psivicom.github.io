@@ -46,6 +46,7 @@ psivicom.github.io/
 │       ├── wendy-bootstrap.yml
 │       ├── wendy-cognitive.yml
 │       ├── wendy-go-tests.yml
+│       ├── wendy-heartbeat.go
 │       ├── wendy-hyper.yml
 │       ├── wendy-mailbox.yml
 │       ├── wendy-sensory.yml
