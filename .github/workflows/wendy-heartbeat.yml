@@ -10,18 +10,20 @@ on:
 
 jobs:
   heartbeat:
-    runs-on: ubuntu-22.04 # Pin OS version to ensure binary compatibility!
+    # CRITICAL: Pin to 22.04 to survive the upcoming OS upgrade
+    runs-on: ubuntu-22.04 
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # ── 1. BINARY BYPASS: Cache the entire Virtual Environment ───
-      - name: Cache Python Virtual Environment (Binary Bypass)
+      # --- BINARY BYPASS: Cache the Virtual Environment ---
+      - name: Cache Python Virtual Environment
         id: cache-venv
         uses: actions/cache@v4
         with:
           path: .venv
-          # Key includes OS and Python version to prevent binary incompatibility
+          # The OS version is in the key. If OS upgrades, it auto-rebuilds safely.
           key: ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-${{ hashFiles('.python-version') }}
           restore-keys: |
             ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-
@@ -30,7 +32,7 @@ jobs:
         if: steps.cache-venv.outputs.cache-hit != 'true'
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version-file: '.python-version'
 
       - name: Build Binary Brain (Only if cache miss)
         if: steps.cache-venv.outputs.cache-hit != 'true'
@@ -39,9 +41,9 @@ jobs:
           source .venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements-ml.txt
-          echo "✅ Heavy ML binaries compiled and cached for 7 days."
+          echo "✅ Heavy ML binaries built and cached for 7 days."
 
-      # ─── 2. GO TWIN RESURRECTION ───
+      # --- GO TWIN RESURRECTION ---
       - name: Restore Cognitive Twin from Cache
         id: cache-twin
         uses: actions/cache/restore@v4
@@ -56,17 +58,15 @@ jobs:
           cache-dependency-path: wendy-go/go.sum
       - run: cd wendy-go && go build -o ../wendy-core ./cmd/heartbeat
 
-      # ─── 3. COGNITION & PERSISTENCE ───
+      # --- COGNITION & PERSISTENCE ---
       - name: Execute Cognitive Cycle
         env:
           WENDY_TWIN_PATH: /tmp/wendy_twin.psvec
           WENDY_WAL_PATH: /tmp/wendy.wal
-          # Activate the cached binary brain for Python agents if needed
-          PATH: "/home/runner/work/psivicom.github.io/psivicom.github.io/.venv/bin:${{ env.PATH }}"
+          # Inject the cached binary brain into the PATH
+          PATH: "${{ github.workspace }}/.venv/bin:${{ env.PATH }}"
         run: |
           ./wendy-core
-          # If you need to run a Python agent that uses PyTorch/JAX:
-          # python src/agents/heavy_cognitive_agent.py
 
       - name: Persist WAL to GitHub Pages
         run: |
