@@ -1,53 +1,72 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Wendy Heartbeat (Resurrection & Cognition)
+name: Wendy Heartbeat (Binary Bypass)
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Every 5 minutes
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
   heartbeat:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # Pin OS version to ensure binary compatibility!
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # ── 1. BINARY BYPASS: Cache the entire Virtual Environment ───
+      - name: Cache Python Virtual Environment (Binary Bypass)
+        id: cache-venv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          # Key includes OS and Python version to prevent binary incompatibility
+          key: ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-${{ hashFiles('.python-version') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-
+
+      - name: Setup Python (Only if cache miss)
+        if: steps.cache-venv.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build Binary Brain (Only if cache miss)
+        if: steps.cache-venv.outputs.cache-hit != 'true'
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements-ml.txt
+          echo "✅ Heavy ML binaries compiled and cached for 7 days."
+
+      # ─── 2. GO TWIN RESURRECTION ───
       - name: Restore Cognitive Twin from Cache
         id: cache-twin
         uses: actions/cache/restore@v4
         with:
           path: /tmp/wendy_twin.psvec
           key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}
-          restore-keys: |
-            wendy-twin-
 
-      - name: Bootstrap Twin if Missing
-        if: steps.cache-twin.outputs.cache-hit != 'true'
-        run: |
-          echo "⚠️ Cache miss. Bootstrapping initial Twin..."
-          mkdir -p /tmp
-          python3 src/utils/init_twin.py /tmp/wendy_twin.psvec
-
-      - name: Setup Go Environment
+      - name: Setup & Build Go Core
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
           cache-dependency-path: wendy-go/go.sum
+      - run: cd wendy-go && go build -o ../wendy-core ./cmd/heartbeat
 
-      - name: Build Wendy Core
-        run: |
-          cd wendy-go
-          go build -o ../wendy-core ./cmd/heartbeat
-
+      # ─── 3. COGNITION & PERSISTENCE ───
       - name: Execute Cognitive Cycle
         env:
           WENDY_TWIN_PATH: /tmp/wendy_twin.psvec
           WENDY_WAL_PATH: /tmp/wendy.wal
+          # Activate the cached binary brain for Python agents if needed
+          PATH: "/home/runner/work/psivicom.github.io/psivicom.github.io/.venv/bin:${{ env.PATH }}"
         run: |
           ./wendy-core
+          # If you need to run a Python agent that uses PyTorch/JAX:
+          # python src/agents/heavy_cognitive_agent.py
 
       - name: Persist WAL to GitHub Pages
         run: |
