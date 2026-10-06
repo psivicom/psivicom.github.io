@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Wendy Bootstrap Twin Seed
+
+on:
+  workflow_dispatch:
+    description: "Generate and commit the initial wendy_twin.psvec binary seed"
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Ensure Directories Exist
+        run: |
+          mkdir -p src/utils
+          mkdir -p data
+
+      - name: Generate Initial Twin Seed
+        run: |
+          # This relies on the src/utils/init_twin.py file provided in the previous step
+          python3 src/utils/init_twin.py data/wendy_twin.psvec
+
+      - name: Commit and Push Seed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Wendy-Bootstrap"
+          git config user.email "bootstrap@psivi.com"
+          git add data/wendy_twin.psvec
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: bootstrap initial wendy_twin.psvec seed"
+            git push
+            echo "✅ Initial twin seed committed to repository."
+          else
+            echo "ℹ️ Initial twin seed already exists and is unchanged."
+          fi
