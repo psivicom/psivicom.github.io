@@ -6,6 +6,7 @@ package twin
 import (
 	"crypto/sha256"
 	"encoding/binary"
+	"io"
 	"os"
 )
 
@@ -44,7 +45,7 @@ func (w *WAL) Commit(twin *Twin, mutation []byte) error {
 	}
 
 	// Update Twin header with new offset
-	offset, _ := w.file.Seek(0, os.SeekCurrent)
+	offset, _ := w.file.Seek(0, io.SeekCurrent)
 	twin.Header.WALOffset = uint64(offset)
 	return twin.Seal()
 }
