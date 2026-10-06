@@ -10,20 +10,24 @@ on:
 
 jobs:
   heartbeat:
-    # CRITICAL: Pin to 22.04 to survive the upcoming OS upgrade
     runs-on: ubuntu-22.04 
     
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # --- BINARY BYPASS: Cache the Virtual Environment ---
+      - name: 🔍 Debug: List twin directory
+        run: |
+          echo "=== Contents of wendy-go/pkg/twin/ ==="
+          ls -la wendy-go/pkg/twin/ || echo "DIRECTORY NOT FOUND!"
+          echo "=== Contents of wendy-go/ ==="
+          ls -la wendy-go/
+
       - name: Cache Python Virtual Environment
         id: cache-venv
         uses: actions/cache@v4
         with:
           path: .venv
-          # The OS version is in the key. If OS upgrades, it auto-rebuilds safely.
           key: ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-${{ hashFiles('.python-version') }}
           restore-keys: |
             ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-
@@ -41,9 +45,7 @@ jobs:
           source .venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements-ml.txt
-          echo "✅ Heavy ML binaries built and cached for 7 days."
 
-      # --- GO TWIN RESURRECTION ---
       - name: Restore Cognitive Twin from Cache
         id: cache-twin
         uses: actions/cache/restore@v4
@@ -56,14 +58,16 @@ jobs:
         with:
           go-version: '1.22'
           cache-dependency-path: wendy-go/go.sum
-      - run: cd wendy-go && go build -o ../wendy-core ./cmd/heartbeat
+      
+      - name: Build Wendy Core
+        run: |
+          cd wendy-go
+          go build -o ../wendy-core ./cmd/heartbeat
 
-      # --- COGNITION & PERSISTENCE ---
       - name: Execute Cognitive Cycle
         env:
           WENDY_TWIN_PATH: /tmp/wendy_twin.psvec
           WENDY_WAL_PATH: /tmp/wendy.wal
-          # Inject the cached binary brain into the PATH
           PATH: "${{ github.workspace }}/.venv/bin:${{ env.PATH }}"
         run: |
           ./wendy-core
