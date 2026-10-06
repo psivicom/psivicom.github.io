@@ -27,7 +27,6 @@ func NewWAL(path string) (*WAL, error) {
 
 // Commit writes a mutation with a SHA256 integrity seal.
 func (w *WAL) Commit(twin *Twin, mutation []byte) error {
-	// Record Format: [4 bytes length][mutation payload][32 bytes SHA256]
 	hash := sha256.Sum256(mutation)
 	record := make([]byte, 4+len(mutation)+32)
 	
