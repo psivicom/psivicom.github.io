@@ -765,6 +765,7 @@ psivicom.github.io/
 ├── psivimanesh.html
 ├── psvc_cli.py
 ├── psvc_reference.py
+├── requirements-core.txt
 ├── requirements.txt
 ├── robots.txt
 ├── sitemap.xml
