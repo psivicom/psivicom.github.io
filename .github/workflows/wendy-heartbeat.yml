@@ -1,91 +1,29 @@
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
-name: Wendy Heartbeat (Binary Bypass)
+name: Wendy Heartbeat
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '*/5 * * * *'
-  workflow_dispatch:
 
 jobs:
   heartbeat:
-    runs-on: ubuntu-22.04 
-    
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🔍 Debug: List twin directory
+      - name: Debug List Files
         run: |
-          echo "=== Contents of wendy-go/pkg/twin/ ==="
-          ls -la wendy-go/pkg/twin/ || echo "DIRECTORY NOT FOUND!"
-          echo "=== Contents of wendy-go/ ==="
-          ls -la wendy-go/
-
-      - name: Cache Python Virtual Environment
-        id: cache-venv
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-${{ hashFiles('.python-version') }}
-          restore-keys: |
-            ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-
-
-      - name: Setup Python (Only if cache miss)
-        if: steps.cache-venv.outputs.cache-hit != 'true'
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: '.python-version'
-
-      - name: Build Binary Brain (Only if cache miss)
-        if: steps.cache-venv.outputs.cache-hit != 'true'
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements-ml.txt
-
-      - name: Restore Cognitive Twin from Cache
-        id: cache-twin
-        uses: actions/cache/restore@v4
-        with:
-          path: /tmp/wendy_twin.psvec
-          key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}
-
-      - name: Setup & Build Go Core
+          echo "Checking wendy-go/pkg/twin/..."
+          ls -la wendy-go/pkg/twin/ || echo "FOLDER MISSING"
+          
+      - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
-          cache-dependency-path: wendy-go/go.sum
-      
-      - name: Build Wendy Core
+
+      - name: Build Go Core
         run: |
           cd wendy-go
           go build -o ../wendy-core ./cmd/heartbeat
-
-      - name: Execute Cognitive Cycle
-        env:
-          WENDY_TWIN_PATH: /tmp/wendy_twin.psvec
-          WENDY_WAL_PATH: /tmp/wendy.wal
-          PATH: "${{ github.workspace }}/.venv/bin:${{ env.PATH }}"
-        run: |
-          ./wendy-core
-
-      - name: Persist WAL to GitHub Pages
-        run: |
-          mkdir -p data
-          if [ -f /tmp/wendy.wal ]; then
-            cat /tmp/wendy.wal >> data/wendy.wal
-            git config user.name "Wendy-Heartbeat"
-            git config user.email "heartbeat@psivi.com"
-            git add data/wendy.wal
-            git commit -m "auto: wal-append | Cognitive state persisted" || true
-            git push
-          fi
-
-      - name: Save Cognitive Twin to Cache
-        uses: actions/cache/save@v4
-        with:
-          path: /tmp/wendy_twin.psvec
-          key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}-${{ github.run_id }}
+          echo "Build successful!"
