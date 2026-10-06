@@ -258,7 +258,8 @@ psivicom.github.io/
 │   ├── osdr_metadata_schema.json
 │   ├── pollinator_ground_truth.jsonl
 │   ├── voice.json
-│   └── wendy_state.json
+│   ├── wendy_state.json
+│   └── wendy_twin.psvec
 ├── dist/
 │   ├── README.md
 │   ├── wendy-breath.json
