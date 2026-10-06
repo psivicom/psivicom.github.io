@@ -1,0 +1,51 @@
+name: Bulk Pin GitHub Actions to SHAs
+
+on:
+  workflow_dispatch:
+    description: "Run once to pin all @v4 and @v5 actions to secure SHAs"
+
+permissions:
+  contents: write
+
+jobs:
+  pin-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Pin Actions in all workflows
+        run: |
+          cd .github/workflows
+          
+          # Replace actions/checkout@v4
+          find . -name "*.yml" -exec sed -i 's|actions/checkout@v4|actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 (pinned)|g' {} +
+          
+          # Replace actions/cache@v4
+          find . -name "*.yml" -exec sed -i 's|actions/cache@v4|actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4 (pinned)|g' {} +
+          
+          # Replace actions/setup-python@v5
+          find . -name "*.yml" -exec sed -i 's|actions/setup-python@v5|actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5 (pinned)|g' {} +
+          
+          # Replace actions/setup-go@v5
+          find . -name "*.yml" -exec sed -i 's|actions/setup-go@v5|actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5 (pinned)|g' {} +
+          
+          # Replace actions/upload-artifact@v4
+          find . -name "*.yml" -exec sed -i 's|actions/upload-artifact@v4|actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4 (pinned)|g' {} +
+          
+          # Replace actions/download-artifact@v4
+          find . -name "*.yml" -exec sed -i 's|actions/download-artifact@v4|actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4 (pinned)|g' {} +
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "Wendy-Security-Bot"
+          git config user.email "security@psivi.com"
+          git add .github/workflows/
+          
+          if git diff --staged --quiet; then
+            echo "✅ No changes needed. All actions are already pinned."
+          else
+            git commit -m "chore: bulk pin all GitHub Actions to secure SHAs"
+            git push
+            echo "🎉 Successfully pinned all actions across the repository!"
+          fi
