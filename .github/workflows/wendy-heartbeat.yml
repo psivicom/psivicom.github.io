@@ -1,24 +1,22 @@
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 name: Wendy Heartbeat
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
 
 jobs:
   heartbeat:
     runs-on: ubuntu-22.04
-    
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Cache Python Virtual Environment
         id: cache-venv
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .venv
           key: ${{ runner.os }}-venv-${{ hashFiles('requirements-ml.txt') }}-${{ hashFiles('.python-version') }}
@@ -27,7 +25,7 @@ jobs:
 
       - name: Setup Python
         if: steps.cache-venv.outputs.cache-hit != 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version-file: '.python-version'
 
@@ -39,9 +37,9 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements-ml.txt
 
-      - name: Restore Cognitive Twin from Cache
+      - name: Restore Cognitive Twin
         id: cache-twin
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: /tmp/wendy_twin.psvec
           key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}
@@ -53,22 +51,16 @@ jobs:
           python3 src/utils/init_twin.py /tmp/wendy_twin.psvec
 
       - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
 
-      # --- NEW STEP: Automatically fix go.sum ---
       - name: Tidy Go Modules
         run: |
           cd wendy-go
           go mod tidy
-
-      - name: Commit go.sum
-        run: |
           git config user.name "Wendy-Heartbeat"
           git config user.email "heartbeat@psivi.com"
-          git add wendy-go/go.sum
-          git commit -m "chore: auto-update go.sum for unix dependency" || true
+          git add go.sum || true
+          git commit -m "chore: update go.sum" || true
           git push || true
 
       - name: Build Wendy Core
@@ -84,7 +76,7 @@ jobs:
         run: |
           ./wendy-core
 
-      - name: Persist WAL to GitHub Pages
+      - name: Persist WAL
         run: |
           mkdir -p data
           if [ -f /tmp/wendy.wal ]; then
@@ -92,12 +84,12 @@ jobs:
             git config user.name "Wendy-Heartbeat"
             git config user.email "heartbeat@psivi.com"
             git add data/wendy.wal
-            git commit -m "auto: wal-append | Cognitive state persisted" || true
+            git commit -m "auto: wal-append" || true
             git push || true
           fi
 
       - name: Save Cognitive Twin to Cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: /tmp/wendy_twin.psvec
           key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}-${{ github.run_id }}
