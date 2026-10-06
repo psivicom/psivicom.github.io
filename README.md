@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-05T23:51:36.908Z | Hash: 5c7175039210f078f5a931ee0831e38c1c32827df44e613ec189babd016f3274 -->
+<!-- Last updated: 2026-10-06T00:51:18.418Z | Hash: b32b77998c7ab4fe24408da0cd90724556987ec9552c35839e49c1b5a8409a39 -->
 
 ```
 psivicom.github.io/
@@ -686,6 +686,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791150320.json
 │   ├── neuro_plasticity_result_1791180076.json
 │   ├── neuro_plasticity_result_1791212775.json
+│   ├── neuro_plasticity_result_1791245690.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
@@ -802,7 +803,8 @@ psivicom.github.io/
 │   │   ├── osdr_query.py
 │   │   └── validate_mesh.py
 │   ├── twin/
-│   │   └── psvc.go
+│   │   ├── psvc.go
+│   │   └── wal.go
 │   ├──  __init__.py
 │   ├── breath_engine.py
 │   ├── mirror_agent.py
