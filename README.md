@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-06T04:24:38.002Z | Hash: cab250ba842d96b190645eb03289346c4dbde89863aaaf57e9b516cf6839f1dc -->
+<!-- Last updated: 2026-10-06T04:34:54.138Z | Hash: 7625b6d5c92d933518e7ab9042c117e0446085ccbc86684b6dff68ebd99b01fc -->
 
 ```
 psivicom.github.io/
@@ -828,7 +828,6 @@ psivicom.github.io/
 │   │   │   ├── native.go
 │   │   │   └── native_test.go
 │   │   └── twin/
-│   │       ├── psvc.go 
 │   │       └── wal.go
 │   └── go.mod
 ├── .gitignore
