@@ -32,7 +32,8 @@ type Twin struct {
 
 // Resurrect loads the Twin from disk into a zero-copy memory-mapped region.
 func Resurrect(path string) (*Twin, error) {
-	f, err := os.Open(path)
+	// MUST be O_RDWR to allow PROT_WRITE in Mmap
+	f, err := os.OpenFile(path, os.O_RDWR, 0644)
 	if err != nil {
 		return nil, err
 	}
