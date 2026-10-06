@@ -64,7 +64,6 @@ func Resurrect(path string) (*Twin, error) {
 
 // Seal updates the timestamp and ensures the mmap is synced to disk.
 func (t *Twin) Seal() error {
-	// Note: In production, replace with time.Now().UnixNano()
 	t.Header.Timestamp = 1700000000000000000 
 	return syscall.Msync(t.Data, syscall.MS_SYNC)
 }
