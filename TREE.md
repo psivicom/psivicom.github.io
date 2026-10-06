@@ -381,6 +381,7 @@ psivicom.github.io/
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR-mapping.md
 │   ├── FAIR_CHECKLIST.md
+│   ├── GENESIS_ARCHITECTURE.md
 │   ├── GITHUB-ACTIONS-GUIDE.md
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md

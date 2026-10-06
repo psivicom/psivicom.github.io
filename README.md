@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-06T01:27:10.736Z | Hash: c3ad3de01347fe3794162e60b164ea92c607f7a7d2d48658ad9359f9f28489a4 -->
+<!-- Last updated: 2026-10-06T01:29:37.308Z | Hash: c33c9c98885ae97727ae7a1f59cc3173c610ee43e8c4f14d7ce31712bd039adf -->
 
 ```
 psivicom.github.io/
@@ -500,6 +500,7 @@ psivicom.github.io/
 │   ├── DATA_MANAGEMENT.md
 │   ├── FAIR-mapping.md
 │   ├── FAIR_CHECKLIST.md
+│   ├── GENESIS_ARCHITECTURE.md
 │   ├── GITHUB-ACTIONS-GUIDE.md
 │   ├── INTEROPERABILITY.md
 │   ├── LICENSE_COMPLIANCE.md
