@@ -1,3 +1,7 @@
+# .github/workflows/build-psvc-mesh.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 name: Build PSVC Mesh Containers
 
 on:
@@ -17,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
 
@@ -40,7 +44,7 @@ jobs:
           git config user.email "builder@psivi.com"
           git add dist/*.psvc dist/*.json
           if ! git diff --staged --quiet; then
-            git commit -m "auto: psvc-mesh \| Vector containers updated"
+            git commit -m "auto: psvc-mesh | Vector containers updated"
             git push
             echo "✅ PSVC Containers pushed to mesh."
           else
