@@ -2,8 +2,6 @@
 psivicom.github.io/
 ├── .github/
 │   └── workflows/
-│       ├── wendy/
-│       │   └── wendy-cognitive.yml
 │       ├── README.md
 │       ├── ai-handshake.yml
 │       ├── auto-report.yml
@@ -162,6 +160,7 @@ psivicom.github.io/
 │   │   ├── deprecated_test-elastic-evolution.yml
 │   │   ├── deprecated_test_elastic_evolution.py
 │   │   └── license_agent.py
+│   ├── A_wendy-cognitive.yml
 │   └── README.md
 ├── assets/
 │   ├── css/
