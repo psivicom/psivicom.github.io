@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-07T18:05:11.200Z | Hash: c23a7b1a5d0e02be5b9d597f9ded30e3b5cc57ae6d9a27460a5890622a05e25d -->
+<!-- Last updated: 2026-10-07T18:12:12.734Z | Hash: 40d146bff8fb1a4350490eb21b4b7533673cf084c2248e8719373e24aa4f2f91 -->
 
 ```
 psivicom.github.io/
@@ -978,6 +978,7 @@ psivicom.github.io/
 ├── A5_wendy.html
 ├── A6_wendy.html
 ├── A7_wendy.html
+├── AGENTS.md
 ├── AI-COLLABORATION-PROTOCOL.md
 ├── AUTHORS.md
 ├── A_psivimanesh.html
