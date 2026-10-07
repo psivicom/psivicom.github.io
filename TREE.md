@@ -20,6 +20,7 @@ psivicom.github.io/
 │       ├── mesh-daemon.yml
 │       ├── mesh-governor.yml
 │       ├── mesh-status.yml
+│       ├── mesh-synthesizer.yml
 │       ├── mesh-validate.yml
 │       ├── mesh.yml
 │       ├── mesh_evolution.yml
@@ -37,7 +38,6 @@ psivicom.github.io/
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml
-│       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml

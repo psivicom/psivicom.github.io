@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-07T17:20:44.160Z | Hash: f7ee223352e6c6fd68632c7cb0d34aceee9224e3bce5ff8dccdcaad0b7d172c6 -->
+<!-- Last updated: 2026-10-07T17:33:03.152Z | Hash: c23a7b1a5d0e02be5b9d597f9ded30e3b5cc57ae6d9a27460a5890622a05e25d -->
 
 ```
 psivicom.github.io/
@@ -139,6 +139,7 @@ psivicom.github.io/
 │       ├── mesh-daemon.yml
 │       ├── mesh-governor.yml
 │       ├── mesh-status.yml
+│       ├── mesh-synthesizer.yml
 │       ├── mesh-validate.yml
 │       ├── mesh.yml
 │       ├── mesh_evolution.yml
@@ -156,7 +157,6 @@ psivicom.github.io/
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml
-│       ├── synthesizer-agent.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
