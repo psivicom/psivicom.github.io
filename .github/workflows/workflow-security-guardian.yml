@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   check-pinned-actions:
-    name: Verify Immutable Action SHAs
+    name: Verify Immutable Action SHAs & Enforce Constitution
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -45,4 +45,34 @@ jobs:
             exit 1
           else
             echo "✅ SUCCESS: All GitHub Actions across all subdirectories are securely pinned to immutable SHAs."
+          fi
+
+      - name: Enforce Agent Constitution (New Files)
+        run: |
+          echo "🛡️ Scoring newly generated files against the Agent Constitution..."
+          VIOLATIONS=0
+          
+          # 1. Check for naked git push without rebase loop in new/modified yml files
+          if grep -rn "git push" .github/workflows/ | grep -v "git pull --rebase"; then
+            echo "❌ VIOLATION: Naked 'git push' detected without rebase shield."
+            VIOLATIONS=$((VIOLATIONS+1))
+          fi
+          
+          # 2. Check for missing [skip ci] in automated commits
+          if grep -rn "git commit" .github/workflows/ | grep -v "\[skip ci\]"; then
+            echo "❌ VIOLATION: Automated commit missing '[skip ci]' flag."
+            VIOLATIONS=$((VIOLATIONS+1))
+          fi
+          
+          # 3. Check for mutable action tags (@v4, @v5, @main)
+          if grep -rnE "uses:\s*.*@[vV0-9]|uses:\s*.*@main" .github/workflows/ | grep -v "^[[:space:]]*#"; then
+            echo "❌ VIOLATION: Unpinned GitHub Action detected."
+            VIOLATIONS=$((VIOLATIONS+1))
+          fi
+
+          if [ $VIOLATIONS -gt 0 ]; then
+            echo "🚨 Agent Constitution violated. Commit rejected."
+            exit 1
+          else
+            echo "✅ All new files comply with the Agent Constitution."
           fi
