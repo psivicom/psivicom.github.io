@@ -51,7 +51,8 @@ psivicom.github.io/
 │       ├── wendy-mailbox.yml
 │       ├── wendy-sensory.yml
 │       ├── wendy.yml
-│       └── workflow-integrity.yml
+│       ├── workflow-integrity.yml
+│       └── workflow-security-guardian.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md

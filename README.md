@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-07T01:50:20.317Z | Hash: 6b0d7198224a0d9e4042499c455b11036cec9638a7ab27fc1faef6a4850bf734 -->
+<!-- Last updated: 2026-10-07T04:59:46.989Z | Hash: 311be64f17f2256311fdc0b37706cc081f0e2143ad5798bef8f0ebacb9e083a9 -->
 
 ```
 psivicom.github.io/
@@ -170,7 +170,8 @@ psivicom.github.io/
 │       ├── wendy-mailbox.yml
 │       ├── wendy-sensory.yml
 │       ├── wendy.yml
-│       └── workflow-integrity.yml
+│       ├── workflow-integrity.yml
+│       └── workflow-security-guardian.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
