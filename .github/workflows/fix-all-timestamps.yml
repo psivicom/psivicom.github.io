@@ -1,4 +1,4 @@
-# .github/workflows/fix-timestamps.yml
+# .github/workflows/fix-all-timestamps.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0 # CRITICAL: Required for safe rebasing
 
       - name: Setup Go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
@@ -32,12 +34,27 @@ jobs:
         run: |
           NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
           echo "Setting README to $NOW"
-          sed -i "s/^\*Last updated:.*/*Last updated: $NOW*/" README.md || echo "*Last updated: $NOW*" >> README.md
+          sed -i "s/^\*Last updated:.*/\*Last updated: $NOW\*/" README.md || echo "*Last updated: $NOW*" >> README.md
 
-      - name: Commit and push
+      - name: Commit and push (Race-Condition Proof)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Louis-Philippe Audette"
           git config user.email "louis@psivi.com"
           git add -A
-          git diff --staged --quiet || git commit -m "auto: normalize ALL to sssZ via Go - $(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
-          git push
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "auto: normalize ALL to sssZ via Go - $(date -u +%Y-%m-%dT%H:%M:%S.000Z) [skip ci]"
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Timestamps normalized and pushed."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+          else
+            echo "ℹ️ No timestamp changes to commit."
+          fi
