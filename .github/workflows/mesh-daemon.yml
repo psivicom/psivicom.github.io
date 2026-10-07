@@ -27,7 +27,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # CRITICAL: Required for safe rebasing
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
@@ -74,21 +74,31 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         run: python scripts/local_mesh_executor.py
 
-      - name: Commit Generated Artifacts (Conflict-Proof)
+      - name: Commit Generated Artifacts (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Mesh Daemon (WENDY Authorized)"
           git config user.email "daemon@psivi.com"
           
-          # 1. Fetch the absolute latest state from the remote repository
-          git fetch origin main
-          
-          # 2. Soft reset to the remote main to prevent push rejections
-          git reset --soft origin/main
-          
-          # 3. Stage all autonomous changes (Now includes data/processed_instructions/)
+          # Stage all autonomous changes
           git add src/agents/*_agent.py reports/ data/instruction_queue/ data/processed_instructions/ config/*.json config/*.yaml src/ || true
           
-          # 4. Branchless execution: Commit and push ONLY if there are actual changes
-          git diff --staged --quiet || (git commit -m "auto: daemon processed instructions, optimized system, healed code, and generated artifacts [skip ci]" && git push origin main)
+          if ! git diff --staged --quiet; then
+            # [skip ci] prevents this push from triggering an infinite loop of workflows
+            git commit -m "auto: daemon processed instructions, optimized system, healed code, and generated artifacts [skip ci]"
+            
+            # THE RACE-CONDITION SHIELD:
+            # Replaces the dangerous 'git reset --soft' and '||' chain with a safe, proven rebase loop.
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed daemon artifacts."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+          else
+            echo "ℹ️ No new daemon artifacts to commit."
+          fi
