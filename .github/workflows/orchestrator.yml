@@ -26,7 +26,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0 # CRITICAL: Changed from 1 to 0 for safe rebasing
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
@@ -56,7 +56,7 @@ jobs:
           # This ensures that imports like `from src.core...` resolve correctly relative to the workspace root
           python -m src.orchestrator.chain_orchestrator
 
-      - name: Commit Generated Artifacts
+      - name: Commit Generated Artifacts (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -68,9 +68,19 @@ jobs:
           git add logs/
           
           if ! git diff --staged --quiet; then
+            # [skip ci] prevents this push from triggering an infinite loop of workflows
             git commit -m "auto: orchestrator executed dynamic DAG and sealed artifacts [skip ci]"
-            git push
-            echo "✅ Orchestrator artifacts committed."
+            
+            # THE RACE-CONDITION SHIELD:
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Orchestrator artifacts committed and pushed."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
           else
             echo "ℹ️ No new artifacts to commit."
           fi
