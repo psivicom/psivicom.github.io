@@ -25,7 +25,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # CRITICAL: Required for safe rebasing
 
       - name: Setup Python 3.12
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -42,7 +42,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.agents.instruction_agent
 
-      - name: 💾 Commit Built Artifacts
+      - name: 💾 Commit Built Artifacts (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -51,15 +51,20 @@ jobs:
           git add .github/workflows/ data/processed_instructions/ reports/scientific_reports/
           
           if ! git diff --staged --quiet; then
-            git commit -m "auto: instruction-processed | Self-architecture complete"
+            # [skip ci] is CRITICAL here to prevent this push from triggering other workflows in an infinite loop
+            git commit -m "auto: instruction-processed | Self-architecture complete [skip ci]"
             
-            # Stash any unstaged changes to prevent rebase failures
-            git stash --include-untracked || true
-            git pull --rebase origin main || true
-            git stash pop || true
-            
-            git push
-            echo "✅ Instructions processed and artifacts committed."
+            # THE RACE-CONDITION SHIELD:
+            # The standard rebase loop safely handles concurrency without fragile git stash commands.
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Instructions processed and artifacts committed."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
           else
             echo "💤 No new instructions to process."
           fi
