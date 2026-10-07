@@ -1,3 +1,4 @@
+# .github/workflows/wendy-bootstrap.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
@@ -16,6 +17,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -32,18 +35,30 @@ jobs:
           # Running as a direct file path is correct; -m is only for module names
           python3 src/utils/init_twin.py data/wendy_twin.psvec
 
-      - name: Commit and Push Seed
+      - name: Commit and Push Seed (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Wendy-Bootstrap"
           git config user.email "bootstrap@psivi.com"
-          git add data/wendy_twin.psvec
+          git add -A
           
           if ! git diff --staged --quiet; then
-            git commit -m "chore: bootstrap initial wendy_twin.psvec seed"
-            git push
-            echo "✅ Initial twin seed committed to repository."
+            # [skip ci] prevents this push from triggering an infinite loop of workflows
+            git commit -m "chore: bootstrap initial wendy_twin.psvec seed [skip ci]"
+            
+            # THE RACE-CONDITION SHIELD:
+            # Pull remote changes, rebase our commit on top, and push.
+            # Retry up to 3 times in case another agent pushes at the exact same millisecond.
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Initial twin seed committed to repository."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
           else
             echo "ℹ️ Initial twin seed already exists and is unchanged."
           fi
