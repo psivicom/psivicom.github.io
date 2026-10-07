@@ -25,13 +25,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - name: Scan for Unpinned Actions
+      - name: Scan for Unpinned Actions (Recursive)
         run: |
-          echo "🛡️ Scanning .github/workflows/ for unpinned actions..."
+          echo "🛡️ Recursively scanning .github/workflows/ for unpinned actions..."
           
-          # 1. Strip ALL comment lines (lines starting with #)
-          # 2. Search the remaining pure code for mutable tags like @v4 or @v5
-          UNPINNED=$(grep -v '^[[:space:]]*#' .github/workflows/*.yml | grep -E 'uses:\s*.*@[vV][0-9]' || true)
+          # 1. Find ALL .yml and .yaml files recursively in .github/workflows/
+          # 2. Strip ALL comment lines (lines starting with #)
+          # 3. Search the remaining pure code for mutable tags like @v4 or @v5
+          UNPINNED=$(find .github/workflows/ -type f \( -name "*.yml" -o -name "*.yaml" \) -exec grep -H -v '^[[:space:]]*#' {} + | grep -E 'uses:\s*.*@[vV][0-9]' || true)
           
           if [ -n "$UNPINNED" ]; then
             echo "❌ SECURITY VIOLATION: Unpinned actions detected!"
@@ -43,5 +44,5 @@ jobs:
             echo "🛠️ FIX: Please update these to their secure SHAs manually."
             exit 1
           else
-            echo "✅ SUCCESS: All GitHub Actions are securely pinned to immutable SHAs."
+            echo "✅ SUCCESS: All GitHub Actions across all subdirectories are securely pinned to immutable SHAs."
           fi
