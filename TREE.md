@@ -414,6 +414,8 @@ psivicom.github.io/
 │   └── template.html
 ├── js/
 │   └── mesh-map.js
+├── logs/
+│   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
 ├── mesh/
