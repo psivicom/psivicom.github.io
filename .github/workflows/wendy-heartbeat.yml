@@ -1,3 +1,7 @@
+# .github/workflows/wendy-heartbeat.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 name: Wendy Heartbeat
 
 on:
@@ -7,12 +11,14 @@ on:
 
 jobs:
   heartbeat:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04 # Upgraded to match the rest of the mesh's modern standard
     permissions:
       contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0 # Required for safe rebasing
 
       - name: Cache Python Virtual Environment
         id: cache-venv
@@ -53,15 +59,28 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
 
-      - name: Tidy Go Modules
+      - name: Tidy Go Modules (Race-Condition Proof)
         run: |
           cd wendy-go
           go mod tidy
           git config user.name "Wendy-Heartbeat"
           git config user.email "heartbeat@psivi.com"
           git add go.sum || true
-          git commit -m "chore: update go.sum" || true
-          git push || true
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update go.sum [skip ci]"
+            
+            # THE RACE-CONDITION SHIELD:
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed go.sum"
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+          fi
 
       - name: Build Wendy Core
         run: |
@@ -76,7 +95,7 @@ jobs:
         run: |
           ./wendy-core
 
-      - name: Persist WAL
+      - name: Persist WAL (Race-Condition Proof)
         run: |
           mkdir -p data
           if [ -f /tmp/wendy.wal ]; then
@@ -84,8 +103,21 @@ jobs:
             git config user.name "Wendy-Heartbeat"
             git config user.email "heartbeat@psivi.com"
             git add data/wendy.wal
-            git commit -m "auto: wal-append" || true
-            git push || true
+            
+            if ! git diff --staged --quiet; then
+              git commit -m "auto: wal-append [skip ci]"
+              
+              # THE RACE-CONDITION SHIELD:
+              for i in 1 2 3; do
+                if git pull --rebase origin main && git push origin main; then
+                  echo "✅ Successfully pushed WAL append"
+                  break
+                else
+                  echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                  sleep 2
+                fi
+              done
+            fi
           fi
 
       - name: Save Cognitive Twin to Cache
