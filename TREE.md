@@ -355,6 +355,7 @@ psivicom.github.io/
 │   │   ├── experimental_wendy_trimtolive.md
 │   │   ├── make_wendy_live.md
 │   │   ├── more_mesh_wakeup_wendy.md
+│   │   ├── precision_infrastructure_should_always_default_to_GO.md
 │   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb

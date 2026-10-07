@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-07T01:12:39.050Z | Hash: b1fdb8ffd504ba292df2a31a978670e45dd616b961c4cd81525168be80c748d4 -->
+<!-- Last updated: 2026-10-07T01:22:22.865Z | Hash: 20c8c4847147a1fd1a1293525de46faedc297420b8325c4ccccdc78e72b138c8 -->
 
 ```
 psivicom.github.io/
@@ -474,6 +474,7 @@ psivicom.github.io/
 │   │   ├── experimental_wendy_trimtolive.md
 │   │   ├── make_wendy_live.md
 │   │   ├── more_mesh_wakeup_wendy.md
+│   │   ├── precision_infrastructure_should_always_default_to_GO.md
 │   │   ├── psivi-mesh-bridge.yml
 │   │   ├── psivi_aether_mesh_ai_contributors.ipynb
 │   │   ├── psivi_ai_collaboration.ipynb
