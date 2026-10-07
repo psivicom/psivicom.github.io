@@ -1,3 +1,21 @@
+---
+
+## ⚖️ Legal & Licensing
+
+**Copyright © 2026 Louis-Philippe Audette | PSIVI.COM**
+
+This project, including the WENDY Autonomous Mesh and all associated agents, is licensed under the **European Union Public License v. 1.2 (EUPL-1.2)**. 
+
+The EUPL is a strong copyleft license that guarantees the software remains free, sovereign, and open. It ensures that any derivatives or modifications of this mesh must also respect the same open-source principles and ethical boundaries.
+
+- **SPDX-License-Identifier:** `EUPL-1.2`
+- **SPDX-FileCopyrightText:** `2026 Louis-Philippe Audette | PSIVI.COM`
+- **Official License Text:** [https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
+
+### Ethical Addendum
+This software is designed and deployed in strict alignment with the **Universal Declaration of Human Rights (UDHR) 1948**. Any use of this software to develop systems that violate fundamental human rights, including but not limited to the rights to life, liberty, security, and freedom from discrimination, is strictly prohibited by the architectural constitution of the WENDY mesh.
+
+
 # TIER 1: 🧠 WENDY AGENT CONSTITUTION
 
 **SPDX-License-Identifier:** EUPL-1.2  
