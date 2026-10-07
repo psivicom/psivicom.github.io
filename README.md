@@ -115,13 +115,13 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-07T05:09:46.281Z | Hash: 311be64f17f2256311fdc0b37706cc081f0e2143ad5798bef8f0ebacb9e083a9 -->
+<!-- Last updated: 2026-10-07T05:34:41.278Z | Hash: 61933f0fa6f0f910185c6169323f765c7072f9c1256ecf4036e1bdbc9787a7f2 -->
 
 ```
 psivicom.github.io/
 ├── .github/
 │   └── workflows/
-│       ├── Wendy/
+│       ├── wendy/
 │       │   └── wendy-cognitive.yml
 │       ├── README.md
 │       ├── ai-handshake.yml

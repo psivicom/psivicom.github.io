@@ -2,7 +2,7 @@
 psivicom.github.io/
 ├── .github/
 │   └── workflows/
-│       ├── Wendy/
+│       ├── wendy/
 │       │   └── wendy-cognitive.yml
 │       ├── README.md
 │       ├── ai-handshake.yml
