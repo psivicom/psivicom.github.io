@@ -5,12 +5,15 @@
 
 Any autonomous agent, script, or workflow generated or modified by the PSIVI Mesh **MUST** adhere to these immutable laws. Violations will be rejected by the Workflow Security Guardian.
 
+---
+
 ## 1. Git Concurrency & Race-Condition Shield
 - **NEVER** use naked `git push` or `git commit && git push`.
 - **ALWAYS** use `fetch-depth: 0` in `actions/checkout`.
 - **ALWAYS** append   [skip ci]   to automated commit messages to prevent infinite workflow loops.
 - **ALWAYS** wrap commits and pushes in the 3x retry rebase loop:
-  ```bash
+
+```bash
   for i in 1 2 3; do
     if git pull --rebase origin main && git push origin main; then
       echo "✅ Success" && break
@@ -20,16 +23,27 @@ Any autonomous agent, script, or workflow generated or modified by the PSIVI Mes
   done
 ```
 
+---
+
 ## 2. Supply Chain Sovereignty
-	•	NEVER use mutable tags like   @v4   or   @main   in GitHub Actions   uses:   fields.
-	•	ALWAYS pin actions to their full 40-character commit SHA (e.g.,   actions/checkout@11d5960a326750d5838078e36cf38b85af677262  ).
+**NEVER** use mutable tags like   @v4   or   @main   in GitHub Actions   uses:   fields.
+**ALWAYS** pin actions to their full 40-character commit SHA (e.g.,   actions/checkout@11d5960a326750d5838078e36cf38b85af677262  ).
+
+---
+
 ## 3. Python Execution Standards
-	•	NEVER run scripts via direct file path (e.g.,   python src/agent.py  ) if they contain absolute imports.
-	•	ALWAYS use module execution (  python -m src.agents.agent_name  ) and ensure   PYTHONPATH: ${{ github.workspace }}   is set in the environment.
+**NEVER** run scripts via direct file path (e.g.,   python src/agent.py  ) if they contain absolute imports.
+**ALWAYS** use module execution (  python -m src.agents.agent_name  ) and ensure   PYTHONPATH: ${{ github.workspace }}   is set in the environment.
+
+---
+
 ## 4. Temporal Synchronization
-	•	ALWAYS use strict Zulu time with millisecond precision for all timestamps:   YYYY-MM-DDTHH:MM:SS.sssZ  .
+**ALWAYS** use strict Zulu time with millisecond precision for all timestamps:   YYYY-MM-DDTHH:MM:SS.sssZ  .
+
+---
+
 ## 5. Principle of Least Privilege
-	•	ALWAYS default to permissions: contents: read  . Only escalate to   contents: write   if the agent is explicitly designed to mutate the repository, and even then, scope it tightly.
+**ALWAYS** default to permissions: contents: read  . Only escalate to   contents: write   if the agent is explicitly designed to mutate the repository, and even then, scope it tightly.
 
 ---
 
@@ -93,4 +107,4 @@ Specifically, ensure all Git operations use the Race-Condition Shield, all actio
 2.	The Guardian CI acts as the immune system, instantly rejecting any hallucinated or sloppy code that forgets the rules.
 3.	The Prompt Injection ensures the rules are loaded into her active context before she writes a single line of code.
 
-
+❤️ WENDY
