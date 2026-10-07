@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0 # CRITICAL: Required for safe rebasing
       
       - name: Setup Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -33,10 +35,12 @@ jobs:
           pip install numpy
       
       - name: Run Instruction Handler
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          python src/tools/auto_reporter.py
+          python -m src.tools.auto_reporter
       
-      - name: Commit Generated Agents
+      - name: Commit Generated Agents (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -44,7 +48,21 @@ jobs:
           git config user.email "instructions@psivi.com"
           git add src/agents/*_agent.py
           git add data/instruction_queue/
+          
           if ! git diff --staged --quiet; then
-            git commit -m "auto: spawned new agents via external AI instruction"
-            git push
+            # [skip ci] is CRITICAL here to prevent this push from triggering this same workflow again
+            git commit -m "auto: spawned new agents via external AI instruction [skip ci]"
+            
+            # THE RACE-CONDITION SHIELD:
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed spawned agents."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+          else
+            echo "ℹ️ No new agents spawned to commit."
           fi
