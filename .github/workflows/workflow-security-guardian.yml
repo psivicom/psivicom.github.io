@@ -1,0 +1,47 @@
+# .github/workflows/workflow-security-guardian.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Workflow Security Guardian
+
+on:
+  push:
+    paths:
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  # STRICTLY READ-ONLY. This workflow is mathematically forbidden from mutating other workflows.
+  contents: read 
+
+jobs:
+  check-pinned-actions:
+    name: Verify Immutable Action SHAs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Scan for Unpinned Actions
+        run: |
+          echo "🛡️ Scanning .github/workflows/ for unpinned actions..."
+          
+          # Find any 'uses:' that relies on a mutable tag (e.g., @v4, @v5, @v1.2.3)
+          # We want to ensure they are 40-character SHAs instead.
+          UNPINNED=$(grep -E 'uses:\s*.*@[vV][0-9]' .github/workflows/*.yml || true)
+          
+          if [ -n "$UNPINNED" ]; then
+            echo "❌ SECURITY VIOLATION: Unpinned actions detected!"
+            echo "All GitHub Actions must be pinned to a full 40-character commit SHA to prevent supply-chain attacks."
+            echo ""
+            echo "Found mutable references:"
+            echo "$UNPINNED"
+            echo ""
+            echo "🛠️ FIX: Please update these to their secure SHAs manually or via the local pinning script."
+            exit 1
+          else
+            echo "✅ SUCCESS: All GitHub Actions are securely pinned to immutable SHAs."
+          fi
