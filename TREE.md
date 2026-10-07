@@ -42,7 +42,6 @@ psivicom.github.io/
 │       ├── update-tree.yml
 │       ├── volunteer-mesh.yml
 │       ├── wendy-bootstrap.yml
-│       ├── wendy-cognitive.yml
 │       ├── wendy-deep-cognition.yml
 │       ├── wendy-go-tests.yml
 │       ├── wendy-heartbeat.yml
@@ -162,6 +161,7 @@ psivicom.github.io/
 │   │   ├── deprecated_test-elastic-evolution.yml
 │   │   ├── deprecated_test_elastic_evolution.py
 │   │   └── license_agent.py
+│   ├── A2_wendy-cognitive.yml
 │   ├── A_wendy-cognitive.yml
 │   └── README.md
 ├── assets/
