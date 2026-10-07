@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           token: ${{ secrets.MESH_BOT_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -29,7 +30,6 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        # Changed from 'npm ci' to 'npm install' to fix the lockfile error
         run: cd mesh && npm install
 
       - name: Aggregate mesh state
@@ -38,12 +38,30 @@ jobs:
           PAYLOAD: ${{ toJson(github.event.client_payload) }}
         run: cd mesh && node workflows/aggregate-mesh-v2.js
 
-      - name: Commit state changes
+      - name: Commit state changes (Race-Condition Proof)
+        env:
+          GITHUB_TOKEN: ${{ secrets.MESH_BOT_TOKEN }}
         run: |
           git config user.name "psvc-mesh-bot"
           git config user.email "mesh-bot@psivi.com"
-          if ! git diff --quiet || [ -n "$(git status --porcelain)" ]; then
-            git add mesh-status.json wendy_metabolism.json
+          git add -A
+          
+          # Only commit if there are actual changes
+          if ! git diff --staged --quiet; then
             git commit -m "chore(mesh): auto-update state [skip ci]"
-            git push
+            
+            # THE RACE-CONDITION SHIELD:
+            # Pull remote changes, rebase our commit on top, and push.
+            # Retry up to 3 times in case another agent pushes at the exact same millisecond.
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed state changes."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+          else
+            echo "ℹ️ No changes to commit."
           fi
