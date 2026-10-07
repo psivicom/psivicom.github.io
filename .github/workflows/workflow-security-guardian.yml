@@ -29,9 +29,9 @@ jobs:
         run: |
           echo "🛡️ Scanning .github/workflows/ for unpinned actions..."
           
-          # Find any 'uses:' that relies on a mutable tag (e.g., @v4, @v5)
-          # The regex '^\s*-?\s*uses:' ensures we ONLY match actual YAML keys, ignoring comments!
-          UNPINNED=$(grep -E '^\s*-?\s*uses:\s*.*@[vV][0-9]' .github/workflows/*.yml || true)
+          # 1. Strip ALL comment lines (lines starting with #)
+          # 2. Search the remaining pure code for mutable tags like @v4 or @v5
+          UNPINNED=$(grep -v '^[[:space:]]*#' .github/workflows/*.yml | grep -E 'uses:\s*.*@[vV][0-9]' || true)
           
           if [ -n "$UNPINNED" ]; then
             echo "❌ SECURITY VIOLATION: Unpinned actions detected!"
