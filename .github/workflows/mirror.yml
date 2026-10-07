@@ -32,9 +32,31 @@ jobs:
       - name: Install Dependencies
         run: pip install numpy pyyaml requests python-dateutil
 
-      - name: Reflect and Correct
+      - name: Reflect and Correct (Race-Condition Proof)
         run: |
           python src/mirror_agent.py
+          
           git config user.name "Wendy-Mirror"
           git config user.email "mirror@psivi.com"
-          git diff --quiet || (git add . && git commit -m "auto: mirror corrected state inconsistency" && git push)
+          git add -A
+          
+          # Only commit if there are actual changes
+          if ! git diff --staged --quiet; then
+            # [skip ci] prevents this push from triggering an infinite loop of workflows
+            git commit -m "auto: mirror corrected state inconsistency [skip ci]"
+            
+            # THE RACE-CONDITION SHIELD:
+            # Pull remote changes, rebase our commit on top, and push.
+            # Retry up to 3 times in case another agent pushes at the exact same millisecond.
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed mirror corrections."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+          else
+            echo "ℹ️ No state inconsistencies to correct."
+          fi
