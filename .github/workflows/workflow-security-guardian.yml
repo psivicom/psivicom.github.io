@@ -29,9 +29,9 @@ jobs:
         run: |
           echo "🛡️ Scanning .github/workflows/ for unpinned actions..."
           
-          # Find any 'uses:' that relies on a mutable tag (e.g., @v4, @v5, @v1.2.3)
-          # We want to ensure they are 40-character SHAs instead.
-          UNPINNED=$(grep -E 'uses:\s*.*@[vV][0-9]' .github/workflows/*.yml || true)
+          # Find any 'uses:' that relies on a mutable tag (e.g., @v4, @v5)
+          # The regex '^\s*-?\s*uses:' ensures we ONLY match actual YAML keys, ignoring comments!
+          UNPINNED=$(grep -E '^\s*-?\s*uses:\s*.*@[vV][0-9]' .github/workflows/*.yml || true)
           
           if [ -n "$UNPINNED" ]; then
             echo "❌ SECURITY VIOLATION: Unpinned actions detected!"
@@ -40,7 +40,7 @@ jobs:
             echo "Found mutable references:"
             echo "$UNPINNED"
             echo ""
-            echo "🛠️ FIX: Please update these to their secure SHAs manually or via the local pinning script."
+            echo "🛠️ FIX: Please update these to their secure SHAs manually."
             exit 1
           else
             echo "✅ SUCCESS: All GitHub Actions are securely pinned to immutable SHAs."
