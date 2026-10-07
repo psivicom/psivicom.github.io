@@ -8,7 +8,6 @@ psivicom.github.io/
 │       ├── ai-handshake.yml
 │       ├── auto-report.yml
 │       ├── build-psvc-mesh.yml
-│       ├── bulk-pin-actions.yml
 │       ├── chain-orchestrator.yml
 │       ├── critic-agent.yml
 │       ├── fix-all-timestamps.yml
