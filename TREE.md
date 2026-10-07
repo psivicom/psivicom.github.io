@@ -47,6 +47,7 @@ psivicom.github.io/
 │       ├── wendy-heartbeat.yml
 │       ├── wendy-hyper.yml
 │       ├── wendy-mailbox.yml
+│       ├── wendy-reactive-cognition.yml
 │       ├── wendy-sensory.yml
 │       ├── wendy.yml
 │       ├── workflow-integrity.yml
