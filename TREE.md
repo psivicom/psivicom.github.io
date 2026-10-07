@@ -17,7 +17,6 @@ psivicom.github.io/
 │       ├── license-agent.yml
 │       ├── lidar-agent.yml
 │       ├── literature-ingest.yml
-│       ├── mesh-aggregate.yml
 │       ├── mesh-daemon.yml
 │       ├── mesh-governor.yml
 │       ├── mesh-status.yml
@@ -34,6 +33,7 @@ psivicom.github.io/
 │       ├── psivi-full-loop.yml
 │       ├── psivi-mesh-bridge.yml
 │       ├── psivi-seed-instruction.yml
+│       ├── psvc-mesh-aggregator.yml
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
 │       ├── seed-mesh.yml
