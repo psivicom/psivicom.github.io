@@ -26,7 +26,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0 # CRITICAL: Changed from 1 to 0 for safe rebasing
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
@@ -54,7 +54,7 @@ jobs:
           # CRITICAL FIX: Use -m to respect PYTHONPATH and avoid ModuleNotFoundError
           python -m src.agents.ambassador_agent
 
-      - name: Commit Handshake Packages
+      - name: Commit Handshake Packages (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -65,9 +65,19 @@ jobs:
           git add reports/scientific_reports/
           
           if ! git diff --staged --quiet; then
+            # [skip ci] prevents this push from triggering an infinite loop of workflows
             git commit -m "auto: packaged AI handshake protocol for external collaboration [skip ci]"
-            git push
-            echo "✅ Handshake packages committed."
+            
+            # THE RACE-CONDITION SHIELD:
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Handshake packages committed and pushed."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
           else
             echo "ℹ️ No new handshake packages to commit."
           fi
