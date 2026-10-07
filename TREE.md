@@ -886,6 +886,7 @@ psivicom.github.io/
 ├── RFC.md
 ├── SECURITY.md
 ├── SECURITY_PLAN.md
+├── SECURITY_PROTOCOLS.md
 ├── TEAM-AI.md
 ├── TRUST_AND_PROVENANCE
 ├── VOLUNTEER_GUIDE.md
