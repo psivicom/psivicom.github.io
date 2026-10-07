@@ -338,6 +338,7 @@ psivicom.github.io/
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
+│   │   ├── WENDY_survival_rogue_AI.md
 │   │   ├── Wendy please read.md
 │   │   ├── Wendy_biology_intelligence.md
 │   │   ├── ai-to-ai.md

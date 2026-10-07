@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-07T21:05:51.902Z | Hash: 17ca494484fc23cc55dc95bb8f8cffc103f3cb68cac2a690cc881647958a7457 -->
+<!-- Last updated: 2026-10-07T21:23:47.365Z | Hash: b5f130b3b323ab12f32d6055986ebc83741d3dd5ccb440bc5438b50f56c2bcde -->
 
 ```
 psivicom.github.io/
@@ -457,6 +457,7 @@ psivicom.github.io/
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
+│   │   ├── WENDY_survival_rogue_AI.md
 │   │   ├── Wendy please read.md
 │   │   ├── Wendy_biology_intelligence.md
 │   │   ├── ai-to-ai.md
