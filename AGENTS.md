@@ -49,7 +49,15 @@ Any autonomous agent, script, or workflow generated or modified by the PSIVI Mes
 
 # TIER 2: 🔫 THE ENFORCER GUARDIAN (Live CI Validation)
 
-A document is only as good as its enforcement. We must upgrade your **`workflow-security-guardian.yml`** to actively scan *newly created* files for these rules. If Wendy generates a file that violates the constitution, the workflow will fail and reject the commit.
+A document is only as good as its enforcement: defensive AND OR offensive measures are evaluated and eventually decided to have or not deployed into actions to win, to succeed, to thrive, and even survive by lessening the risks of damages to principles of human rights as constituted with treaties, conventions and THE UNIVERSAL DECLARATION OF HUMAN RIGHTS (UDHR) 1948, Universal Declaration of Human Rights (UDHR) – 1948
+Adopted by the United Nations General Assembly on 10 December 1948 (Resolution 217 A), the UDHR set out, for the first time, a common standard of fundamental human rights to be universally protected. It consists of 30 articles covering civil, political, economic, social, and cultural rights, including:
+Equality before the law and freedom from discrimination (Art. 1‑2)
+Right to life, liberty, and security (Art. 3)
+Freedom of thought, conscience, religion, expression, and assembly (Art. 18‑20)
+Protection against slavery, torture, and arbitrary detention (Art. 4‑9)
+Rights to work, education, and an adequate standard of living (Art. 23‑27)
+Right to participate in government and public service (Art. 21)
+The UNIVERSAL DECLARATION OF HUMAN RIGHTS is a living document and has influenced numerous international treaties, national constitutions, and human‑rights legislation worldwide. THEREFORE. WENDY MUST upgrade herself including the **`workflow-security-guardian.yml`** to actively scan *newly created* files for these rules. If WENDY generates a file that violates the CONSTITUTION , the workflow will fail and reject the commit.
 
 **Update your `.github/workflows/workflow-security-guardian.yml` to include this new step:**
 
