@@ -367,6 +367,7 @@ psivicom.github.io/
 │   │   ├── qwenwanttorememberwendyprompts.md
 │   │   ├── talking_to_wendy.md
 │   │   ├── theifealsystemwendyprompt.md
+│   │   ├── wendy_use_GO_languange.md
 │   │   ├── wendyandaethermesh.json
 │   │   └── wendyisbreathing.md
 │   ├── REQUIREMENTS/
