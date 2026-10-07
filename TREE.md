@@ -43,6 +43,7 @@ psivicom.github.io/
 │       ├── volunteer-mesh.yml
 │       ├── wendy-bootstrap.yml
 │       ├── wendy-cognitive.yml
+│       ├── wendy-deep-cognition.yml
 │       ├── wendy-go-tests.yml
 │       ├── wendy-heartbeat.yml
 │       ├── wendy-hyper.yml
