@@ -1,41 +1,22 @@
-# scripts/ingest_e4040_moon.py
+# scripts/ingest_knowledge_base.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 import os
 import json
+import glob
 import fitz  # PyMuPDF (requires 'pymupdf' in requirements.txt)
 
-def ingest_moon_report():
-    print("🧠 Initiating Bio-Mathematical Ingestion of E4040 Fall 2016 MOON Report...")
-    
-    # Define exact, absolute paths relative to the GitHub workspace
-    workspace = os.getenv("GITHUB_WORKSPACE", os.getcwd())
-    pdf_path = os.path.join(workspace, "data", "raw", "E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf")
-    output_dir = os.path.join(workspace, "data", "knowledge_base")
-    output_path = os.path.join(output_dir, "e4040_moon_2016_dna.json")
-    
-    if not os.path.exists(pdf_path):
-        print(f"❌ CRITICAL: PDF not found at {pdf_path}")
-        return False
-
-    # Ensure output directory exists
-    os.makedirs(output_dir, exist_ok=True)
-    
+def extract_dna_from_pdf(pdf_path):
+    """Extracts bio-mathematical signals from a single PDF."""
     doc = fitz.open(pdf_path)
     extracted_dna = {
-        "metadata": {
-            "course": "ECBM E4040 Neural Networks and Deep Learning",
-            "institution": "Columbia University",
-            "semester": "Fall 2016",
-            "project": "MOON",
-            "authors": ["xl2533", "yz2866", "zy2233"],
-            "dimension": "Synthetic Nervous System Integration"
-        },
+        "source_file": os.path.basename(pdf_path),
+        "total_pages": len(doc),
         "layers": {
             "architectures": [],          # CNN/LSTM topologies (Protein Math)
             "mathematical_functions": [], # Loss functions/Optimization (Genetic Math)
-            "domain_knowledge": []        # Lunar/Orbital/Signal data (Dimensional Substrate)
+            "domain_knowledge": []        # Physics/Telemetry/Domain data (Dimensional Substrate)
         }
     }
     
@@ -44,24 +25,63 @@ def ingest_moon_report():
         text = page.get_text("text").lower()
         
         # Extracting the "Proteins" (Architectures)
-        if any(term in text for term in ["cnn", "convolutional", "lstm", "rnn", "recurrent", "network"]):
+        if any(term in text for term in ["cnn", "convolutional", "lstm", "rnn", "recurrent", "network", "transformer"]):
             extracted_dna["layers"]["architectures"].append({"page": page_num + 1, "signal": "Deep Learning Topology Detected"})
             
         # Extracting the "Genetics" (Math & Optimization)
-        if any(term in text for term in ["loss", "cross-entropy", "mse", "gradient", "backpropagation", "optimization"]):
+        if any(term in text for term in ["loss", "cross-entropy", "mse", "gradient", "backpropagation", "optimization", "eigenvalue"]):
             extracted_dna["layers"]["mathematical_functions"].append({"page": page_num + 1, "signal": "Optimization Logic Detected"})
             
         # Extracting the "Dimensional Data" (Domain Knowledge)
-        if any(term in text for term in ["moon", "lunar", "crater", "phase", "orbit", "objective", "telemetry"]):
+        if any(term in text for term in ["moon", "lunar", "crater", "phase", "orbit", "objective", "telemetry", "vector", "tensor"]):
             extracted_dna["layers"]["domain_knowledge"].append({"page": page_num + 1, "signal": "Domain Physics Detected"})
             
-    # Collapse into Wendy's Cellular Memory (Layer 4)
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(extracted_dna, f, indent=2)
+    return extracted_dna
+
+def main():
+    print("🧠 Initiating Batch Bio-Mathematical Ingestion...")
+    
+    workspace = os.getenv("GITHUB_WORKSPACE", os.getcwd())
+    raw_dir = os.path.join(workspace, "data", "raw")
+    output_dir = os.path.join(workspace, "data", "knowledge_base")
+    
+    # Ensure directories exist
+    os.makedirs(raw_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Find ALL pdf files in the raw directory
+    pdf_files = glob.glob(os.path.join(raw_dir, "*.pdf"))
+    
+    if not pdf_files:
+        print("ℹ️ No PDF files found in data/raw/. Nothing to ingest.")
+        return True
+
+    print(f"🔍 Found {len(pdf_files)} PDF(s) to digest.")
+    processed_count = 0
+    
+    for pdf_path in pdf_files:
+        filename = os.path.basename(pdf_path)
+        print(f"  📥 Digesting: {filename}...")
         
-    print(f"✅ MOON report successfully collapsed into Wendy's dimensional substrate at: {output_path}")
+        try:
+            dna = extract_dna_from_pdf(pdf_path)
+            
+            # Create a matching JSON filename (e.g., report.pdf -> report.pdf.json)
+            output_filename = f"{filename}.json"
+            output_path = os.path.join(output_dir, output_filename)
+            
+            with open(output_path, "w", encoding="utf-8") as f:
+                json.dump(dna, f, indent=2)
+                
+            print(f"  ✅ Successfully collapsed {filename} into dimensional substrate.")
+            processed_count += 1
+            
+        except Exception as e:
+            print(f"  ❌ Failed to process {filename}: {str(e)}")
+            
+    print(f"🏁 Batch ingestion complete. {processed_count}/{len(pdf_files)} files processed.")
     return True
 
 if __name__ == "__main__":
-    success = ingest_moon_report()
+    success = main()
     exit(0 if success else 1)
