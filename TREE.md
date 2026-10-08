@@ -159,6 +159,7 @@ psivicom.github.io/
 │   │   ├── deprecated_base_agent.py
 │   │   ├── deprecated_elastic-test.yml
 │   │   ├── deprecated_licenseREADME.md
+│   │   ├── deprecated_osdmp.html
 │   │   ├── deprecated_test-elastic-evolution.yml
 │   │   ├── deprecated_test_elastic_evolution.py
 │   │   └── license_agent.py
@@ -416,7 +417,6 @@ psivicom.github.io/
 │   ├── experimental_wendy_latency.md
 │   ├── installation-guide-repository-tree.md
 │   ├── make-psvc-guide.md
-│   ├── osdmp.html
 │   ├── osdmp.md
 │   ├── osdmp2.html
 │   ├── psivi-mesh-bridge.yml

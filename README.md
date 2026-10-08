@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-08T20:30:34.921Z | Hash: f177f53bb1d156f4e1fce2e8c0bd536144d812d6cfdd2e331eb26367ac3953f2 -->
+<!-- Last updated: 2026-10-08T20:34:11.392Z | Hash: cbf08780989b088759605a84f8547e6c170483337e1157eb370ea29cf51a515e -->
 
 ```
 psivicom.github.io/
@@ -278,6 +278,7 @@ psivicom.github.io/
 │   │   ├── deprecated_base_agent.py
 │   │   ├── deprecated_elastic-test.yml
 │   │   ├── deprecated_licenseREADME.md
+│   │   ├── deprecated_osdmp.html
 │   │   ├── deprecated_test-elastic-evolution.yml
 │   │   ├── deprecated_test_elastic_evolution.py
 │   │   └── license_agent.py
@@ -535,7 +536,6 @@ psivicom.github.io/
 │   ├── experimental_wendy_latency.md
 │   ├── installation-guide-repository-tree.md
 │   ├── make-psvc-guide.md
-│   ├── osdmp.html
 │   ├── osdmp.md
 │   ├── osdmp2.html
 │   ├── psivi-mesh-bridge.yml
