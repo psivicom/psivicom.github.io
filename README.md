@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-08T09:00:20.396Z | Hash: 2667cdeb20f88651cb92eae4c7944eb4388eec25b4cb6811cff2340eb28e2067 -->
+<!-- Last updated: 2026-10-08T09:05:00.877Z | Hash: 21ad278ffa8d118711cd6f4fd13e4c62234ff89732d612040452fb1c34c5e2c9 -->
 
 ```
 psivicom.github.io/
@@ -131,6 +131,7 @@ psivicom.github.io/
 │       ├── forage-agent.yml
 │       ├── generate-report.yml
 │       ├── immune-response.yml
+│       ├── ingest-moon-dna.yml
 │       ├── instruction-handler.yml
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
