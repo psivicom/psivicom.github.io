@@ -1,9 +1,9 @@
 {
   "version": 3,
-  "updated_at": "2026-10-08T06:26:14.785579+00:00",
+  "updated_at": "2026-10-08T13:50:34.800483+00:00",
   "synapses": {
     "defense_weight": 1.0,
-    "explore_weight": 2.876115592463242,
+    "explore_weight": 3.0,
     "maintain_weight": 1.0,
     "stress_accumulator": 0.0,
     "novelty_seeker": 0.5,
@@ -297,6 +297,27 @@
       "weights_snapshot": {
         "defense_weight": 1.0,
         "explore_weight": 2.876115592463242,
+        "maintain_weight": 1.0,
+        "stress_accumulator": 0.0,
+        "novelty_seeker": 0.5,
+        "stagnation_counter": 0,
+        "conscious_mass_influence": 0.0
+      },
+      "stagnation_flag": false
+    },
+    {
+      "timestamp": "2026-10-08T13:50:34.800442+00:00",
+      "context": {
+        "energy": 0.892547,
+        "fragility": 0,
+        "concordance": 0,
+        "social_value": 0.0,
+        "internal_variance": 0.0,
+        "conscious_mass": 0.0
+      },
+      "weights_snapshot": {
+        "defense_weight": 1.0,
+        "explore_weight": 3.0,
         "maintain_weight": 1.0,
         "stress_accumulator": 0.0,
         "novelty_seeker": 0.5,
