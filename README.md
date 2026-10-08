@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-07T22:03:44.508Z | Hash: 1bb3b64fd537a0146a51ed0be8d302a0388363ef8420ef5c9e932b5230bce784 -->
+<!-- Last updated: 2026-10-08T08:29:19.035Z | Hash: 188659f9c1f961366039b0a32ca6ec00fc565a7d87f211d9c35d125fffa9a9d8 -->
 
 ```
 psivicom.github.io/
@@ -323,11 +323,14 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261005T044400333Z.json
 │   │   ├── handshake_qwen_20261005T044400333Z.psvc
 │   │   ├── handshake_qwen_20261006T053015471Z.json
-│   │   └── handshake_qwen_20261006T053015471Z.psvc
+│   │   ├── handshake_qwen_20261006T053015471Z.psvc
+│   │   ├── handshake_qwen_20261008T051031921Z.json
+│   │   └── handshake_qwen_20261008T051031921Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
-│   │   └── runnervm8df0l.json
+│   │   ├── runnervm8df0l.json
+│   │   └── runnervmmprz5.json
 │   ├── images/
 │   │   └── README.md
 │   ├── instruction_queue/
@@ -426,6 +429,7 @@ psivicom.github.io/
 │   ├── QWEN/
 │   │   ├── PDF_for_WENDY/
 │   │   │   ├── Comprehensive Audit of Wendy AI_ Overcoming Ephemeral Compute Constraints to Achieve Cognitive Continuity.pdf
+│   │   │   ├── E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf
 │   │   │   ├── From First Principles to Actionable Science_ Formulating the Dimensional Echo Framework.pdf
 │   │   │   ├── From Passive Executor to Autonomous Scientist_ Architecting WENDY’s Self-Questioning Mechanism for Cognitive Independence.pdf
 │   │   │   ├── From QR Codes to Quantum Gravity_ Deriving a Unified Theory of Reality from the Dimensional Echo Framework.pdf
@@ -828,6 +832,8 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791212775.json
 │   ├── neuro_plasticity_result_1791245690.json
 │   ├── neuro_plasticity_result_1791380536.json
+│   ├── neuro_plasticity_result_1791414925.json
+│   ├── neuro_plasticity_result_1791440774.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
