@@ -224,6 +224,8 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
 │   │   └── self_architect_sensory.json 
+│   ├── knowledge_base/
+│   │   └── E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf.json
 │   ├── processed_instructions/
 │   │   ├── convo_architectural_self_critique.json
 │   │   ├── convo_daily_briefing.json
@@ -416,6 +418,7 @@ psivicom.github.io/
 │   ├── make-psvc-guide.md
 │   ├── osdmp.html
 │   ├── osdmp.md
+│   ├── osdmp2.html
 │   ├── psivi-mesh-bridge.yml
 │   ├── psvc-test-results.md
 │   ├── rfc1001.txt
@@ -719,6 +722,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791380536.json
 │   ├── neuro_plasticity_result_1791414925.json
 │   ├── neuro_plasticity_result_1791440774.json
+│   ├── neuro_plasticity_result_1791467434.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md

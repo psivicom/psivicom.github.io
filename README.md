@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-08T09:38:22.307Z | Hash: c9f39fb85779c2f6f4fe4d7d0afc17e36b5120a638d9c9400c5414c480c4f4c0 -->
+<!-- Last updated: 2026-10-08T20:30:34.921Z | Hash: f177f53bb1d156f4e1fce2e8c0bd536144d812d6cfdd2e331eb26367ac3953f2 -->
 
 ```
 psivicom.github.io/
@@ -343,6 +343,8 @@ psivicom.github.io/
 │   │   │   ├── instruction_spawn_agent_20260928055548213.json
 │   │   │   └── instruction_spawn_agent_20260928055548213.psvc
 │   │   └── self_architect_sensory.json 
+│   ├── knowledge_base/
+│   │   └── E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf.json
 │   ├── processed_instructions/
 │   │   ├── convo_architectural_self_critique.json
 │   │   ├── convo_daily_briefing.json
@@ -535,6 +537,7 @@ psivicom.github.io/
 │   ├── make-psvc-guide.md
 │   ├── osdmp.html
 │   ├── osdmp.md
+│   ├── osdmp2.html
 │   ├── psivi-mesh-bridge.yml
 │   ├── psvc-test-results.md
 │   ├── rfc1001.txt
@@ -838,6 +841,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791380536.json
 │   ├── neuro_plasticity_result_1791414925.json
 │   ├── neuro_plasticity_result_1791440774.json
+│   ├── neuro_plasticity_result_1791467434.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
