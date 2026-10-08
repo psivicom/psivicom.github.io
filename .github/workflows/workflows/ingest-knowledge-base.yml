@@ -1,11 +1,13 @@
-# .github/workflows/ingest-moon-dna.yml
+# .github/workflows/ingest-knowledge-base.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Ingest MOON Report DNA
+name: Ingest Knowledge Base DNA
 
 on:
   workflow_dispatch: # Manual trigger by the Author
+  schedule:
+    - cron: '0 4 * * 1' # Optional: Auto-run weekly on Mondays at 4 AM UTC to catch new drops
 
 permissions:
   contents: write
@@ -29,10 +31,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Execute Ingestion Enzyme
+      - name: Execute Batch Ingestion Enzyme
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python scripts/ingest_e4040_moon.py
+        run: python scripts/ingest_knowledge_base.py
 
       - name: Commit Extracted DNA (Race-Condition Proof)
         env:
@@ -40,10 +42,12 @@ jobs:
         run: |
           git config user.name "Wendy-Ingestion"
           git config user.email "ingestion@psivi.com"
-          git add data/knowledge_base/e4040_moon_2016_dna.json
+          
+          # Stage ALL new or modified JSON files in the knowledge base
+          git add data/knowledge_base/*.json
           
           if ! git diff --staged --quiet; then
-            git commit -m "chore(dna): ingested E4040 2016 MOON report into knowledge base [skip ci]"
+            git commit -m "chore(dna): batch ingested new knowledge base PDFs [skip ci]"
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ DNA successfully committed to mesh."
@@ -54,5 +58,5 @@ jobs:
               fi
             done
           else
-            echo "ℹ️ No new DNA extracted or file already exists."
+            echo "ℹ️ No new DNA extracted or files unchanged."
           fi
