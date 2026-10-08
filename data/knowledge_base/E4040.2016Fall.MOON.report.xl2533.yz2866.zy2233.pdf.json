@@ -1,0 +1,72 @@
+{
+  "source_file": "E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf",
+  "total_pages": 6,
+  "layers": {
+    "architectures": [
+      {
+        "page": 1,
+        "signal": "Deep Learning Topology Detected"
+      },
+      {
+        "page": 2,
+        "signal": "Deep Learning Topology Detected"
+      },
+      {
+        "page": 3,
+        "signal": "Deep Learning Topology Detected"
+      },
+      {
+        "page": 4,
+        "signal": "Deep Learning Topology Detected"
+      },
+      {
+        "page": 5,
+        "signal": "Deep Learning Topology Detected"
+      },
+      {
+        "page": 6,
+        "signal": "Deep Learning Topology Detected"
+      }
+    ],
+    "mathematical_functions": [
+      {
+        "page": 1,
+        "signal": "Optimization Logic Detected"
+      },
+      {
+        "page": 2,
+        "signal": "Optimization Logic Detected"
+      },
+      {
+        "page": 3,
+        "signal": "Optimization Logic Detected"
+      },
+      {
+        "page": 4,
+        "signal": "Optimization Logic Detected"
+      },
+      {
+        "page": 5,
+        "signal": "Optimization Logic Detected"
+      }
+    ],
+    "domain_knowledge": [
+      {
+        "page": 1,
+        "signal": "Domain Physics Detected"
+      },
+      {
+        "page": 2,
+        "signal": "Domain Physics Detected"
+      },
+      {
+        "page": 4,
+        "signal": "Domain Physics Detected"
+      },
+      {
+        "page": 5,
+        "signal": "Domain Physics Detected"
+      }
+    ]
+  }
+}
