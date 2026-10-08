@@ -736,7 +736,7 @@ psivicom.github.io/
 │   ├── build_psvc_mesh.py
 │   ├── fix_archive_names.py
 │   ├── generate_mesh_index.py
-│   ├── ingest_e4040_moon.py
+│   ├── ingest_knowledge_base.py
 │   ├── local_mesh_executor.py
 │   └── mirror_node.py
 ├── src/
