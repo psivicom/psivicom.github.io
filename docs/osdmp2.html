@@ -1,0 +1,187 @@
+<!-- docs/osdmp.html -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!DOCTYPE html>
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+  Code: EUPL 1.2 | Docs: CC BY-SA 4.0 | Hardware: Proprietary (w-1-n.com)
+-->
+<html lang="en">
+<head>
+<style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+:root{--bg:#fbfbfd;--fg:#121217;--muted:#5a5d6b;--card:#ffffff;--border:#e6e8ee;--accent:#0b57d0;--accent2:#0a7a42;--code:#f2f4f8}
+@media(prefers-color-scheme:dark){ :root{--bg:#0f1115;--fg:#e8e9ee;--muted:#9aa0b2;--card:#181b22;--border:#242938;--accent:#8ab4f8;--accent2:#81c995;--code:#1e232f}}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--fg);line-height:1.65}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:10}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.badge-row img{height:22px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin:18px 0}
+h1{font-size:2.1rem;line-height:1.2;margin:14px 0 6px} h2{font-size:1.35rem;margin:28px 0 10px;border-bottom:1px solid var(--border);padding-bottom:6px} h3{font-size:1.05rem;margin:18px 0 8px}
+.meta{color:var(--muted);font-size:.92rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px} @media(max-width:780px){.grid{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.95rem} th,td{border:1px solid var(--border);padding:8px 10px;text-align:left} th{background:var(--code)}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:var(--code);border-radius:6px} pre{padding:14px;overflow:auto}
+.kv{display:flex;flex-wrap:wrap;gap:8px} .kv span{border:1px solid var(--border);padding:4px 10px;border-radius:999px;font-size:.85rem;background:var(--card)}
+footer{margin:40px 0 0;border-top:1px solid var(--border);padding:24px 0;color:var(--muted);font-size:.9rem}
+#md-content h1,#md-content h2,#md-content h3{border:none}
+#md-content a{word-break:break-word}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Open Science Data Management Plan — psivi.com</title>
+<meta name="description" content="NASA SPD-41a compliant OSDMP — FAIR, reproducible, CC BY-SA 4.0 data, EUPL 1.2 code">
+<link rel="canonical" href="https://psivi.com/docs/osdmp.html">
+<!-- REUSE: SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- Code in this repo is EUPL 1.2, Content is CC BY-SA 4.0 per NASA SPD-41a -->
+</head>
+<body>
+<header>
+<div class="wrap nav">
+<div><strong>psivi.com</strong> — Civilian Scientist</div>
+<div class="meta"><a href="https://psivi.com">Home</a> · <a href="https://github.com/psivicom/psivicom.github.io">GitHub</a> · <a href="https://zenodo.org">Zenodo</a></div>
+</div>
+</header>
+
+<main class="wrap">
+<div style="margin-top:22px" class="meta">Independent researcher — Langford, BC · NASA TOPS / SPD-41a · CSA / ESA / UNESCO Compliant</div>
+<h1>Open Science Data Management Plan (OSDMP)</h1>
+<div class="meta">Source: <code>/docs/osdmp.md</code> → Live: <code>/docs/osdmp.html</code> · SPDX Content: CC BY-SA 4.0 · Code: EUPL 1.2 · Auto-built</div>
+
+<div class="badge-row">
+<img src="https://img.shields.io/badge/License-EUPL--1.2-blue.svg" alt="EUPL-1.2">
+<img src="https://img.shields.io/badge/License-CC--BY--SA--4.0-lightgrey.svg" alt="CC-BY-SA-4.0">
+<img src="https://img.shields.io/badge/FAIR-F2F4F8.svg" alt="FAIR">
+<img src="https://img.shields.io/badge/REUSE-compliant-green.svg" alt="REUSE">
+<img src="https://img.shields.io/badge/NASA-SPD--41a-0B3D91.svg" alt="NASA SPD-41a">
+<img src="https://img.shields.io/badge/NASA-TOPS-0B3D91.svg" alt="NASA TOPS">
+<img src="https://img.shields.io/badge/CSA-Open%20Science-blue.svg" alt="CSA">
+<img src="https://img.shields.io/badge/ESA-Open%20Science-003247.svg" alt="ESA">
+</div>
+
+<div class="grid">
+<div class="card">
+<h3 style="margin-top:0">Quick facts</h3>
+<div class="kv">
+<span>DOIs via Zenodo / OSF</span><span>FAIR R1.1</span><span>Open by Default</span><span>Reproducible</span>
+</div>
+<table style="margin-top:12px">
+<tr><th>Type</th><th>Scope</th><th>License</th></tr>
+<tr><td><strong>Code</strong></td><td>/src, *.py, *.js, *.go</td><td>EUPL 1.2</td></tr>
+<tr><td><strong>Content/Data</strong></td><td>README, /docs, figures</td><td>CC BY-SA 4.0</td></tr>
+</table>
+</div>
+<div class="card">
+<h3 style="margin-top:0">Compliance</h3>
+<table>
+<tr><th>Std</th><th>How</th></tr>
+<tr><td>NASA SPD-41a</td><td>EUPL 1.2 + CC BY-SA 4.0 ✅</td></tr>
+<tr><td>REUSE / EOSC</td><td>SPDX headers ✅</td></tr>
+<tr><td>CSA / ESA / UNESCO</td><td>FAIR + OA ✅</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card" id="md-content">
+<h2 id="summary">1. Data Summary &amp; Description</h2>
+<p>This OSDMP covers the research data generated by the PSIVI.COM Open Science Hub, specifically focusing on:</p>
+<ol>
+<li><strong>Goldstream Pollinator Forage Atlas:</strong> Weekly transects, hive entrance imaging, and bloom sequence mapping for the Goldstream watershed (Langford, BC).</li>
+<li><strong>SAR-Optical Fusion Phenology:</strong> Backscatter and NDVI fusion outputs from RADARSAT Constellation Mission (RCM), Sentinel-2, and NASA Earthdata (MODIS, VIIRS, Landsat, SMAP, GPM) to detect green-up and drought stress in Garry oak meadow fragments.</li>
+</ol>
+<p>All data is designed to be FAIR-compliant (Findable, Accessible, Interoperable, Reusable) and reproducible by the global scientific community.</p>
+
+<h2 id="fair">2. FAIR Principles Mapping</h2>
+<table>
+<tr><th>Principle</th><th>Implementation</th></tr>
+<tr><td><strong>Findable (F)</strong></td><td>Data and software are assigned persistent identifiers (DOIs) via Zenodo/OSF and indexed via GitHub and Schema.org JSON-LD on psivi.com.</td></tr>
+<tr><td><strong>Accessible (A)</strong></td><td>Data is retrievable via HTTPS and standard protocols. Metadata remains accessible via Zenodo/OSF archival even if the primary repository changes.</td></tr>
+<tr><td><strong>Interoperable (I)</strong></td><td>Data uses open, non-proprietary formats (<code>.csv</code>, <code>.json</code>, <code>.yml</code>, GeoTIFF). Metadata follows Frictionless Data (<code>datapackage.json</code>) and Codemeta standards.</td></tr>
+<tr><td><strong>Reusable (R)</strong></td><td>Data is licensed under CC BY-SA 4.0. Code is licensed under EUPL 1.2. Rich provenance is maintained via Git and strict Zulu timestamps.</td></tr>
+</table>
+
+<h2 id="licensing">3. Licensing Rationale &amp; Compliance Matrix</h2>
+<p>See <code>docs/LICENSE_COMPLIANCE.md</code> for the full compliance matrix.</p>
+<h3>Agency Compliance Status</h3>
+<table>
+<tr><th>Standard / Agency</th><th>Compliance Mechanism</th><th>Status</th></tr>
+<tr><td><strong>NASA TOPS / SPD-41a</strong></td><td>EUPL 1.2 (OSI-Approved) + CC BY-SA 4.0 (Open Data)</td><td>✅</td></tr>
+<tr><td><strong>ESA Open Science</strong></td><td>EUPL 1.2 (Official ESA License) + CC BY-SA 4.0</td><td>✅</td></tr>
+<tr><td><strong>CSA / JAXA / UNESCO</strong></td><td>FAIR Principles + Open Access Mandates</td><td>✅</td></tr>
+<tr><td><strong>Horizon Europe (MGA)</strong></td><td>Art. 14 &amp; 17 (Open Access + CC BY / CC BY-SA)</td><td>✅</td></tr>
+<tr><td><strong>REUSE / EOSC</strong></td><td>SPDX Headers + Machine-Readable Licensing</td><td>✅</td></tr>
+</table>
+<h3>Licensing Justification</h3>
+<ul>
+<li><strong>EUPL 1.2 for software:</strong> The official open-source license of the European Commission and ESA. It is OSI-approved, fully satisfies NASA TOPS/SPD-41a mandates, and provides a strong copyleft clause (unlike MIT/Apache) to prevent closed-source hijacking of the research infrastructure.</li>
+<li><strong>CC BY-SA 4.0 for data/docs/media:</strong> NASA SPD-41a requires open data (CC BY 4.0, CC BY-SA 4.0, or CC0). ESA, CSA, JAXA, Horizon Europe, and UNESCO all mandate open licenses for non-code artifacts. The ShareAlike (SA) clause ensures that any derivative research or datasets built upon this work must also remain open, protecting the integrity of the open-science commons.</li>
+<li><strong>Hardware Separation Wall:</strong> All hardware designs, schematics, and physical IP are <strong>All Rights Reserved</strong> and managed separately at <a href="https://w-1-n.com">https://w-1-n.com</a>. This repository contains only software, data, and documentation.</li>
+</ul>
+<p>This domain-separated model satisfies all global space agencies simultaneously while protecting the open-science nature of the research.</p>
+
+<h2 id="practices">4. Open Science Practices</h2>
+<ul>
+<li><strong>Open by Default:</strong> All software, data, and documentation are open by default. No embargoes are placed on research outputs unless required for the privacy/security of specific ecological coordinates (which are intentionally blurred).</li>
+<li><strong>The Audette Clause:</strong> As detailed in <code>/NOTICE.md</code>, this architecture was conceived and architected by Louis-Philippe Audette. Derivative works must prominently retain attribution.</li>
+<li><strong>AI Transparency:</strong> AI-assisted workflows are used for code generation and data structuring, but no AI-generated content is published without rigorous human review and validation (see <code>AI-COLLABORATION-PROTOCOL.md</code>).</li>
+<li><strong>Reproducibility:</strong> All processing pipelines are version-controlled. Synthetic datasets and pinned environments are provided to ensure third parties can exactly reproduce the SAR-optical fusion and pollinator mapping outputs.</li>
+</ul>
+
+<h2 id="lifecycle">5. Data Lifecycle &amp; Archival</h2>
+<ol>
+<li><strong>Collection:</strong> Raw field data (transects, hive logs) and Earth observation downloads (RCM, NASA Earthdata).</li>
+<li><strong>Processing:</strong> Cleaned and fused using version-controlled Python/Go scripts (EUPL 1.2).</li>
+<li><strong>Validation:</strong> Automated and human review for FAIR compliance and quality assurance.</li>
+<li><strong>Archival:</strong> Finalized datasets and software releases are pushed to <strong>Zenodo</strong> and the <strong>Open Science Framework (OSF)</strong> to mint permanent DOIs.</li>
+<li><strong>Access:</strong> Publicly available via the GitHub repository and linked directly from <code>psivi.com</code>.</li>
+</ol>
+
+<h2 id="provenance">6. Provenance &amp; Timestamps</h2>
+<p>To ensure absolute reproducibility and alignment with NASA SPD-41a standards, all data, logs, and file updates utilize strict Zulu time (UTC) with millisecond precision.</p>
+<p><strong>Format:</strong> <code>YYYY-MM-DDTHH:MM:SS.sssZ</code> (RFC3339 UTC)<br>
+<strong>Rule:</strong> Always Zulu time (Z) with milliseconds. Never local time. Never timezone offsets.</p>
+<p>This strict temporal provenance ensures that time-series ecological data and software commits can be perfectly correlated across global research teams.</p>
+
+<h2 id="related">7. Related Documents</h2>
+<ul>
+<li><strong>Live OSDMP:</strong> <a href="https://psivi.com/docs/osdmp.html">https://psivi.com/docs/osdmp.html</a></li>
+<li><strong>Source:</strong> <code>docs/osdmp.md</code> (this file)</li>
+<li><strong>FAIR Checklist:</strong> <code>docs/FAIR_CHECKLIST.md</code></li>
+<li><strong>License Compliance:</strong> <code>docs/LICENSE_COMPLIANCE.md</code></li>
+<li><strong>Data Management:</strong> <code>docs/DATA_MANAGEMENT.md</code></li>
+<li><strong>AI Collaboration Protocol:</strong> <code>AI-COLLABORATION-PROTOCOL.md</code></li>
+<li><strong>NIST SSDF Compliance:</strong> <code>docs/NIST-SSDF-COMPLIANCE-MAPPING.md</code></li>
+</ul>
+</div>
+
+<footer>
+<div class="wrap">
+<div>© 2026 Louis-Philippe Audette — Content CC BY-SA 4.0, Code EUPL 1.2. Built with AI-assisted workflows, human-reviewed.</div>
+<div style="margin-top:8px">Live: <a href="https://psivi.com">psivi.com</a> · Repo: <a href="https://github.com/psivicom/psivicom.github.io">psivicom.github.io</a></div>
+</div>
+</footer>
+</main>
+</body>
+</html>
