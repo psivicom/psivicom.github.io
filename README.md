@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-08T09:20:09.905Z | Hash: 6ae895dc4aaf7a2f91aad8c000e0a8d68cc26894f2def5ed9d7bf59cabb045f1 -->
+<!-- Last updated: 2026-10-08T09:24:06.699Z | Hash: 48c8f503d91ea039709d640ce67eda15cac34732ed1730f276ed768dda30fd27 -->
 
 ```
 psivicom.github.io/
@@ -540,7 +540,8 @@ psivicom.github.io/
 │   ├── psvc-test-results.md
 │   ├── rfc1001.txt
 │   ├── robotics-automation-notes.md
-│   └── template.html
+│   ├── template.html
+│   └── wendy-ingest-pdf.md
 ├── js/
 │   └── mesh-map.js
 ├── logs/
