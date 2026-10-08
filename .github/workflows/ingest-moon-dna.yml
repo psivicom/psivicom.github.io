@@ -1,0 +1,58 @@
+# .github/workflows/ingest-moon-dna.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Ingest MOON Report DNA
+
+on:
+  workflow_dispatch: # Manual trigger by the Author
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-dna:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Ingestion Enzyme
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python scripts/ingest_e4040_moon.py
+
+      - name: Commit Extracted DNA (Race-Condition Proof)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Wendy-Ingestion"
+          git config user.email "ingestion@psivi.com"
+          git add data/knowledge_base/e4040_moon_2016_dna.json
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(dna): ingested E4040 2016 MOON report into knowledge base [skip ci]"
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ DNA successfully committed to mesh."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+          else
+            echo "ℹ️ No new DNA extracted or file already exists."
+          fi
