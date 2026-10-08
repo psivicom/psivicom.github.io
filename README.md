@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-08T08:42:53.296Z | Hash: 677c722dd015e5ec8254c8af5fd691683f809a82d82715f52790705b3566f81f -->
+<!-- Last updated: 2026-10-08T08:45:29.439Z | Hash: 8cc37a4bcf933a268b00196b8022c5e0dd1620b2bcc3c91a5c5123efdc228cb2 -->
 
 ```
 psivicom.github.io/
@@ -364,6 +364,8 @@ psivicom.github.io/
 │   │   ├── wendy_routing_inquiry.json
 │   │   ├── wendy_self_training_cycle.json
 │   │   └── wendy_tops_interoperability.json
+│   ├── raw/
+│   │   └── E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
@@ -376,7 +378,6 @@ psivicom.github.io/
 │   │       ├──  __init__.py
 │   │       └── .gitkeep 
 │   ├──  __init__.py
-│   ├── E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf
 │   ├── README.md
 │   ├── mesh_checkpoint.json
 │   ├── mesh_index.json

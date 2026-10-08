@@ -245,6 +245,8 @@ psivicom.github.io/
 │   │   ├── wendy_routing_inquiry.json
 │   │   ├── wendy_self_training_cycle.json
 │   │   └── wendy_tops_interoperability.json
+│   ├── raw/
+│   │   └── E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf
 │   ├── sample-pollinator-data/
 │   │   ├── README.md
 │   │   ├── data.csv
@@ -257,7 +259,6 @@ psivicom.github.io/
 │   │       ├──  __init__.py
 │   │       └── .gitkeep 
 │   ├──  __init__.py
-│   ├── E4040.2016Fall.MOON.report.xl2533.yz2866.zy2233.pdf
 │   ├── README.md
 │   ├── mesh_checkpoint.json
 │   ├── mesh_index.json
