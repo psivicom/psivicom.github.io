@@ -1,27 +1,31 @@
 <!--
-  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+  SPDX-License-Identifier: CC-BY-SA-4.0
 -->
-# Images / Photos / Videos / Figures — CC-BY-4.0 — Excellence
 
-**License:** All media in this folder is **CC-BY-4.0** — see ../../LICENSES/CC-BY-4.0.txt — SPDX: CC-BY-4.0
-**Related:** ../../docs/DATA_MANAGEMENT.md, ../../LICENSES/README.md, ../README.md
+# Images / Photos / Videos / Figures — CC BY-SA 4.0 — Excellence
 
-### Rule for NASA/ESA/CSA/JAXA compliance
+**License:** All media in this folder is licensed under **CC BY-SA 4.0** — see `../../LICENSES/CC-BY-SA-4.0.md` — SPDX: `CC-BY-SA-4.0`  
+**Related:** `../../docs/DATA_MANAGEMENT.md`, `../../LICENSES/README.md`, `../README.md`
 
-Per NASA SPD-41a and ESA Open Science Policy, all photos, images, videos, figures, diagrams must be **CC-BY-4.0** (or CC0), not Apache-2.0.
+### Rule for NASA/ESA/CSA/JAXA Compliance
 
-- Apache-2.0 is for **software/code** only — see ../../LICENSE
-- CC-BY-4.0 is for **data/docs/media** — this folder
+Per NASA SPD-41a, ESA Open Science Policy, and Horizon Europe mandates, all photos, images, videos, figures, and diagrams must be openly licensed. This project mandates **CC BY-SA 4.0** to ensure that derivative research and visual assets built upon this work remain permanently open and attributable.
 
-### How to add media
+- **EUPL-1.2** is for **software/code** only — see `../../LICENSE-EUPL-1.2.txt`
+- **CC BY-SA 4.0** is for **data/docs/media** — including this entire folder
 
-1. Place .jpg .png .mp4 .pdf here
-2. Add to this README a line with attribution: "File: X.jpg — Author: Louis-Philippe Audette — CC-BY-4.0 — https://psivi.com"
-3. If you include people, ensure consent for CC-BY-4.0 open sharing
-4. Include SPDX header in metadata if possible
+### How to Add Media
 
-### Attribution for reuse
+1. Place `.jpg`, `.png`, `.mp4`, `.pdf`, or other media files here.
+2. Add a line to this README with proper attribution:  
+   `"File: X.jpg — Author: Louis-Philippe Audette — CC BY-SA 4.0 — https://psivi.com"`
+3. If the media includes identifiable people, ensure explicit consent for CC BY-SA 4.0 open sharing has been obtained.
+4. Include the SPDX header in file metadata or adjacent `.license` files where possible for REUSE compliance.
 
-Cite: "Louis-Philippe Audette — psivi.com — CC-BY-4.0"
+### Attribution for Reuse
 
-See also: ../README.md, ../../docs/LICENSE_COMPLIANCE.md
+When reusing any media from this folder, cite:  
+**"Louis-Philippe Audette — psivi.com — CC BY-SA 4.0"**
+
+See also: `../README.md`, `../../docs/LICENSE_COMPLIANCE.md`
