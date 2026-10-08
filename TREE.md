@@ -2,8 +2,6 @@
 psivicom.github.io/
 ├── .github/
 │   └── workflows/
-│       ├── workflows/
-│       │   └── ingest-knowledge-base.yml
 │       ├── README.md
 │       ├── ai-handshake.yml
 │       ├── auto-report.yml
@@ -14,6 +12,7 @@ psivicom.github.io/
 │       ├── forage-agent.yml
 │       ├── generate-report.yml
 │       ├── immune-response.yml
+│       ├── ingest-knowledge-base.yml
 │       ├── instruction-handler.yml
 │       ├── intelligence-agent.yml
 │       ├── license-agent.yml
