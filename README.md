@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T02:46:16.358Z | Hash: 55fe95bcee9521f7450750fcefc094818120170019108c51ffa4ce1f32df1bf1 -->
+<!-- Last updated: 2026-10-09T02:50:17.588Z | Hash: 8722cf3c6af643a010e55d0dd9e23f9b52d7506059df8798b742d7dc4eac7167 -->
 
 ```
 psivicom.github.io/
@@ -538,7 +538,6 @@ psivicom.github.io/
 │   ├── experimental_wendy_latency.md
 │   ├── installation-guide-repository-tree.md
 │   ├── make-psvc-guide.md
-│   ├── osdmp.html
 │   ├── osdmp.md
 │   ├── psivi-mesh-bridge.yml
 │   ├── psvc-test-results.md

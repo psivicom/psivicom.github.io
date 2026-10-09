@@ -419,7 +419,6 @@ psivicom.github.io/
 │   ├── experimental_wendy_latency.md
 │   ├── installation-guide-repository-tree.md
 │   ├── make-psvc-guide.md
-│   ├── osdmp.html
 │   ├── osdmp.md
 │   ├── psivi-mesh-bridge.yml
 │   ├── psvc-test-results.md
