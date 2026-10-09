@@ -178,6 +178,7 @@ psivicom.github.io/
 │   └── ping-test.txt
 ├── config/
 │   ├── aether-vanguard.psvc
+│   ├── agent_config.yaml
 │   ├── agent_templates.json
 │   ├── config.yaml
 │   ├── data_sources.json
@@ -910,7 +911,6 @@ psivicom.github.io/
 ├── VOLUNTEER_GUIDE.md
 ├── VOLUNTEER_PROTOCOL.md
 ├── _config.yml
-├── agent_config.yaml
 ├── codemeta.json
 ├── docker-compose.yml
 ├── how-psvc-works.html
