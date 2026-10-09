@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T19:57:26.857Z | Hash: 3dfc339d746820056b7d0b34557b21e4e8843b4533b674d4177de6669fb94b27 -->
+<!-- Last updated: 2026-10-09T19:58:18.915Z | Hash: 3eff7396b86d12094532c0c00a153d1e33c72c5647b5025fce7ea78c9ed3c906 -->
 
 ```
 psivicom.github.io/
@@ -666,12 +666,6 @@ psivicom.github.io/
 │               │   ├── msgpack.min.js
 │               │   └── msgpack.min.js.map
 │               └── src/
-│                   ├── utils/
-│                   │   ├── int.ts
-│                   │   ├── prettyByte.ts
-│                   │   ├── stream.ts
-│                   │   ├── typedArrays.ts
-│                   │   └── utf8.ts
 │                   ├── CachedKeyDecoder.ts
 │                   ├── DecodeError.ts
 │                   ├── Decoder.ts
