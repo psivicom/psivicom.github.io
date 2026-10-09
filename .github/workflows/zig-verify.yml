@@ -1,0 +1,38 @@
+# .github/workflows/zig-verify.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Verify Zig Edge Node Clock
+
+on:
+  push:
+    paths:
+      - 'src/core/zulu_clock.zig'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: 0.11.0
+
+      - name: Compile Zulu Clock for Edge Nodes
+        run: |
+          echo "🔨 Compiling pure-Zig Zulu Clock for pico-workers..."
+          zig build-exe src/core/zulu_clock.zig -O ReleaseSafe -fstrip
+          
+      - name: Run Unit Tests
+        run: |
+          echo "🧪 Running Zig unit tests..."
+          zig test src/core/zulu_clock.zig
+          
+      - name: Execute and Verify Output
+        run: |
+          echo "⏱️ Testing execution..."
+          ./zulu_clock
