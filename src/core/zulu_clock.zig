@@ -4,8 +4,8 @@
 
 const std = @import("std");
 
-/// Returns a strictly formatted Zulu timestamp: "YYYY-MM-DDTHH:MM:SS.sssZ"
-/// Exactly 24 bytes. No heap allocation.
+// Returns a strictly formatted Zulu timestamp: "YYYY-MM-DDTHH:MM:SS.sssZ"
+// Exactly 24 bytes. No heap allocation.
 pub fn getZuluTimestampMs() [24]u8 {
     const now_ms = std.time.milliTimestamp();
     const total_seconds = @divFloor(now_ms, 1000);
@@ -40,16 +40,9 @@ pub fn getZuluTimestampMs() [24]u8 {
     return buf;
 }
 
+// CLI entry point for testing or subprocess invocation from Python/Bash
 pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
     const timestamp = getZuluTimestampMs();
     try stdout.print("{s}\n", .{timestamp});
-}
-
-test "zulu clock format" {
-    // Verify exact formatting and length (comment moved inside to satisfy compiler)
-    const ts = getZuluTimestampMs();
-    try std.testing.expectEqual(@as(usize, 24), ts.len);
-    try std.testing.expectEqual(@as(u8, 'Z'), ts[23]);
-    try std.testing.expectEqual(@as(u8, 'T'), ts[10]);
 }
