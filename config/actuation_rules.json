@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "description": "Data-driven actuation rules for Goldstream Apiary. Evaluated by Zig engine.",
+  "rules": [
+    {
+      "id": "rule_001",
+      "condition": "stress_accumulator >= 0.75",
+      "action": "ACTIVATE_COOLING",
+      "target": "apiary_hive_01",
+      "priority": "CRITICAL",
+      "duration_seconds": 300
+    },
+    {
+      "id": "rule_002",
+      "condition": "intensity >= 0.85 AND stress_accumulator < 0.75",
+      "action": "OPEN_ENTRANCE",
+      "target": "apiary_hive_01",
+      "priority": "HIGH",
+      "duration_seconds": 0
+    },
+    {
+      "id": "rule_003",
+      "condition": "defense_weight >= 0.80",
+      "action": "ENABLE_LIDAR_SCAN",
+      "target": "apiary_perimeter",
+      "priority": "HIGH",
+      "duration_seconds": 60
+    }
+  ]
+}
