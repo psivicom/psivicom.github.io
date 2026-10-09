@@ -574,8 +574,7 @@ psivicom.github.io/
 │   │   └── aggregate-mesh-v2.js
 │   ├── .heartbeat-store.json
 │   ├── dynamic-geo.js
-│   ├── package-lock.json
-│   └── package.json
+│   └── package-lock.json
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
