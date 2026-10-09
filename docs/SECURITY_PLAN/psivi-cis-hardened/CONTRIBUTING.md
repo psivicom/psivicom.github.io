@@ -7,8 +7,8 @@ Welcome! This site is built for NASA Open Science FAIR + CSA / ESA / JAXA.
 We invite AI assistance, but under CIS-hardened, human-reviewed rules per NASA TOPS.
 
 ## Dual License Reminder (Excellence Edition)
-- **Code** (.js, .py, .yml, .rb, .html, workflows): Apache-2.0
-- **Data/Docs/Media** (.md, .csv, .jpg, .png): CC-BY-4.0
+- **Code** (.js, .py, .yml, .rb, .html, workflows): EUPL 1.2
+- **Data/Docs/Media** (.md, .csv, .jpg, .png): CC-BY-SA-4.0
 See LICENSES/README.md. No orphan files — all cross-reference each other.
 
 ## How to Contribute (Human or AI)
