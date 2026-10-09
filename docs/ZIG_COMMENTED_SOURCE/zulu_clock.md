@@ -1,15 +1,3 @@
-<!--
-  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
-  SPDX-License-Identifier: CC-BY-SA-4.0
--->
-
-# Zulu Clock: Commented Source Reference
-
-This document contains the fully annotated source code for the PSIVI AETHER Mesh Zulu Clock utility. 
-
-**Purpose:** Generates strict RFC 3339 UTC timestamps with millisecond precision (`YYYY-MM-DDTHH:MM:SS.sssZ`).  
-**Design:** Pure Zig implementation with zero `libc` dependencies, ensuring ultra-fast, deterministic execution on pico-compute edge nodes.
-
 ```zig
 // src/core/zulu_clock.zig
 // SPDX-License-Identifier: EUPL-1.2
@@ -20,42 +8,40 @@ const std = @import("std");
 /// Returns a strictly formatted Zulu timestamp: "YYYY-MM-DDTHH:MM:SS.sssZ"
 /// Exactly 24 bytes. No heap allocation.
 pub fn getZuluTimestampMs() [24]u8 {
-    // Get current time in milliseconds since Unix epoch
-    const now_ms = std.time.milliTimestamp();
-    
-    // Separate into seconds and milliseconds
-    const total_seconds = @divFloor(now_ms, 1000);
-    const ms = @as(u32, @intCast(@mod(now_ms, 1000)));
+    const now_ms: i64 = std.time.milliTimestamp();
+    const total_seconds: i64 = @divFloor(now_ms, 1000);
+    const ms: u32 = @intCast(@mod(now_ms, 1000));
 
-    // Break down seconds into days and time of day
-    const days = @divFloor(total_seconds, 86400);
-    const rem = @mod(total_seconds, 86400);
+    const days: i64 = @divFloor(total_seconds, 86400);
+    const rem: i64 = @mod(total_seconds, 86400);
     
-    const hour = @as(u32, @intCast(@divFloor(rem, 3600)));
-    const min = @as(u32, @intCast(@divFloor(@mod(rem, 3600), 60)));
-    const sec = @as(u32, @intCast(@mod(rem, 60)));
+    const hour: u32 = @intCast(@divFloor(rem, 3600));
+    const min: u32 = @intCast(@divFloor(@mod(rem, 3600), 60));
+    const sec: u32 = @intCast(@mod(rem, 60));
 
     // Pure mathematical UTC date calculation (Howard Hinnant's algorithm)
-    // No OS calls, no libc, 100% deterministic across all platforms.
-    const z = days + 719468; // Days since 0000-03-01
-    const era = @divFloor(z, 146097);
-    const doe = z - era * 146097;
-    const yoe = @divFloor(doe - @divFloor(doe, 1460) + @divFloor(doe, 36524) - @divFloor(doe, 146096), 365);
+    const z: i64 = days + 719468;
+    const era: i64 = @divFloor(z, 146097);
+    const doe: i64 = z - era * 146097;
+    const yoe: i64 = @divFloor(doe - @divFloor(doe, 1460) + @divFloor(doe, 36524) - @divFloor(doe, 146096), 365);
     const y: i64 = era * 400 + yoe;
-    const doy = doe - (365 * yoe + @divFloor(yoe, 4) - @divFloor(yoe, 100));
-    const mp = @divFloor(5 * doy + 2, 153);
-    const d = doy - @divFloor(153 * mp + 2, 5) + 1;
-    const m = mp + (if (mp < 10) 3 else -9);
+    const doy: i64 = doe - (365 * yoe + @divFloor(yoe, 4) - @divFloor(yoe, 100));
+    const mp: i64 = @divFloor(5 * doy + 2, 153);
+    const d: i64 = doy - @divFloor(153 * mp + 2, 5) + 1;
+    
+    // NOTE: We must do the math inside the branches (mp + 3) rather than 
+    // adding comptime literals (3) to a runtime condition, to satisfy Zig's 
+    // strict comptime/runtime separation rules.
+    const m: i64 = if (mp < 10) mp + 3 else mp - 9;
     
     const final_y: u32 = @intCast(if (m < 3) y + 1 else y);
     const final_m: u32 = @intCast(m);
     const final_d: u32 = @intCast(d);
 
-    // Format into fixed-size buffer: "YYYY-MM-DDTHH:MM:SS.sssZ"
     var buf: [24]u8 = undefined;
     std.fmt.bufPrint(&buf, "{d:0>4}-{d:0>2}-{d:0>2}T{d:0>2}:{d:0>2}:{d:0>2}.{d:0>3}Z", .{
         final_y, final_m, final_d, hour, min, sec, ms,
-    }) catch unreachable; // Cannot fail: buffer is exactly the right size
+    }) catch unreachable;
     
     return buf;
 }
