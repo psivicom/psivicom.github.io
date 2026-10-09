@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# PSVC Manifest: Pilot Agent (Validation Layer)
+
+meta:
+  name: "pilot_agent.psvc"
+  version: "1.2.0"
+  license: "EUPL-1.2"  # <--- CRITICAL: Must pass Vanguard's enforce_pico check
+  author: "Louis-Philippe Audette"
+  health_check: "/health"
+  created: "2026-10-09T14:00:00.000Z"
+
+runtime:
+  image: "python:3.12-slim"
+  command: ["python", "-m", "src.agents.pilot_agent"]
+  resources:
+    cpu: 0.5        # Pico-scale: lightweight compute
+    memory: 256M    # Pico-scale: low memory footprint
+    precision: "float32"
+
+mesh:
+  routing: "vector"
+  dependencies:
+    - "forage_agent.psvc"   # Needs data from Ingestion layer
+  outputs:
+    - "data/pilot_report.json"
+    - "reports/receipt_pilot_*.json"
+
+compliance:
+  fair_principles: ["F2", "R1.1", "I1"]
+  agencies: ["NASA SPD-41a", "CSA", "ESA"]
+  ground_truth: "data/osdr_ground_truth.jsonl"
