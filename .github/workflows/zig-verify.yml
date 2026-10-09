@@ -14,24 +14,35 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout Repository (STRICT SHA PINNED - Approved Action)
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Setup Zig
-        uses: goto-bus-stop/setup-zig@v2
-        with:
-          version: 0.11.0
+      # 2. Download Zig directly (No unapproved third-party actions)
+      - name: Download Zig Toolchain
+        run: |
+          echo "⬇️ Downloading Zig 0.11.0 static binary..."
+          curl -L https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz -o zig.tar.xz
+          tar -xf zig.tar.xz
+          echo "$PWD/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
 
-      - name: Compile Zulu Clock for Edge Nodes
+      # 3. Verify Installation
+      - name: Verify Zig Version
+        run: zig version
+
+      # 4. Compile Zulu Clock for Edge Nodes
+      - name: Compile Zulu Clock
         run: |
           echo "🔨 Compiling pure-Zig Zulu Clock for pico-workers..."
           zig build-exe src/core/zulu_clock.zig -O ReleaseSafe -fstrip
-          
-      - name: Run Unit Tests
+
+      # 5. Run Unit Tests
+      - name: Run Zig Unit Tests
         run: |
           echo "🧪 Running Zig unit tests..."
           zig test src/core/zulu_clock.zig
-          
+
+      # 6. Execute and Verify Output
       - name: Execute and Verify Output
         run: |
           echo "⏱️ Testing execution..."
