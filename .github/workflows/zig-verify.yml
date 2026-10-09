@@ -1,0 +1,76 @@
+# .github/workflows/zig-verify.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Intelligent Zig Binary Compiler
+
+on:
+  push:
+    paths:
+      - 'src/core/*.zig'
+  workflow_dispatch:
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Download Zig Toolchain
+        run: |
+          echo "⬇️ Downloading Zig 0.11.0..."
+          curl -sL https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz -o zig.tar.xz
+          tar -xf zig.tar.xz
+          echo "$PWD/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+
+      - name: Compile and Stage Zig Binaries
+        run: |
+          cd $GITHUB_WORKSPACE
+          CHANGES_MADE=false
+          
+          # Dynamically find ALL .zig files in src/core/
+          for zig_file in src/core/*.zig; do
+            if [ -f "$zig_file" ]; then
+              # Extract filename without .zig extension (e.g., "zulu_clock" from "zulu_clock.zig")
+              binary_name=$(basename "$zig_file" .zig)
+              binary_path="src/core/$binary_name"
+              
+              echo "🔨 Compiling $zig_file -> $binary_path"
+              
+              # -femit-bin forces the output to the exact path we want
+              zig build-exe "$zig_file" -O ReleaseSafe -fstrip -femit-bin="$binary_path"
+              
+              if [ -f "$binary_path" ]; then
+                chmod +x "$binary_path"
+                git add "$binary_path"
+                CHANGES_MADE=true
+                echo "✅ Successfully compiled and staged: $binary_name"
+              else
+                echo "❌ Failed to compile: $binary_name"
+                exit 1
+              fi
+            fi
+          done
+          
+          echo "CHANGES_MADE=$CHANGES_MADE" >> $GITHUB_ENV
+
+      - name: Commit Binaries to src/core/
+        if: env.CHANGES_MADE == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd $GITHUB_WORKSPACE
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if ! git diff --cached --quiet; then
+            echo "🚀 Committing and pushing updated binaries..."
+            # [skip ci] prevents this commit from triggering an infinite workflow loop
+            git commit -m "chore: auto-update compiled Zig binaries in src/core/ [skip ci]"
+            git push
+          else
+            echo "✨ Binaries compiled, but no git changes detected."
+          fi
