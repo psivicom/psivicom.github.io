@@ -177,6 +177,7 @@ psivicom.github.io/
 │   ├── README.md
 │   └── ping-test.txt
 ├── config/
+│   ├── PSVC-compose.yml
 │   ├── aether-vanguard.psvc
 │   ├── agent_config.yaml
 │   ├── agent_templates.json

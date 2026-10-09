@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T03:56:19.558Z | Hash: a55d9694cc2a3a91b3dcc1aeaef4710db7b94b631a991549d6f4b4e47499b050 -->
+<!-- Last updated: 2026-10-09T04:07:35.249Z | Hash: 41bb938c815ca069eb56ef8e0780fa0a8d1992eb588422a9db22b867dcbdcf6c -->
 
 ```
 psivicom.github.io/
@@ -296,6 +296,7 @@ psivicom.github.io/
 │   ├── README.md
 │   └── ping-test.txt
 ├── config/
+│   ├── PSVC-compose.yml
 │   ├── aether-vanguard.psvc
 │   ├── agent_config.yaml
 │   ├── agent_templates.json
