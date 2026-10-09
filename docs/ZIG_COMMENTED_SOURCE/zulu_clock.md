@@ -29,12 +29,15 @@ pub fn getZuluTimestampMs() [24]u8 {
     const mp: i64 = @divFloor(5 * doy + 2, 153);
     const d: i64 = doy - @divFloor(153 * mp + 2, 5) + 1;
     
-    // NOTE: We must do the math inside the branches (mp + 3) rather than 
-    // adding comptime literals (3) to a runtime condition, to satisfy Zig's 
-    // strict comptime/runtime separation rules.
-    const m: i64 = if (mp < 10) mp + 3 else mp - 9;
+    // BRANCHLESS MATH: Avoids Zig's strict comptime/runtime mixing rules.
+    // If mp >= 10, @intFromBool returns 1, so we subtract 12 (3 - 12 = -9).
+    // If mp < 10, @intFromBool returns 0, so we subtract 0 (3 - 0 = 3).
+    const m: i64 = mp + 3 - 12 * @as(i64, @intFromBool(mp >= 10));
     
-    const final_y: u32 = @intCast(if (m < 3) y + 1 else y);
+    // BRANCHLESS YEAR ADJUSTMENT:
+    // If m < 3, @intFromBool returns 1, so we add 1 to the year.
+    // If m >= 3, @intFromBool returns 0, so we add 0.
+    const final_y: u32 = @intCast(y + @as(i64, @intFromBool(m < 3)));
     const final_m: u32 = @intCast(m);
     const final_d: u32 = @intCast(d);
 
