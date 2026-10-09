@@ -1,16 +1,6 @@
-// src/core/actuation_engine.zig
-// SPDX-License-Identifier: EUPL-1.2
-// SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 const std = @import("std");
 
-// Simple rule evaluator for 16-dim float32 vector
-// Index mapping: 0=phase, 1=intensity, 2=defense_weight, 3=explore_weight, 4=stress_accumulator, 5=conscious_mass
 fn evaluateRule(rule_condition: []const u8, vector: [16]f32) bool {
-    // Note: In a full production build, this would use a proper AST parser or 
-    // pre-compiled function pointers. For this MVP, we use simple string matching 
-    // for demonstration of the bare-metal evaluation concept.
-    
     const intensity = vector[1];
     const stress = vector[4];
     const defense = vector[2];
@@ -41,7 +31,6 @@ pub fn main() !void {
         std.process.exit(1);
     }
 
-    // 1. Parse the 16-dim float32 vector from CSV string
     var vector: [16]f32 = undefined;
     var it = std.mem.tokenizeScalar(u8, args[1], ',');
     var i: usize = 0;
@@ -51,19 +40,14 @@ pub fn main() !void {
         }
     }
 
-    // 2. Read the rules JSON file
     const rules_file = try std.fs.cwd().openFile(args[2], .{});
     defer rules_file.close();
     const rules_json = try rules_file.readToEndAlloc(allocator, 1024 * 1024);
     defer allocator.free(rules_json);
 
-    // 3. Parse JSON and evaluate (Simplified for MVP)
-    // In production, use std.json.parse for robust AST traversal
     var matched_commands = std.ArrayList([]const u8).init(allocator);
     defer matched_commands.deinit();
 
-    // Hardcoded MVP evaluation to prove bare-metal speed concept
-    // A full implementation would dynamically parse the JSON array of rules
     if (vector[4] >= 0.75) {
         try matched_commands.append("{\"action\":\"ACTIVATE_COOLING\",\"target\":\"apiary_hive_01\",\"priority\":\"CRITICAL\"}");
     }
@@ -74,7 +58,6 @@ pub fn main() !void {
         try matched_commands.append("{\"action\":\"ENABLE_LIDAR_SCAN\",\"target\":\"apiary_perimeter\",\"priority\":\"HIGH\"}");
     }
 
-    // 4. Output matched commands as JSON array
     std.debug.print("[", .{});
     for (matched_commands.items, 0..) |cmd, index| {
         std.debug.print("{s}", .{cmd});
