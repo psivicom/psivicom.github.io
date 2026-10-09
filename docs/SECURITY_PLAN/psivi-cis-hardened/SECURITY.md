@@ -11,7 +11,7 @@
 
 ## Our Philosophy: Open Data, Hardened Build
 
-Open science means data and code are open (Apache-2.0 for code, CC-BY-4.0 for data/docs).
+Open science means data and code are open (EUPL 1.2 for code, CC-BY-SA-4.0 for data/docs).
 It does NOT mean the build pipeline is open to tampering. This policy implements CIS Controls v8 IG1 and CIS Benchmark principles to make the openness verifiable.
 
 We follow:
@@ -27,7 +27,7 @@ We follow:
 | psivicom.github.io main | latest commit on main | YES | Protected branch, PR-only |
 | Jekyll site | 4.3.x via github-pages gem | YES | Pinned in Gemfile.lock |
 | Data (CSV, images) | v2024+ | YES | Checksum in data/manifest.sha256 |
-| Hardware (Open Hive Logger) | v1.0 | YES | Schematics CC-BY-4.0 |
+| Hardware (Open Hive Logger) | v1.0 | YES | Schematics CC-BY-SA-4.0 |
 
 ## Reporting a Vulnerability
 
@@ -46,7 +46,7 @@ For non-security data access: open an issue with tag data-request.
 | CIS Control v8 | How we implement |
 |---|---|
 | 1. Inventory & 2. Software | codemeta.json, CITATION.cff, Gemfile.lock, SBOM sbom.spdx.json |
-| 3. Data Protection | Dual-license Apache-2.0 / CC-BY-4.0 satisfies NASA/ESA/CSA; checksums in manifest |
+| 3. Data Protection | Dual-license EUPL 1.2 / CC-BY-SA-4.0 satisfies NASA/ESA/CSA; checksums in manifest |
 | 4. Secure Config | Actions pinned by SHA, permissions: contents: read minimal, branch protection |
 | 5. Account Mgmt | 2FA required, CODEOWNERS requires review for /data/ /docs/OSDMP.md |
 | 7. Vuln Mgmt | Dependabot bundler + github-actions, CodeQL, secret scanning + push protection |
@@ -90,4 +90,4 @@ Per NASA FAQ: GitHub alone does not satisfy archiving + persistent identifier. W
 - NASA SPD-41a Scientific Information Policy
 - ESA Open Science Policy, CSA Open Science, JAXA Open Science, UNESCO 41 C/22
 
-License: docs CC-BY-4.0, code snippets Apache-2.0. See LICENSES/README.md
+License: docs CC-BY-SA-4.0, code snippets EUPL 1.2. See LICENSES/README.md
