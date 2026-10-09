@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Verify Zig Edge Node Clock
+name: Verify and Package Zig Edge Node Clock
 
 on:
   push:
@@ -11,10 +11,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build-and-package:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout Repository (STRICT SHA PINNED - Approved Action)
+      # 1. Checkout Repository (STRICT SHA PINNED)
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -47,3 +47,11 @@ jobs:
         run: |
           echo "⏱️ Testing execution..."
           ./zulu_clock
+
+      # 7. 🌟 NEW: Upload the compiled binary as an Artifact
+      - name: Upload Compiled Binary
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: zulu-clock-pico-worker-linux
+          path: ./zulu_clock
+          retention-days: 90
