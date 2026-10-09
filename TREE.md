@@ -827,6 +827,7 @@ psivicom.github.io/
 │   │   └── shannon_z.go
 │   ├── mesh/
 │   │   ├──  __init__.py
+│   │   ├── geo_intelligence.py
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_gossip.py
 │   │   ├── mesh_governor.py
