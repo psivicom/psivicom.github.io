@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T23:23:01.108Z | Hash: bc482971a3834fc2d4f07bd3ef97a44f1218dc073904b89996c1f1fdd705f399 -->
+<!-- Last updated: 2026-10-09T23:25:43.873Z | Hash: 68d8ee2eb219f84af15ea7e1ea3cc5c02555ce4c2d216ca98ba49e2759cff42d -->
 
 ```
 psivicom.github.io/
@@ -171,8 +171,7 @@ psivicom.github.io/
 │       ├── wendy-sensory.yml
 │       ├── wendy.yml
 │       ├── workflow-integrity.yml
-│       ├── workflow-security-guardian.yml
-│       └── zig-verify.yml
+│       └── workflow-security-guardian.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
@@ -285,6 +284,7 @@ psivicom.github.io/
 │   │   └── license_agent.py
 │   ├── A2_wendy-cognitive.yml
 │   ├── A_wendy-cognitive.yml
+│   ├── A_zig-verify.yml
 │   ├── A_zulu_clock.py
 │   └── README.md
 ├── assets/
