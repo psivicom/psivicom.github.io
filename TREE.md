@@ -575,8 +575,7 @@ psivicom.github.io/
 │   ├── .heartbeat-store.json
 │   ├── dynamic-geo.js
 │   ├── package-lock.json
-│   ├── package.json
-│   └── psvc-manifest.yml
+│   └── package.json
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep

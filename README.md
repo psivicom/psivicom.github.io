@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T19:49:54.876Z | Hash: b39d452776693f37e4a30d88393af714d2f499c55d617b3fce546f5c88228943 -->
+<!-- Last updated: 2026-10-09T19:51:25.518Z | Hash: 8f570c98de43f21ecc9c9e0c8883e302e50e3cec2f79fdd337c883e3499f021b -->
 
 ```
 psivicom.github.io/
@@ -694,8 +694,7 @@ psivicom.github.io/
 │   ├── .heartbeat-store.json
 │   ├── dynamic-geo.js
 │   ├── package-lock.json
-│   ├── package.json
-│   └── psvc-manifest.yml
+│   └── package.json
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
