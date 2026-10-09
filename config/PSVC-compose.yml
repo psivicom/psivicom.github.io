@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# PSVC Mesh Orchestration: AETHER VANGUARD
+# Architecture: Lightweight vector-based micro-services for autonomous self-scaling intelligence.
+
+version: "2.0"
+name: "psivi-aether-mesh"
+
+# Global mesh configuration
+mesh_config:
+  routing_strategy: "content_aware_vector"
+  consensus_threshold: 0.7
+  fallback: "broadcast"
+
+services:
+  wendy_core:
+    manifest: "src/wendy.py"
+    role: "orchestrator"
+    resources:
+      cpu: 1.0
+      memory: 512M
+    health_check: "/wendy/heartbeat"
+    depends_on:
+      - vanguard
+      - pilot
+
+  vanguard:
+    manifest: "src/agents/vanguard_agent.py"
+    role: "guardian"
+    resources:
+      cpu: 0.25
+      memory: 128M
+    health_check: "/vanguard/health"
+    tools: ["heartbeat", "ledger", "enforce_pico"]
+    # Vanguard runs first to validate all other containers before they start
+    priority: 1
+
+  pilot:
+    manifest: "pilot_agent.psvc"
+    role: "validator"
+    resources:
+      cpu: 0.5
+      memory: 256M
+    health_check: "/pilot/health"
+    tools: ["scan", "analyze", "signal"]
+    priority: 2
+
+  forage:
+    manifest: "src/agents/forage_agent.py"
+    role: "observer"
+    resources:
+      cpu: 0.5
+      memory: 256M
+    tools: ["weather", "map", "memory_write"]
+    priority: 3
+
+# Data volume mounts for scientific provenance
+volumes:
+  goldstream_data:
+    driver: local
+    mount: "./data"
+  reports:
+    driver: local
+    mount: "./reports"
