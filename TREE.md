@@ -570,9 +570,8 @@ psivicom.github.io/
 │   │   │       ├── mod.ts
 │   │   │       └── package.json
 │   │   └── .package-lock.json
-│   ├── workflows/
-│   │   └── aggregate-mesh-v2.js
-│   └── .heartbeat-store.json
+│   └── workflows/
+│       └── aggregate-mesh-v2.js
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
