@@ -187,6 +187,7 @@ psivicom.github.io/
 │   ├── data_sources.json
 │   ├── mesh_topology.yaml
 │   ├── pilot_agent.psvc
+│   ├── psvc-manifest.yml
 │   └── psvc_blueprints.json
 ├── data/
 │   ├── ai_handshake/
