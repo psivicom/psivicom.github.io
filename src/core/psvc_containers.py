@@ -1,6 +1,6 @@
 # src/core/psvc_containers.py
-# SPDX-License-Identifier: CC-BY-4.0
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 """
 Pico Service Container (PSVC) Implementation v3.
@@ -11,7 +11,7 @@ No Torch dependency.
 import struct
 import json
 import hashlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, Any, Optional
 import numpy as np
 
