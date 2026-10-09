@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T19:56:55.627Z | Hash: 801a0393d39fff8da6d124557fc4d664d30949907c3857e87dd3a6200b62faea -->
+<!-- Last updated: 2026-10-09T19:57:26.857Z | Hash: 3dfc339d746820056b7d0b34557b21e4e8843b4533b674d4177de6669fb94b27 -->
 
 ```
 psivicom.github.io/
@@ -665,26 +665,25 @@ psivicom.github.io/
 │               │   ├── msgpack.js.map
 │               │   ├── msgpack.min.js
 │               │   └── msgpack.min.js.map
-│               ├── src/
-│               │   ├── utils/
-│               │   │   ├── int.ts
-│               │   │   ├── prettyByte.ts
-│               │   │   ├── stream.ts
-│               │   │   ├── typedArrays.ts
-│               │   │   └── utf8.ts
-│               │   ├── CachedKeyDecoder.ts
-│               │   ├── DecodeError.ts
-│               │   ├── Decoder.ts
-│               │   ├── Encoder.ts
-│               │   ├── ExtData.ts
-│               │   ├── ExtensionCodec.ts
-│               │   ├── context.ts
-│               │   ├── decode.ts
-│               │   ├── decodeAsync.ts
-│               │   ├── encode.ts
-│               │   ├── index.ts
-│               │   └── timestamp.ts
-│               └── LICENSE
+│               └── src/
+│                   ├── utils/
+│                   │   ├── int.ts
+│                   │   ├── prettyByte.ts
+│                   │   ├── stream.ts
+│                   │   ├── typedArrays.ts
+│                   │   └── utf8.ts
+│                   ├── CachedKeyDecoder.ts
+│                   ├── DecodeError.ts
+│                   ├── Decoder.ts
+│                   ├── Encoder.ts
+│                   ├── ExtData.ts
+│                   ├── ExtensionCodec.ts
+│                   ├── context.ts
+│                   ├── decode.ts
+│                   ├── decodeAsync.ts
+│                   ├── encode.ts
+│                   ├── index.ts
+│                   └── timestamp.ts
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
