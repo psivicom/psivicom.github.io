@@ -829,6 +829,7 @@ psivicom.github.io/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_gossip.py
 │   │   ├── mesh_governor.py
+│   │   ├── mesh_node.py
 │   │   ├── mesh_router.py
 │   │   ├── mesh_seeder.py
 │   │   ├── mesh_transport.py
