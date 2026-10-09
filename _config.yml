@@ -58,16 +58,16 @@ show_excerpts: true
 # AETHER VANGUARD MESH INTEGRATION
 # ==========================================
 exclude:
-  - src/
-  - tests/
-  - config/
-  - .github/
+  - src/**
+  - tests/**
+  - config/**
+  - .github/**
   - Dockerfile
   - docker-compose.yml
   - requirements.txt
   - PROVENANCE.json
   - "*.psvc"          # <--- NEW: Ignores PSIVI Service manifests
-  - RFC/              # <--- NEW: Ignores your RFC documentation/specs
+  - RFC/**              # <--- NEW: Ignores your RFC documentation/specs
   - Gemfile
   - Gemfile.lock
   - node_modules
