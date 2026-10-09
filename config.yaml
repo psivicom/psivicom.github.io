@@ -1,5 +1,5 @@
 # config.yaml
-# SPDX-License-Identifier: CC-BY-4.0
+# SPDX-License-Identifier: CC BY-SA 4.0
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette
 # RFC 1001 Compliant — PSIVI Open Science Hub
 #
@@ -13,7 +13,7 @@ metadata:
   project: "psivicom.github.io"
   version: "2.0.0"
   author: "Louis-Philippe Audette"
-  license: "CC-BY-4.0"
+  license: "CC BY-SA 4.0"
   rfc1001_compliant: true
   created: "2026-09-20"
   description: "Open Science Research Mesh with FAIR-compliant, RFC 1001-governed, volunteer-driven distributed compute and AI-driven DAG planning"
@@ -253,6 +253,6 @@ agents:
       - stamp_fair
       - validate_fair
     fair_stamping:
-      license: "CC-BY-4.0"
+      license: "CC BY-SA 4.0"
       author: "Louis-Philippe Audette"
       project: "psivicom.github.io"
