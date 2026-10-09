@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T03:47:17.695Z | Hash: 9b37a0568b64883bac24c78f40ab2370942cec72fc7a2488fd596b5a85d58cc2 -->
+<!-- Last updated: 2026-10-09T03:56:19.558Z | Hash: a55d9694cc2a3a91b3dcc1aeaef4710db7b94b631a991549d6f4b4e47499b050 -->
 
 ```
 psivicom.github.io/
@@ -302,6 +302,7 @@ psivicom.github.io/
 │   ├── config.yaml
 │   ├── data_sources.json
 │   ├── mesh_topology.yaml
+│   ├── pilot_agent.psvc
 │   └── psvc_blueprints.json
 ├── data/
 │   ├── ai_handshake/

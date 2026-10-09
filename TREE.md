@@ -183,6 +183,7 @@ psivicom.github.io/
 │   ├── config.yaml
 │   ├── data_sources.json
 │   ├── mesh_topology.yaml
+│   ├── pilot_agent.psvc
 │   └── psvc_blueprints.json
 ├── data/
 │   ├── ai_handshake/
