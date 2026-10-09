@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Verify and Package Zig Edge Node Clock
+name: Build and Commit Zig Edge Node Clock
 
 on:
   push:
@@ -11,47 +11,46 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-package:
+  build-and-commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to commit the binary back to the repo
     steps:
-      # 1. Checkout Repository (STRICT SHA PINNED)
+      # 1. Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      # 2. Download Zig directly (No unapproved third-party actions)
+      # 2. Download Zig Toolchain
       - name: Download Zig Toolchain
         run: |
-          echo "⬇️ Downloading Zig 0.11.0 static binary..."
-          curl -L https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz -o zig.tar.xz
+          echo "⬇️ Downloading Zig 0.11.0..."
+          curl -sL https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz -o zig.tar.xz
           tar -xf zig.tar.xz
           echo "$PWD/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
 
-      # 3. Verify Installation
-      - name: Verify Zig Version
-        run: zig version
-
-      # 4. Compile Zulu Clock for Edge Nodes
-      - name: Compile Zulu Clock
+      # 3. Compile & Test
+      - name: Compile & Test
         run: |
-          echo "🔨 Compiling pure-Zig Zulu Clock for pico-workers..."
+          echo "🔨 Compiling pure-Zig Zulu Clock..."
           zig build-exe src/core/zulu_clock.zig -O ReleaseSafe -fstrip
-
-      # 5. Run Unit Tests
-      - name: Run Zig Unit Tests
-        run: |
-          echo "🧪 Running Zig unit tests..."
           zig test src/core/zulu_clock.zig
-
-      # 6. Execute and Verify Output
-      - name: Execute and Verify Output
-        run: |
-          echo "⏱️ Testing execution..."
           ./zulu_clock
 
-      # 7. 🌟 NEW: Upload the compiled binary as an Artifact
-      - name: Upload Compiled Binary
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
-        with:
-          name: zulu-clock-pico-worker-linux
-          path: ./zulu_clock
-          retention-days: 90
+      # 4. 🌟 Move to src/core/ and Commit Back to Repo
+      - name: Commit Binary to src/core/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Move the compiled binary to the source directory
+          mv ./zulu_clock ./src/core/zulu_clock
+          
+          # Configure Git for the commit
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add and commit only the binary
+          git add src/core/zulu_clock
+          git commit -m "chore: auto-update compiled zulu_clock binary in src/core/" || echo "No changes to commit"
+          
+          # Push back to the repository
+          git push
