@@ -25,10 +25,9 @@ pub fn getZuluTimestampMs() [24]u8 {
     const mp: i64 = @divFloor(5 * doy + 2, 153);
     const d: i64 = doy - @divFloor(153 * mp + 2, 5) + 1;
     
-    // FIXED: Avoided comptime_int error by performing addition inside branches
-    const m: i64 = if (mp < 10) mp + 3 else mp - 9;
+    const m: i64 = mp + 3 - 12 * @as(i64, @intFromBool(mp >= 10));
     
-    const final_y: u32 = @intCast(if (m < 3) y + 1 else y);
+    const final_y: u32 = @intCast(y + @as(i64, @intFromBool(m < 3)));
     const final_m: u32 = @intCast(m);
     const final_d: u32 = @intCast(d);
 
