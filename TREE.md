@@ -52,7 +52,8 @@ psivicom.github.io/
 │       ├── wendy-sensory.yml
 │       ├── wendy.yml
 │       ├── workflow-integrity.yml
-│       └── workflow-security-guardian.yml
+│       ├── workflow-security-guardian.yml
+│       └── zig-verify.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
