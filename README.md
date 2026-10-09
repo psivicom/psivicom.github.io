@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T02:28:02.580Z | Hash: ea51d5b02c59863b4b28804d5c3a58702752ad80889a3a9f6395f4b24f4d85a3 -->
+<!-- Last updated: 2026-10-09T02:44:42.235Z | Hash: abb7bfcdc077651a3554d7e66be9779c1cb527a90b3f65025541790f43cf2be2 -->
 
 ```
 psivicom.github.io/
@@ -298,6 +298,7 @@ psivicom.github.io/
 ├── config/
 │   ├── aether-vanguard.psvc
 │   ├── agent_templates.json
+│   ├── config.yaml
 │   ├── data_sources.json
 │   ├── mesh_topology.yaml
 │   └── psvc_blueprints.json
@@ -1030,7 +1031,6 @@ psivicom.github.io/
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json
-├── config.yaml
 ├── docker-compose.yml
 ├── how-psvc-works.html
 ├── how-psvc-works2.html

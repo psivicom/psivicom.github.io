@@ -179,6 +179,7 @@ psivicom.github.io/
 ├── config/
 │   ├── aether-vanguard.psvc
 │   ├── agent_templates.json
+│   ├── config.yaml
 │   ├── data_sources.json
 │   ├── mesh_topology.yaml
 │   └── psvc_blueprints.json
@@ -911,7 +912,6 @@ psivicom.github.io/
 ├── _config.yml
 ├── agent_config.yaml
 ├── codemeta.json
-├── config.yaml
 ├── docker-compose.yml
 ├── how-psvc-works.html
 ├── how-psvc-works2.html
