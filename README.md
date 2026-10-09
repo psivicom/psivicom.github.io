@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T02:57:06.587Z | Hash: 8722cf3c6af643a010e55d0dd9e23f9b52d7506059df8798b742d7dc4eac7167 -->
+<!-- Last updated: 2026-10-09T03:47:17.695Z | Hash: 9b37a0568b64883bac24c78f40ab2370942cec72fc7a2488fd596b5a85d58cc2 -->
 
 ```
 psivicom.github.io/
@@ -888,6 +888,7 @@ psivicom.github.io/
 │   │   ├── report_generator_agent.py
 │   │   ├── self_healing_agent.py
 │   │   ├── synthesizer_agent.py
+│   │   ├── vanguard_agent.py
 │   │   └── void_observer.py
 │   ├── automation/
 │   │   ├── __init__.py

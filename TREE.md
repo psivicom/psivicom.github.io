@@ -769,6 +769,7 @@ psivicom.github.io/
 │   │   ├── report_generator_agent.py
 │   │   ├── self_healing_agent.py
 │   │   ├── synthesizer_agent.py
+│   │   ├── vanguard_agent.py
 │   │   └── void_observer.py
 │   ├── automation/
 │   │   ├── __init__.py
