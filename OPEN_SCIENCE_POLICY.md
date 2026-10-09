@@ -30,8 +30,8 @@ This policy applies to:
 
 Unless otherwise noted:
 
-- code fixes and technical patches are licensed under **Apache-2.0**
-- data, policy text, and documentation are licensed under **CC-BY-4.0**
+- code fixes and technical patches are licensed under **EUPL 1.2**
+- data, policy text, and documentation are licensed under **CC-BY-SA-4.0**
 
 If a file needs a different license, it must be stated clearly in that file or its header.
 
