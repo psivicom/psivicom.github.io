@@ -1,6 +1,9 @@
 <!--
-  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+  SPDX-License-Identifier: EUPL-1.2 OR CC-BY-SA-4.0
+  Dual Licenses: Code snippets governed by EUPL-1.2; Prose and documentation governed by CC BY-SA 4.0
 -->
+
 User-agent: *
 Allow: /
 
