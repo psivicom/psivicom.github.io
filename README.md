@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T22:22:37.785Z | Hash: 2cd80f748fcf2ae32b21cce9709c81a8417ac44a4ee98e42056bbdcd0485c682 -->
+<!-- Last updated: 2026-10-09T22:27:06.510Z | Hash: 56bbf1d605ef81e6b2a3ab11a32b2b1af320df4e7b0d0bb05a391f0248f7f80e -->
 
 ```
 psivicom.github.io/
@@ -786,6 +786,7 @@ psivicom.github.io/
 │   │   └── __init__.py
 │   ├── core/
 │   │   ├── __init__.py
+│   │   ├── actuation_engine.zig
 │   │   ├── config_loader.py
 │   │   ├── data_registry.py
 │   │   ├── http_client.py
