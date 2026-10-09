@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T18:02:49.573Z | Hash: 5ffd63742ecf7f5c0f5e36fea27af49fddc5a7762fb72f1791fd44aab2c27802 -->
+<!-- Last updated: 2026-10-09T18:27:03.323Z | Hash: 31b59ef1762d167f7bb06cedc2287d2608851885f3cd114db879a42f694e39e5 -->
 
 ```
 psivicom.github.io/
@@ -483,6 +483,7 @@ psivicom.github.io/
 │   │   ├── autoimmune_protocol_wendy.md
 │   │   ├── bring_wendy_life.md
 │   │   ├── execution-template-for-Wendy.json
+│   │   ├── experimental_architecture_plan.md
 │   │   ├── experimental_distributedproof.md
 │   │   ├── experimental_meshdistribution_wendy_existence.md
 │   │   ├── experimental_wendy_architecture.md
