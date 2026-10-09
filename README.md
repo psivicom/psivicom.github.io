@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T07:33:26.755Z | Hash: e115c6156d9d8b473b6b94b51369586bc836ee99a0c7df48ab2b996a096e7295 -->
+<!-- Last updated: 2026-10-09T07:50:37.194Z | Hash: f02dcc3da1b14039b80540e8bd86a436685a7fcf33edbfa0aa2c802438f41412 -->
 
 ```
 psivicom.github.io/
@@ -928,6 +928,7 @@ psivicom.github.io/
 │   │   ├── spatio_temporal.py
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
+│   │   ├── zulu-clock-pico-worker-linux.zip
 │   │   ├── zulu_clock.py
 │   │   └── zulu_clock.zig
 │   ├── generated_agents/

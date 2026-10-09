@@ -809,6 +809,7 @@ psivicom.github.io/
 │   │   ├── spatio_temporal.py
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
+│   │   ├── zulu-clock-pico-worker-linux.zip
 │   │   ├── zulu_clock.py
 │   │   └── zulu_clock.zig
 │   ├── generated_agents/
