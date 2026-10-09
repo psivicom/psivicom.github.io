@@ -565,8 +565,7 @@ psivicom.github.io/
 │               │   ├── encode.ts
 │               │   ├── index.ts
 │               │   └── timestamp.ts
-│               ├── LICENSE
-│               └── README.md
+│               └── LICENSE
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep

@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T19:55:30.576Z | Hash: d4562fdc53be056a291dc165771cf891adcc4deddebc2f87b978447c5b6c1adb -->
+<!-- Last updated: 2026-10-09T19:56:55.627Z | Hash: 801a0393d39fff8da6d124557fc4d664d30949907c3857e87dd3a6200b62faea -->
 
 ```
 psivicom.github.io/
@@ -684,8 +684,7 @@ psivicom.github.io/
 │               │   ├── encode.ts
 │               │   ├── index.ts
 │               │   └── timestamp.ts
-│               ├── LICENSE
-│               └── README.md
+│               └── LICENSE
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
