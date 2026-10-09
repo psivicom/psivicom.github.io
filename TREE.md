@@ -829,9 +829,9 @@ psivicom.github.io/
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_governor.py
 │   │   ├── mesh_router.py
+│   │   ├── mesh_seeder.py
 │   │   ├── pico_mesh.py
 │   │   ├── psvc-mesh.json
-│   │   ├── seed_mesh.py
 │   │   ├── vector_mesh.py
 │   │   ├── volunteer_worker.py
 │   │   └── vram_mesh.py
