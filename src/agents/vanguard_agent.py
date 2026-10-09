@@ -12,12 +12,12 @@ import json
 import logging
 import numpy as np
 from pathlib import Path
-from datetime import datetime, timezone
 from typing import Dict, Any, List
 
 from src.base.base_agent import BaseAgent, AgentLayer
+from src.core.zulu_clock import get_zulu_timestamp_ms
 
-logger = logging.getLogger("WENDY_AGENT")
+logger = logging.getLogger("VANGUARD_AGENT")
 
 class VanguardAgent(BaseAgent):
     LAYER = AgentLayer.VALIDATION # Acts as the final validation/governance gate
@@ -45,7 +45,7 @@ class VanguardAgent(BaseAgent):
             "status": "PATROLLING",
             "integrity_score": float(self.mesh_integrity_score), # Cast to native float for JSON serialization
             "anomaly_count": int(self.anomaly_count),
-            "timestamp": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+            "timestamp": get_zulu_timestamp_ms()
         }
         
         self.seal("heartbeat_executed", telemetry)
@@ -58,7 +58,7 @@ class VanguardAgent(BaseAgent):
         Appends an immutable, timestamped record to the governance ledger.
         """
         entry = {
-            "timestamp": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            "timestamp": get_zulu_timestamp_ms(),
             "action": action,
             "actor": actor,
             "details": details,
@@ -66,7 +66,7 @@ class VanguardAgent(BaseAgent):
             "authority": "The Audette Clause"
         }
         
-        with open(self.ledger_path, "a") as f:
+        with open(self.ledger_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry) + "\n")
             
         self.seal("ledger_updated", {"action": action, "actor": actor})
@@ -122,7 +122,7 @@ class VanguardAgent(BaseAgent):
 
 if __name__ == "__main__":
     # Initialize logging for standalone test
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
     
     vanguard = VanguardAgent()
     
