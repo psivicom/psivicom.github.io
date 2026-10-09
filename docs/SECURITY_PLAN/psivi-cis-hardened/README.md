@@ -1,5 +1,5 @@
 <!--
-  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2 + CC BY-SA 4.0
 -->
 # PSIVI.COM — CIS Hardening Pack — README
 
@@ -46,7 +46,7 @@ git push
 
 ## Why this helps international agencies
 
-- NASA, CSA, ESA, JAXA all require: open code Apache-2.0 + open data CC-BY-4.0 + OSDMP + DOI. You already have it.
+- NASA, CSA, ESA, JAXA all require: open code EUPL 1.2 + open data CC-BY-SA-4.0 + OSDMP + DOI. You already have it.
 - CIS adds: verifiable build, no tampering, audit log. Agencies can trust your Goldstream pollinator data and RADARSAT fusion notebooks are reproducible.
 - AI invitation: you can now say "AI may contribute PRs with provenance hashes, human-reviewed per NASA TOPS and CIS Control 14" — exactly what ESA Open Science Policy wants for AI transparency.
 
