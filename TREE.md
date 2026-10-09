@@ -852,6 +852,7 @@ psivicom.github.io/
 │   │   └── psvc_provisioner.py
 │   ├── pipelines/
 │   │   ├── __init__.py
+│   │   ├── consolidation_pipeline.py
 │   │   └── research_pipeline.py
 │   ├── tools/
 │   │   ├── __init__.py
