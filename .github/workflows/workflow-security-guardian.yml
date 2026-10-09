@@ -65,7 +65,7 @@ jobs:
           fi
           
           # 3. Check for mutable action tags (@v4, @v5, @main)
-          if grep -rnE "uses:\s*.*@[vV0-9]|uses:\s*.*@main" .github/workflows/ | grep -v "^[[:space:]]*#"; then
+          if grep -rnE "uses:\s*[^\s]+@(v[0-9]+|main|master)\b" .github/workflows/ | grep -v "^[[:space:]]*#"; then
             echo "❌ VIOLATION: Unpinned GitHub Action detected."
             VIOLATIONS=$((VIOLATIONS+1))
           fi
