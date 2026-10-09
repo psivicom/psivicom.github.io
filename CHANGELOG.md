@@ -26,8 +26,7 @@ Rules:
 
 ---
 
-# TOP OF CHANGELOG.md (most recent at top)
-==========================================
+# TOP OF CHANGELOG.md (Recent changes)
 
 ## [1.2.1] — 2026-10-09T18:00:00.000Z — Louis-Philippe Audette — Polyglot Zulu Clock Integration
 - **[ADDED]** Pure-Zig Zulu Clock utility (`src/core/zulu_clock.zig`).
