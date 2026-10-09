@@ -73,5 +73,3 @@ exclude:
   - node_modules
   - vendor
   - .venv
-  - config.yaml
-  - agent_config.yaml
