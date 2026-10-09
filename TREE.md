@@ -444,6 +444,8 @@ psivicom.github.io/
 │   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
+├── mesh/
+│   └── .gitkeep
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
@@ -712,6 +714,7 @@ psivicom.github.io/
 │   │   └── forage_quality_model.py
 │   ├── nodes/
 │   │   ├── __init__.py
+│   │   ├── consensus_engine.py
 │   │   ├── pico_worker.py
 │   │   └── volunteer_worker.py
 │   ├── orchestrator/
