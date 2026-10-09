@@ -764,6 +764,7 @@ psivicom.github.io/
 │   │   ├── consolidator_agent.py
 │   │   ├── critic_agent.py
 │   │   ├── discovery_agent.py
+│   │   ├── evolution_agent.py
 │   │   ├── forage_agent.py
 │   │   ├── governor_agent.py
 │   │   ├── instruction_agent.py
