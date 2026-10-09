@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T19:47:07.097Z | Hash: 13fa193984e306788373d3414ffea3431543bc51ad2be5e5d89b44a8a924f7f2 -->
+<!-- Last updated: 2026-10-09T19:49:54.876Z | Hash: b39d452776693f37e4a30d88393af714d2f499c55d617b3fce546f5c88228943 -->
 
 ```
 psivicom.github.io/
@@ -695,8 +695,7 @@ psivicom.github.io/
 │   ├── dynamic-geo.js
 │   ├── package-lock.json
 │   ├── package.json
-│   ├── psvc-manifest.yml
-│   └── spatial-clustering.js
+│   └── psvc-manifest.yml
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep

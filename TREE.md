@@ -576,8 +576,7 @@ psivicom.github.io/
 │   ├── dynamic-geo.js
 │   ├── package-lock.json
 │   ├── package.json
-│   ├── psvc-manifest.yml
-│   └── spatial-clustering.js
+│   └── psvc-manifest.yml
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
