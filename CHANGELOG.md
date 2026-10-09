@@ -27,6 +27,12 @@ Rules:
 ---
 
 # TOP OF CHANGELOG.md (most recent at top)
+==========================================
+
+## [1.2.1] — 2026-10-09T18:00:00.000Z — Louis-Philippe Audette — Polyglot Zulu Clock Integration
+- **[ADDED]** Pure-Zig Zulu Clock utility (`src/core/zulu_clock.zig`).
+- **[CHANGED]** Upgraded temporal precision architecture to use zero-libc, mathematically deterministic RFC 3339 millisecond timestamps across all edge nodes.
+- **[FIXED]** Eliminated OS-level clock drift risks for volunteer pico-workers and distributed mesh synchronization.
 
 ## 1.2.0 — 2026-09-11T00:00:00.000Z — Louis-Philippe Audette — Domain-Separated License Migration (EUPL 1.2 + CC BY-SA 4.0)
 - Changed: Migrated all software/code license from Apache-2.0 to EUPL 1.2 (stronger copyleft, official ESA standard, fully OSI-approved).
