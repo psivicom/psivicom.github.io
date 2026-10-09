@@ -7,7 +7,7 @@ All notable changes to this repository will be documented in this file.
 
 All changes reported in "CHANGELOG.md" are with the newest date kept at the top.
 
-# Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SS.sssZ
+# ⏱️ Timestamps in NASA Open Science Standard: YYYY-MM-DDTHH:MM:SS.sssZ
 We include at the top a Timestamps Template for keeping records 
 of committed changes to keep compliance with time keeping.
 Here is a Copy to use:
@@ -26,7 +26,7 @@ Rules:
 
 ---
 
-# TOP OF CHANGELOG.md (Recent changes)
+# 🏁 TOP OF CHANGELOG.md (Recent changes)
 
 ## [1.2.1] — 2026-10-09T18:00:00.000Z — Louis-Philippe Audette — Polyglot Zulu Clock Integration
 - **[ADDED]** Pure-Zig Zulu Clock utility (`src/core/zulu_clock.zig`).
