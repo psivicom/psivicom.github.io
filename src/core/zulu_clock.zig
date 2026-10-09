@@ -60,7 +60,7 @@ pub fn main() !void {
     try stdout.print("{s}\n", .{timestamp});
 }
 
-/// Unit test to verify exact formatting and length
+// Unit test to verify exact formatting and length
 test "zulu clock format" {
     const ts = getZuluTimestampMs();
     try std.testing.expectEqual(@as(usize, 24), ts.len);
