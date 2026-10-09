@@ -444,9 +444,6 @@ psivicom.github.io/
 │   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
-├── mesh/
-│   └── agents/
-│       └── volunteer-agent.js
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
