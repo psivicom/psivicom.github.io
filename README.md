@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-09T19:53:22.891Z | Hash: ebc9cf9514d09e88c02554d9a2008e23fb6cf63969ea086e432d5a424ce27e3f -->
+<!-- Last updated: 2026-10-09T19:53:59.757Z | Hash: 17f7b41672e36e8cf24fa4c3998a8abcde96017ab929269cdf5eb612eee854b1 -->
 
 ```
 psivicom.github.io/
@@ -567,128 +567,127 @@ psivicom.github.io/
 │   ├── agents/
 │   │   └── volunteer-agent.js
 │   └── node_modules/
-│       ├── @msgpack/
-│       │   └── msgpack/
-│       │       ├── dist.cjs/
-│       │       │   ├── utils/
-│       │       │   │   ├── int.cjs
-│       │       │   │   ├── int.cjs.map
-│       │       │   │   ├── prettyByte.cjs
-│       │       │   │   ├── prettyByte.cjs.map
-│       │       │   │   ├── stream.cjs
-│       │       │   │   ├── stream.cjs.map
-│       │       │   │   ├── typedArrays.cjs
-│       │       │   │   ├── typedArrays.cjs.map
-│       │       │   │   ├── utf8.cjs
-│       │       │   │   └── utf8.cjs.map
-│       │       │   ├── CachedKeyDecoder.cjs
-│       │       │   ├── CachedKeyDecoder.cjs.map
-│       │       │   ├── DecodeError.cjs
-│       │       │   ├── DecodeError.cjs.map
-│       │       │   ├── Decoder.cjs
-│       │       │   ├── Decoder.cjs.map
-│       │       │   ├── Encoder.cjs
-│       │       │   ├── Encoder.cjs.map
-│       │       │   ├── ExtData.cjs
-│       │       │   ├── ExtData.cjs.map
-│       │       │   ├── ExtensionCodec.cjs
-│       │       │   ├── ExtensionCodec.cjs.map
-│       │       │   ├── context.cjs
-│       │       │   ├── context.cjs.map
-│       │       │   ├── decode.cjs
-│       │       │   ├── decode.cjs.map
-│       │       │   ├── decodeAsync.cjs
-│       │       │   ├── decodeAsync.cjs.map
-│       │       │   ├── encode.cjs
-│       │       │   ├── encode.cjs.map
-│       │       │   ├── index.cjs
-│       │       │   ├── index.cjs.map
-│       │       │   ├── timestamp.cjs
-│       │       │   ├── timestamp.cjs.map
-│       │       │   └── tsconfig.dist.cjs.tsbuildinfo
-│       │       ├── dist.esm/
-│       │       │   ├── utils/
-│       │       │   │   ├── int.d.ts
-│       │       │   │   ├── int.mjs
-│       │       │   │   ├── int.mjs.map
-│       │       │   │   ├── prettyByte.d.ts
-│       │       │   │   ├── prettyByte.mjs
-│       │       │   │   ├── prettyByte.mjs.map
-│       │       │   │   ├── stream.d.ts
-│       │       │   │   ├── stream.mjs
-│       │       │   │   ├── stream.mjs.map
-│       │       │   │   ├── typedArrays.d.ts
-│       │       │   │   ├── typedArrays.mjs
-│       │       │   │   ├── typedArrays.mjs.map
-│       │       │   │   ├── utf8.d.ts
-│       │       │   │   ├── utf8.mjs
-│       │       │   │   └── utf8.mjs.map
-│       │       │   ├── CachedKeyDecoder.d.ts
-│       │       │   ├── CachedKeyDecoder.mjs
-│       │       │   ├── CachedKeyDecoder.mjs.map
-│       │       │   ├── DecodeError.d.ts
-│       │       │   ├── DecodeError.mjs
-│       │       │   ├── DecodeError.mjs.map
-│       │       │   ├── Decoder.d.ts
-│       │       │   ├── Decoder.mjs
-│       │       │   ├── Decoder.mjs.map
-│       │       │   ├── Encoder.d.ts
-│       │       │   ├── Encoder.mjs
-│       │       │   ├── Encoder.mjs.map
-│       │       │   ├── ExtData.d.ts
-│       │       │   ├── ExtData.mjs
-│       │       │   ├── ExtData.mjs.map
-│       │       │   ├── ExtensionCodec.d.ts
-│       │       │   ├── ExtensionCodec.mjs
-│       │       │   ├── ExtensionCodec.mjs.map
-│       │       │   ├── context.d.ts
-│       │       │   ├── context.mjs
-│       │       │   ├── context.mjs.map
-│       │       │   ├── decode.d.ts
-│       │       │   ├── decode.mjs
-│       │       │   ├── decode.mjs.map
-│       │       │   ├── decodeAsync.d.ts
-│       │       │   ├── decodeAsync.mjs
-│       │       │   ├── decodeAsync.mjs.map
-│       │       │   ├── encode.d.ts
-│       │       │   ├── encode.mjs
-│       │       │   ├── encode.mjs.map
-│       │       │   ├── index.d.ts
-│       │       │   ├── index.mjs
-│       │       │   ├── index.mjs.map
-│       │       │   ├── timestamp.d.ts
-│       │       │   ├── timestamp.mjs
-│       │       │   ├── timestamp.mjs.map
-│       │       │   └── tsconfig.dist.esm.tsbuildinfo
-│       │       ├── dist.umd/
-│       │       │   ├── msgpack.js
-│       │       │   ├── msgpack.js.map
-│       │       │   ├── msgpack.min.js
-│       │       │   └── msgpack.min.js.map
-│       │       ├── src/
-│       │       │   ├── utils/
-│       │       │   │   ├── int.ts
-│       │       │   │   ├── prettyByte.ts
-│       │       │   │   ├── stream.ts
-│       │       │   │   ├── typedArrays.ts
-│       │       │   │   └── utf8.ts
-│       │       │   ├── CachedKeyDecoder.ts
-│       │       │   ├── DecodeError.ts
-│       │       │   ├── Decoder.ts
-│       │       │   ├── Encoder.ts
-│       │       │   ├── ExtData.ts
-│       │       │   ├── ExtensionCodec.ts
-│       │       │   ├── context.ts
-│       │       │   ├── decode.ts
-│       │       │   ├── decodeAsync.ts
-│       │       │   ├── encode.ts
-│       │       │   ├── index.ts
-│       │       │   └── timestamp.ts
-│       │       ├── LICENSE
-│       │       ├── README.md
-│       │       ├── mod.ts
-│       │       └── package.json
-│       └── .package-lock.json
+│       └── @msgpack/
+│           └── msgpack/
+│               ├── dist.cjs/
+│               │   ├── utils/
+│               │   │   ├── int.cjs
+│               │   │   ├── int.cjs.map
+│               │   │   ├── prettyByte.cjs
+│               │   │   ├── prettyByte.cjs.map
+│               │   │   ├── stream.cjs
+│               │   │   ├── stream.cjs.map
+│               │   │   ├── typedArrays.cjs
+│               │   │   ├── typedArrays.cjs.map
+│               │   │   ├── utf8.cjs
+│               │   │   └── utf8.cjs.map
+│               │   ├── CachedKeyDecoder.cjs
+│               │   ├── CachedKeyDecoder.cjs.map
+│               │   ├── DecodeError.cjs
+│               │   ├── DecodeError.cjs.map
+│               │   ├── Decoder.cjs
+│               │   ├── Decoder.cjs.map
+│               │   ├── Encoder.cjs
+│               │   ├── Encoder.cjs.map
+│               │   ├── ExtData.cjs
+│               │   ├── ExtData.cjs.map
+│               │   ├── ExtensionCodec.cjs
+│               │   ├── ExtensionCodec.cjs.map
+│               │   ├── context.cjs
+│               │   ├── context.cjs.map
+│               │   ├── decode.cjs
+│               │   ├── decode.cjs.map
+│               │   ├── decodeAsync.cjs
+│               │   ├── decodeAsync.cjs.map
+│               │   ├── encode.cjs
+│               │   ├── encode.cjs.map
+│               │   ├── index.cjs
+│               │   ├── index.cjs.map
+│               │   ├── timestamp.cjs
+│               │   ├── timestamp.cjs.map
+│               │   └── tsconfig.dist.cjs.tsbuildinfo
+│               ├── dist.esm/
+│               │   ├── utils/
+│               │   │   ├── int.d.ts
+│               │   │   ├── int.mjs
+│               │   │   ├── int.mjs.map
+│               │   │   ├── prettyByte.d.ts
+│               │   │   ├── prettyByte.mjs
+│               │   │   ├── prettyByte.mjs.map
+│               │   │   ├── stream.d.ts
+│               │   │   ├── stream.mjs
+│               │   │   ├── stream.mjs.map
+│               │   │   ├── typedArrays.d.ts
+│               │   │   ├── typedArrays.mjs
+│               │   │   ├── typedArrays.mjs.map
+│               │   │   ├── utf8.d.ts
+│               │   │   ├── utf8.mjs
+│               │   │   └── utf8.mjs.map
+│               │   ├── CachedKeyDecoder.d.ts
+│               │   ├── CachedKeyDecoder.mjs
+│               │   ├── CachedKeyDecoder.mjs.map
+│               │   ├── DecodeError.d.ts
+│               │   ├── DecodeError.mjs
+│               │   ├── DecodeError.mjs.map
+│               │   ├── Decoder.d.ts
+│               │   ├── Decoder.mjs
+│               │   ├── Decoder.mjs.map
+│               │   ├── Encoder.d.ts
+│               │   ├── Encoder.mjs
+│               │   ├── Encoder.mjs.map
+│               │   ├── ExtData.d.ts
+│               │   ├── ExtData.mjs
+│               │   ├── ExtData.mjs.map
+│               │   ├── ExtensionCodec.d.ts
+│               │   ├── ExtensionCodec.mjs
+│               │   ├── ExtensionCodec.mjs.map
+│               │   ├── context.d.ts
+│               │   ├── context.mjs
+│               │   ├── context.mjs.map
+│               │   ├── decode.d.ts
+│               │   ├── decode.mjs
+│               │   ├── decode.mjs.map
+│               │   ├── decodeAsync.d.ts
+│               │   ├── decodeAsync.mjs
+│               │   ├── decodeAsync.mjs.map
+│               │   ├── encode.d.ts
+│               │   ├── encode.mjs
+│               │   ├── encode.mjs.map
+│               │   ├── index.d.ts
+│               │   ├── index.mjs
+│               │   ├── index.mjs.map
+│               │   ├── timestamp.d.ts
+│               │   ├── timestamp.mjs
+│               │   ├── timestamp.mjs.map
+│               │   └── tsconfig.dist.esm.tsbuildinfo
+│               ├── dist.umd/
+│               │   ├── msgpack.js
+│               │   ├── msgpack.js.map
+│               │   ├── msgpack.min.js
+│               │   └── msgpack.min.js.map
+│               ├── src/
+│               │   ├── utils/
+│               │   │   ├── int.ts
+│               │   │   ├── prettyByte.ts
+│               │   │   ├── stream.ts
+│               │   │   ├── typedArrays.ts
+│               │   │   └── utf8.ts
+│               │   ├── CachedKeyDecoder.ts
+│               │   ├── DecodeError.ts
+│               │   ├── Decoder.ts
+│               │   ├── Encoder.ts
+│               │   ├── ExtData.ts
+│               │   ├── ExtensionCodec.ts
+│               │   ├── context.ts
+│               │   ├── decode.ts
+│               │   ├── decodeAsync.ts
+│               │   ├── encode.ts
+│               │   ├── index.ts
+│               │   └── timestamp.ts
+│               ├── LICENSE
+│               ├── README.md
+│               ├── mod.ts
+│               └── package.json
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
