@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T05:14:28.047Z | Hash: 346cd293b3ca5ed7ec6220b23914ad4767a563ace4a5f6bd172bc9bb9a2106e5 -->
+<!-- Last updated: 2026-10-10T05:16:09.383Z | Hash: 9a4fe06c260c8ee42dca05f5718e3a36d52f75a89d11e6daeef2a8448f7aa17f -->
 
 ```
 psivicom.github.io/
@@ -884,6 +884,7 @@ psivicom.github.io/
 │   ├── __init__.py
 │   └── test_pixelizer_fidelity.py
 ├── tools/
+│   ├── __init__.py
 │   ├── fix_timestamps.py
 │   └── validate_workflows.py
 ├── wendy-go/
