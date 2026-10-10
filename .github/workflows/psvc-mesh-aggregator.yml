@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           fetch-depth: 0
 
@@ -27,7 +27,9 @@ jobs:
           python-version: '3.12'
 
       - name: Install Dependencies
-        run: pip install numpy pynacl pyyaml requests
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pynacl pyyaml requests
 
       - name: Run Sovereign Mesh Aggregator
         env:
@@ -40,11 +42,30 @@ jobs:
         run: |
           git config user.name "psvc-mesh-bot"
           git config user.email "mesh-bot@psivi.com"
+          
+          # 1. Stage the changes
           git add reports/mesh_status.txt
           
+          # 2. Only proceed if there are actual changes
           if ! git diff --staged --quiet; then
-            # Stash, pull, pop, commit, push (The unbreakable chain)
-            git stash push -m "pre-rebase stash" && git pull --rebase origin main && git stash pop && git commit -m "chore(mesh): auto-update sovereign status report [skip ci]" && git push origin main
+            
+            # 3. Commit FIRST. This safely packages our changes.
+            # [skip ci] prevents this push from triggering an infinite loop of workflows.
+            git commit -m "chore(mesh): auto-update sovereign status report [skip ci]"
+            
+            # 4. THE RACE-CONDITION SHIELD:
+            # Pull remote changes, rebase our new commit on top, and push.
+            # Retry up to 3 times in case another agent pushes at the exact same millisecond.
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed mesh status."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
+            
           else
             echo "ℹ️ No changes to mesh status."
           fi
