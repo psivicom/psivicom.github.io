@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T04:32:19.595Z | Hash: 82a220d36011506f027b46454ffe18c7fe87a2d87069ba61107b117fd9a68929 -->
+<!-- Last updated: 2026-10-10T05:09:57.851Z | Hash: b0b11b744e5ec0daea33b245b3bb3f78d8ddd872ae691ef4ba96b792d2df4fa5 -->
 
 ```
 psivicom.github.io/
@@ -339,7 +339,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261008T051031921Z.json
 │   │   ├── handshake_qwen_20261008T051031921Z.psvc
 │   │   ├── handshake_qwen_20261009T051322666Z.json
-│   │   └── handshake_qwen_20261009T051322666Z.psvc
+│   │   ├── handshake_qwen_20261009T051322666Z.psvc
+│   │   ├── handshake_qwen_20261010T045822846Z.json
+│   │   └── handshake_qwen_20261010T045822846Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
@@ -574,6 +576,8 @@ psivicom.github.io/
 │   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
+├── mesh/
+│   └── .gitkeep
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep

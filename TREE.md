@@ -220,7 +220,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261008T051031921Z.json
 │   │   ├── handshake_qwen_20261008T051031921Z.psvc
 │   │   ├── handshake_qwen_20261009T051322666Z.json
-│   │   └── handshake_qwen_20261009T051322666Z.psvc
+│   │   ├── handshake_qwen_20261009T051322666Z.psvc
+│   │   ├── handshake_qwen_20261010T045822846Z.json
+│   │   └── handshake_qwen_20261010T045822846Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
@@ -455,6 +457,8 @@ psivicom.github.io/
 │   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
+├── mesh/
+│   └── .gitkeep
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
