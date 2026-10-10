@@ -454,8 +454,6 @@ psivicom.github.io/
 │   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
-├── mesh/
-│   └── .gitkeep
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
