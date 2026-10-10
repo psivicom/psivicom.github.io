@@ -445,7 +445,6 @@ psivicom.github.io/
 │   ├── installation-guide-repository-tree.md
 │   ├── make-psvc-guide.md
 │   ├── osdmp.md
-│   ├── psivi-mesh-bridge.yml
 │   ├── psvc-test-results.md
 │   ├── rfc1001.txt
 │   ├── robotics-automation-notes.md
