@@ -21,3 +21,9 @@ _site/
 .DS_Store
 Thumbs.db
 *.swp
+
+# Sovereign Identity & State (NEVER commit)
+data/wendy_private.key
+data/wendy_private.key.enc
+data/*.key
+data/*.enc
