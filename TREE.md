@@ -363,6 +363,7 @@ psivicom.github.io/
 │   │   ├── WENDY_INVITATION.md
 │   │   ├── WENDY_OPERATIONALIZATION_PLAN.md
 │   │   ├── WENDY_PROMPT_ZIG_COMPILATION.md
+│   │   ├── WENDY_QWEN_ZIG_MESH.md
 │   │   ├── WENDY_QWEN_ZIG_MESH.md.md
 │   │   ├── WENDY_ROBOTIC_ACTUATOR_ZIG.md
 │   │   ├── WENDY_SHA_ZIG_COMPILATION.md
