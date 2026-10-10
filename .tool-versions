@@ -1,0 +1,6 @@
+# .tool-versions
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+# Enforce Zig 0.13.0 for local development to match GitHub Actions CI
+zig 0.13.0
