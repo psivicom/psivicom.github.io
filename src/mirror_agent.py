@@ -25,7 +25,8 @@ def check_structural_compliance():
     print("🔍 Layer 3: Checking Structural Compliance...")
     corrections_made = False
     
-    required_dirs = ['logs', 'assets', 'mesh', 'src']
+    # UPDATED: Removed 'mesh' from root. Enforcing 'src/mesh' instead.
+    required_dirs = ['logs', 'assets', 'src', 'src/mesh']
     for dir_name in required_dirs:
         if not os.path.exists(dir_name):
             print(f"   🛠️ Creating missing directory: {dir_name}")
@@ -36,8 +37,17 @@ def check_structural_compliance():
                 Path(gitkeep_path).touch()
             corrections_made = True
             
-    required_files = ['mesh-status.json', 'wendy_metabolism.json']
+    # UPDATED: Aligned files with the src/ architecture to prevent root-level phantom files.
+    required_files = [
+        'src/mesh/mesh-status.json', 
+        'src/wendy_metabolism.json'
+    ]
     for file_name in required_files:
+        # Ensure parent directory exists before writing file
+        parent_dir = os.path.dirname(file_name)
+        if parent_dir and not os.path.exists(parent_dir):
+            os.makedirs(parent_dir, exist_ok=True)
+            
         if not os.path.exists(file_name):
             print(f"   🛠️ Creating missing file: {file_name}")
             Path(file_name).write_text('{}')
