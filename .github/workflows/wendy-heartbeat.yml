@@ -124,4 +124,4 @@ jobs:
         uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: /tmp/wendy_twin.psvec
-          key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}-${{ github.run_id }}
+          key: wendy-twin-${{ hashFiles('wendy-go/pkg/twin/psvc.go') }}
