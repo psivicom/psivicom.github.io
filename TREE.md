@@ -629,7 +629,6 @@ psivicom.github.io/
 ├── scripts/
 │   ├── update-tree/
 │   │   └── main.go
-│   ├── A3_BEGIN_PROCESSOR.py
 │   ├── BEGIN.py
 │   ├── BEGIN_PROCESSOR.py
 │   ├── BEGIN_SEALER.py
