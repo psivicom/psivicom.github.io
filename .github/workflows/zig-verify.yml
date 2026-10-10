@@ -27,10 +27,9 @@ jobs:
           tar -xf zig.tar.xz
           echo "$PWD/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
 
-      - name: Compile and Stage Zig Binaries
+      - name: Compile Zig Binaries
         run: |
           cd $GITHUB_WORKSPACE
-          CHANGES_MADE=false
           
           for zig_file in src/core/*.zig; do
             if [ -f "$zig_file" ]; then
@@ -42,20 +41,15 @@ jobs:
               
               if [ -f "$binary_path" ]; then
                 chmod +x "$binary_path"
-                git add "$binary_path"
-                CHANGES_MADE=true
-                echo "✅ Successfully compiled and staged: $binary_name"
+                echo "✅ Successfully compiled: $binary_name"
               else
                 echo "❌ Failed to compile: $binary_name"
                 exit 1
               fi
             fi
           done
-          
-          echo "CHANGES_MADE=$CHANGES_MADE" >> $GITHUB_ENV
 
-      - name: Commit Binaries to src/core/
-        if: env.CHANGES_MADE == 'true'
+      - name: Commit and Push Binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -63,10 +57,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          if ! git diff --cached --quiet; then
-            echo "🚀 Pulling, committing, and pushing updated binaries..."
-            # Combined on one line to strictly satisfy workflow-security-guardian regex checks
-            git pull --rebase origin main && git commit -m "chore: auto-update compiled Zig binaries in src/core/ [skip ci]" && git push origin main
-          else
-            echo "✨ Binaries compiled, but no git changes detected."
+          # 1. Pull latest changes FIRST (while working directory is still clean)
+          # 2. Stage the compiled binaries
+          # 3. Check for changes, commit, and push (all on one line to satisfy guardian regex)
+          git pull --rebase origin main && \
+          git add src/core/zulu_clock src/core/actuation_engine && \
+          if ! git diff --cached --quiet; then \
+            echo "🚀 Committing and pushing updated binaries..."; \
+            git commit -m "chore: auto-update compiled Zig binaries in src/core/ [skip ci]" && git push origin main; \
+          else \
+            echo "✨ Binaries compiled, but no git changes detected."; \
           fi
