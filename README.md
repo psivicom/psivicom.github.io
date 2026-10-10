@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T05:10:56.902Z | Hash: a809627d1c79a2e339c129cc03aedb53285b07deec4cc5a33e0d7171207a265e -->
+<!-- Last updated: 2026-10-10T05:14:28.047Z | Hash: 346cd293b3ca5ed7ec6220b23914ad4767a563ace4a5f6bd172bc9bb9a2106e5 -->
 
 ```
 psivicom.github.io/
@@ -754,6 +754,7 @@ psivicom.github.io/
 │   ├── BEGIN.py
 │   ├── BEGIN_PROCESSOR.py
 │   ├── BEGIN_SEALER.py
+│   ├── __init__.py
 │   ├── build_psvc_mesh.py
 │   ├── fix_archive_names.py
 │   ├── generate_mesh_index.py
