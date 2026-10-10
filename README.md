@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T02:28:54.750Z | Hash: 6d5d1ed5b855530645ceebe89ce38b998ae6278c69c73887db7b283b6696e8be -->
+<!-- Last updated: 2026-10-10T02:33:37.678Z | Hash: a3ebfba8e5db85393316058fb87ae6581ffac8f734857dcaf5901c17d653236c -->
 
 ```
 psivicom.github.io/
@@ -808,6 +808,7 @@ psivicom.github.io/
 │   │   ├── osdr_validator.py
 │   │   ├── psvc_containers.py
 │   │   ├── psvc_reference.py
+│   │   ├── psvc_sovereign.py
 │   │   ├── rollback_manager.py
 │   │   ├── sovereign_kernel.py
 │   │   ├── spatio_temporal.py

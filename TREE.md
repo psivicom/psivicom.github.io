@@ -689,6 +689,7 @@ psivicom.github.io/
 │   │   ├── osdr_validator.py
 │   │   ├── psvc_containers.py
 │   │   ├── psvc_reference.py
+│   │   ├── psvc_sovereign.py
 │   │   ├── rollback_manager.py
 │   │   ├── sovereign_kernel.py
 │   │   ├── spatio_temporal.py
