@@ -356,6 +356,7 @@ psivicom.github.io/
 │   │   ├── The Mathematical Core and Blueprint of Wendy_ A Critical Review for System Rebuild.pdf
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_INVITATION.md
+│   │   ├── WENDY_PROMPT_ZIG_COMPILATION.md
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
@@ -671,6 +672,7 @@ psivicom.github.io/
 │   │   └── __init__.py
 │   ├── core/
 │   │   ├── __init__.py
+│   │   ├── actuation_engine
 │   │   ├── actuation_engine.zig
 │   │   ├── config_loader.py
 │   │   ├── data_registry.py

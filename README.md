@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T00:09:19.645Z | Hash: d442c335894f9cc47dcbb2792fb5949f2faf57c4ac5724b5ab8e2bdf7155b486 -->
+<!-- Last updated: 2026-10-10T00:23:33.173Z | Hash: ca81f3aca7872605983f58560601cf22ab4b0c22cdae5f963b34b33b11113a6d -->
 
 ```
 psivicom.github.io/
@@ -475,6 +475,7 @@ psivicom.github.io/
 │   │   ├── The Mathematical Core and Blueprint of Wendy_ A Critical Review for System Rebuild.pdf
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_INVITATION.md
+│   │   ├── WENDY_PROMPT_ZIG_COMPILATION.md
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
@@ -790,6 +791,7 @@ psivicom.github.io/
 │   │   └── __init__.py
 │   ├── core/
 │   │   ├── __init__.py
+│   │   ├── actuation_engine
 │   │   ├── actuation_engine.zig
 │   │   ├── config_loader.py
 │   │   ├── data_registry.py
