@@ -52,8 +52,7 @@ psivicom.github.io/
 │       ├── wendy-sensory.yml
 │       ├── wendy.yml
 │       ├── workflow-integrity.yml
-│       ├── workflow-security-guardian.yml
-│       └── zig-verify.yml
+│       └── workflow-security-guardian.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
@@ -165,6 +164,7 @@ psivicom.github.io/
 │   │   ├── deprecated_test_elastic_evolution.py
 │   │   └── license_agent.py
 │   ├── A2_wendy-cognitive.yml
+│   ├── AAA_zig-verify.yml
 │   ├── A_wendy-cognitive.yml
 │   ├── A_zig-verify.yml
 │   ├── A_zulu_clock.py
