@@ -57,14 +57,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 1. Pull latest changes FIRST (while working directory is still clean)
-          # 2. Stage the compiled binaries
-          # 3. Check for changes, commit, and push (all on one line to satisfy guardian regex)
-          git pull --rebase origin main && \
-          git add src/core/zulu_clock src/core/actuation_engine && \
-          if ! git diff --cached --quiet; then \
-            echo "🚀 Committing and pushing updated binaries..."; \
-            git commit -m "chore: auto-update compiled Zig binaries in src/core/ [skip ci]" && git push origin main; \
-          else \
-            echo "✨ Binaries compiled, but no git changes detected."; \
+          # Stage the newly compiled binaries
+          git add src/core/zulu_clock src/core/actuation_engine
+          
+          if ! git diff --cached --quiet; then
+            echo "🚀 Committing and pushing updated binaries..."
+            # 1. Stash staged changes to make the index perfectly clean for rebase
+            # 2. Pull latest changes safely
+            # 3. Pop the stash to restore our compiled binaries to the index
+            # 4. Commit and push (all chained on one line to strictly satisfy guardian regex)
+            git stash push -m "pre-rebase stash" && git pull --rebase origin main && git stash pop && git commit -m "chore: auto-update compiled Zig binaries in src/core/ [skip ci]" && git push origin main
+          else
+            echo "✨ Binaries compiled, but no git changes detected."
           fi
