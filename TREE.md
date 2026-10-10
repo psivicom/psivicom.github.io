@@ -454,6 +454,8 @@ psivicom.github.io/
 │   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
+├── mesh/
+│   └── .gitkeep
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
@@ -708,6 +710,7 @@ psivicom.github.io/
 │   ├── mesh/
 │   │   ├──  __init__.py
 │   │   ├── geo_intelligence.py
+│   │   ├── mesh_aggregator.py
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_gossip.py
 │   │   ├── mesh_governor.py

@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T03:35:34.017Z | Hash: e60ec9227e5ea48052f3e7ef9224a5f01b9abd5564677a0402b8eac1db8f33dd -->
+<!-- Last updated: 2026-10-10T04:20:41.409Z | Hash: 9653ced8c765d73d1300d7b297deeef258f6e20bd40492520cde49fd43648d18 -->
 
 ```
 psivicom.github.io/
@@ -573,6 +573,8 @@ psivicom.github.io/
 │   └── .gitkeep
 ├── maps/
 │   └── forage_forecast.png
+├── mesh/
+│   └── .gitkeep
 ├── reports/
 │   ├── cognitive_dialogues/
 │   │   └── .gitkeep
@@ -827,6 +829,7 @@ psivicom.github.io/
 │   ├── mesh/
 │   │   ├──  __init__.py
 │   │   ├── geo_intelligence.py
+│   │   ├── mesh_aggregator.py
 │   │   ├── mesh_brain.py
 │   │   ├── mesh_gossip.py
 │   │   ├── mesh_governor.py
