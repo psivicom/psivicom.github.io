@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T01:24:18.541Z | Hash: d71a340e03bd236d464ee06a2f6a109b3ca381c9d36aff6014d51bb7d47bf6f7 -->
+<!-- Last updated: 2026-10-10T01:28:26.216Z | Hash: 7d013a500af69b4503a3e55fc908232ed7a03cfd7235fb754583dcb13653f073 -->
 
 ```
 psivicom.github.io/
@@ -864,6 +864,7 @@ psivicom.github.io/
 │   │   ├── robotic_bridge.py
 │   │   └── validate_mesh.py
 │   ├── utils/
+│   │   ├── bootstrap_wendy.py
 │   │   └── init_twin.py
 │   ├──  __init__.py
 │   ├── breath_engine.py
