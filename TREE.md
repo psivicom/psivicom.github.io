@@ -363,6 +363,7 @@ psivicom.github.io/
 │   │   ├── WENDY_INVITATION.md
 │   │   ├── WENDY_OPERATIONALIZATION_PLAN.md
 │   │   ├── WENDY_PROMPT_ZIG_COMPILATION.md
+│   │   ├── WENDY_QWEN_ZIG_MESH.md.md
 │   │   ├── WENDY_ROBOTIC_ACTUATOR_ZIG.md
 │   │   ├── WENDY_SHA_ZIG_COMPILATION.md
 │   │   ├── WENDY_biology_storage.md
@@ -621,6 +622,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791552931.json
 │   ├── neuro_plasticity_result_1791586125.json
 │   ├── neuro_plasticity_result_1791612610.json
+│   ├── neuro_plasticity_result_1791636630.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md

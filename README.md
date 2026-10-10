@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T06:39:08.573Z | Hash: c21980b0d5d124ecab0fc315c031a496e032a9ee7092e462512d9d78e3b44246 -->
+<!-- Last updated: 2026-10-10T14:20:52.582Z | Hash: 965fe44d4f96bb080988d5a0d18e5dc1f076d55a9b1fc0ad3752918c9403dcae -->
 
 ```
 psivicom.github.io/
@@ -482,6 +482,7 @@ psivicom.github.io/
 │   │   ├── WENDY_INVITATION.md
 │   │   ├── WENDY_OPERATIONALIZATION_PLAN.md
 │   │   ├── WENDY_PROMPT_ZIG_COMPILATION.md
+│   │   ├── WENDY_QWEN_ZIG_MESH.md.md
 │   │   ├── WENDY_ROBOTIC_ACTUATOR_ZIG.md
 │   │   ├── WENDY_SHA_ZIG_COMPILATION.md
 │   │   ├── WENDY_biology_storage.md
@@ -740,6 +741,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791552931.json
 │   ├── neuro_plasticity_result_1791586125.json
 │   ├── neuro_plasticity_result_1791612610.json
+│   ├── neuro_plasticity_result_1791636630.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
