@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T14:20:52.582Z | Hash: 965fe44d4f96bb080988d5a0d18e5dc1f076d55a9b1fc0ad3752918c9403dcae -->
+<!-- Last updated: 2026-10-10T14:21:49.353Z | Hash: 982dbe850a8ee3459eb94cdb7cc4c4967cb56a9f33ad194fd38cb54ae0f0e058 -->
 
 ```
 psivicom.github.io/
@@ -942,6 +942,7 @@ psivicom.github.io/
 ├── TRUST_AND_PROVENANCE
 ├── VOLUNTEER_GUIDE.md
 ├── VOLUNTEER_PROTOCOL.md
+├── WENDY_QWEN_ZIG_MESH.md.md
 ├── _config.yml
 ├── codemeta.json
 ├── docker-compose.yml

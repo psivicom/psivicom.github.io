@@ -823,6 +823,7 @@ psivicom.github.io/
 ├── TRUST_AND_PROVENANCE
 ├── VOLUNTEER_GUIDE.md
 ├── VOLUNTEER_PROTOCOL.md
+├── WENDY_QWEN_ZIG_MESH.md.md
 ├── _config.yml
 ├── codemeta.json
 ├── docker-compose.yml
