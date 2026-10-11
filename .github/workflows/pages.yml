@@ -42,6 +42,20 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      - name: Clean Symlinks from Build Output
+        run: |
+          echo "🧹 Removing symlinks from _site/..."
+          # Find and remove all symbolic links in the _site directory
+          find _site -type l -delete || true
+          
+          # Verify no symlinks remain
+          if find _site -type l | grep -q .; then
+            echo "❌ Failed to remove all symlinks"
+            exit 1
+          else
+            echo "✅ All symlinks removed successfully"
+          fi
+
       - name: Upload artifact (SHA-Pinned)
         # We use the direct upload-artifact action with a full SHA to satisfy the security policy,
         # bypassing the composite upload-pages-artifact which internally uses the unpinned @v4 tag.
@@ -50,6 +64,7 @@ jobs:
           name: github-pages
           path: _site/
           retention-days: 1
+          if-no-files-found: error
 
   deploy:
     environment:
