@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           fetch-depth: 0 # CRITICAL: Changed from 1 to 0 for safe rebasing
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -38,8 +38,9 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          # Install ONLY lightweight dependencies required for orchestration logic
-          pip install numpy pyyaml requests python-dateutil
+          # Core dependencies for DAG orchestration, config parsing, logging, and cryptographic sealing.
+          # This skips the massive ML/CUDA stack, saving CI time and resources.
+          pip install -r requirements-core.txt
 
       - name: Ensure Directories Exist
         run: |
