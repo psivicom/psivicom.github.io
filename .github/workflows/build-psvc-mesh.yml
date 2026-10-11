@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - 'scripts/**' # CRITICAL: Ensure workflow runs if the build script itself changes
       - 'config/psvc_blueprints.json'
   workflow_dispatch:
 
@@ -21,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           fetch-depth: 0 # CRITICAL: Required for safe rebasing
 
@@ -33,7 +34,8 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install numpy
+          # Lightweight dependencies for PSVC mesh building, blueprint parsing, and signing
+          pip install numpy pyyaml pynacl
 
       - name: 🏗️ Build PSVC Containers
         env:
@@ -46,7 +48,10 @@ jobs:
         run: |
           git config user.name "Wendy-Builder"
           git config user.email "builder@psivi.com"
-          git add dist/*.psvc dist/*.json
+          
+          # CRITICAL: Ensure dist directory exists before adding to prevent globbing errors on fresh runners
+          mkdir -p dist
+          git add dist/
           
           if ! git diff --staged --quiet; then
             # [skip ci] prevents this push from triggering an infinite loop of workflows
@@ -63,5 +68,5 @@ jobs:
               fi
             done
           else
-            echo "💤 No changes in source code."
+            echo "💤 No changes in source code or generated containers."
           fi
