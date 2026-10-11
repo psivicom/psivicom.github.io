@@ -63,7 +63,7 @@ class SynthesizerAgent:
         source_c = np.random.rand(source_samples).astype(np.float64)
         fused_input = np.concatenate([source_a, source_b, source_c])
         
-        success, result = self.pixelizer.execute_vector_math(self.agent_id, operation="transform", input_data=fused_input)
+        success, result = self.pixelizer.execute_vector_math(self.agent_id, operation="transform", data=fused_input)
         if not success:
             logger.error(f"[{self.agent_id}] Synthesis failed.")
             return False, None
