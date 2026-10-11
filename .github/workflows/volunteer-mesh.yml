@@ -15,9 +15,10 @@ jobs:
     permissions:
       contents: write
       actions: read
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0 # CRITICAL: Required for safe rebasing
@@ -28,7 +29,9 @@ jobs:
           python-version: '3.12'
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt PyNaCl
 
       - name: Execute Volunteer Worker
         env:
@@ -39,35 +42,4 @@ jobs:
           else
             echo "Volunteer worker not found"
             exit 1
-          fi
-
-      - name: Validate Ledger Before Commit (Circuit Breaker)
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.core.ledger_validator reports/pilot_report.json
-
-      - name: Commit State Changes (Race-Condition Proof)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "PSIVI Volunteer Node"
-          git config user.email "volunteer@psivi.com"
-          git add -A
-          
-          if ! git diff --staged --quiet; then
-            # [skip ci] prevents this push from triggering an infinite loop of workflows
-            git commit -m "chore(mesh): volunteer node sync [skip ci]"
-            
-            # THE RACE-CONDITION SHIELD:
-            for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
-                echo "✅ Successfully pushed volunteer node sync."
-                break
-              else
-                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
-                sleep 2
-              fi
-            done
-          else
-            echo "ℹ️ No new volunteer state to commit."
           fi
