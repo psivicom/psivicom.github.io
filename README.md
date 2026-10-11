@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-10T21:37:47.824Z | Hash: 4ef812a14640be347cd9d9fc5fd38acb55072b741b0861205b40b319d79769ed -->
+<!-- Last updated: 2026-10-11T01:10:25.887Z | Hash: b56e0a595c25f7c884ff0a70ea2b0ebde9e5104fa9fad9bf6b501396c955f57e -->
 
 ```
 psivicom.github.io/
@@ -341,7 +341,11 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261009T051322666Z.json
 │   │   ├── handshake_qwen_20261009T051322666Z.psvc
 │   │   ├── handshake_qwen_20261010T045822846Z.json
-│   │   └── handshake_qwen_20261010T045822846Z.psvc
+│   │   ├── handshake_qwen_20261010T045822846Z.psvc
+│   │   ├── handshake_qwen_20261011T005141180Z.json
+│   │   ├── handshake_qwen_20261011T005141180Z.psvc
+│   │   ├── handshake_qwen_20261011T005141821Z.json
+│   │   └── handshake_qwen_20261011T005141821Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
@@ -653,6 +657,10 @@ psivicom.github.io/
 │   │   ├── chain_20261005T003411576Z_step0_forage_agent_ecffb816a75f45c8.psvc
 │   │   ├── chain_20261005T003411576Z_step1_literature_agent_157d877cff6d477e.json
 │   │   ├── chain_20261005T003411576Z_step1_literature_agent_157d877cff6d477e.psvc
+│   │   ├── chain_20261011T005546321Z_step0_forage_agent_451d0ee643ab46ce.json
+│   │   ├── chain_20261011T005546321Z_step0_forage_agent_451d0ee643ab46ce.psvc
+│   │   ├── chain_20261011T005546324Z_step1_literature_agent_1d891d8c5df24bd4.json
+│   │   ├── chain_20261011T005546324Z_step1_literature_agent_1d891d8c5df24bd4.psvc
 │   │   ├── governor_53cbcc22c4f1.psvc
 │   │   ├── governor_a026c90e5bd0.psvc
 │   │   ├── literature_result_1791186608.json
@@ -742,6 +750,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791586125.json
 │   ├── neuro_plasticity_result_1791612610.json
 │   ├── neuro_plasticity_result_1791636630.json
+│   ├── neuro_plasticity_result_1791669359.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
