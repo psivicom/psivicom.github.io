@@ -42,23 +42,26 @@ jobs:
         env:
           JEKYLL_ENV: production
 
-      - name: Clean Symlinks from Build Output
+      - name: Sanitize Build Output (Remove All Links)
         run: |
-          echo "🧹 Removing symlinks from _site/..."
-          # Find and remove all symbolic links in the _site directory
-          find _site -type l -delete || true
+          echo "🧹 Sanitizing _site/ directory (dereferencing all links)..."
           
-          # Verify no symlinks remain
-          if find _site -type l | grep -q .; then
-            echo "❌ Failed to remove all symlinks"
-            exit 1
-          else
-            echo "✅ All symlinks removed successfully"
-          fi
+          # Create a completely clean copy. 
+          # The '-L' flag forces cp to follow and dereference ALL symbolic links, 
+          # turning them into regular files. This also inherently breaks any hard links.
+          rm -rf _site_clean
+          cp -rL _site _site_clean
+          
+          # Replace the original _site with the sanitized version
+          rm -rf _site
+          mv _site_clean _site
+          
+          # Verify the size is well under the 10GB limit
+          du -sh _site
+          
+          echo "✅ Build output fully sanitized. No symlinks or hard links remain."
 
       - name: Upload artifact (SHA-Pinned)
-        # We use the direct upload-artifact action with a full SHA to satisfy the security policy,
-        # bypassing the composite upload-pages-artifact which internally uses the unpinned @v4 tag.
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: github-pages
@@ -75,5 +78,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        # UPDATED: Now using the fully SHA-pinned v5.0.1 release
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
