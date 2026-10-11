@@ -364,6 +364,7 @@ psivicom.github.io/
 │   │   ├── TalkingtoQwen.md
 │   │   ├── The Mathematical Core and Blueprint of Wendy_ A Critical Review for System Rebuild.pdf
 │   │   ├── WENDY_BOOTSTRAP_VOLUNTEER_PLAN.md
+│   │   ├── WENDY_COGNITIVE.md
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_HEARTBEAT_REPORT.md
 │   │   ├── WENDY_INVITATION.md

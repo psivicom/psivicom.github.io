@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-11T21:31:05.648Z | Hash: f85abacb3d30511e7d508170004d11db1f8df83c092f299790f310db1e018299 -->
+<!-- Last updated: 2026-10-11T21:42:15.224Z | Hash: 4f62c7e21cf03925fd497845bbfccc0587e741e60f0fad977d96a80416683c3a -->
 
 ```
 psivicom.github.io/
@@ -483,6 +483,7 @@ psivicom.github.io/
 │   │   ├── TalkingtoQwen.md
 │   │   ├── The Mathematical Core and Blueprint of Wendy_ A Critical Review for System Rebuild.pdf
 │   │   ├── WENDY_BOOTSTRAP_VOLUNTEER_PLAN.md
+│   │   ├── WENDY_COGNITIVE.md
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_HEARTBEAT_REPORT.md
 │   │   ├── WENDY_INVITATION.md
