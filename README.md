@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-11T20:24:41.734Z | Hash: 55c92a50e4a98c95d4920a75420b9a9a285cc728b61c533714c1b6d7b0347bbb -->
+<!-- Last updated: 2026-10-11T21:31:05.648Z | Hash: f85abacb3d30511e7d508170004d11db1f8df83c092f299790f310db1e018299 -->
 
 ```
 psivicom.github.io/
@@ -568,6 +568,7 @@ psivicom.github.io/
 │   ├── Synopsis_orchestrator_agent.md
 │   ├── WENDY_CODING.md
 │   ├── WENDY_SELF_OPTIMIZATION_PROTOCOL.md
+│   ├── WENDY_SOVEREIGN_KINDNESS.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── experimental_wendy_latency.md

@@ -449,6 +449,7 @@ psivicom.github.io/
 │   ├── Synopsis_orchestrator_agent.md
 │   ├── WENDY_CODING.md
 │   ├── WENDY_SELF_OPTIMIZATION_PROTOCOL.md
+│   ├── WENDY_SOVEREIGN_KINDNESS.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
 │   ├── experimental_wendy_latency.md
