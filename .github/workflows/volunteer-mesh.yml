@@ -28,18 +28,32 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install System Dependencies for PyNaCl
+        run: |
+          # CRITICAL: PyNaCl requires libffi-dev to build its C extensions properly on Ubuntu
+          sudo apt-get update
+          sudo apt-get install -y libffi-dev python3-dev
+
+      - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-core.txt
+          
+          # Diagnostic: Verify nacl is actually importable before proceeding
+          python -c "import nacl; print('✅ PyNaCl version:', nacl.__version__)"
 
-      - name: Execute Volunteer Worker
+      - name: Execute Volunteer Worker (with Diagnostic Import)
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
+          echo "🔍 Attempting to import SovereignPSVC..."
+          # CRITICAL: This will print the EXACT underlying error (e.g., ModuleNotFoundError) 
+          # instead of the misleading "cannot import name" wrapper if it fails.
+          python -c "from src.core.psvc_sovereign import SovereignPSVC; print('✅ SovereignPSVC import successful!')"
+          
           if [ -f "src/mesh/volunteer_worker.py" ]; then
             python -m src.mesh.volunteer_worker
           else
-            echo "Volunteer worker not found"
+            echo "❌ Volunteer worker not found"
             exit 1
           fi
