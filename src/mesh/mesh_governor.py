@@ -98,6 +98,23 @@ class MeshGovernor:
         if agent_id not in self.velocity_history:
             self.velocity_history[agent_id] = []
 
+    def request_evolution(self, agent_id: str, new_dimensions: int, new_memory: int) -> bool:
+        """
+        Evaluates and approves/denies an agent's request to evolve (increase resource allocation).
+        """
+        requested_memory_mb = new_memory / (1024 * 1024)
+        
+        # Check against profile limits
+        base_name = next((name for name in self.profiles.keys() if name in agent_id), None)
+        if base_name:
+            profile = self.profiles[base_name]
+            if requested_memory_mb > profile.memory_mb:
+                self._log_violation(agent_id, f"Evolution request {requested_memory_mb:.2f}MB exceeds manifest limit {profile.memory_mb}MB")
+                return False
+        
+        logger.info(f"🧬 Evolution request approved for {agent_id}: {new_dimensions} dimensions, {new_memory} bytes.")
+        return True
+
     def validate_provisioning_request(self, agent_id: str, requested_memory_mb: int) -> bool:
         """
         Intercepts ElasticPSVCProvisioner requests to ensure they comply 
