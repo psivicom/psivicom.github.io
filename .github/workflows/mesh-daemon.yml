@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           fetch-depth: 0 # CRITICAL: Required for safe rebasing
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +43,8 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install numpy pyyaml requests python-dateutil
+          # Core dependencies for daemon operations, logging, and cryptographic verification
+          pip install -r requirements-core.txt
 
       - name: Ensure Directories Exist
         run: |
@@ -55,10 +56,15 @@ jobs:
 
       - name: Compile Shannon-Z Kernel (Zero-Allocation Go Bridge)
         run: |
-          echo "🔨 Compiling Shannon-Z kernel for native Python bridge..."
-          cd src/kernel
-          go build -o libshannon.so -buildmode=c-shared shannon_z.go
-          echo "✅ Shannon-Z kernel compiled successfully: $(ls -lh libshannon.so)"
+          if [ -d "src/kernel" ]; then
+            echo "🔨 Compiling Shannon-Z kernel for native Python bridge..."
+            cd src/kernel
+            go build -o libshannon.so -buildmode=c-shared shannon_z.go
+            echo "✅ Shannon-Z kernel compiled successfully: $(ls -lh libshannon.so)"
+            cd ../..
+          else
+            echo "ℹ️ src/kernel directory not found. Skipping Go compilation."
+          fi
 
       - name: Run Mesh Automation Loop
         run: python -m src.tools.auto_reporter
@@ -70,8 +76,6 @@ jobs:
         run: python -m src.agents.self_healing_agent
 
       - name: Execute Pending Mesh Queue Locally (Fallback Guarantee)
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: python scripts/local_mesh_executor.py
 
       - name: Commit Generated Artifacts (Race-Condition Proof)
@@ -81,15 +85,14 @@ jobs:
           git config user.name "PSIVI Mesh Daemon (WENDY Authorized)"
           git config user.email "daemon@psivi.com"
           
-          # Stage all autonomous changes
-          git add src/agents/*_agent.py reports/ data/instruction_queue/ data/processed_instructions/ config/*.json config/*.yaml src/ || true
+          # Safely stage directories (avoids globbing errors and prevents staging unintended files)
+          git add src/agents/ reports/ data/ config/
           
           if ! git diff --staged --quiet; then
             # [skip ci] prevents this push from triggering an infinite loop of workflows
             git commit -m "auto: daemon processed instructions, optimized system, healed code, and generated artifacts [skip ci]"
             
             # THE RACE-CONDITION SHIELD:
-            # Replaces the dangerous 'git reset --soft' and '||' chain with a safe, proven rebase loop.
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Successfully pushed daemon artifacts."
