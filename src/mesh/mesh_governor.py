@@ -44,7 +44,7 @@ class MeshGovernor:
         self.profiles: Dict[str, PSVCResourceProfile] = {}
         self.policy: Optional[GovernancePolicy] = None
         
-        # Velocity tracking: maps agent_id to list of recent metric values (e.g., memory usage, state divergence)
+        # Velocity tracking: maps agent_id to list of recent metric values
         self.velocity_history: Dict[str, List[float]] = {}
         self.violations: List[Dict[str, Any]] = []
         self.pheromones: Dict[str, List[str]] = {}
@@ -91,6 +91,12 @@ class MeshGovernor:
             logger.error("❌ PyYAML not installed. Run: pip install pyyaml")
         except Exception as e:
             logger.error(f"❌ Failed to load manifest: {e}")
+
+    def register_agent(self, agent_id: str, initial_samples: int, initial_vram: int):
+        """Registers a new agent with the governor, establishing its baseline state."""
+        logger.info(f"📝 Registered agent {agent_id} (samples: {initial_samples}, vram: {initial_vram} bytes).")
+        if agent_id not in self.velocity_history:
+            self.velocity_history[agent_id] = []
 
     def validate_provisioning_request(self, agent_id: str, requested_memory_mb: int) -> bool:
         """
