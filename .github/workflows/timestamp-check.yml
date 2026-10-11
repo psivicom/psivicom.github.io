@@ -7,7 +7,7 @@ name: NASA Auto-Correct to .sssZ
 on: [pull_request]
 
 permissions:
-  contents: write
+  contents: write # Required to push fixes directly to the PR branch
 
 jobs:
   fix:
@@ -25,7 +25,11 @@ jobs:
           python-version: '3.12'
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          # Optimized: Timestamp normalization is a lightweight text-processing task.
+          # Using requirements-core.txt saves ~90 seconds of CI time on every PR.
+          pip install -r requirements-core.txt
 
       - name: Fix Timestamps
         env:
