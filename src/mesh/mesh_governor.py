@@ -9,8 +9,8 @@ resource limits, and divergence thresholds across the decentralized mesh.
 """
 
 import logging
-import time
-import numpy as np
+import threading
+import traceback
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
@@ -22,25 +22,33 @@ logger = logging.getLogger("MESH_GOVERNOR")
 @dataclass
 class PSVCResourceProfile:
     name: str
-    cpu_shares: int
-    memory_mb: int
-    replication: int
-    protocol: str
-    port: int
+    cpu_shares: int = 10
+    memory_mb: int = 64
+    replication: int = 1
+    protocol: str = "psvc-binary"
+    port: int = 8765
+
+    def __post_init__(self):
+        if self.memory_mb <= 0:
+            raise ValueError(f"memory_mb must be positive for profile {self.name}")
 
 @dataclass
 class GovernancePolicy:
-    strategy: str
-    checkpoint_interval_minutes: int
-    divergence_threshold: float
+    strategy: str = "velocity-normalized"
+    checkpoint_interval_minutes: int = 15
+    divergence_threshold: float = 0.05
 
 class MeshGovernor:
     def __init__(self, mesh, provisioner, manifest_path: str = "config/psvc-manifest.yml"):
         self.mesh = mesh
         self.provisioner = provisioner
         self.manifest_path = Path(manifest_path)
+        
         self.profiles: Dict[str, PSVCResourceProfile] = {}
-        self.policy: Optional[GovernancePolicy] = None
+        self.policy: GovernancePolicy = GovernancePolicy()
+        
+        # Thread-safe state tracking
+        self._lock = threading.Lock()
         self.velocity_history: Dict[str, List[float]] = {}
         self.violations: List[Dict[str, Any]] = []
         self.pheromones: Dict[str, List[str]] = {}
@@ -51,31 +59,33 @@ class MeshGovernor:
     def _load_manifest(self):
         if not self.manifest_path.exists():
             logger.warning(f"⚠️ Manifest not found at {self.manifest_path}. Using default sovereign limits.")
-            self.policy = GovernancePolicy(strategy="velocity-normalized", checkpoint_interval_minutes=15, divergence_threshold=0.05)
             return
 
         try:
             import yaml
             with open(self.manifest_path, 'r', encoding='utf-8') as f:
-                data = yaml.safe_load(f)
+                data = yaml.safe_load(f) or {}
             
             gov_data = data.get("governance", {})
-            self.policy = GovernancePolicy(
-                strategy=gov_data.get("strategy", "velocity-normalized"),
-                checkpoint_interval_minutes=gov_data.get("checkpoint_interval_minutes", 15),
-                divergence_threshold=float(gov_data.get("divergence_threshold", 0.05))
-            )
+            if gov_data:
+                self.policy = GovernancePolicy(
+                    strategy=gov_data.get("strategy", self.policy.strategy),
+                    checkpoint_interval_minutes=int(gov_data.get("checkpoint_interval_minutes", self.policy.checkpoint_interval_minutes)),
+                    divergence_threshold=float(gov_data.get("divergence_threshold", self.policy.divergence_threshold))
+                )
             
             for service in data.get("services", []):
-                res = service.get("resources", {})
-                net = service.get("network", {})
+                if not service or "name" not in service:
+                    continue
+                res = service.get("resources", {}) or {}
+                net = service.get("network", {}) or {}
                 profile = PSVCResourceProfile(
-                    name=service.get("name"),
-                    cpu_shares=res.get("cpu_shares", 10),
-                    memory_mb=res.get("memory_mb", 64),
-                    replication=service.get("replication", 1),
+                    name=service["name"],
+                    cpu_shares=int(res.get("cpu_shares", 10)),
+                    memory_mb=int(res.get("memory_mb", 64)),
+                    replication=int(service.get("replication", 1)),
                     protocol=net.get("protocol", "psvc-binary"),
-                    port=net.get("port", 8765)
+                    port=int(net.get("port", 8765))
                 )
                 self.profiles[profile.name] = profile
                 
@@ -83,55 +93,70 @@ class MeshGovernor:
         except ImportError:
             logger.error("❌ PyYAML not installed. Run: pip install pyyaml")
         except Exception as e:
-            logger.error(f"❌ Failed to load manifest: {e}")
+            logger.error(f"❌ Failed to load manifest: {e}\n{traceback.format_exc()}")
+
+    def _get_profile_for_agent(self, agent_id: str) -> Optional[PSVCResourceProfile]:
+        """Finds the most specific (longest matching prefix) profile for an agent."""
+        # Sort profile names by length descending to match the most specific profile first
+        for name in sorted(self.profiles.keys(), key=len, reverse=True):
+            if agent_id.startswith(name) or name in agent_id:
+                return self.profiles[name]
+        return None
 
     def register_agent(self, agent_id: str, initial_samples: int, initial_vram: int):
+        with self._lock:
+            if agent_id not in self.velocity_history:
+                self.velocity_history[agent_id] = []
         logger.info(f"📝 Registered agent {agent_id} (samples: {initial_samples}, vram: {initial_vram} bytes).")
-        if agent_id not in self.velocity_history:
-            self.velocity_history[agent_id] = []
 
     def request_evolution(self, agent_id: str, new_dimensions: int, new_memory: int) -> bool:
         requested_memory_mb = new_memory / (1024 * 1024)
-        base_name = next((name for name in self.profiles.keys() if name in agent_id), None)
-        if base_name:
-            profile = self.profiles[base_name]
-            if requested_memory_mb > profile.memory_mb:
-                self._log_violation(agent_id, f"Evolution request {requested_memory_mb:.2f}MB exceeds manifest limit {profile.memory_mb}MB")
-                return False
+        profile = self._get_profile_for_agent(agent_id)
+        
+        if profile and requested_memory_mb > profile.memory_mb:
+            self._log_violation(agent_id, f"Evolution request {requested_memory_mb:.2f}MB exceeds manifest limit {profile.memory_mb}MB")
+            return False
         
         logger.info(f"🧬 Evolution request approved for {agent_id}: {new_dimensions} dimensions, {new_memory} bytes.")
         return True
 
     def validate_provisioning_request(self, agent_id: str, requested_memory_mb: int) -> bool:
-        base_name = next((name for name in self.profiles.keys() if name in agent_id), None)
-        if base_name:
-            profile = self.profiles[base_name]
-            if requested_memory_mb > profile.memory_mb:
-                self._log_violation(agent_id, f"Memory request {requested_memory_mb}MB exceeds manifest limit {profile.memory_mb}MB")
-                return False
+        profile = self._get_profile_for_agent(agent_id)
+        if profile and requested_memory_mb > profile.memory_mb:
+            self._log_violation(agent_id, f"Memory request {requested_memory_mb}MB exceeds manifest limit {profile.memory_mb}MB")
+            return False
         return True
 
     def record_metric(self, agent_id: str, metric_value: float):
-        if agent_id not in self.velocity_history:
-            self.velocity_history[agent_id] = []
-        self.velocity_history[agent_id].append(float(metric_value))
-        if len(self.velocity_history[agent_id]) > 10:
-            self.velocity_history[agent_id].pop(0)
+        with self._lock:
+            if agent_id not in self.velocity_history:
+                self.velocity_history[agent_id] = []
+            
+            history = self.velocity_history[agent_id]
+            history.append(float(metric_value))
+            
+            # Keep a rolling window of the last 10 metrics
+            if len(history) > 10:
+                history.pop(0)
 
     def check_velocity_divergence(self, agent_id: str) -> bool:
-        if not self.policy or self.policy.strategy != "velocity-normalized":
+        if self.policy.strategy != "velocity-normalized":
             return True 
             
-        history = self.velocity_history.get(agent_id, [])
-        if len(history) < 3:
-            return True 
+        with self._lock:
+            history = self.velocity_history.get(agent_id, [])
+            # Need at least 3 data points to calculate 2 velocities
+            if len(history) < 3:
+                return True 
 
-        velocities = [abs(history[i] - history[i-1]) for i in range(1, len(history))]
-        avg_velocity = float(np.mean(velocities))
+            # Pure Python calculation - avoids numpy overhead for small lists
+            velocities = [abs(history[i] - history[i-1]) for i in range(1, len(history))]
+            avg_velocity = sum(velocities) / len(velocities)
         
         if avg_velocity > self.policy.divergence_threshold:
             self._log_violation(agent_id, f"Velocity divergence {avg_velocity:.4f} exceeds threshold {self.policy.divergence_threshold}")
             return False
+            
         return True
 
     def _log_violation(self, agent_id: str, reason: str):
@@ -141,50 +166,57 @@ class MeshGovernor:
             "reason": reason,
             "action": "QUARANTINE_OR_REJECT"
         }
-        self.violations.append(violation)
+        with self._lock:
+            self.violations.append(violation)
         logger.warning(f"🚫 GOVERNANCE VIOLATION: {agent_id} - {reason}")
 
     def deposit_pheromone(self, agent_id: str, pheromone: str):
-        if agent_id not in self.pheromones:
-            self.pheromones[agent_id] = []
-        if pheromone not in self.pheromones[agent_id]:
-            self.pheromones[agent_id].append(pheromone)
-            logger.debug(f"🧬 Pheromone deposited on {agent_id}: {pheromone}")
+        with self._lock:
+            if agent_id not in self.pheromones:
+                self.pheromones[agent_id] = []
+            if pheromone not in self.pheromones[agent_id]:
+                self.pheromones[agent_id].append(pheromone)
+                logger.debug(f"🧬 Pheromone deposited on {agent_id}: {pheromone}")
 
     def get_mesh_status(self) -> Dict[str, Any]:
-        """Returns the current status of the mesh, including provisioner and VRAM statistics."""
+        """Returns a thread-safe snapshot of the current mesh status."""
         
         # 1. Safely get provisioner stats
+        prov_stats = {"average_generation": 0.0, "total_allocations": 0}
         if hasattr(self.provisioner, 'get_stats') and callable(self.provisioner.get_stats):
-            prov_stats = self.provisioner.get_stats()
-        else:
-            prov_stats = {
-                "average_generation": 0.0,
-                "total_allocations": len(self.velocity_history)
-            }
-        if "average_generation" not in prov_stats:
-            prov_stats["average_generation"] = 0.0
+            try:
+                raw_stats = self.provisioner.get_stats()
+                if isinstance(raw_stats, dict):
+                    prov_stats.update(raw_stats)
+            except Exception as e:
+                logger.debug(f"Failed to fetch provisioner stats: {e}")
+        
+        with self._lock:
+            prov_stats.setdefault("total_allocations", len(self.velocity_history))
+            prov_stats.setdefault("average_generation", 0.0)
+            violation_count = len(self.violations)
 
         # 2. Safely get VRAM stats
+        vram_stats = {"utilization_percent": 0.0, "total_bytes": 0, "allocated_bytes": 0}
         if hasattr(self.mesh, 'get_vram_stats') and callable(self.mesh.get_vram_stats):
-            vram_stats = self.mesh.get_vram_stats()
-        else:
-            total_vram = getattr(self.mesh, 'total_vram_bytes', 4 * 1024 * 1024 * 1024)
-            vram_stats = {
-                "utilization_percent": 0.0,
-                "total_bytes": total_vram,
-                "allocated_bytes": 0
-            }
-        if "utilization_percent" not in vram_stats:
-            vram_stats["utilization_percent"] = 0.0
+            try:
+                raw_vram = self.mesh.get_vram_stats()
+                if isinstance(raw_vram, dict):
+                    vram_stats.update(raw_vram)
+            except Exception as e:
+                logger.debug(f"Failed to fetch VRAM stats: {e}")
+                
+        vram_stats.setdefault("total_bytes", getattr(self.mesh, 'total_vram_bytes', 4 * 1024 * 1024 * 1024))
+        vram_stats.setdefault("utilization_percent", 0.0)
+        vram_stats.setdefault("allocated_bytes", 0)
 
-        # 3. THE CRITICAL RETURN BLOCK: Ensure BOTH keys are explicitly present
+        # 3. Return a complete, guaranteed status dictionary
         return {
-            "policy": self.policy.strategy if self.policy else "default",
-            "divergence_threshold": self.policy.divergence_threshold if self.policy else 0.05,
+            "policy": self.policy.strategy,
+            "divergence_threshold": self.policy.divergence_threshold,
             "active_profiles": len(self.profiles),
-            "total_violations": len(self.violations),
+            "total_violations": violation_count,
             "provisioner_stats": prov_stats,
-            "vram_stats": vram_stats,  # <-- THIS IS THE KEY THAT WAS MISSING
+            "vram_stats": vram_stats,
             "timestamp": get_zulu_timestamp_ms()
         }
