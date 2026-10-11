@@ -23,37 +23,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           fetch-depth: 0
-      
+
       - name: Setup Ruby
-        uses: ruby/setup-ruby@217c988b8c2bf2bacb2d5c78a7e7b18f8c34daed # v1
+        uses: ruby/setup-ruby@217c988b8c2bf2bacb2d5c78a7e7b18f8c34daed # v1.207.0
         with:
           ruby-version: '3.3'
-          # bundler-cache is disabled because there is no Gemfile in the root directory.
-          # We rely on installing the github-pages gem directly instead.
 
       - name: Setup Pages
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Install dependencies and Build
         run: |
-          # Since there is no Gemfile, we cannot use `bundle install`.
-          # Instead, we ensure the standard GitHub Pages toolchain (github-pages) is available.
-          # This package includes Jekyll and all supported plugins.
           gem install github-pages --no-document
-          
-          # Build the site using the jekyll executable provided by the github-pages gem.
-          # We explicitly set the destination to _site as expected by upload-pages-artifact.
           jekyll build --destination _site --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+      - name: Upload artifact (SHA-Pinned)
+        # We use the direct upload-artifact action with a full SHA to satisfy the security policy,
+        # bypassing the composite upload-pages-artifact which internally uses the unpinned @v4 tag.
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
-          path: ./_site
+          name: github-pages
+          path: _site/
+          retention-days: 1
 
   deploy:
     environment:
@@ -64,4 +60,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
