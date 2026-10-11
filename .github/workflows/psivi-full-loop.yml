@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           fetch-depth: 0 # CRITICAL: Required for safe rebasing
 
@@ -49,7 +49,8 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install numpy
+          # Core dependencies for instruction sealing, processing, logging, and cryptographic verification
+          pip install -r requirements-core.txt
 
       - name: Execute BEGIN_SEALER.py
         id: sealer
@@ -77,6 +78,9 @@ jobs:
         run: |
           git config user.name "PSIVI-Mesh-Bot"
           git config user.email "bot@psivi.com"
+          
+          # CRITICAL: Ensure directory exists before staging
+          mkdir -p data/instruction_queue
           git add data/instruction_queue/
           
           if ! git diff --staged --quiet; then
@@ -114,8 +118,10 @@ jobs:
         run: |
           git config user.name "PSIVI-Mesh-Bot"
           git config user.email "bot@psivi.com"
-          git add reports/
-          git add data/instruction_queue/
+          
+          # CRITICAL: Ensure directories exist before staging
+          mkdir -p reports data/instruction_queue
+          git add reports/ data/instruction_queue/
           
           if ! git diff --staged --quiet; then
             git commit -m "chore(mesh): auto-generated scientific report & cleaned queue [skip ci]" \
