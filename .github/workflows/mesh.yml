@@ -7,7 +7,7 @@ name: Mesh Heartbeat
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *' # Every 6 hours
 
 permissions:
   contents: write
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           fetch-depth: 0 # CRITICAL: Required for safe rebasing
 
@@ -40,10 +40,15 @@ jobs:
         run: |
           git config user.name "PSIVI Mesh"
           git config user.email "mesh@psivicom.local"
+          
+          # CRITICAL: Ensure the file exists to prevent 'pathspec did not match' fatal errors
+          touch mesh_state.json
           git add mesh_state.json
           
           if ! git diff --staged --quiet; then
             git commit -m "mesh: pheromone deposited $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            
+            # THE RACE-CONDITION SHIELD:
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Pheromone deposited successfully."
@@ -53,4 +58,6 @@ jobs:
                 sleep 2
               fi
             done
+          else
+            echo "ℹ️ No new mesh state to commit."
           fi
