@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
           fetch-depth: 0 # CRITICAL: Changed from 1 to 0 for safe rebasing
 
@@ -35,8 +35,8 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          # Only install lightweight deps needed for reporting logic
-          pip install numpy pyyaml requests python-dateutil
+          # Core dependencies for pilot scanning, reporting, and cryptographic verification
+          pip install -r requirements-core.txt
 
       - name: Execute Pilot Agent (Module Mode)
         # CRITICAL FIX: Using '-m' ensures Python treats 'src' as a package.
@@ -53,13 +53,11 @@ jobs:
           
           echo "📦 Staging artifacts..."
           
-          # Stage the main report first (this MUST exist)
-          git add reports/pilot_report.json || true
-          git add reports/pilot_result.json || true
+          # CRITICAL: Ensure directory exists to prevent git add edge-case failures
+          mkdir -p reports/pico_containers
           
-          # Try to stage containers, but don't fail if they don't exist yet
-          git add reports/pico_containers/*.psvc || true
-          git add reports/pico_containers/*.json || true
+          # Safely stage the entire reports directory (avoids fragile globbing with || true)
+          git add reports/
           
           # Check if there are any staged changes at all
           if ! git diff --staged --quiet; then
