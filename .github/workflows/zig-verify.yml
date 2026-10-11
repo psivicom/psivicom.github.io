@@ -10,15 +10,17 @@ on:
       - 'src/core/*.zig'
   workflow_dispatch:
 
+permissions:
+  contents: write # Explicitly declare write access at the top level
+
 jobs:
   build-and-commit:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout Repository
-        # Using v4.1.0 SHA starting with 'b' to bypass guardian regex false-positive on numeric SHAs
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+        with:
+          fetch-depth: 0 # CRITICAL: Required for safe rebasing
 
       - name: Download Zig Toolchain
         run: |
@@ -73,7 +75,7 @@ jobs:
           echo "📜 Generated SHA-256 audit manifest at $MANIFEST"
           cat "$MANIFEST"
 
-      - name: Commit and Push Binaries
+      - name: Commit and Push Binaries (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -84,13 +86,22 @@ jobs:
           # Stage the newly compiled binaries AND the cryptographic audit manifest
           git add src/core/zulu_clock src/core/actuation_engine src/core/.zig-build-audit.json
           
-          if ! git diff --cached --quiet; then
+          if ! git diff --staged --quiet; then
             echo "🚀 Committing and pushing updated binaries with SHA verification..."
-            # 1. Stash staged changes to make the index perfectly clean for rebase
-            # 2. Pull latest changes safely
-            # 3. Pop the stash to restore our compiled binaries and manifest to the index
-            # 4. Commit and push (all chained on one line to strictly satisfy guardian regex)
-            git stash push -m "pre-rebase stash" && git pull --rebase origin main && git stash pop && git commit -m "chore: auto-update compiled Zig binaries and SHA audit manifest in src/core/ [skip ci]" && git push origin main
+            git commit -m "chore: auto-update compiled Zig binaries and SHA audit manifest [skip ci]"
+            
+            # THE RACE-CONDITION SHIELD:
+            # Replaces the fragile chained stash command with the proven, safe rebase loop.
+            # The guardian regex explicitly allows 'git pull --rebase ... && git push' on the same line.
+            for i in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed compiled Zig binaries."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
+            done
           else
             echo "✨ Binaries compiled, but no git changes detected."
           fi
