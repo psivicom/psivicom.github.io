@@ -699,6 +699,7 @@ psivicom.github.io/
 │   │   ├── __init__.py
 │   │   ├── actuation_engine
 │   │   ├── actuation_engine.zig
+│   │   ├── bare_metal_vector.py
 │   │   ├── config_loader.py
 │   │   ├── data_registry.py
 │   │   ├── http_client.py
