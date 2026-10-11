@@ -35,7 +35,11 @@ class GovernancePolicy:
     divergence_threshold: float
 
 class MeshGovernor:
-    def __init__(self, manifest_path: str = "config/psvc-manifest.yml"):
+    def __init__(self, mesh, provisioner, manifest_path: str = "config/psvc-manifest.yml"):
+        # Store references to the core mesh components for active governance
+        self.mesh = mesh
+        self.provisioner = provisioner
+        
         self.manifest_path = Path(manifest_path)
         self.profiles: Dict[str, PSVCResourceProfile] = {}
         self.policy: Optional[GovernancePolicy] = None
