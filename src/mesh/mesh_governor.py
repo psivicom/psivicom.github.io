@@ -120,7 +120,6 @@ class MeshGovernor:
         Intercepts ElasticPSVCProvisioner requests to ensure they comply 
         with the declarative resource limits defined in the manifest.
         """
-        # Extract base name (e.g., "wendy-breath" from "wendy-breath-xyz")
         base_name = next((name for name in self.profiles.keys() if name in agent_id), None)
         
         if base_name:
@@ -137,7 +136,6 @@ class MeshGovernor:
             
         self.velocity_history[agent_id].append(float(metric_value))
         
-        # Keep only the last 10 measurements for rolling velocity calculation
         if len(self.velocity_history[agent_id]) > 10:
             self.velocity_history[agent_id].pop(0)
 
@@ -147,13 +145,12 @@ class MeshGovernor:
         If it exceeds the divergence_threshold, it triggers a governance violation.
         """
         if not self.policy or self.policy.strategy != "velocity-normalized":
-            return True # Skip if strategy is different
+            return True 
             
         history = self.velocity_history.get(agent_id, [])
         if len(history) < 3:
-            return True # Not enough data to calculate velocity
+            return True 
 
-        # Calculate velocity (first derivative: rate of change between steps)
         velocities = [abs(history[i] - history[i-1]) for i in range(1, len(history))]
         avg_velocity = float(np.mean(velocities))
         
@@ -182,10 +179,25 @@ class MeshGovernor:
             logger.debug(f"🧬 Pheromone deposited on {agent_id}: {pheromone}")
 
     def get_mesh_status(self) -> Dict[str, Any]:
+        """Returns the current status of the mesh, including provisioner statistics."""
+        # Safely attempt to get stats from the provisioner, fallback to defaults if method doesn't exist
+        if hasattr(self.provisioner, 'get_stats') and callable(self.provisioner.get_stats):
+            prov_stats = self.provisioner.get_stats()
+        else:
+            prov_stats = {
+                "average_generation": 0.0,
+                "total_allocations": len(self.velocity_history)
+            }
+            
+        # Ensure the specific key the agent expects is present
+        if "average_generation" not in prov_stats:
+            prov_stats["average_generation"] = 0.0
+
         return {
             "policy": self.policy.strategy if self.policy else "default",
             "divergence_threshold": self.policy.divergence_threshold if self.policy else 0.05,
             "active_profiles": len(self.profiles),
             "total_violations": len(self.violations),
+            "provisioner_stats": prov_stats,
             "timestamp": get_zulu_timestamp_ms()
         }
