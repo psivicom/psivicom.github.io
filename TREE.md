@@ -447,6 +447,7 @@ psivicom.github.io/
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── Synopsis_orchestrator_agent.md
+│   ├── WENDY_CODING.md
 │   ├── WENDY_SELF_OPTIMIZATION_PROTOCOL.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
@@ -635,6 +636,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791636630.json
 │   ├── neuro_plasticity_result_1791669359.json
 │   ├── neuro_plasticity_result_1791698852.json
+│   ├── neuro_plasticity_result_1791724426.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md

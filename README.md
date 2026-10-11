@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-11T10:01:47.541Z | Hash: 344341d9557c20be0e3d5af2da16eadcc2ebc13cb7194fc688d114b06d43ee06 -->
+<!-- Last updated: 2026-10-11T20:24:41.734Z | Hash: 55c92a50e4a98c95d4920a75420b9a9a285cc728b61c533714c1b6d7b0347bbb -->
 
 ```
 psivicom.github.io/
@@ -566,6 +566,7 @@ psivicom.github.io/
 │   ├── OPEN_SCIENCE_POLICY.md
 │   ├── README.md
 │   ├── Synopsis_orchestrator_agent.md
+│   ├── WENDY_CODING.md
 │   ├── WENDY_SELF_OPTIMIZATION_PROTOCOL.md
 │   ├── establish-RFC-guide.md
 │   ├── establish-identity-guide.md
@@ -754,6 +755,7 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791636630.json
 │   ├── neuro_plasticity_result_1791669359.json
 │   ├── neuro_plasticity_result_1791698852.json
+│   ├── neuro_plasticity_result_1791724426.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
