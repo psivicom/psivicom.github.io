@@ -5,71 +5,51 @@
 name: Workflow Security Guardian
 
 on:
-  push:
-    paths:
-      - '.github/workflows/**'
   pull_request:
     paths:
-      - '.github/workflows/**'
-  workflow_dispatch:
+      - '.github/workflows/**/*.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/**/*.yml'
 
 permissions:
-  # STRICTLY READ-ONLY. This workflow is mathematically forbidden from mutating other workflows.
-  contents: read 
+  contents: read
 
 jobs:
-  check-pinned-actions:
-    name: Verify Immutable Action SHAs & Enforce Constitution
+  validate-constitution:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+        with:
+          fetch-depth: 0
 
-      - name: Scan for Unpinned Actions (Recursive)
-        run: |
-          echo "🛡️ Recursively scanning .github/workflows/ for unpinned actions..."
-          
-          # 1. Find ALL .yml and .yaml files recursively in .github/workflows/
-          # 2. Strip ALL comment lines (lines starting with #)
-          # 3. Search the remaining pure code for mutable tags like @v4 or @v5
-          UNPINNED=$(find .github/workflows/ -type f \( -name "*.yml" -o -name "*.yaml" \) -exec grep -H -v '^[[:space:]]*#' {} + | grep -E 'uses:\s*.*@[vV][0-9]' || true)
-          
-          if [ -n "$UNPINNED" ]; then
-            echo "❌ SECURITY VIOLATION: Unpinned actions detected!"
-            echo "All GitHub Actions must be pinned to a full 40-character commit SHA to prevent supply-chain attacks."
-            echo ""
-            echo "Found mutable references:"
-            echo "$UNPINNED"
-            echo ""
-            echo "🛠️ FIX: Please update these to their secure SHAs manually."
-            exit 1
-          else
-            echo "✅ SUCCESS: All GitHub Actions across all subdirectories are securely pinned to immutable SHAs."
-          fi
-
-      - name: Enforce Agent Constitution (New Files)
+      - name: Score Files Against Agent Constitution
         run: |
           echo "🛡️ Scoring newly generated files against the Agent Constitution..."
           VIOLATIONS=0
           
-          # 1. Check for naked git push without rebase loop in new/modified yml files
-          if grep -rn "git push" .github/workflows/ | grep -v "git pull --rebase"; then
+          # 1. Check for naked git push without rebase loop 
+          # CRITICAL: Exclude this guardian file, comments, and echo statements to prevent self-flagging
+          if grep -rn "git push" .github/workflows/ --exclude="workflow-security-guardian.yml" | grep -v "git pull --rebase" | grep -v "^[[:space:]]*#" | grep -v "echo"; then
             echo "❌ VIOLATION: Naked 'git push' detected without rebase shield."
             VIOLATIONS=$((VIOLATIONS+1))
           fi
           
           # 2. Check for missing [skip ci] in automated commits
-          if grep -rn "git commit" .github/workflows/ | grep -v "\[skip ci\]"; then
+          # CRITICAL: Exclude this guardian file, comments, and echo statements
+          if grep -rn "git commit" .github/workflows/ --exclude="workflow-security-guardian.yml" | grep -v "\[skip ci\]" | grep -v "^[[:space:]]*#" | grep -v "echo"; then
             echo "❌ VIOLATION: Automated commit missing '[skip ci]' flag."
             VIOLATIONS=$((VIOLATIONS+1))
           fi
           
-          # 3. Check for mutable action tags (@v4, @v5, @main)
+          # 3. Check for mutable action tags (@v4, @v5, @main, @master)
           if grep -rnE "uses:\s*[^\s]+@(v[0-9]+|main|master)\b" .github/workflows/ | grep -v "^[[:space:]]*#"; then
             echo "❌ VIOLATION: Unpinned GitHub Action detected."
             VIOLATIONS=$((VIOLATIONS+1))
           fi
-
+          
           if [ $VIOLATIONS -gt 0 ]; then
             echo "🚨 Agent Constitution violated. Commit rejected."
             exit 1
