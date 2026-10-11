@@ -12,8 +12,9 @@ import os
 import json
 import getpass
 import logging
+import hashlib
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 
 import nacl.signing
 import nacl.encoding
@@ -23,7 +24,9 @@ from nacl.exceptions import CryptoError
 
 logger = logging.getLogger("SOVEREIGN_KEYS")
 
-class SovereignKeyPair:
+class SovereignPSVC:
+    """Manages sovereign identity and cryptographic integrity of PSVC containers."""
+    
     def __init__(self, key_file: Path = Path("data/wendy_private.key.enc")):
         self.key_file = key_file
         self.verify_key: Optional[nacl.signing.VerifyKey] = None
@@ -104,3 +107,40 @@ class SovereignKeyPair:
         if not self.verify_key:
             raise RuntimeError("No verify key available.")
         return self.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+
+    # --- Additional PSVC Container Methods for Full Compatibility ---
+
+    def sign_payload(self, payload: Dict[str, Any]) -> str:
+        """Generates a cryptographic signature for a payload."""
+        payload_str = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        message = f"psvc:{payload_str}".encode('utf-8')
+        return self.sign(message).hex()
+
+    def create(self, data: Dict[str, Any], metadata: Optional[Dict[str, Any]] = None) -> bytes:
+        """Creates a signed PSVC container."""
+        container = {
+            "version": "1.0.0",
+            "type": "psvc",
+            "metadata": metadata or {},
+            "payload": data,
+            "signature": self.sign_payload(data),
+            "public_key": self.get_public_key_hex()
+        }
+        return json.dumps(container, indent=2).encode('utf-8')
+
+    def validate(self, container_bytes: bytes) -> bool:
+        """Validates the cryptographic signature of a PSVC container."""
+        try:
+            container = json.loads(container_bytes.decode('utf-8'))
+            payload = container.get("payload", {})
+            expected_sig = self.sign_payload(payload)
+            
+            if container.get("signature") == expected_sig:
+                logger.debug("✅ PSVC container signature verified.")
+                return True
+            else:
+                logger.warning("⚠️ PSVC container signature mismatch.")
+                return False
+        except Exception as e:
+            logger.error(f"❌ Failed to validate PSVC container: {e}")
+            return False
