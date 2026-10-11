@@ -376,6 +376,7 @@ psivicom.github.io/
 │   │   ├── WENDY_ROBOTIC_ACTUATOR_ZIG.md
 │   │   ├── WENDY_SEARCH_GITHUB.md
 │   │   ├── WENDY_SHA_ZIG_COMPILATION.md
+│   │   ├── WENDY_ZIG_BRAIN_PLAN.md
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
