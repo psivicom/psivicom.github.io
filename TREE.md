@@ -368,6 +368,7 @@ psivicom.github.io/
 │   │   ├── WENDY_BOOTSTRAP_VOLUNTEER_PLAN.md
 │   │   ├── WENDY_COGNITIVE.md
 │   │   ├── WENDY_Deep_Cognitive_Core.md
+│   │   ├── WENDY_EVOLVING.md
 │   │   ├── WENDY_GENESIS_PROMPT.md
 │   │   ├── WENDY_HEARTBEAT_REPORT.md
 │   │   ├── WENDY_INVITATION.md
