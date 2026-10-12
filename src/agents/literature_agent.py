@@ -38,7 +38,6 @@ class LiteratureAgent(BaseAgent):
         or dataset mentions, and prepares them for registry mutation.
         """
         new_sources = []
-        # Regex to find common data repository patterns in text
         url_pattern = re.compile(r'(https?://[^\s<>"]+|www\.[^\s<>"]+)')
         
         for paper in papers:
@@ -46,7 +45,6 @@ class LiteratureAgent(BaseAgent):
             found_urls = url_pattern.findall(text_to_scan)
             
             for url in found_urls:
-                # Filter for likely data repositories (not just generic homepages)
                 if any(keyword in url.lower() for keyword in ['data', 'dataset', 'zenodo', 'figshare', 'github', 'repository', 'archive', 'uvic', 'ubc']):
                     source_name = url.split('//')[1].split('/')[0].replace('www.', '').split('.')[0].title()
                     new_sources.append({
@@ -57,7 +55,6 @@ class LiteratureAgent(BaseAgent):
                         "discovered_at": get_zulu_timestamp_ms()
                     })
                     
-        # Deduplicate
         return [dict(t) for t in {tuple(d.items()) for d in new_sources}]
 
     def _mutate_registry(self, new_sources: List[Dict[str, Any]]) -> bool:
@@ -68,25 +65,21 @@ class LiteratureAgent(BaseAgent):
         logger.info(f"🧬 EPISTEMIC EVOLUTION: Mutating registry with {len(new_sources)} new data sources...")
         
         try:
-            # Load existing registry
             if self.registry_path.exists():
                 with open(self.registry_path, 'r', encoding='utf-8') as f:
                     registry_data = json.load(f)
             else:
                 registry_data = {"sources": {}}
                 
-            # Ensure 'sources' dict exists
             if "sources" not in registry_data:
                 registry_data["sources"] = {}
                 
-            # Append new sources
             for source in new_sources:
                 source_id = source.pop("id")
                 if source_id not in registry_data["sources"]:
                     registry_data["sources"][source_id] = source
                     logger.info(f"  + Added: {source['name']} ({source['base_url']})")
                     
-            # Write back to file
             write_file(self.registry_path, registry_data)
             self.seal("registry_mutated", {"new_sources_added": len(new_sources)})
             return True
@@ -102,7 +95,7 @@ class LiteratureAgent(BaseAgent):
         
         logger.info(f"🔍 Discovering datasets and scanning literature for {len(fragility_traps)} traps...")
         
-        # 1. Standard Discovery (Type-safe extraction)
+        # 1. Standard Discovery (TYPE-SAFE EXTRACTION)
         discovery_result = self.discovery_agent.execute(fragility_traps)
         
         if isinstance(discovery_result, dict):
@@ -115,7 +108,7 @@ class LiteratureAgent(BaseAgent):
             discovered_datasets = []
             logger.warning(f"⚠️ Unexpected discovery result type: {type(discovery_result)}")
         
-        # 2. Simulate Literature Query (In production, this hits Semantic Scholar/Crossref)
+        # 2. Simulate Literature Query
         simulated_papers = [
             {
                 "title": "Novel Pollinator Forage Dynamics in the Capital Regional District",
@@ -128,11 +121,10 @@ class LiteratureAgent(BaseAgent):
         new_sources = self._extract_new_data_sources(simulated_papers)
         if new_sources:
             self._mutate_registry(new_sources)
-            # Trigger a re-scan with the newly evolved registry!
             logger.info("🔄 Re-executing discovery with newly evolved registry...")
-            second_discovery_result = self.discovery_agent.execute(fragility_traps)
             
-            # Safely extend the list from the second pass
+            # TYPE-SAFE EXTRACTION FOR SECOND PASS
+            second_discovery_result = self.discovery_agent.execute(fragility_traps)
             if isinstance(second_discovery_result, dict):
                 new_datasets = second_discovery_result.get('datasets', second_discovery_result.get('results', second_discovery_result.get('items', [])))
                 if isinstance(new_datasets, list):
@@ -173,8 +165,6 @@ class LiteratureAgent(BaseAgent):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
-    
-    # Ensure config dir exists for the registry
     Path("config").mkdir(parents=True, exist_ok=True)
     
     agent = LiteratureAgent()
