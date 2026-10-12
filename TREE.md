@@ -715,6 +715,7 @@ psivicom.github.io/
 │   │   ├── actuation_engine
 │   │   ├── actuation_engine.zig
 │   │   ├── bare_metal_vector.py
+│   │   ├── binary_psvc_reader.py
 │   │   ├── config_loader.py
 │   │   ├── data_registry.py
 │   │   ├── http_client.py
