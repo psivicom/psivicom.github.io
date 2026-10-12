@@ -378,6 +378,7 @@ psivicom.github.io/
 │   │   ├── WENDY_SHA_ZIG_COMPILATION.md
 │   │   ├── WENDY_VRAM_ELASTICITY.md
 │   │   ├── WENDY_ZIG_BRAIN_PLAN.md
+│   │   ├── WENDY_ZIG_COMPILER_TOOL.md
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
@@ -704,6 +705,7 @@ psivicom.github.io/
 │   ├── calculating/
 │   │   └── __init__.py
 │   ├── core/
+│   │   ├── .zig-build-audit.json
 │   │   ├── __init__.py
 │   │   ├── actuation_engine
 │   │   ├── actuation_engine.zig
@@ -718,12 +720,14 @@ psivicom.github.io/
 │   │   ├── osdr_validator.py
 │   │   ├── psvc_containers.py
 │   │   ├── psvc_reference.py
+│   │   ├── psvc_sealer
 │   │   ├── psvc_sealer.zig
 │   │   ├── psvc_sovereign.py
 │   │   ├── psvc_vector_sealer.py
 │   │   ├── rollback_manager.py
 │   │   ├── sovereign_kernel.py
 │   │   ├── spatio_temporal.py
+│   │   ├── vector_engine
 │   │   ├── vector_engine.zig
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py

@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T02:35:23.922Z | Hash: 773ddf65e005e0512f9eebcfbf208e14a1ec7606a778963f1974684562bd88a2 -->
+<!-- Last updated: 2026-10-12T02:57:27.404Z | Hash: 8480d284fae8b88b6fc753561f8a827d93fce1fc7ff770e6a6bd60f61d3dee57 -->
 
 ```
 psivicom.github.io/
@@ -497,6 +497,7 @@ psivicom.github.io/
 │   │   ├── WENDY_SHA_ZIG_COMPILATION.md
 │   │   ├── WENDY_VRAM_ELASTICITY.md
 │   │   ├── WENDY_ZIG_BRAIN_PLAN.md
+│   │   ├── WENDY_ZIG_COMPILER_TOOL.md
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
@@ -823,6 +824,7 @@ psivicom.github.io/
 │   ├── calculating/
 │   │   └── __init__.py
 │   ├── core/
+│   │   ├── .zig-build-audit.json
 │   │   ├── __init__.py
 │   │   ├── actuation_engine
 │   │   ├── actuation_engine.zig
@@ -837,12 +839,14 @@ psivicom.github.io/
 │   │   ├── osdr_validator.py
 │   │   ├── psvc_containers.py
 │   │   ├── psvc_reference.py
+│   │   ├── psvc_sealer
 │   │   ├── psvc_sealer.zig
 │   │   ├── psvc_sovereign.py
 │   │   ├── psvc_vector_sealer.py
 │   │   ├── rollback_manager.py
 │   │   ├── sovereign_kernel.py
 │   │   ├── spatio_temporal.py
+│   │   ├── vector_engine
 │   │   ├── vector_engine.zig
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
