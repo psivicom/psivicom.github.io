@@ -26,31 +26,41 @@ jobs:
           fetch-depth: 1 # Optimized: Read-only validation doesn't need full history
 
       - name: Score Files Against Agent Constitution
+        shell: bash
         run: |
+          set -euo pipefail
+
           echo "🛡️ Scoring workflow files against the Agent Constitution..."
           VIOLATIONS=0
-          
-          # 1. Check for naked git push without rebase loop 
+
+          # 1. Check for naked git push without rebase loop
           # CRITICAL: Exclude this guardian file, comments, and echo statements.
-          # The grep -v "git pull --rebase" ensures they are on the same line (our standard).
-          if grep -rn "git push" .github/workflows/ --exclude="workflow-security-guardian.yml" | grep -v "git pull --rebase" | grep -v "^[[:space:]]*#" | grep -v "echo" | grep -q "."; then
+          # The standard is: "git pull --rebase ... && git push ..."
+          if grep -RIn --exclude="workflow-security-guardian.yml" --include="*.yml" --include="*.yaml" \
+            "git push" .github/workflows/ \
+            | grep -vE "git pull --rebase|^[[:space:]]*#|echo " \
+            | grep -q "."; then
             echo "❌ VIOLATION: Naked 'git push' detected without rebase shield."
             VIOLATIONS=$((VIOLATIONS+1))
           fi
-          
+
           # 2. Check for missing [skip ci] in automated commits
-          # CRITICAL: Exclude this guardian file, comments, and echo statements.
-          if grep -rn "git commit" .github/workflows/ --exclude="workflow-security-guardian.yml" | grep -v "\[skip ci\]" | grep -v "^[[:space:]]*#" | grep -v "echo" | grep -q "."; then
+          if grep -RIn --exclude="workflow-security-guardian.yml" --include="*.yml" --include="*.yaml" \
+            "git commit" .github/workflows/ \
+            | grep -vE "\[skip ci\]|^[[:space:]]*#|echo " \
+            | grep -q "."; then
             echo "❌ VIOLATION: Automated commit missing '[skip ci]' flag."
             VIOLATIONS=$((VIOLATIONS+1))
           fi
-          
+
           # 3. Check for mutable action tags (@v4, @v5, @main, @master)
-          if grep -rnE "uses:\s*[^\s]+@(v[0-9]+|main|master)\b" .github/workflows/ | grep -v "^[[:space:]]*#" | grep -q "."; then
+          if grep -RInE "uses:[[:space:]]*[A-Za-z0-9._/-]+@(v[0-9]+|main|master)\b" .github/workflows/ \
+            | grep -vE "^[[:space:]]*#" \
+            | grep -q "."; then
             echo "❌ VIOLATION: Unpinned GitHub Action detected."
             VIOLATIONS=$((VIOLATIONS+1))
           fi
-          
+
           if [ $VIOLATIONS -gt 0 ]; then
             echo "🚨 Agent Constitution violated. Commit rejected."
             exit 1
