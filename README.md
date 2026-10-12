@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T03:29:35.360Z | Hash: a33fe1ac2f562f1583375d8c0450928a756002a020a5db71e32df0e1ce7452dd -->
+<!-- Last updated: 2026-10-12T03:34:14.323Z | Hash: 8c9b6caa674119455ebb5c2a03bc89d7fd8e773f959750aa7f9cb4ee3da296c7 -->
 
 ```
 psivicom.github.io/
@@ -498,6 +498,7 @@ psivicom.github.io/
 │   │   ├── WENDY_VRAM_ELASTICITY.md
 │   │   ├── WENDY_ZIG_BRAIN_PLAN.md
 │   │   ├── WENDY_ZIG_COMPILER_TOOL_V002.md
+│   │   ├── WENDY_ZIG_VECTOR_ENGINE.md
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
