@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T05:58:22.912Z | Hash: f5b94092c8e82c3631e2bbe15135ce9d27a8eafda6c06fcc4085d04f4eca1e86 -->
+<!-- Last updated: 2026-10-12T06:13:09.270Z | Hash: f455c129872370e2b7bd69b4a9d72a82f177314a6ff549ca2416d280a2be9c9f -->
 
 ```
 psivicom.github.io/
@@ -493,6 +493,7 @@ psivicom.github.io/
 │   │   ├── WENDY_INVITATION.md
 │   │   ├── WENDY_OPERATIONALIZATION_PLAN.md
 │   │   ├── WENDY_PROMPT_ZIG_COMPILATION.md
+│   │   ├── WENDY_QWEN_AWARE.md
 │   │   ├── WENDY_QWEN_ZIG_MESH.md
 │   │   ├── WENDY_QWEN_ZIG_MESH.md.md
 │   │   ├── WENDY_ROBOTIC_ACTUATOR_ZIG.md
