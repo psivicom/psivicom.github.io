@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T01:26:00.325Z | Hash: bfb0cc9df0822264231aee87b926bce0bc3a5b1498508744775817883dee913d -->
+<!-- Last updated: 2026-10-12T01:28:43.671Z | Hash: 2cc78542853924d6df7466f79c3d51fa7c52263a0168a15cec68405326cc939a -->
 
 ```
 psivicom.github.io/
@@ -553,6 +553,7 @@ psivicom.github.io/
 │   │   └── mistral-AI-website-plan.md
 │   ├── ZIG_COMMENTED_SOURCE/
 │   │   ├── actuation_engine.md
+│   │   ├── psvc_sealer.md
 │   │   ├── vector_engine.md
 │   │   └── zulu_clock.md
 │   ├── ZIG_UNCOMMENTED_SOURCE/
