@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T23:31:16.939Z | Hash: 562c8f1fef1ab8efe2bc4bb56d81060b4f780431e6af9dd8ab6fa944b44ea80d -->
+<!-- Last updated: 2026-10-12T23:41:51.557Z | Hash: f1b459751aaa91c80decfc8a1a32cab8ac29a1fd1635be092c0f52dcd3830809 -->
 
 ```
 psivicom.github.io/
@@ -349,7 +349,9 @@ psivicom.github.io/
 │   │   ├── handshake_qwen_20261011T044628873Z.json
 │   │   ├── handshake_qwen_20261011T044628873Z.psvc
 │   │   ├── handshake_qwen_20261012T050146018Z.json
-│   │   └── handshake_qwen_20261012T050146018Z.psvc
+│   │   ├── handshake_qwen_20261012T050146018Z.psvc
+│   │   ├── handshake_qwen_20261012T233422751Z.json
+│   │   └── handshake_qwen_20261012T233422751Z.psvc
 │   ├── beacons/
 │   │   ├── mirror-node-local.json
 │   │   ├── psivicom-primary.json
