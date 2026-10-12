@@ -13,58 +13,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
 
-      - name: Dynamic Dependency Resolution (WENDY Protocol)
+      - name: Install Core Dependencies
         run: |
           python -m pip install --upgrade pip
-          
-          # WENDY autonomously determines her dependencies.
-          # If the agent declares specific needs, install only those.
-          # Otherwise, fall back to the absolute minimal core.
-          AGENT_REQS="src/agents/literature_agent/requirements.txt"
-          if [ -f "$AGENT_REQS" ]; then
-            echo "🧠 WENDY Protocol: Installing agent-specific dependencies..."
-            pip install -r "$AGENT_REQS"
-          else
-            echo "🧠 WENDY Protocol: Falling back to minimal core dependencies..."
-            pip install -r requirements-core.txt
-          fi
+          pip install -r requirements-core.txt
 
       - name: Run Literature Agent
         run: |
           python -m src.agents.literature_agent
 
-      - name: Commit and Push Literature Artifacts (Race-Condition Proof)
+      - name: Commit and Push Literature Artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Literature Agent"
           git config user.email "literature@psivi.com"
-          
           mkdir -p reports/pico_containers
           mkdir -p config
-          
-          # BULLETPROOF: Stage ALL changes to prevent unstaged change errors
           git add .
-          
           if ! git diff --staged --quiet; then
-            echo "🚀 Committing all new literature vectors and evolved registry..."
             git commit -m "literature: ingested scientific context vectors and evolved registry [skip ci]"
-            
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Successfully pushed literature artifacts."
                 break
               else
-                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                echo "⚠️ Concurrent push detected. Rebasing and retrying..."
                 sleep 2
               fi
             done
