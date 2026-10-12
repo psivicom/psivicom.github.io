@@ -436,7 +436,6 @@ psivicom.github.io/
 │   ├── ZIG_COMMENTED_SOURCE/
 │   │   ├── actuation_engine.md
 │   │   ├── psvc_sealer.md
-│   │   ├── vector_engine.md
 │   │   └── zulu_clock.md
 │   ├── ZIG_UNCOMMENTED_SOURCE/
 │   │   ├── actuation_engine.zig
