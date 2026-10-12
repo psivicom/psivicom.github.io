@@ -102,11 +102,20 @@ class LiteratureAgent(BaseAgent):
         
         logger.info(f"🔍 Discovering datasets and scanning literature for {len(fragility_traps)} traps...")
         
-        # 1. Standard Discovery
-        discovered_datasets = self.discovery_agent.execute(fragility_traps)
+        # 1. Standard Discovery (Type-safe extraction)
+        discovery_result = self.discovery_agent.execute(fragility_traps)
+        
+        if isinstance(discovery_result, dict):
+            discovered_datasets = discovery_result.get('datasets', discovery_result.get('results', discovery_result.get('items', [])))
+            if not isinstance(discovered_datasets, list):
+                discovered_datasets = []
+        elif isinstance(discovery_result, list):
+            discovered_datasets = discovery_result
+        else:
+            discovered_datasets = []
+            logger.warning(f"⚠️ Unexpected discovery result type: {type(discovery_result)}")
         
         # 2. Simulate Literature Query (In production, this hits Semantic Scholar/Crossref)
-        # For this example, we simulate a paper that mentions a new UVic dataset
         simulated_papers = [
             {
                 "title": "Novel Pollinator Forage Dynamics in the Capital Regional District",
@@ -121,7 +130,15 @@ class LiteratureAgent(BaseAgent):
             self._mutate_registry(new_sources)
             # Trigger a re-scan with the newly evolved registry!
             logger.info("🔄 Re-executing discovery with newly evolved registry...")
-            discovered_datasets.extend(self.discovery_agent.execute(fragility_traps))
+            second_discovery_result = self.discovery_agent.execute(fragility_traps)
+            
+            # Safely extend the list from the second pass
+            if isinstance(second_discovery_result, dict):
+                new_datasets = second_discovery_result.get('datasets', second_discovery_result.get('results', second_discovery_result.get('items', [])))
+                if isinstance(new_datasets, list):
+                    discovered_datasets.extend(new_datasets)
+            elif isinstance(second_discovery_result, list):
+                discovered_datasets.extend(second_discovery_result)
         
         # 4. Seal Context
         for trap in fragility_traps:
