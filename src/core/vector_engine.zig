@@ -10,7 +10,7 @@ pub const Precision = enum {
     bits_128,
 };
 
-pub fn PrecisionType(p: Precision) type {
+pub fn PrecisionType(comptime p: Precision) type {
     return switch (p) {
         .bits_4 => u4,
         .bits_8 => u8,
