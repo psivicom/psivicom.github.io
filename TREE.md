@@ -731,6 +731,7 @@ psivicom.github.io/
 │   │   ├── vector_engine.zig
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
+│   │   ├── zig_bridge.py
 │   │   ├── zulu_clock
 │   │   ├── zulu_clock.py
 │   │   └── zulu_clock.zig

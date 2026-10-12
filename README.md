@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T04:38:44.905Z | Hash: d5017416f56b91c245819278cffd78f597b9a0c4c7b3b82933fa1e6f84819091 -->
+<!-- Last updated: 2026-10-12T04:45:34.547Z | Hash: 30193e80250276457d2e65aecf3967d82df0a2cc36ddadaf8b42f6d0275fac77 -->
 
 ```
 psivicom.github.io/
@@ -850,6 +850,7 @@ psivicom.github.io/
 │   │   ├── vector_engine.zig
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
+│   │   ├── zig_bridge.py
 │   │   ├── zulu_clock
 │   │   ├── zulu_clock.py
 │   │   └── zulu_clock.zig
