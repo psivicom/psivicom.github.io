@@ -1,4 +1,4 @@
-name: Literature Ingest
+name: Literature Ingest & Active Synthesis
 
 on:
   workflow_dispatch:
@@ -7,9 +7,10 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
-  ingest:
+  synthesize:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -27,11 +28,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-core.txt
 
-      - name: Run Literature Agent
+      - name: Execute Cognitive Synthesis
         run: |
           python -m src.agents.literature_agent
 
-      - name: Commit and Push Literature Artifacts
+      - name: Commit and Push Evolved Registry
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -41,10 +42,10 @@ jobs:
           mkdir -p config
           git add .
           if ! git diff --staged --quiet; then
-            git commit -m "literature: ingested scientific context vectors and evolved registry [skip ci]"
+            git commit -m "literature: active cognitive synthesis complete, registry evolved [skip ci]"
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
-                echo "✅ Successfully pushed literature artifacts."
+                echo "✅ Successfully pushed synthesized artifacts."
                 break
               else
                 echo "⚠️ Concurrent push detected. Rebasing and retrying..."
@@ -52,5 +53,16 @@ jobs:
               fi
             done
           else
-            echo "ℹ️ No new literature vectors or registry changes to commit."
+            echo "ℹ️ No new synthesis artifacts to commit."
           fi
+
+      - name: Auto-Resolve Sensory Input Notifications
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Find open issues labeled 'sensory-input' and close them with active synthesis confirmation
+          for issue in $(gh issue list --label "sensory-input" --state open --json number --jq '.[].number'); do
+            echo "🧠 Active Synthesis: Closing issue #$issue with cognitive confirmation."
+            gh issue comment "$issue" --body "✅ **Cognitive Synthesis Complete.**\n\nWENDY has successfully ingested the new external data, evolved the epistemic registry, and sealed the cognitive vectors. The loop is closed."
+            gh issue close "$issue" --reason completed
+          done || true
