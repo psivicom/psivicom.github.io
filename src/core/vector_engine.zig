@@ -1,5 +1,6 @@
 const std = @import("std");
 const Sha256 = std.crypto.hash.sha2.Sha256;
+const Ed25519 = std.crypto.sign.Ed25519;
 
 pub const Precision = enum {
     bits_4,
@@ -20,6 +21,15 @@ pub fn PrecisionType(comptime p: Precision) type {
         .bits_128 => f128,
     };
 }
+
+pub const PsvcHeader = packed struct {
+    magic: [4]u8 = .{ 'P', 'S', 'V', 'C' },
+    version: u8 = 2,
+    precision_bits: u8,
+    reserved: u16 = 0,
+    payload_length: u32,
+    timestamp_epoch_ms: u64,
+};
 
 pub fn VectorState(comptime P: Precision) type {
     const T = PrecisionType(P);
@@ -58,14 +68,6 @@ pub fn VectorState(comptime P: Precision) type {
             @memcpy(self.data, std.mem.bytesAsSlice(T, bytes));
         }
 
-        pub fn saveToFile(self: @This(), file_path: []const u8) !void {
-            const file = try std.fs.cwd().createFile(file_path, .{});
-            defer file.close();
-            
-            const bytes = std.mem.sliceAsBytes(self.data);
-            try file.writeAll(bytes);
-        }
-
         pub fn applyTransformation(self: *@This(), matrix: []const T) !void {
             std.debug.assert(matrix.len == self.dimension * self.dimension);
             
@@ -85,13 +87,47 @@ pub fn VectorState(comptime P: Precision) type {
             @memcpy(self.data, temp);
         }
 
-        pub fn hashState(self: @This()) [Sha256.digest_length]u8 {
-            const bytes = std.mem.sliceAsBytes(self.data);
-            var hash: [Sha256.digest_length]u8 = undefined;
-            Sha256.hash(bytes, &hash, .{});
-            return hash;
+        pub fn getRawBytes(self: @This()) []const u8 {
+            return std.mem.sliceAsBytes(self.data);
         }
     };
+}
+
+pub fn sealAsPSVC(
+    allocator: std.mem.Allocator,
+    payload: []const u8,
+    precision_bits: u8,
+    timestamp_ms: u64,
+    signing_key: ?*const Ed25519.SecretKey,
+    output_path: []const u8,
+) !void {
+    var header = PsvcHeader{
+        .precision_bits = precision_bits,
+        .payload_length = @as(u32, @intCast(payload.len)),
+        .timestamp_epoch_ms = timestamp_ms,
+    };
+
+    var file = try std.fs.cwd().createFile(output_path, .{});
+    defer file.close();
+
+    try file.writeAll(std.mem.asBytes(&header));
+    try file.writeAll(payload);
+
+    if (signing_key) |key| {
+        const header_bytes = std.mem.asBytes(&header);
+        var message = try allocator.alloc(u8, header_bytes.len + payload.len);
+        defer allocator.free(message);
+        @memcpy(message[0..header_bytes.len], header_bytes);
+        @memcpy(message[header_bytes.len..], payload);
+        
+        const signature = Ed25519.sign(message, key, null);
+        try file.writeAll(&signature.toBytes());
+    }
+
+    const total_size = @sizeOf(PsvcHeader) + payload.len + (if (signing_key != null) @as(usize, 64) else 0);
+    std.debug.print("Sealed PSVC: {s} ({d} bytes, {d}-bit, signed={})\n", .{
+        output_path, total_size, precision_bits, signing_key != null
+    });
 }
 
 pub fn main() !void {
@@ -103,8 +139,8 @@ pub fn main() !void {
     defer std.process.argsFree(allocator, args);
 
     if (args.len < 6) {
-        std.debug.print("Usage: vector_engine <precision> <dimension> <input_vector> <matrix_file> <output_vector>\n", .{});
-        std.debug.print("Example: vector_engine 32 1500 state.bin matrix.bin result.bin\n", .{});
+        std.debug.print("Usage: vector_engine <precision> <dimension> <input_vector> <matrix_file> <output_psvc>\n", .{});
+        std.debug.print("Environment: WENDY_PRIVATE_KEY_SEED (hex, optional for signing)\n", .{});
         return;
     }
 
@@ -122,6 +158,21 @@ pub fn main() !void {
         else if (std.mem.eql(u8, precision_str, "128")) Precision.bits_128
         else return error.InvalidPrecision;
 
+    const precision_bits: u8 = switch (precision) {
+        .bits_4 => 4, .bits_8 => 8, .bits_16 => 16,
+        .bits_32 => 32, .bits_64 => 64, .bits_128 => 128,
+    };
+
+    var signing_key: ?Ed25519.SecretKey = null;
+    if (std.process.getEnvVarOwned(allocator, "WENDY_PRIVATE_KEY_SEED")) |seed_hex| {
+        defer allocator.free(seed_hex);
+        var seed: [32]u8 = undefined;
+        _ = std.fmt.hexToBytes(&seed, seed_hex) catch return error.InvalidKeySeed;
+        signing_key = Ed25519.SecretKey.fromSeed(seed);
+    } else |_| {}
+
+    const timestamp_ms = @as(u64, @intCast(std.time.milliTimestamp()));
+
     switch (precision) {
         .bits_32 => {
             var state = try VectorState(.bits_32).init(allocator, dimension);
@@ -136,12 +187,15 @@ pub fn main() !void {
             const matrix = std.mem.bytesAsSlice(f32, matrix_bytes);
             
             try state.applyTransformation(matrix);
-            try state.saveToFile(output_path);
             
-            const hash = state.hashState();
-            std.debug.print("Transformed: {s} -> {s} (SHA256: {s})\n", .{
-                input_path, output_path, std.fmt.fmtSliceHexLower(&hash)
-            });
+            try sealAsPSVC(
+                allocator,
+                state.getRawBytes(),
+                precision_bits,
+                timestamp_ms,
+                if (signing_key != null) &signing_key.? else null,
+                output_path
+            );
         },
         .bits_64 => {
             var state = try VectorState(.bits_64).init(allocator, dimension);
@@ -156,12 +210,15 @@ pub fn main() !void {
             const matrix = std.mem.bytesAsSlice(f64, matrix_bytes);
             
             try state.applyTransformation(matrix);
-            try state.saveToFile(output_path);
             
-            const hash = state.hashState();
-            std.debug.print("Transformed: {s} -> {s} (SHA256: {s})\n", .{
-                input_path, output_path, std.fmt.fmtSliceHexLower(&hash)
-            });
+            try sealAsPSVC(
+                allocator,
+                state.getRawBytes(),
+                precision_bits,
+                timestamp_ms,
+                if (signing_key != null) &signing_key.? else null,
+                output_path
+            );
         },
         else => {
             std.debug.print("Precision {s} not yet implemented for CLI\n", .{precision_str});
