@@ -167,7 +167,7 @@ class LiteratureAgent(BaseAgent):
         
         self.seal_result(vector, output_dir, meta={
             "resolved_contexts": self.resolved_contexts,
-            "datasets_discovered": len(self.discovery_agent.discovered_datasets)
+            "datasets_discovered": len(self.discovery_agent.discovered_datasets) if hasattr(self.discovery_agent, 'discovered_datasets') else 0
         })
         logger.info("✅ Literature Agent finalized and sealed.")
 
