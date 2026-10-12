@@ -722,7 +722,6 @@ psivicom.github.io/
 │   │   ├── osdr_validator.py
 │   │   ├── psvc_containers.py
 │   │   ├── psvc_reference.py
-│   │   ├── psvc_sealer
 │   │   ├── psvc_sealer.zig
 │   │   ├── psvc_sovereign.py
 │   │   ├── psvc_vector_sealer.py
