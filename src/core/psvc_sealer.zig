@@ -10,7 +10,7 @@ pub const PsvcHeader = packed struct {
 };
 
 pub fn sealPayload(
-    allocator: std.mem.Allocator,
+    _allocator: std.mem.Allocator, // Prefixed with '_' to satisfy Zig's unused parameter check
     payload: []const u8,
     precision_bits: u8,
     timestamp_ms: u64,
