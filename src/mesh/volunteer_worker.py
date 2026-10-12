@@ -3,75 +3,186 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 """
-Sovereign Volunteer Worker: The Edge Node Executor.
-Processes instructions from the mesh queue, verifying cryptographic 
-signatures and enforcing Zulu temporal precision before execution.
+Volunteer Worker - Sovereign Instruction Executor.
+Scans the instruction queue for both legacy JSON PSVCs and new unified binary PSVCs,
+verifies cryptographic signatures, extracts payloads, and executes sovereign commands.
 """
 
 import json
 import logging
 from pathlib import Path
+from typing import Optional, Dict, Any
 
 from src.core.psvc_sovereign import SovereignPSVC
+from src.core.binary_psvc_reader import BinaryPSVCReader
 from src.core.zulu_clock import get_zulu_timestamp_ms
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
 logger = logging.getLogger("VOLUNTEER_WORKER")
 
-def process_instruction_queue():
-    """Scans the instruction queue for sovereign PSVC tasks and executes them."""
-    queue_dir = Path("data/instruction_queue")
-    if not queue_dir.exists():
-        logger.warning("⚠️ Instruction queue directory missing. Standing by.")
-        return
 
-    # Find all .psvc.json files (sovereign containers)
-    psvc_files = list(queue_dir.glob("*.psvc.json"))
+class VolunteerWorker:
+    """Executes sovereign instructions from the mesh queue."""
     
-    if not psvc_files:
-        logger.info("💤 No sovereign instructions in queue.")
-        return
-
-    logger.info(f"👷 Volunteer Worker starting. Found {len(psvc_files)} tasks.")
-    
-    # Process oldest first
-    oldest_file = sorted(psvc_files, key=lambda f: f.stat().st_mtime)[0]
-    
-    try:
-        # 1. Load the container
-        container = json.loads(oldest_file.read_text(encoding="utf-8"))
+    def __init__(self):
+        self.queue_dir = Path("data/instruction_queue")
+        self.processed_dir = Path("data/processed_instructions")
+        self.rejected_dir = Path("data/rejected_instructions")
         
-        # 2. ZERO-TRUST: Verify Ed25519 signature before doing ANYTHING
-        if not SovereignPSVC.verify_container(container):
-            logger.error(f"🚫 REJECTED: {oldest_file.name} has invalid cryptographic signature.")
-            # Move to rejected folder
-            rejected_dir = Path("data/rejected_instructions")
-            rejected_dir.mkdir(parents=True, exist_ok=True)
-            oldest_file.rename(rejected_dir / oldest_file.name)
-            return
+        self.queue_dir.mkdir(parents=True, exist_ok=True)
+        self.processed_dir.mkdir(parents=True, exist_ok=True)
+        self.rejected_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize sovereign verification for both formats
+        self.sovereign = SovereignPSVC()
+        self.binary_reader = BinaryPSVCReader.from_env_seed()
+        
+        logger.info("👷 Volunteer Worker initialized. Dual-format PSVC support: ACTIVE.")
+
+    def detect_psvc_format(self, file_path: Path) -> str:
+        """Detects whether a file is a JSON PSVC or binary PSVC."""
+        # Check file extension first
+        if file_path.suffix == ".psvc":
+            return "binary"
+        elif file_path.suffix == ".json" or str(file_path).endswith(".psvc.json"):
+            return "json"
+        
+        # Fallback: check magic bytes
+        try:
+            with open(file_path, 'rb') as f:
+                magic = f.read(4)
+                if magic == b'PSVC':
+                    return "binary"
+        except Exception:
+            pass
+        
+        # Default to JSON for backward compatibility
+        return "json"
+
+    def verify_and_extract_json(self, file_path: Path) -> Optional[Dict[str, Any]]:
+        """Verifies and extracts payload from a legacy JSON PSVC."""
+        try:
+            container_bytes = file_path.read_bytes()
             
-        # 3. Extract verified payload
-        payload = SovereignPSVC.extract_data(container)
-        command = payload.get("command", "unknown")
+            # Verify using SovereignPSVC
+            if not self.sovereign.validate(container_bytes):
+                logger.error(f"❌ JSON PSVC signature verification failed: {file_path.name}")
+                return None
+            
+            # Extract payload
+            container = json.loads(container_bytes.decode('utf-8'))
+            payload = container.get("payload", {})
+            
+            logger.info(f"✅ JSON PSVC verified: {file_path.name}")
+            return payload
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to process JSON PSVC {file_path.name}: {e}")
+            return None
+
+    def verify_and_extract_binary(self, file_path: Path) -> Optional[Dict[str, Any]]:
+        """Verifies and extracts payload from a unified binary PSVC."""
+        try:
+            psvc = self.binary_reader.verify_and_read(file_path)
+            
+            # For binary PSVCs, the payload is raw bytes (vector data)
+            # We wrap it in a dict for compatibility with the execution layer
+            payload = {
+                "type": "binary_vector",
+                "precision_bits": psvc.precision_bits,
+                "payload_bytes": psvc.payload,
+                "timestamp": psvc.timestamp_epoch_ms,
+                "signed": psvc.is_signed
+            }
+            
+            logger.info(f"✅ Binary PSVC verified: {file_path.name} ({psvc.payload_length} bytes, {psvc.precision_bits}-bit)")
+            return payload
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to process binary PSVC {file_path.name}: {e}")
+            return None
+
+    def execute_command(self, payload: Dict[str, Any]) -> bool:
+        """Executes the sovereign command from the verified payload."""
+        try:
+            command = payload.get("command", "unknown")
+            
+            if payload.get("type") == "binary_vector":
+                # Handle binary vector payload
+                logger.info(f"🧮 Executing binary vector command: {command}")
+                logger.info(f"   Precision: {payload['precision_bits']}-bit")
+                logger.info(f"   Payload size: {len(payload['payload_bytes'])} bytes")
+                # TODO: Implement actual vector processing logic here
+                # e.g., load into VRAM, apply transformations, seal result
+                
+            else:
+                # Handle legacy JSON command payload
+                logger.info(f"⚙️ Executing JSON command: {command}")
+                agent_id = payload.get("agent_id", "unknown")
+                logger.info(f"   Agent: {agent_id}")
+                # TODO: Implement actual command execution logic here
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Command execution failed: {e}")
+            return False
+
+    def process_instruction_queue(self):
+        """Main execution loop: scans, verifies, executes, and archives instructions."""
+        logger.info("🔍 Scanning instruction queue...")
         
-        logger.info(f"✅ VERIFIED: Executing command '{command}' from {payload.get('agent_id', 'unknown')}")
+        # Find all PSVC files (both JSON and binary)
+        json_files = list(self.queue_dir.glob("*.psvc.json"))
+        binary_files = list(self.queue_dir.glob("*.psvc"))
+        all_files = json_files + binary_files
         
-        # --- PLACEHOLDER: Insert actual robotic/compute execution logic here ---
-        # e.g., apply Lee-filter to SAR patch, update local state, etc.
+        if not all_files:
+            logger.info("💤 No instructions in queue. Standing by.")
+            return
         
-        # 4. Move to processed folder with Zulu timestamp
-        processed_dir = Path("data/processed_instructions")
-        processed_dir.mkdir(parents=True, exist_ok=True)
-        zulu_safe = get_zulu_timestamp_ms().replace(':', '-').replace('.', '-')
-        new_name = f"processed_{oldest_file.stem}_{zulu_safe}.json"
+        logger.info(f"👷 Found {len(all_files)} instructions ({len(json_files)} JSON, {len(binary_files)} binary)")
         
-        oldest_file.rename(processed_dir / new_name)
-        logger.info(f"✅ Task completed and archived: {new_name}")
+        # Process oldest first
+        oldest_file = sorted(all_files, key=lambda f: f.stat().st_mtime)[0]
         
-    except json.JSONDecodeError:
-        logger.error(f"❌ Error: {oldest_file.name} is not valid JSON.")
-    except Exception as e:
-        logger.error(f"❌ Error processing instruction {oldest_file.name}: {e}")
+        # Detect format
+        psvc_format = self.detect_psvc_format(oldest_file)
+        logger.info(f"📦 Processing: {oldest_file.name} (format: {psvc_format})")
+        
+        # Verify and extract based on format
+        if psvc_format == "binary":
+            payload = self.verify_and_extract_binary(oldest_file)
+        else:
+            payload = self.verify_and_extract_json(oldest_file)
+        
+        if payload is None:
+            # Verification failed - move to rejected
+            logger.error(f"🚫 REJECTED: {oldest_file.name} failed verification")
+            rejected_path = self.rejected_dir / oldest_file.name
+            oldest_file.rename(rejected_path)
+            return
+        
+        # Execute the command
+        success = self.execute_command(payload)
+        
+        if success:
+            # Move to processed with Zulu timestamp
+            zulu_safe = get_zulu_timestamp_ms().replace(':', '-').replace('.', '-')
+            new_name = f"processed_{oldest_file.stem}_{zulu_safe}{oldest_file.suffix}"
+            processed_path = self.processed_dir / new_name
+            oldest_file.rename(processed_path)
+            logger.info(f"✅ Task completed and archived: {new_name}")
+        else:
+            logger.error(f"❌ Task failed: {oldest_file.name}")
+
+
+def main():
+    worker = VolunteerWorker()
+    logger.info("🔄 Volunteer Worker: Initiating instruction processing cycle...")
+    worker.process_instruction_queue()
+    logger.info("🏁 Volunteer Worker: Cycle completed.")
+
 
 if __name__ == "__main__":
-    process_instruction_queue()
+    main()
