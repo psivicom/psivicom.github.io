@@ -50,6 +50,11 @@
       "base_url": "https://data.uvic.ca/dataset/pollinator-bc-2026",
       "discovery_context": "Novel Pollinator Forage Dynamics in the Capital Regional District",
       "discovered_at": "2026-10-12T21:16:37.961Z"
+    },
+    "auto_uvic": {
+      "name": "UVic Repository",
+      "base_url": "https://data.uvic.ca/dataset/pollinator-bc-2026",
+      "discovered_at": "2026-10-12T23:13:09.143Z"
     }
   }
 }
