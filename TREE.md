@@ -375,7 +375,7 @@ psivicom.github.io/
 │   │   ├── WENDY_QWEN_ZIG_MESH.md.md
 │   │   ├── WENDY_ROBOTIC_ACTUATOR_ZIG.md
 │   │   ├── WENDY_SEARCH_GITHUB.md
-│   │   ├── WENDY_SHA_ZIG_COMPILATION.md
+│   │   ├── WENDY_SHA_ZIG_COMPILATION_V001.md
 │   │   ├── WENDY_VRAM_ELASTICITY.md
 │   │   ├── WENDY_ZIG_BRAIN_PLAN.md
 │   │   ├── WENDY_ZIG_COMPILER_TOOL.md
