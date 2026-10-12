@@ -5,7 +5,7 @@
     "dependencies": [
       "src/core/zulu_clock.py"
     ],
-    "runtime": "python-3.11-minimal",
+    "runtime": "python-3.12-minimal",
     "health_check": "calculate_breath_phase",
     "vector_dim": 64
   },

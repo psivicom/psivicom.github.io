@@ -6,7 +6,7 @@
       "src/core/sovereign_kernel.py",
       "src/core/psvc_containers.py"
     ],
-    "runtime": "python-3.11-minimal",
+    "runtime": "python-3.12-minimal",
     "health_check": "HyperGardener.run",
     "vector_dim": 64
   },
