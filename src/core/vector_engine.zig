@@ -1,5 +1,6 @@
 const std = @import("std");
-const Sha256 = std.crypto.hash.Sha256;
+// CRITICAL FIX for Zig 0.11.0: Sha256 is now inside the sha2 namespace
+const Sha256 = std.crypto.hash.sha2.Sha256;
 
 pub const Precision = enum {
     bits_4,
