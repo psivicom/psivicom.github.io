@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T02:24:24.954Z | Hash: 773ddf65e005e0512f9eebcfbf208e14a1ec7606a778963f1974684562bd88a2 -->
+<!-- Last updated: 2026-10-12T02:26:36.093Z | Hash: 0d88cf64163247407ea866a0db992d8152d8d80c7b95d7759555a1f32bfcc206 -->
 
 ```
 psivicom.github.io/
@@ -843,7 +843,6 @@ psivicom.github.io/
 │   │   ├── rollback_manager.py
 │   │   ├── sovereign_kernel.py
 │   │   ├── spatio_temporal.py
-│   │   ├── vector_engine.zig
 │   │   ├── vector_math.py
 │   │   ├── vector_pixelizer.py
 │   │   ├── zulu_clock
