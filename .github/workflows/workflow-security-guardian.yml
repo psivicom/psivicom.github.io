@@ -29,41 +29,44 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          python3 - <<'PY'
+          import re
+          import sys
+          from pathlib import Path
 
-          echo "🛡️ Scoring workflow files against the Agent Constitution..."
-          VIOLATIONS=0
+          root = Path(".github/workflows")
+          violations = 0
 
-          # 1. Check for naked git push without rebase loop
-          # CRITICAL: Exclude this guardian file, comments, and echo statements.
-          # The standard is: "git pull --rebase ... && git push ..."
-          if grep -RIn --exclude="workflow-security-guardian.yml" --include="*.yml" --include="*.yaml" \
-            "git push" .github/workflows/ \
-            | grep -vE "git pull --rebase|^[[:space:]]*#|echo " \
-            | grep -q "."; then
-            echo "❌ VIOLATION: Naked 'git push' detected without rebase shield."
-            VIOLATIONS=$((VIOLATIONS+1))
-          fi
+          for path in sorted(root.glob("*.yml")) + sorted(root.glob("*.yaml")):
+              if path.name == "workflow-security-guardian.yml":
+                  continue
 
-          # 2. Check for missing [skip ci] in automated commits
-          if grep -RIn --exclude="workflow-security-guardian.yml" --include="*.yml" --include="*.yaml" \
-            "git commit" .github/workflows/ \
-            | grep -vE "\[skip ci\]|^[[:space:]]*#|echo " \
-            | grep -q "."; then
-            echo "❌ VIOLATION: Automated commit missing '[skip ci]' flag."
-            VIOLATIONS=$((VIOLATIONS+1))
-          fi
+              text = path.read_text(encoding="utf-8")
+              for lineno, raw_line in enumerate(text.splitlines(), 1):
+                  line = raw_line.strip()
 
-          # 3. Check for mutable action tags (@v4, @v5, @main, @master)
-          if grep -RInE "uses:[[:space:]]*[A-Za-z0-9._/-]+@(v[0-9]+|main|master)\b" .github/workflows/ \
-            | grep -vE "^[[:space:]]*#" \
-            | grep -q "."; then
-            echo "❌ VIOLATION: Unpinned GitHub Action detected."
-            VIOLATIONS=$((VIOLATIONS+1))
-          fi
+                  # Ignore blank lines, comments, and echo noise.
+                  if not line or line.startswith("#") or "echo " in raw_line:
+                      continue
 
-          if [ $VIOLATIONS -gt 0 ]; then
-            echo "🚨 Agent Constitution violated. Commit rejected."
-            exit 1
-          else
-            echo "✅ All workflow files comply with the Agent Constitution."
-          fi
+                  # Bare git push requires a rebase shield.
+                  if "git push" in line and "git pull --rebase" not in line:
+                      print(f"❌ VIOLATION: Naked 'git push' detected in {path}:{lineno}")
+                      violations += 1
+
+                  # Automated commits must skip CI.
+                  if "git commit" in line and "[skip ci]" not in line:
+                      print(f"❌ VIOLATION: Automated commit missing '[skip ci]' in {path}:{lineno}")
+                      violations += 1
+
+                  # Actions must be pinned to immutable SHAs.
+                  if re.search(r"uses:\s*[A-Za-z0-9._/-]+@(v[0-9]+|main|master)\b", raw_line):
+                      print(f"❌ VIOLATION: Unpinned GitHub Action detected in {path}:{lineno}")
+                      violations += 1
+
+          if violations:
+              print(f"\n🚨 Agent Constitution violated ({violations} violation(s)). Commit rejected.")
+              raise SystemExit(1)
+
+          print("✅ All workflow files comply with the Agent Constitution.")
+          PY
