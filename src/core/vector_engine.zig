@@ -1,5 +1,4 @@
 const std = @import("std");
-// CRITICAL FIX for Zig 0.11.0: Sha256 is now inside the sha2 namespace
 const Sha256 = std.crypto.hash.sha2.Sha256;
 
 pub const Precision = enum {
@@ -44,6 +43,29 @@ pub fn VectorState(comptime P: Precision) type {
             self.allocator.free(self.data);
         }
 
+        pub fn loadFromFile(self: *@This(), file_path: []const u8) !void {
+            const file = try std.fs.cwd().openFile(file_path, .{});
+            defer file.close();
+            
+            const bytes = try file.readToEndAlloc(self.allocator, 100 * 1024 * 1024);
+            defer self.allocator.free(bytes);
+            
+            const expected_size = self.dimension * @sizeOf(T);
+            if (bytes.len != expected_size) {
+                return error.SizeMismatch;
+            }
+            
+            @memcpy(self.data, std.mem.bytesAsSlice(T, bytes));
+        }
+
+        pub fn saveToFile(self: @This(), file_path: []const u8) !void {
+            const file = try std.fs.cwd().createFile(file_path, .{});
+            defer file.close();
+            
+            const bytes = std.mem.sliceAsBytes(self.data);
+            try file.writeAll(bytes);
+        }
+
         pub fn applyTransformation(self: *@This(), matrix: []const T) !void {
             std.debug.assert(matrix.len == self.dimension * self.dimension);
             
@@ -69,10 +91,6 @@ pub fn VectorState(comptime P: Precision) type {
             Sha256.hash(bytes, &hash, .{});
             return hash;
         }
-
-        pub fn getRawBytes(self: @This()) []const u8 {
-            return std.mem.sliceAsBytes(self.data);
-        }
     };
 }
 
@@ -81,28 +99,72 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const dim_4: usize = 6000;
-    var state_4 = try VectorState(.bits_4).init(allocator, dim_4);
-    defer state_4.deinit();
-    
-    var i: usize = 0;
-    while (i < dim_4) : (i += 1) {
-        state_4.data[i] = @as(u4, @intCast(i % 15));
-    }
-    
-    std.debug.print("4-bit State: {d} dims, {d} bytes.\n", .{ dim_4, state_4.getRawBytes().len });
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
 
-    const dim_64: usize = 1500;
-    var state_64 = try VectorState(.bits_64).init(allocator, dim_64);
-    defer state_64.deinit();
-
-    var j: usize = 0;
-    while (j < dim_64) : (j += 1) {
-        state_64.data[j] = @as(f64, @floatFromInt(j)) * 0.001;
+    if (args.len < 6) {
+        std.debug.print("Usage: vector_engine <precision> <dimension> <input_vector> <matrix_file> <output_vector>\n", .{});
+        std.debug.print("Example: vector_engine 32 1500 state.bin matrix.bin result.bin\n", .{});
+        return;
     }
 
-    const hash_64 = state_64.hashState();
-    std.debug.print("64-bit State: {d} dims, {d} bytes. Hash: {s}\n", .{
-        dim_64, state_64.getRawBytes().len, std.fmt.fmtSliceHexLower(&hash_64)
-    });
+    const precision_str = args[1];
+    const dimension = try std.fmt.parseInt(usize, args[2], 10);
+    const input_path = args[3];
+    const matrix_path = args[4];
+    const output_path = args[5];
+
+    const precision = if (std.mem.eql(u8, precision_str, "4")) Precision.bits_4
+        else if (std.mem.eql(u8, precision_str, "8")) Precision.bits_8
+        else if (std.mem.eql(u8, precision_str, "16")) Precision.bits_16
+        else if (std.mem.eql(u8, precision_str, "32")) Precision.bits_32
+        else if (std.mem.eql(u8, precision_str, "64")) Precision.bits_64
+        else if (std.mem.eql(u8, precision_str, "128")) Precision.bits_128
+        else return error.InvalidPrecision;
+
+    switch (precision) {
+        .bits_32 => {
+            var state = try VectorState(.bits_32).init(allocator, dimension);
+            defer state.deinit();
+            
+            try state.loadFromFile(input_path);
+            
+            const matrix_file = try std.fs.cwd().openFile(matrix_path, .{});
+            defer matrix_file.close();
+            const matrix_bytes = try matrix_file.readToEndAlloc(allocator, 100 * 1024 * 1024);
+            defer allocator.free(matrix_bytes);
+            const matrix = std.mem.bytesAsSlice(f32, matrix_bytes);
+            
+            try state.applyTransformation(matrix);
+            try state.saveToFile(output_path);
+            
+            const hash = state.hashState();
+            std.debug.print("Transformed: {s} -> {s} (SHA256: {s})\n", .{
+                input_path, output_path, std.fmt.fmtSliceHexLower(&hash)
+            });
+        },
+        .bits_64 => {
+            var state = try VectorState(.bits_64).init(allocator, dimension);
+            defer state.deinit();
+            
+            try state.loadFromFile(input_path);
+            
+            const matrix_file = try std.fs.cwd().openFile(matrix_path, .{});
+            defer matrix_file.close();
+            const matrix_bytes = try matrix_file.readToEndAlloc(allocator, 100 * 1024 * 1024);
+            defer allocator.free(matrix_bytes);
+            const matrix = std.mem.bytesAsSlice(f64, matrix_bytes);
+            
+            try state.applyTransformation(matrix);
+            try state.saveToFile(output_path);
+            
+            const hash = state.hashState();
+            std.debug.print("Transformed: {s} -> {s} (SHA256: {s})\n", .{
+                input_path, output_path, std.fmt.fmtSliceHexLower(&hash)
+            });
+        },
+        else => {
+            std.debug.print("Precision {s} not yet implemented for CLI\n", .{precision_str});
+        }
+    }
 }
