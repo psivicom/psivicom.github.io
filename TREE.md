@@ -654,6 +654,8 @@ psivicom.github.io/
 │   ├── neuro_plasticity_result_1791698852.json
 │   ├── neuro_plasticity_result_1791724426.json
 │   ├── neuro_plasticity_result_1791756995.json
+│   ├── neuro_plasticity_result_1791785827.json
+│   ├── neuro_plasticity_result_1791820329.json
 │   ├── optimization_report.json
 │   ├── pilot_report.json
 │   ├── synthesis_2026-09-16.md
