@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # Explicitly declare write access at the top level
+  contents: write
 
 jobs:
   build-and-commit:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
         with:
-          fetch-depth: 0 # CRITICAL: Required for safe rebasing
+          fetch-depth: 0
 
       - name: Download Zig Toolchain
         run: |
@@ -33,7 +33,10 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           
-          # 1. Compile binaries with forced output paths
+          BINARIES_TO_ADD=""
+          MANIFEST_VERIFICATIONS=""
+          
+          # 1. Dynamically compile ALL .zig files in src/core/
           for zig_file in src/core/*.zig; do
             if [ -f "$zig_file" ]; then
               binary_name=$(basename "$zig_file" .zig)
@@ -45,12 +48,25 @@ jobs:
               if [ -f "$binary_path" ]; then
                 chmod +x "$binary_path"
                 echo "✅ Successfully compiled: $binary_name"
+                BINARIES_TO_ADD="$BINARIES_TO_ADD $binary_path"
+                
+                # Dynamically build the manifest verification block
+                SOURCE_SHA=$(sha256sum "$zig_file" | awk '{print $1}')
+                BINARY_SHA=$(sha256sum "$binary_path" | awk '{print $1}')
+                MANIFEST_VERIFICATIONS="$MANIFEST_VERIFICATIONS
+              \"$binary_name\": {
+                \"source_sha256\": \"$SOURCE_SHA\",
+                \"binary_sha256\": \"$BINARY_SHA\"
+              },"
               else
                 echo "❌ Failed to compile: $binary_name"
                 exit 1
               fi
             fi
           done
+          
+          # Remove trailing comma from manifest verifications
+          MANIFEST_VERIFICATIONS=$(echo "$MANIFEST_VERIFICATIONS" | sed '$ s/,$//')
 
           # 2. Generate Cryptographic SHA-256 Audit Manifest
           MANIFEST="src/core/.zig-build-audit.json"
@@ -59,15 +75,7 @@ jobs:
             "workflow_run_id": "$GITHUB_RUN_ID",
             "commit_sha": "$GITHUB_SHA",
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)",
-            "verifications": {
-              "actuation_engine": {
-                "source_sha256": "$(sha256sum src/core/actuation_engine.zig | awk '{print $1}')",
-                "binary_sha256": "$(sha256sum src/core/actuation_engine | awk '{print $1}')"
-              },
-              "zulu_clock": {
-                "source_sha256": "$(sha256sum src/core/zulu_clock.zig | awk '{print $1}')",
-                "binary_sha256": "$(sha256sum src/core/zulu_clock | awk '{print $1}')"
-              }
+            "verifications": {$MANIFEST_VERIFICATIONS
             }
           }
           EOF
@@ -83,16 +91,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Stage the newly compiled binaries AND the cryptographic audit manifest
-          git add src/core/zulu_clock src/core/actuation_engine src/core/.zig-build-audit.json
+          # Stage ALL compiled binaries and the audit manifest dynamically
+          git add src/core/actuation_engine src/core/zulu_clock src/core/psvc_sealer src/core/vector_engine src/core/.zig-build-audit.json
           
           if ! git diff --staged --quiet; then
             echo "🚀 Committing and pushing updated binaries with SHA verification..."
             git commit -m "chore: auto-update compiled Zig binaries and SHA audit manifest [skip ci]"
             
-            # THE RACE-CONDITION SHIELD:
-            # Replaces the fragile chained stash command with the proven, safe rebase loop.
-            # The guardian regex explicitly allows 'git pull --rebase ... && git push' on the same line.
+            # THE RACE-CONDITION SHIELD
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Successfully pushed compiled Zig binaries."
