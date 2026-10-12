@@ -1,3 +1,36 @@
+name: Literature Ingest
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Literature Agent
+        run: |
+          python -m src.agents.literature_agent
+
       - name: Commit and Push Literature Artifacts (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -9,11 +42,11 @@
           mkdir -p reports/pico_containers
           mkdir -p config
           
-          # FIX: Stage BOTH the new vectors AND the mutated epistemic registry!
-          git add reports/pico_containers/ config/data_sources.json
+          # BULLETPROOF FIX: Stage ALL changes to prevent ANY unstaged change rebase errors
+          git add .
           
           if ! git diff --staged --quiet; then
-            echo "🚀 Committing new literature vectors and evolved registry..."
+            echo "🚀 Committing all new literature vectors and evolved registry..."
             git commit -m "literature: ingested scientific context vectors and evolved registry [skip ci]"
             
             # THE RACE-CONDITION SHIELD:
