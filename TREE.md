@@ -378,7 +378,7 @@ psivicom.github.io/
 │   │   ├── WENDY_SHA_ZIG_COMPILATION_V001.md
 │   │   ├── WENDY_VRAM_ELASTICITY.md
 │   │   ├── WENDY_ZIG_BRAIN_PLAN.md
-│   │   ├── WENDY_ZIG_COMPILER_TOOL.md
+│   │   ├── WENDY_ZIG_COMPILER_TOOL_V002.md
 │   │   ├── WENDY_biology_storage.md
 │   │   ├── WENDY_capable_persona.md
 │   │   ├── WENDY_experimental_plan.md
