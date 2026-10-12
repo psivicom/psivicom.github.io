@@ -22,10 +22,21 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Dynamic Dependency Resolution (WENDY Protocol)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          
+          # WENDY autonomously determines her dependencies.
+          # If the agent declares specific needs, install only those.
+          # Otherwise, fall back to the absolute minimal core.
+          AGENT_REQS="src/agents/literature_agent/requirements.txt"
+          if [ -f "$AGENT_REQS" ]; then
+            echo "🧠 WENDY Protocol: Installing agent-specific dependencies..."
+            pip install -r "$AGENT_REQS"
+          else
+            echo "🧠 WENDY Protocol: Falling back to minimal core dependencies..."
+            pip install -r requirements-core.txt
+          fi
 
       - name: Run Literature Agent
         run: |
@@ -38,18 +49,16 @@ jobs:
           git config user.name "PSIVI Literature Agent"
           git config user.email "literature@psivi.com"
           
-          # CRITICAL: Ensure directories exist
           mkdir -p reports/pico_containers
           mkdir -p config
           
-          # BULLETPROOF FIX: Stage ALL changes to prevent ANY unstaged change rebase errors
+          # BULLETPROOF: Stage ALL changes to prevent unstaged change errors
           git add .
           
           if ! git diff --staged --quiet; then
             echo "🚀 Committing all new literature vectors and evolved registry..."
             git commit -m "literature: ingested scientific context vectors and evolved registry [skip ci]"
             
-            # THE RACE-CONDITION SHIELD:
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Successfully pushed literature artifacts."
