@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-12T01:19:32.680Z | Hash: 411d11e12f2872373d3276d497308fe9d2641328b4c98942741824fe8819ccc3 -->
+<!-- Last updated: 2026-10-12T01:22:34.155Z | Hash: fce9c2fff662b19b0c3d7e4bd867033dde85f1a071b2ac782621b40f9f11f7e8 -->
 
 ```
 psivicom.github.io/
@@ -556,6 +556,7 @@ psivicom.github.io/
 │   │   └── zulu_clock.md
 │   ├── ZIG_UNCOMMENTED_SOURCE/
 │   │   ├── actuation_engine.zig
+│   │   ├── psvc_sealer.zig
 │   │   ├── vector_engine.zig
 │   │   └── zulu_clock.zig
 │   ├── AETHER_MESH_PSVC_WENDY.md

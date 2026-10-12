@@ -437,6 +437,7 @@ psivicom.github.io/
 │   │   └── zulu_clock.md
 │   ├── ZIG_UNCOMMENTED_SOURCE/
 │   │   ├── actuation_engine.zig
+│   │   ├── psvc_sealer.zig
 │   │   ├── vector_engine.zig
 │   │   └── zulu_clock.zig
 │   ├── AETHER_MESH_PSVC_WENDY.md
