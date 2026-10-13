@@ -1,5 +1,5 @@
 # src/tools/self_healing_agent.py
-# SPDX-License-Identifier: EUPL-1.2 
+# SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 import ast
@@ -22,7 +22,6 @@ class SelfHealingAgent:
             missing_module = module_match.group(1)
             logger.info(f"🔍 Diagnosing: Missing module '{missing_module}'. Attempting dynamic install...")
             try:
-                # Dynamic fallback: try installing the module name directly
                 subprocess.check_call([sys.executable, "-m", "pip", "install", missing_module, "-q"])
                 logger.info(f"✅ Dynamically installed '{missing_module}'.")
                 return True
