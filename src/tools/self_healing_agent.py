@@ -16,11 +16,26 @@ class SelfHealingAgent:
         self.root = Path(__file__).parent.parent.parent
 
     def analyze_and_heal(self, module_name: str, error_output: str) -> bool:
+        # 1. Check for Missing Module (ImportError / ModuleNotFoundError)
+        module_match = re.search(r"No module named ['\"](\w+)['\"]", error_output)
+        if module_match:
+            missing_module = module_match.group(1)
+            logger.info(f"🔍 Diagnosing: Missing module '{missing_module}'. Attempting dynamic install...")
+            try:
+                # Dynamic fallback: try installing the module name directly
+                subprocess.check_call([sys.executable, "-m", "pip", "install", missing_module, "-q"])
+                logger.info(f"✅ Dynamically installed '{missing_module}'.")
+                return True
+            except subprocess.CalledProcessError:
+                logger.warning(f"⚠️ Failed to dynamically install '{missing_module}'.")
+                return False
+
+        # 2. Check for Keyword Mismatch (TypeError)
         kwarg_match = re.search(r"unexpected keyword argument '(\w+)'", error_output)
         file_match = re.search(r'File "([^"]+)", line (\d+)', error_output)
         
         if not kwarg_match or not file_match:
-            logger.warning("⚠️ Error not recognized as a simple keyword mismatch. Cannot auto-heal.")
+            logger.warning("⚠️ Error not recognized as auto-healable. Cannot auto-heal.")
             return False
 
         bad_kwarg = kwarg_match.group(1)
