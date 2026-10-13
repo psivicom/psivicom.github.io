@@ -1,5 +1,5 @@
 # src/tools/self_healing_agent.py
-# SPDX-License-Identifier: EUPL-1.2
+# SPDX-License-Identifier: EUPL-1.2 
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 import ast
