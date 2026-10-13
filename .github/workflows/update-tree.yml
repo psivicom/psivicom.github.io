@@ -1,62 +1,60 @@
-# .github/workflows/update-tree.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
-name: Auto-Update Repository Tree
+name: Update Tree
 
 on:
   push:
-    branches: [main]
-    paths-ignore:
-      - 'TREE.md'
-      - 'README.md'
-      - '.tree.hash'
+    branches: [ main ]
+    paths:
+      - '**'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# BEST PRACTICE 1: Native Concurrency. Queues runs to prevent simultaneous pushes.
+concurrency:
+  group: update-tree-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   update-tree:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          fetch-depth: 0 # CRITICAL: Required for safe rebasing
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Go
-        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
         with:
-          go-version: '1.22' # Standardized to 1.22 to match mesh-daemon.yml
+          go-version: '1.22'
+          cache: false
 
       - name: Generate Tree and README
         run: |
-          echo "🌳 Generating deterministic repository tree..."
-          go run scripts/update-tree/main.go
+          cd docs/GO_TREE/update-tree
+          go run main.go ../../
 
-      - name: Commit Tree Updates (Race-Condition Proof)
+      - name: Commit Tree Updates (Conflict-Aware Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # CRITICAL: Ensure files exist to prevent fatal 'pathspec did not match' errors
           touch TREE.md README.md .tree.hash
           git add TREE.md README.md .tree.hash
           
           if ! git diff --staged --quiet; then
             git commit -m "chore: auto-update tree and README [skip ci]"
             
-            # THE RACE-CONDITION SHIELD:
+            # BEST PRACTICE 2: Conflict-Aware Rebase Loop
             for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
-                echo "✅ Tree updated successfully."
-                break
+              if git pull --rebase origin main; then
+                git push origin main && break
               else
-                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                echo "⚠️ Rebase failed or conflict detected. Aborting rebase and retrying..."
+                git rebase --abort || true
                 sleep 2
               fi
             done
