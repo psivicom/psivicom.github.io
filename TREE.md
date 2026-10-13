@@ -38,6 +38,7 @@ psivicom.github.io/
 │       ├── psvc-mesh-aggregator.yml
 │       ├── rfc-compliance.yml
 │       ├── rfc1001-compliance.yml
+│       ├── seed-mesh-v2.yml
 │       ├── seed-mesh.yml
 │       ├── timestamp-check.yml
 │       ├── update-tree.yml
