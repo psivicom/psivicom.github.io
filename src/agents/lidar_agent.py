@@ -13,7 +13,6 @@ import numpy as np
 import time
 from typing import Optional, Tuple
 
-# CORRECT absolute imports from the repository root (PYTHONPATH)
 from src.mesh.vram_mesh import VRAMMesh
 from src.mesh.mesh_governor import MeshGovernor
 from src.core.vector_pixelizer import VectorPixelizer
@@ -57,7 +56,9 @@ class LidarAgent:
                 logger.info(f"[{self.agent_id}] Evolution denied. Pixelizer will use chunking.")
                 
         simulated_cloud = np.random.rand(point_count).astype(np.float64)
-        success, result = self.pixelizer.execute_vector_math(self.agent_id, operation="transform", input_data=simulated_cloud)
+        
+        # FIX: Changed 'input_data' to 'data' to match VectorPixelizer signature
+        success, result = self.pixelizer.execute_vector_math(self.agent_id, operation="transform", data=simulated_cloud)
         
         if not success:
             logger.error(f"[{self.agent_id}] Canopy scan failed.")
