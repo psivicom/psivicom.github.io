@@ -61,7 +61,7 @@ Requirement: Heart emoji ❤️ MANDATORY. No heart = not elected. See README.md
    author: lpaudette / teamai-elected
    ---
    ```
-3. Last updated: `2026-05-11T00:00:00Z` — Never `2026-05-11`. Always Zulu.
+3. Last updated: `2026-05-11T00:00:00.000Z` — Never `2026-05-11`. Always Zulu.
 4. CHANGELOG.md entry required for every WORD.
 5. No non-ISO dates in repo. Action will block.
 

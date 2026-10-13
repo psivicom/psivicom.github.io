@@ -115,7 +115,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-13T03:44:30.066Z | Hash: 7484ea92827b399946aa6f5a3cfa7fe89832608faa1afb5c5f762a4392ca47b3 -->
+<!-- Last updated: 2026-10-13T03:44:30.000Z | Hash: 7484ea92827b399946aa6f5a3cfa7fe89832608faa1afb5c5f762a4392ca47b3 -->
 
 ```
 psivicom.github.io/
@@ -1111,5 +1111,5 @@ Once configured, the mesh is self-healing for all runtime operations.
 Content: CC BY-SA 4.0 · Code: EUPL-1.2 · Hardware: All Rights Reserved (https://w-1-n.com)  
 Built as single-file semantic HTML5 for GitHub Pages — repo psivicom.github.io — custom domain https://psivi.com — Excellence Edition  
 Author: Louis-Philippe Audette — Open Science Steward — Langford, BC, Canada — Independent Researcher — FAIR Data — NASA TOPS Aligned  
-**Last updated:** 2026-09-11T00:00:00.000Z  
+**Last updated: ** 2026-09-11T00:00:00.000Z  
 NASA Open Science 101 Certified — Langford, BC — Goldstream — Vancouver Island
