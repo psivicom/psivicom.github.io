@@ -1,139 +1,63 @@
-# .github/workflows/intelligence/workflows/intelligence-agent-agent.yml
-# SPDX.yml
-# SPDX-License-Identifier: EU-License-Identifier: EUPL-1.PL-1.2
-# SPDX-FileCopyrightText-FileCopyrightText: 202: 2026 Louis-Philippe Louis-Philippe Audette | PSIVI.COM
+# .github/workflows/intelligence-agent.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
- PSIVI.COM
-
-name: Intelligence Agentname: Intelligence Agent
-
-
+name: Intelligence Agent
 
 on:
- on:
   schedule:
-    schedule:
-    - cron: '0 */ - cron: '0 */12 * *12 * * * *' # Every 12' # Every 12 hours for temporal synchronization hours for temporal synchronization and auditing
-  and auditing
+    - cron: '0 */12 * * *' # Every 12 hours for temporal synchronization and auditing
   workflow_dispatch:
 
- workflow_dispatch:
-
 permissions:
- permissions:
   contents: write
 
- contents: write
-
 jobs:
- jobs:
-  audit audit-repo:
--repo:
-    runs-on:    runs-on: ubuntu-latest
- ubuntu-latest
+  audit-repo:
+    runs-on: ubuntu-latest
     steps:
-    steps:
-      - name:      - name: Checkout Repository
-        Checkout Repository
-        uses: actions/ uses: actions/checkout@11checkout@11d596d5960a320a3267506750d583d58380788078e36cfe36cf38b85af67738b85af677262 #262 # v4.2 v4.2.2
-       .2
+      - name: Checkout Repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          with:
-          fetch-depth:  fetch-depth: 0 # CRITICAL0 # CRITICAL: Required for: Required for safe rebasing
+          fetch-depth: 0
 
- safe rebasing
-
-      - name:      - name: Setup Setup Python
-        uses Python
-        uses: actions/setup-python: actions/setup-python@a26af@a26af69be969be95151a213a213dd495a495a4c3e4c3e4e404e4022e122e166d870d87065 # v5
-       65 # v5
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          with:
-          python-version: ' python-version: '3.123.12'
+          python-version: '3.12'
 
-      -'
-
-      - name: Install name: Install Dependencies
+      - name: Install Dependencies
         run: |
- Dependencies
+          python -m pip install --upgrade pip
+          # Optimized: Auditing and reporting only require core utilities.
+          # This skips the massive ML/CUDA stack, saving CI time and resources.
+          pip install -r requirements-core.txt
+
+      - name: Run Intelligence Agent
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.intelligence_agent
+
+      - name: Commit Intelligent Fixes (Race-Condition Proof)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m          python -m pip install --upgrade pip install --upgrade pip
-          # pip
-          # Optimized: Aud Optimized: Auditing and reporting onlyiting and reporting only require require core utilities. 
- core utilities. 
-          # This skips          # This skips the massive the massive ML/CUDA stack ML/CUDA stack, saving CI time, saving CI time and resources and resources.
-          pip.
-          pip install -r install -r requirements-core.txt
-
- requirements-core.txt
-
-      - name:      - name: Run Intelligence Agent Run Intelligence Agent
-        env:
-         
-        env:
-          PYTHONPATH: <LaTex>id_1</LaTex>{{ github.workspace }}{{ github.workspace }}
-        run: python
-        run: python -m src.ag -m src.agents.intelligence_agentents.intelligence_agent
-        
-      - name:
-        
-      - name: Commit Intelligent Fixes ( Commit Intelligent Fixes (Race-Condition ProofRace-Condition Proof)
-        env)
-        env:
-         :
-          GITHUB_TOKEN: GITHUB_TOKEN: <LaTex>id_2</LaTex>{{ secrets.GITHUB_TOKEN }}
-ITHUB_TOKEN }}
-        run: |
-          git        run: |
-          git config user.name " config user.name "PSIVI Intelligence AgentPSIVI Intelligence Agent"
-          git"
-          git config user.email " config user.email "ai-auditorai-auditor@users.nore@users.noreply.github.com"ply.github.com"
-
+          git config user.name "PSIVI Intelligence Agent"
+          git config user.email "ai-auditor@users.noreply.github.com"
           
-          # CR          
-          # CRITICAL: Ensure reports directoryITICAL: Ensure reports directory exists to prevent git exists to prevent git add errors
-          add errors
-          mkdir -p reports mkdir -p reports
+          # CRITICAL: Ensure reports directory exists to prevent git add errors
+          mkdir -p reports
           
-          # Saf
+          # Safely stage the index and the entire reports directory
+          git add index.html reports/
           
-          # Safely stage the index and theely stage the index and the entire reports directory
- entire reports directory
-                   git add index.html git add index.html reports/
-          
- reports/
-          
-          if ! git          if ! git diff --staged diff --staged --quiet; then --quiet; then
-            # [
-            # [skip ci] preventsskip ci] prevents this push from triggering this push from triggering an infinite loop of an infinite loop of workflows
-            git workflows
-            git commit -m " commit -m "ai-auditorai-auditor: synchronized temporal drift: synchronized temporal drift and generated and generated audit report [skip audit report [skip ci]"
+          if ! git diff --staged --quiet; then
+            git commit -m "ai-auditor: synchronized temporal drift and generated audit report [skip ci]"
             
- ci]"
-            
-            # THE R            # THE RACE-CONDITION SHACE-CONDITION SHIELD:
-            forIELD:
-            for i in 1 i in 1 2 3 2 3; do
-             ; do
-              if if git pull --re git pull --rebase origin main && git pushbase origin main && git push origin main; then origin main; then
-                echo "
-                echo "✅ Successfully pushed intelligent✅ Successfully pushed intelligent fixes."
-                fixes."
-                break
-              else break
-              else
-                echo "
-                echo "⚠️⚠️ Concurrent push detected. Concurrent push detected. Rebasing and retry Rebasing and retrying in 2ing in 2s..."
-               s..."
-                sleep 2
- sleep 2
-              fi
-                         fi
+            # THE RACE-CONDITION SHIELD:
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && break || sleep 2
             done
-          else done
           else
-
-            echo "            echo "ℹ️ No newℹ️ No new audit audit fixes to commit." fixes to commit."
-          fi
-
+            echo "ℹ️ No new audit fixes to commit."
           fi
