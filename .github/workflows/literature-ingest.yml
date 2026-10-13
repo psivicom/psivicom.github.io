@@ -88,7 +88,8 @@ PYTHON_EOF
           if ! git diff --staged --quiet; then
             git commit -m "fix: permanently overwrite literature_agent.py with correct Python syntax [skip ci]"
             for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
+              git pull --rebase origin main
+              if git push origin main; then
                 echo "✅ Successfully pushed corrected Python file."
                 break
               else
@@ -121,7 +122,8 @@ PYTHON_EOF
           if ! git diff --staged --quiet; then
             git commit -m "literature: active cognitive synthesis complete, registry evolved [skip ci]"
             for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
+              git pull --rebase origin main
+              if git push origin main; then
                 echo "✅ Successfully pushed synthesized artifacts."
                 break
               else
