@@ -86,16 +86,9 @@ PYTHON_EOF
           git config user.email "literature@psivi.com"
           git add src/agents/literature_agent.py
           if ! git diff --staged --quiet; then
-            git commit -m "fix: permanently overwrite literature_agent.py with correct Python syntax [skip ci]"
+            git commit -m "fix: constitution compliance [skip ci]"
             for i in 1 2 3; do
-              git pull --rebase origin main
-              if git push origin main; then
-                echo "✅ Successfully pushed corrected Python file."
-                break
-              else
-                echo "⚠️ Concurrent push detected. Rebasing and retrying..."
-                sleep 2
-              fi
+              git pull --rebase origin main && git push origin main && break || sleep 2
             done
           else
             echo "ℹ️ No changes to Python file to commit."
@@ -120,16 +113,9 @@ PYTHON_EOF
           mkdir -p config
           git add .
           if ! git diff --staged --quiet; then
-            git commit -m "literature: active cognitive synthesis complete, registry evolved [skip ci]"
+            git commit -m "literature: active cognitive synthesis complete [skip ci]"
             for i in 1 2 3; do
-              git pull --rebase origin main
-              if git push origin main; then
-                echo "✅ Successfully pushed synthesized artifacts."
-                break
-              else
-                echo "⚠️ Concurrent push detected. Rebasing and retrying..."
-                sleep 2
-              fi
+              git pull --rebase origin main && git push origin main && break || sleep 2
             done
           else
             echo "ℹ️ No new synthesis artifacts to commit."
