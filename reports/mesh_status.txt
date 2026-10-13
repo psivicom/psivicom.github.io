@@ -1,2 +1,1 @@
-Mesh Status: Operational
-Last Updated: 2026-10-13T08:30:16.000Z
+⚠️ Mesh Ledger not found. Node may be in Genesis state.
