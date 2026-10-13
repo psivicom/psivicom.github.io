@@ -1,5 +1,5 @@
 # src/tools/autonomous_mesh_orchestrator.py
-# SPDX-License-Identifier: EUPL-1.2 
+# SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 import ast
@@ -38,24 +38,22 @@ def get_required_packages(file_path: Path) -> set:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 top_level = alias.name.split('.')[0]
-                pkg = IMPORT_EXCEPTIONS.get(top_level, top_level) # Dynamic fallback!
+                pkg = IMPORT_EXCEPTIONS.get(top_level, top_level)
                 packages.add(pkg)
         elif isinstance(node, ast.ImportFrom):
             if node.module:
                 top_level = node.module.split('.')[0]
-                pkg = IMPORT_EXCEPTIONS.get(top_level, top_level) # Dynamic fallback!
+                pkg = IMPORT_EXCEPTIONS.get(top_level, top_level)
                 packages.add(pkg)
     return packages
 
 def discover_all_python_files() -> list:
-    # UNIVERSAL DISCOVERY: Scans entire src/ directory, not just agents
     src_dir = Path("src")
     if not src_dir.exists(): return []
     
     files = []
     for file in src_dir.rglob("*.py"):
         if file.name == "__init__.py": continue
-        # Convert path to module string (e.g., src/tools/my_tool.py -> src.tools.my_tool)
         module_path = str(file).replace('/', '.').replace('.py', '')
         files.append({"file": file, "module": module_path})
     return files
@@ -69,7 +67,6 @@ def main():
         logger.info("ℹ️ No modules found. Mesh is dormant.")
         return
 
-    # 1. Resolve dependencies dynamically for ALL files
     all_packages = set()
     for item in files:
         all_packages.update(get_required_packages(item["file"]))
@@ -77,13 +74,11 @@ def main():
     packages_list = sorted(list(all_packages))
     logger.info(f"📦 WENDY dynamically declared dependencies: {', '.join(packages_list)}")
     
-    # 2. Install once (Zero Bloat)
     logger.info("⚡ Installing task-specific dependencies...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip", "-q"])
     if packages_list:
         subprocess.check_call([sys.executable, "-m", "pip", "install"] + packages_list + ["-q"])
     
-    # 3. Execute all modules with SELF-HEALING capability
     for item in files:
         logger.info(f"\n🚀 Processing {item['module']}...")
         success = heal_and_retry(item["module"])
