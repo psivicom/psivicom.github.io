@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 import subprocess
+import shutil
 from pathlib import Path
 import logging
 
@@ -53,6 +54,12 @@ def heal_zig_file(zig_file: Path) -> bool:
 
 def main():
     logger.info("🧠 ZIG Compiler Healer Initializing...")
+    
+    # GRACEFUL FALLBACK: If Zig is not installed in this environment, exit cleanly.
+    if not shutil.which("zig"):
+        logger.warning("⚠️ 'zig' executable not found in PATH. Skipping ZIG compilation cycle. (Delegated to zig-verify.yml)")
+        return
+        
     core_dir = Path("src/core")
     if not core_dir.exists():
         logger.info("ℹ️ src/core not found.")
