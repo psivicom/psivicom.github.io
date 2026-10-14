@@ -1,5 +1,5 @@
 # .github/workflows/zig-verify.yml
-# SPDX-License-Identifier: EUPL-1.2 
+# SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 name: Intelligent Zig Binary Compiler (SHA-Verified & Self-Healing)
@@ -40,13 +40,13 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.tools.zig_compiler_healer
 
-      - name: Step 2: Enforce ZIG Sovereign Protocol (Sync Docs)
+      - name: Step 2: Enforce ZIG Sovereign Protocol (Sync & Strip Docs)
         env:
           PYTHONPATH: ${{ github.workspace }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python -m src.tools.zig_sovereign_scribe
 
-      - name: Step 3: Compile and Fallback Heal Zig Binaries
+      - name: Step 3: Compile Stripped ZIG Binaries with Fallback
         run: |
           cd $GITHUB_WORKSPACE
           MANIFEST_VERIFICATIONS=""
@@ -55,12 +55,21 @@ jobs:
             if [ -f "$zig_file" ]; then
               binary_name=$(basename "$zig_file" .zig)
               binary_path="src/core/$binary_name"
+              stripped_file="docs/ZIG_UNCOMMENTED_SOURCE/${binary_name}.zig"
               md_file="docs/ZIG_COMMENTED_SOURCE/${binary_name}.md"
+              
+              echo "Enforcing stripped compilation target for $binary_name..."
+              
+              # CRITICAL: Overwrite active file with the strictly stripped version before compiling
+              if [ -f "$stripped_file" ]; then
+                cp "$stripped_file" "$zig_file"
+                echo "✅ Loaded 100% uncommented source for compilation."
+              fi
               
               echo "Attempting final compilation of $zig_file..."
               
               if ! zig build-exe "$zig_file" -O ReleaseSafe -fstrip -femit-bin="$binary_path" 2> compile_error.log; then
-                echo "CRITICAL: Compilation failed. Attempting last-resort pristine fallback..."
+                echo "CRITICAL: Compilation of stripped source failed. Attempting pristine fallback..."
                 
                 if [ -f "$md_file" ]; then
                   echo "Extracting pristine source from $md_file..."
@@ -79,7 +88,7 @@ jobs:
                   exit 1
                 fi
               else
-                echo "SUCCESS: Compiled $binary_name"
+                echo "SUCCESS: Compiled $binary_name from stripped source."
               fi
               
               chmod +x "$binary_path"
