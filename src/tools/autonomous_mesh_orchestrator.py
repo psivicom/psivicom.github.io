@@ -12,10 +12,21 @@ from src.tools.self_healing_agent import heal_and_retry
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
 logger = logging.getLogger("AUTONOMOUS_ORCHESTRATOR")
 
-# Dynamically get Python's built-in standard library modules to avoid pip installing them
-STDLIB_MODULES = sys.stdlib_module_names
+# BULLETPROOF: Hardcoded standard library modules + dynamic fallback
+STDLIB_MODULES = {
+    "ast", "asyncio", "collections", "ctypes", "dataclasses", "datetime", 
+    "enum", "functools", "getpass", "hashlib", "importlib", "json", "logging", 
+    "math", "os", "pathlib", "random", "re", "shutil", "socket", "statistics", 
+    "struct", "subprocess", "sys", "tempfile", "threading", "time", "traceback", 
+    "typing", "urllib", "uuid", "websockets", "copy", "itertools", "string",
+    "warnings", "io", "builtins", "errno", "gc", "inspect", "operator"
+}
+try:
+    STDLIB_MODULES.update(sys.stdlib_module_names)
+except AttributeError:
+    pass
 
-# Internal project namespaces that should never be pip installed
+# Internal project namespaces that should NEVER be pip installed
 INTERNAL_MODULES = {
     "src", "mesh_governor", "psvc_containers", "psvc_reference", "vram_mesh", 
     "base", "core", "agents", "tools", "mesh", "orchestrator", "pipelines", 
