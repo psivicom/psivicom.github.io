@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-14T19:27:06.002Z",
+  "updated_at": "2026-10-14T22:12:48.101Z",
   "agent_id": "intelligence_agent",
   "active_core_kin": [
     "bumble_alpha"
@@ -15,9 +15,9 @@
     {
       "id": "thief_beta",
       "status": "hostile",
-      "score": 0.084,
-      "security_samples": 7,
-      "resource_samples": 7
+      "score": 0.089,
+      "security_samples": 8,
+      "resource_samples": 8
     }
   ],
   "registry": {
@@ -36,16 +36,6 @@
         3.5
       ],
       "resource_samples": [
-        {
-          "volume": 500.0,
-          "quality": 0.8,
-          "time": 1792002625.6808581
-        },
-        {
-          "volume": 600.0,
-          "quality": 0.9,
-          "time": 1792002625.6808894
-        },
         {
           "volume": 500.0,
           "quality": 0.8,
@@ -85,15 +75,26 @@
           "volume": 600.0,
           "quality": 0.9,
           "time": 1792006025.9954684
+        },
+        {
+          "volume": 500.0,
+          "quality": 0.8,
+          "time": 1792015968.094256
+        },
+        {
+          "volume": 600.0,
+          "quality": 0.9,
+          "time": 1792015968.0942929
         }
       ],
       "first_seen": 1791996373.5201614,
-      "last_heartbeat": 1792006025.9954689,
+      "last_heartbeat": 1792015968.0942936,
       "total_value_score": 0.7375
     },
     "thief_beta": {
       "status": "hostile",
       "security_samples": [
+        9.0,
         9.0,
         9.0,
         9.0,
@@ -137,11 +138,16 @@
           "volume": 100.0,
           "quality": 0.1,
           "time": 1792006025.9954917
+        },
+        {
+          "volume": 100.0,
+          "quality": 0.1,
+          "time": 1792015968.0943165
         }
       ],
       "first_seen": 1791996373.5203466,
-      "last_heartbeat": 1792006025.995492,
-      "total_value_score": 0.0841796875
+      "last_heartbeat": 1792015968.094317,
+      "total_value_score": 0.0890625
     }
   },
   "audit_excerpt": {
