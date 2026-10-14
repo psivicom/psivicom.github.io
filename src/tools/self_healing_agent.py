@@ -36,18 +36,15 @@ class SelfHealingAgent:
             missing_name = name_error_match.group(1)
             if missing_name in TYPING_IMPORTS:
                 logger.info(f"🔍 Diagnosing: Missing typing import '{missing_name}'. Attempting auto-import...")
-                # CRITICAL FIX: Find all .py files in traceback and take the LAST one (the actual error source)
+                # CRITICAL FIX: Find all .py files in traceback and take the LAST one
                 file_matches = re.findall(r'File "([^"]+\.py)", line (\d+)', error_output)
                 if file_matches:
                     error_file = Path(file_matches[-1][0])
                     if self._inject_typing_import(error_file):
                         return True
-                else:
-                    logger.warning("⚠️ Could not find a .py file in the traceback for NameError.")
 
         # 3. Check for Keyword Mismatch (TypeError)
         kwarg_match = re.search(r"unexpected keyword argument '(\w+)'", error_output)
-        # CRITICAL FIX: Find all .py files in traceback and take the LAST one
         file_matches_kwarg = re.findall(r'File "([^"]+\.py)", line (\d+)', error_output)
         
         if not kwarg_match or not file_matches_kwarg:
