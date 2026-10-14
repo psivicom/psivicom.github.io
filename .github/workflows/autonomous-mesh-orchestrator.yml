@@ -6,12 +6,12 @@ name: Autonomous Mesh Orchestrator
 
 on:
   schedule:
-    - cron: '0 * * * *' # WENDY wakes up every hour autonomously
-  workflow_dispatch: # Manual override kept, but NO inputs required
+    - cron: '0 * * * *'
+  workflow_dispatch:
   push:
     paths:
-      - 'src/agents/**' # WENDY wakes up instantly when agent code changes
-      - 'src/tools/**'  # WENDY wakes up instantly when tool code changes
+      - 'src/agents/**'
+      - 'src/tools/**'
 
 permissions:
   contents: write
@@ -42,13 +42,11 @@ jobs:
           git config user.name "PSIVI Autonomous Orchestrator"
           git config user.email "orchestrator@psivi.com"
           
-          # CRITICAL FIX: Include src/ so WENDY can commit her own healed code
           git add src/ reports/ data/ config/
           
           if ! git diff --staged --quiet; then
             git commit -m "auto: autonomous orchestrator sealed artifacts and healed source code [skip ci]"
             
-            # THE RACE-CONDITION SHIELD:
             for i in 1 2 3; do
               git pull --rebase origin main && git push origin main && break || sleep 2
             done
