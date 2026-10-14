@@ -20,6 +20,9 @@ permissions:
 
 jobs:
   orchestrate:
+    # SURGICAL FIX: Enforce a strict 15-minute execution boundary to prevent 
+    # indefinite hangs and guarantee clean failure instead of Exit Code 143.
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
