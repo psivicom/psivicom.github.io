@@ -36,7 +36,6 @@ class SelfHealingAgent:
             missing_name = name_error_match.group(1)
             if missing_name in TYPING_IMPORTS:
                 logger.info(f"🔍 Diagnosing: Missing typing import '{missing_name}'. Attempting auto-import...")
-                # CRITICAL FIX: Find all .py files in traceback and take the LAST one
                 file_matches = re.findall(r'File "([^"]+\.py)", line (\d+)', error_output)
                 if file_matches:
                     error_file = Path(file_matches[-1][0])
@@ -75,7 +74,8 @@ class SelfHealingAgent:
         actual_file, actual_sig = None, None
         
         for py_file in self.root.rglob("*.py"):
-            if py_file.name == "__init__.py": continue
+            if py_file.name == "__init__.py": 
+                continue
             try:
                 content = py_file.read_text(encoding='utf-8')
                 sig_match = re.search(rf"def {func_name}\s*\(([^)]+)\)", content)
@@ -152,6 +152,7 @@ class SelfHealingAgent:
             logger.warning(f"⚠️ Failed to inject typing imports: {e}")
             return False
 
+
 def heal_and_retry(module_name: str) -> bool:
     healer = SelfHealingAgent()
     max_retries = 2
@@ -159,7 +160,18 @@ def heal_and_retry(module_name: str) -> bool:
     
     for attempt in range(max_retries):
         logger.info(f"🚀 Attempt {attempt + 1} to execute {module_name}...")
-        result = subprocess.run([sys.executable, "-m", module_name], capture_output=True, text=True, env=env)
+        try:
+            # SURGICAL FIX: 300-second hard timeout prevents infinite hangs and Exit Code 143
+            result = subprocess.run(
+                [sys.executable, "-m", module_name], 
+                capture_output=True, 
+                text=True, 
+                env=env,
+                timeout=300
+            )
+        except subprocess.TimeoutExpired:
+            logger.error(f"❌ Execution timed out after 300s for {module_name}. Preventing runner hang.")
+            return False
         
         if result.returncode == 0:
             logger.info(f"✅ {module_name} executed successfully.")
