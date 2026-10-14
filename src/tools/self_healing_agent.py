@@ -11,6 +11,8 @@ import logging
 
 logger = logging.getLogger("SELF_HEALING_AGENT")
 
+TYPING_IMPORTS = {"List", "Dict", "Optional", "Tuple", "Any", "Union", "Set"}
+
 class SelfHealingAgent:
     def __init__(self):
         self.root = Path(__file__).parent.parent.parent
@@ -29,7 +31,19 @@ class SelfHealingAgent:
                 logger.warning(f"⚠️ Failed to dynamically install '{missing_module}'.")
                 return False
 
-        # 2. Check for Keyword Mismatch (TypeError)
+        # 2. Check for NameError (e.g., name 'List' is not defined)
+        name_error_match = re.search(r"NameError: name '(\w+)' is not defined", error_output)
+        if name_error_match:
+            missing_name = name_error_match.group(1)
+            if missing_name in TYPING_IMPORTS:
+                logger.info(f"🔍 Diagnosing: Missing typing import '{missing_name}'. Attempting auto-import...")
+                file_match = re.search(r'File "([^"]+)", line \d+', error_output)
+                if file_match:
+                    error_file = Path(file_match.group(1))
+                    if self._inject_typing_import(error_file):
+                        return True
+
+        # 3. Check for Keyword Mismatch (TypeError)
         kwarg_match = re.search(r"unexpected keyword argument '(\w+)'", error_output)
         file_match = re.search(r'File "([^"]+)", line (\d+)', error_output)
         
@@ -92,6 +106,47 @@ class SelfHealingAgent:
             
         logger.info(f"✅ Applied autonomous patch to {error_file.name}:{error_line}")
         return True
+
+    def _inject_typing_import(self, file_path: Path) -> bool:
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+            
+            typing_line_idx = -1
+            for i, line in enumerate(lines):
+                if "from typing import" in line:
+                    typing_line_idx = i
+                    break
+            
+            required = ["List", "Dict", "Optional", "Tuple", "Any", "Union"]
+            
+            if typing_line_idx != -1:
+                line = lines[typing_line_idx]
+                existing = [x.strip() for x in line.split("import")[1].split(",")]
+                to_add = [t for t in required if t not in existing]
+                if to_add:
+                    new_imports = ", ".join(existing + to_add)
+                    lines[typing_line_idx] = f"from typing import {new_imports}\n"
+            else:
+                insert_idx = 0
+                for i, line in enumerate(lines):
+                    stripped = line.strip()
+                    if stripped.startswith('"""') or stripped.startswith("'''") or stripped.startswith('#'):
+                        insert_idx = i + 1
+                    elif stripped == "":
+                        insert_idx = i + 1
+                    else:
+                        break
+                lines.insert(insert_idx, "from typing import List, Dict, Optional, Tuple, Any, Union\n")
+            
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.writelines(lines)
+                
+            logger.info(f"✅ Injected typing imports into {file_path.name}")
+            return True
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to inject typing imports: {e}")
+            return False
 
 def heal_and_retry(module_name: str) -> bool:
     healer = SelfHealingAgent()
