@@ -12,6 +12,17 @@ from src.tools.self_healing_agent import heal_and_retry
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
 logger = logging.getLogger("AUTONOMOUS_ORCHESTRATOR")
 
+# Dynamically get Python's built-in standard library modules to avoid pip installing them
+STDLIB_MODULES = sys.stdlib_module_names
+
+# Internal project namespaces that should never be pip installed
+INTERNAL_MODULES = {
+    "src", "mesh_governor", "psvc_containers", "psvc_reference", "vram_mesh", 
+    "base", "core", "agents", "tools", "mesh", "orchestrator", "pipelines", 
+    "nodes", "models", "automation", "calculating", "generated_agents", "kernel", 
+    "utils", "breath_engine"
+}
+
 # Known exceptions where import name != pip package name
 IMPORT_EXCEPTIONS = {
     "cv2": "opencv-python-headless",
@@ -38,11 +49,17 @@ def get_required_packages(file_path: Path) -> set:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 top_level = alias.name.split('.')[0]
+                # CRITICAL FIX: Skip standard library and internal project modules
+                if top_level in STDLIB_MODULES or top_level in INTERNAL_MODULES:
+                    continue
                 pkg = IMPORT_EXCEPTIONS.get(top_level, top_level)
                 packages.add(pkg)
         elif isinstance(node, ast.ImportFrom):
             if node.module:
                 top_level = node.module.split('.')[0]
+                # CRITICAL FIX: Skip standard library and internal project modules
+                if top_level in STDLIB_MODULES or top_level in INTERNAL_MODULES:
+                    continue
                 pkg = IMPORT_EXCEPTIONS.get(top_level, top_level)
                 packages.add(pkg)
     return packages
