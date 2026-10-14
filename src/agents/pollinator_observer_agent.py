@@ -1,69 +1,96 @@
-# src/agents/pollinator_observer_agent.py
+# src/agents/pollinator_pilot_agent.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 import sys
 import json
-import logging
+import numpy as np
 from pathlib import Path
 from typing import List, Dict
-from datetime import datetime
 
-from base.base_agent import BaseAgent, AgentLayer
+# SURGICAL FIX: Corrected import paths to prevent "No module named 'base'" and pip install attempts
+from src.base.base_agent import BaseAgent, AgentLayer
+from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, validate_file
 
-logger = logging.getLogger(__name__)
+class PollinatorPilotAgent(BaseAgent):
+    LAYER = AgentLayer.VALIDATION
 
-class PollinatorObserverAgent(BaseAgent):
-    """
-    Monitors for new pollinator observations and triggers mesh workflows.
-    Sources: iNaturalist API, hive sensors, transect surveys, RADARSAT granules.
-    """
-    LAYER = AgentLayer.INGESTION
+    def __init__(self, name: str="pollinator_pilot",
+                 osdr_path: str="data/osdr_ground_truth.jsonl",
+                 pollinator_path: str="data/pollinator_ground_truth.jsonl"):
+        super().__init__(name, capabilities=["scan", "validate", "signal"])
+        self.osdr_library = self._load_library(Path(osdr_path))
+        self.pollinator_library = self._load_library(Path(pollinator_path))
+        self.findings = {"fragility": [], "concordance": []}
 
-    def __init__(self, name: str = "pollinator_observer", watch_dirs: list = None):
-        super().__init__(name, capabilities=["monitor", "ingest", "trigger"])
-        self.watch_dirs = [Path(d) for d in (watch_dirs or ["data/pollinator_observations", "data/incoming"])]
-        for d in self.watch_dirs:
-            d.mkdir(parents=True, exist_ok=True)
-        self.processed_ids = set()
+    def _load_library(self, path: Path) -> List[Dict]:
+        if not path.exists():
+            return []
+        with open(path) as f:
+            return [json.loads(line) for line in f if line.strip()]
 
-    def scan_for_observations(self) -> List[Dict]:
-        new_obs = []
-        for watch_dir in self.watch_dirs:
-            for json_file in watch_dir.glob("*.json"):
-                obs_id = json_file.stem
-                if obs_id not in self.processed_ids:
-                    try:
-                        with open(json_file) as f:
-                            obs = json.load(f)
-                        if self._validate_observation(obs):
-                            new_obs.append(obs)
-                            self.processed_ids.add(obs_id)
-                            self.seal("observation_detected", {"id": obs_id, "species": obs.get('species')})
-                    except Exception as e:
-                        logger.error(f"Failed to parse {json_file}: {e}")
-        return new_obs
+    def _match_pollinator_observation(self, meta: Dict) -> Dict:
+        species = meta.get('species', '').lower()
+        context = meta.get('context', '').lower()
+        for record in self.pollinator_library:
+            if (species in record.get('species', '').lower() and
+                context in record.get('context', '').lower()):
+                return record
+        return None
 
-    def _validate_observation(self, obs: Dict) -> bool:
-        required = ["species", "location", "timestamp"]
-        return all(k in obs for k in required)
+    def _run_logic(self, input_vector: np.ndarray=None) -> np.ndarray:
+        container_dir = Path("reports/pico_containers")
+        if not container_dir.exists():
+            return np.zeros(4096)
 
-    def execute(self, trigger_callback: callable = None) -> int:
-        logger.info(f"[{self.agent_id}] Scanning for pollinator observations...")
-        observations = self.scan_for_observations()
+        for psvc_file in container_dir.glob("*.psvc"):
+            try:
+                validate_file(psvc_file)
+                sidecar = psvc_file.with_suffix('.json')
+                if not sidecar.exists():
+                    continue
+                with open(sidecar) as f:
+                    meta = json.load(f)
+
+                # Check pollinator ground truth
+                if 'species' in meta:
+                    match = self._match_pollinator_observation(meta)
+                    if match:
+                        is_fragile = match.get('evidence', {}).get('discordant', False)
+                        target = self.findings["fragility"] if is_fragile else self.findings["concordance"]
+                        target.append({"file": psvc_file.name, "id": match.get('id'), "type": "pollinator"})
+                        self.seal("pollinator_"+ ("fragility" if is_fragile else "concordance"), {"id": match.get('id')})
+            except Exception:
+                continue
+
+        return self._generate_signal()
+
+    def _generate_signal(self) -> np.ndarray:
+        signal = np.zeros(4096, dtype=np.float32)
+        signal[0] = len(self.findings["fragility"]) / 50.0
+        signal[1] = len(self.findings["concordance"]) / 50.0
+        signal[2] = len(self.pollinator_library) / 100.0
+        norm = np.linalg.norm(signal)
+        return signal/norm if norm>0 else signal
+
+    def finalize(self, output_dir: Path=None):
+        if output_dir is None:
+            output_dir = Path("reports/pico_containers")
+        output_dir.mkdir(parents=True, exist_ok=True)
         
-        triggered = 0
-        for obs in observations:
-            if trigger_callback:
-                success = trigger_callback(obs)
-                if success:
-                    triggered += 1
-                    self.seal("workflow_triggered", {"obs_id": obs.get('id'), "status": "success"})
+        signal = self._generate_signal()
+        self.seal_result(signal, output_dir, meta={
+            "pollinator_fragility": len(self.findings["fragility"]),
+            "pollinator_concordance": len(self.findings["concordance"]),
+            "elasticity_mode": "EXPAND" if len(self.findings["fragility"]) > len(self.findings["concordance"]) else "CONTRACT"
+        })
         
-        return triggered
+        report_path = output_dir.parent/"pollinator_pilot_report.json"
+        with open(report_path, 'w') as f:
+            json.dump(self.findings, f, indent=2)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    agent = PollinatorObserverAgent()
-    count = agent.execute(lambda x: True)
-    logger.info(f"Triggered {count} workflows")
+    agent = PollinatorPilotAgent()
+    agent._run_logic()
+    agent.finalize()
+    print(f"POLL-FRAG: {len(agent.findings['fragility'])}, POLL-CTRL: {len(agent.findings['concordance'])}")
