@@ -36,15 +36,9 @@ INTERNAL_MODULES = {
 
 # Known exceptions where import name != pip package name
 IMPORT_EXCEPTIONS = {
-    "cv2": "opencv-python-headless",
-    "skimage": "scikit-image",
-    "sklearn": "scikit-learn",
-    "yaml": "pyyaml",
-    "dateutil": "python-dateutil",
-    "nacl": "pynacl",
-    "dotenv": "python-dotenv",
-    "bs4": "beautifulsoup4",
-    "PIL": "Pillow"
+    "cv2": "opencv-python-headless", "skimage": "scikit-image", "sklearn": "scikit-learn",
+    "yaml": "pyyaml", "dateutil": "python-dateutil", "nacl": "pynacl",
+    "dotenv": "python-dotenv", "bs4": "beautifulsoup4", "PIL": "Pillow"
 }
 
 def get_required_packages(file_path: Path) -> set:
@@ -60,7 +54,6 @@ def get_required_packages(file_path: Path) -> set:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 top_level = alias.name.split('.')[0]
-                # CRITICAL FIX: Skip standard library and internal project modules
                 if top_level in STDLIB_MODULES or top_level in INTERNAL_MODULES:
                     continue
                 pkg = IMPORT_EXCEPTIONS.get(top_level, top_level)
@@ -68,7 +61,6 @@ def get_required_packages(file_path: Path) -> set:
         elif isinstance(node, ast.ImportFrom):
             if node.module:
                 top_level = node.module.split('.')[0]
-                # CRITICAL FIX: Skip standard library and internal project modules
                 if top_level in STDLIB_MODULES or top_level in INTERNAL_MODULES:
                     continue
                 pkg = IMPORT_EXCEPTIONS.get(top_level, top_level)
@@ -106,6 +98,9 @@ def main():
     subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip", "-q"])
     if packages_list:
         subprocess.check_call([sys.executable, "-m", "pip", "install"] + packages_list + ["-q"])
+
+    logger.info("\n🔨 Initiating Autonomous ZIG Compilation Cycle...")
+    subprocess.check_call([sys.executable, "-m", "src.tools.zig_compiler_healer"])
     
     for item in files:
         logger.info(f"\n🚀 Processing {item['module']}...")
