@@ -8,15 +8,16 @@ import numpy as np
 from pathlib import Path
 from typing import List, Dict
 
-from base.base_agent import BaseAgent, AgentLayer
-from core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, validate_file
+# SURGICAL FIX: Corrected import paths to prevent "No module named 'base'" and pip install attempts
+from src.base.base_agent import BaseAgent, AgentLayer
+from src.core.psvc_reference import write_file, content_hash, PRECISION_FLOAT16, validate_file
 
 class PollinatorPilotAgent(BaseAgent):
     LAYER = AgentLayer.VALIDATION
 
-    def __init__(self, name: str = "pollinator_pilot", 
-                 osdr_path: str = "data/osdr_ground_truth.jsonl",
-                 pollinator_path: str = "data/pollinator_ground_truth.jsonl"):
+    def __init__(self, name: str="pollinator_pilot",
+                 osdr_path: str="data/osdr_ground_truth.jsonl",
+                 pollinator_path: str="data/pollinator_ground_truth.jsonl"):
         super().__init__(name, capabilities=["scan", "validate", "signal"])
         self.osdr_library = self._load_library(Path(osdr_path))
         self.pollinator_library = self._load_library(Path(pollinator_path))
@@ -32,12 +33,12 @@ class PollinatorPilotAgent(BaseAgent):
         species = meta.get('species', '').lower()
         context = meta.get('context', '').lower()
         for record in self.pollinator_library:
-            if (species in record.get('species', '').lower() and 
+            if (species in record.get('species', '').lower() and
                 context in record.get('context', '').lower()):
                 return record
         return None
 
-    def _run_logic(self, input_vector: np.ndarray = None) -> np.ndarray:
+    def _run_logic(self, input_vector: np.ndarray=None) -> np.ndarray:
         container_dir = Path("reports/pico_containers")
         if not container_dir.exists():
             return np.zeros(4096)
@@ -50,7 +51,7 @@ class PollinatorPilotAgent(BaseAgent):
                     continue
                 with open(sidecar) as f:
                     meta = json.load(f)
-                
+
                 # Check pollinator ground truth
                 if 'species' in meta:
                     match = self._match_pollinator_observation(meta)
@@ -58,7 +59,7 @@ class PollinatorPilotAgent(BaseAgent):
                         is_fragile = match.get('evidence', {}).get('discordant', False)
                         target = self.findings["fragility"] if is_fragile else self.findings["concordance"]
                         target.append({"file": psvc_file.name, "id": match.get('id'), "type": "pollinator"})
-                        self.seal("pollinator_" + ("fragility" if is_fragile else "concordance"), {"id": match.get('id')})
+                        self.seal("pollinator_"+ ("fragility" if is_fragile else "concordance"), {"id": match.get('id')})
             except Exception:
                 continue
 
@@ -70,9 +71,9 @@ class PollinatorPilotAgent(BaseAgent):
         signal[1] = len(self.findings["concordance"]) / 50.0
         signal[2] = len(self.pollinator_library) / 100.0
         norm = np.linalg.norm(signal)
-        return signal / norm if norm > 0 else signal
+        return signal/norm if norm>0 else signal
 
-    def finalize(self, output_dir: Path = None):
+    def finalize(self, output_dir: Path=None):
         if output_dir is None:
             output_dir = Path("reports/pico_containers")
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -84,7 +85,7 @@ class PollinatorPilotAgent(BaseAgent):
             "elasticity_mode": "EXPAND" if len(self.findings["fragility"]) > len(self.findings["concordance"]) else "CONTRACT"
         })
         
-        report_path = output_dir.parent / "pollinator_pilot_report.json"
+        report_path = output_dir.parent/"pollinator_pilot_report.json"
         with open(report_path, 'w') as f:
             json.dump(self.findings, f, indent=2)
 
