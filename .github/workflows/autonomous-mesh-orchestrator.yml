@@ -12,6 +12,8 @@ on:
     paths:
       - 'src/agents/**'
       - 'src/tools/**'
+      - 'src/mesh/**'
+      - 'src/core/**'
 
 permissions:
   contents: write
@@ -42,6 +44,7 @@ jobs:
           git config user.name "PSIVI Autonomous Orchestrator"
           git config user.email "orchestrator@psivi.com"
           
+          # CRITICAL: Include src/ so WENDY can commit her own healed Python code
           git add src/ reports/ data/ config/
           
           if ! git diff --staged --quiet; then
