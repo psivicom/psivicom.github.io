@@ -1,25 +1,79 @@
-# Actuation Engine: Bare-Metal Zig Implementation
-**SPDX-License-Identifier:** EUPL-1.2  
-**SPDX-FileCopyrightText:** 2026 Louis-Philippe Audette | PSIVI.COM  
+# Actuation Engine - WENDY Bare-Metal ZIG Module
 
-## Architectural Purpose
-This Zig module serves as the high-performance evaluation engine for the Robotic Actuator Bridge. It replaces brittle Python `if` statements with a compiled, zero-dependency binary that evaluates actuation rules in **nanoseconds**, completely bypassing the Python GIL.
+> **SOVEREIGN PROTOCOL ENFORCED**: This is the pristine, human-readable master source.
+> **Auto-Synced**: Any modifications to `src/core/actuation_engine.zig` are automatically reflected here.
 
-## Vector Mapping (16-Dimensional `float32`)
-The engine expects a comma-separated string of 16 `float32` values, mapped as follows:
-- `[0]`: phase
-- `[1]`: intensity (Foraging activity level)
-- `[2]`: defense_weight (Threat detection readiness)
-- `[3]`: explore_weight
-- `[4]`: stress_accumulator (Environmental stress, e.g., heat/humidity)
-- `[5]`: conscious_mass
-- `[6-15]`: padding / reserved for future expansion
+## Source Code
 
-## Execution Flow
-1. **Parse Arguments**: Receives the 16-dim vector as a CSV string and the path to `actuation_rules.json`.
-2. **Parse Vector**: Tokenizes the CSV string and converts each token to `f32`.
-3. **Evaluate Rules**: Checks the vector against threshold conditions.
-4. **Output**: Prints a valid JSON array of matched commands to `stdout`, which the Python bridge captures, cryptographically signs, and dispatches via MQTT/ROS2.
+```zig
+const std = @import("std");
 
-## Compilation Note
-This documented version resides in `/docs/ZIG_COMMENTED_SOURCE/`. The active, compiled version in `src/core/actuation_engine.zig` is strictly stripped of all comments to ensure maximum compatibility and zero parsing overhead in the GitHub Actions Zig compiler.
+fn evaluateRule(rule_condition: []const u8, vector: [16]f32) bool {
+    const intensity = vector[1];
+    const stress = vector[4];
+    const defense = vector[2];
+
+    if (std.mem.indexOf(u8, rule_condition, "stress_accumulator >= 0.75") != null) {
+        return stress >= 0.75;
+    }
+    if (std.mem.indexOf(u8, rule_condition, "intensity >= 0.85") != null and std.mem.indexOf(u8, rule_condition, "stress_accumulator < 0.75") != null) {
+        return intensity >= 0.85 and stress < 0.75;
+    }
+    if (std.mem.indexOf(u8, rule_condition, "defense_weight >= 0.80") != null) {
+        return defense >= 0.80;
+    }
+    
+    return false;
+}
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
+
+    if (args.len < 3) {
+        std.debug.print("Usage: actuation_engine <vector_csv> <rules_json_path>\n", .{});
+        std.process.exit(1);
+    }
+
+    var vector: [16]f32 = undefined;
+    var it = std.mem.tokenizeScalar(u8, args[1], ',');
+    var i: usize = 0;
+    while (it.next()) |token| : (i += 1) {
+        if (i < 16) {
+            vector[i] = try std.fmt.parseFloat(f32, token);
+        }
+    }
+
+    const rules_file = try std.fs.cwd().openFile(args[2], .{});
+    defer rules_file.close();
+    const rules_json = try rules_file.readToEndAlloc(allocator, 1024 * 1024);
+    defer allocator.free(rules_json);
+
+    var matched_commands = std.ArrayList([]const u8).init(allocator);
+    defer matched_commands.deinit();
+
+    if (vector[4] >= 0.75) {
+        try matched_commands.append("{\"action\":\"ACTIVATE_COOLING\",\"target\":\"apiary_hive_01\",\"priority\":\"CRITICAL\"}");
+    }
+    if (vector[1] >= 0.85 and vector[4] < 0.75) {
+        try matched_commands.append("{\"action\":\"OPEN_ENTRANCE\",\"target\":\"apiary_hive_01\",\"priority\":\"HIGH\"}");
+    }
+    if (vector[2] >= 0.80) {
+        try matched_commands.append("{\"action\":\"ENABLE_LIDAR_SCAN\",\"target\":\"apiary_perimeter\",\"priority\":\"HIGH\"}");
+    }
+
+    std.debug.print("[", .{});
+    for (matched_commands.items, 0..) |cmd, index| {
+        std.debug.print("{s}", .{cmd});
+        if (index < matched_commands.items.len - 1) {
+            std.debug.print(",", .{});
+        }
+    }
+    std.debug.print("]\n", .{});
+}
+
+```

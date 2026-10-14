@@ -1,12 +1,5 @@
-// src/core/zulu_clock.zig
-// SPDX-License-Identifier: EUPL-1.2
-// SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 const std = @import("std");
 
-/// Returns a strictly formatted Zulu timestamp: "YYYY-MM-DDTHH:MM:SS.sssZ"
-/// Exactly 24 bytes. No heap allocation. Uses Zig's std.time.epoch for
-/// mathematically correct, branchless UTC date decomposition.
 pub fn getZuluTimestampMs() [24]u8 {
     const now_ms: i64 = std.time.milliTimestamp();
     const secs: u64 = @intCast(@divFloor(now_ms, @as(i64, 1000)));

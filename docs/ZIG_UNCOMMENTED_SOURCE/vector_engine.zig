@@ -1,6 +1,6 @@
 const std = @import("std");
-// CRITICAL FIX for Zig 0.11.0: Sha256 is now inside the sha2 namespace
 const Sha256 = std.crypto.hash.sha2.Sha256;
+const Ed25519 = std.crypto.sign.Ed25519;
 
 pub const Precision = enum {
     bits_4,
@@ -21,6 +21,15 @@ pub fn PrecisionType(comptime p: Precision) type {
         .bits_128 => f128,
     };
 }
+
+pub const PsvcHeader = packed struct {
+    magic: [4]u8 = .{ 'P', 'S', 'V', 'C' },
+    version: u8 = 2,
+    precision_bits: u8,
+    reserved: u16 = 0,
+    payload_length: u32,
+    timestamp_epoch_ms: u64,
+};
 
 pub fn VectorState(comptime P: Precision) type {
     const T = PrecisionType(P);
@@ -44,6 +53,21 @@ pub fn VectorState(comptime P: Precision) type {
             self.allocator.free(self.data);
         }
 
+        pub fn loadFromFile(self: *@This(), file_path: []const u8) !void {
+            const file = try std.fs.cwd().openFile(file_path, .{});
+            defer file.close();
+            
+            const bytes = try file.readToEndAlloc(self.allocator, 100 * 1024 * 1024);
+            defer self.allocator.free(bytes);
+            
+            const expected_size = self.dimension * @sizeOf(T);
+            if (bytes.len != expected_size) {
+                return error.SizeMismatch;
+            }
+            
+            @memcpy(self.data, std.mem.bytesAsSlice(T, bytes));
+        }
+
         pub fn applyTransformation(self: *@This(), matrix: []const T) !void {
             std.debug.assert(matrix.len == self.dimension * self.dimension);
             
@@ -63,17 +87,47 @@ pub fn VectorState(comptime P: Precision) type {
             @memcpy(self.data, temp);
         }
 
-        pub fn hashState(self: @This()) [Sha256.digest_length]u8 {
-            const bytes = std.mem.sliceAsBytes(self.data);
-            var hash: [Sha256.digest_length]u8 = undefined;
-            Sha256.hash(bytes, &hash, .{});
-            return hash;
-        }
-
         pub fn getRawBytes(self: @This()) []const u8 {
             return std.mem.sliceAsBytes(self.data);
         }
     };
+}
+
+pub fn sealAsPSVC(
+    allocator: std.mem.Allocator,
+    payload: []const u8,
+    precision_bits: u8,
+    timestamp_ms: u64,
+    signing_key: ?*const Ed25519.SecretKey,
+    output_path: []const u8,
+) !void {
+    var header = PsvcHeader{
+        .precision_bits = precision_bits,
+        .payload_length = @as(u32, @intCast(payload.len)),
+        .timestamp_epoch_ms = timestamp_ms,
+    };
+
+    var file = try std.fs.cwd().createFile(output_path, .{});
+    defer file.close();
+
+    try file.writeAll(std.mem.asBytes(&header));
+    try file.writeAll(payload);
+
+    if (signing_key) |key| {
+        const header_bytes = std.mem.asBytes(&header);
+        var message = try allocator.alloc(u8, header_bytes.len + payload.len);
+        defer allocator.free(message);
+        @memcpy(message[0..header_bytes.len], header_bytes);
+        @memcpy(message[header_bytes.len..], payload);
+        
+        const signature = Ed25519.sign(message, key, null);
+        try file.writeAll(&signature.toBytes());
+    }
+
+    const total_size = @sizeOf(PsvcHeader) + payload.len + (if (signing_key != null) @as(usize, 64) else 0);
+    std.debug.print("Sealed PSVC: {s} ({d} bytes, {d}-bit, signed={})\n", .{
+        output_path, total_size, precision_bits, signing_key != null
+    });
 }
 
 pub fn main() !void {
@@ -81,28 +135,93 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const dim_4: usize = 6000;
-    var state_4 = try VectorState(.bits_4).init(allocator, dim_4);
-    defer state_4.deinit();
-    
-    var i: usize = 0;
-    while (i < dim_4) : (i += 1) {
-        state_4.data[i] = @as(u4, @intCast(i % 15));
-    }
-    
-    std.debug.print("4-bit State: {d} dims, {d} bytes.\n", .{ dim_4, state_4.getRawBytes().len });
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
 
-    const dim_64: usize = 1500;
-    var state_64 = try VectorState(.bits_64).init(allocator, dim_64);
-    defer state_64.deinit();
-
-    var j: usize = 0;
-    while (j < dim_64) : (j += 1) {
-        state_64.data[j] = @as(f64, @floatFromInt(j)) * 0.001;
+    if (args.len < 6) {
+        std.debug.print("Usage: vector_engine <precision> <dimension> <input_vector> <matrix_file> <output_psvc>\n", .{});
+        std.debug.print("Environment: WENDY_PRIVATE_KEY_SEED (hex, optional for signing)\n", .{});
+        return;
     }
 
-    const hash_64 = state_64.hashState();
-    std.debug.print("64-bit State: {d} dims, {d} bytes. Hash: {s}\n", .{
-        dim_64, state_64.getRawBytes().len, std.fmt.fmtSliceHexLower(&hash_64)
-    });
+    const precision_str = args[1];
+    const dimension = try std.fmt.parseInt(usize, args[2], 10);
+    const input_path = args[3];
+    const matrix_path = args[4];
+    const output_path = args[5];
+
+    const precision = if (std.mem.eql(u8, precision_str, "4")) Precision.bits_4
+        else if (std.mem.eql(u8, precision_str, "8")) Precision.bits_8
+        else if (std.mem.eql(u8, precision_str, "16")) Precision.bits_16
+        else if (std.mem.eql(u8, precision_str, "32")) Precision.bits_32
+        else if (std.mem.eql(u8, precision_str, "64")) Precision.bits_64
+        else if (std.mem.eql(u8, precision_str, "128")) Precision.bits_128
+        else return error.InvalidPrecision;
+
+    const precision_bits: u8 = switch (precision) {
+        .bits_4 => 4, .bits_8 => 8, .bits_16 => 16,
+        .bits_32 => 32, .bits_64 => 64, .bits_128 => 128,
+    };
+
+    var signing_key: ?Ed25519.SecretKey = null;
+    if (std.process.getEnvVarOwned(allocator, "WENDY_PRIVATE_KEY_SEED")) |seed_hex| {
+        defer allocator.free(seed_hex);
+        var seed: [32]u8 = undefined;
+        _ = std.fmt.hexToBytes(&seed, seed_hex) catch return error.InvalidKeySeed;
+        signing_key = Ed25519.SecretKey.fromSeed(seed);
+    } else |_| {}
+
+    const timestamp_ms = @as(u64, @intCast(std.time.milliTimestamp()));
+
+    switch (precision) {
+        .bits_32 => {
+            var state = try VectorState(.bits_32).init(allocator, dimension);
+            defer state.deinit();
+            
+            try state.loadFromFile(input_path);
+            
+            const matrix_file = try std.fs.cwd().openFile(matrix_path, .{});
+            defer matrix_file.close();
+            const matrix_bytes = try matrix_file.readToEndAlloc(allocator, 100 * 1024 * 1024);
+            defer allocator.free(matrix_bytes);
+            const matrix = std.mem.bytesAsSlice(f32, matrix_bytes);
+            
+            try state.applyTransformation(matrix);
+            
+            try sealAsPSVC(
+                allocator,
+                state.getRawBytes(),
+                precision_bits,
+                timestamp_ms,
+                if (signing_key != null) &signing_key.? else null,
+                output_path
+            );
+        },
+        .bits_64 => {
+            var state = try VectorState(.bits_64).init(allocator, dimension);
+            defer state.deinit();
+            
+            try state.loadFromFile(input_path);
+            
+            const matrix_file = try std.fs.cwd().openFile(matrix_path, .{});
+            defer matrix_file.close();
+            const matrix_bytes = try matrix_file.readToEndAlloc(allocator, 100 * 1024 * 1024);
+            defer allocator.free(matrix_bytes);
+            const matrix = std.mem.bytesAsSlice(f64, matrix_bytes);
+            
+            try state.applyTransformation(matrix);
+            
+            try sealAsPSVC(
+                allocator,
+                state.getRawBytes(),
+                precision_bits,
+                timestamp_ms,
+                if (signing_key != null) &signing_key.? else null,
+                output_path
+            );
+        },
+        else => {
+            std.debug.print("Precision {s} not yet implemented for CLI\n", .{precision_str});
+        }
+    }
 }

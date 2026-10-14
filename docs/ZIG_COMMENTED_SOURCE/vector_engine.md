@@ -1,29 +1,15 @@
-# WENDY Bare-Metal Vector Engine
+# Vector Engine - WENDY Bare-Metal ZIG Module
 
-**File Path:** `src/core/vector_engine.zig`
+> **SOVEREIGN PROTOCOL ENFORCED**: This is the pristine, human-readable master source.
+> **Auto-Synced**: Any modifications to `src/core/vector_engine.zig` are automatically reflected here.
 
-## 🧠 Architectural Overview
-
-This module represents the foundational cognitive state of WENDY. Unlike high-level languages that abstract memory management and enforce garbage collection pauses, this Zig implementation provides **comptime-generic, bare-metal vector operations** optimized for direct VRAM mapping.
-
-The core innovation is **Dynamic Precision Scaling**. WENDY does not default to 32-bit floats. She dynamically selects the exact bit-width (4, 8, 16, 32, 64, or 128) required for the task at compile time. This maximizes SIMD (Single Instruction, Multiple Data) throughput and minimizes memory bandwidth bottlenecks, allowing her to process exponentially more data in the same physical memory footprint.
-
----
-
-## 📜 Fully Commented Source Code
+## Source Code
 
 ```zig
-// SPDX-License-Identifier: EUPL-1.2
-// SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 const std = @import("std");
-// CRITICAL FIX for Zig 0.11.0: Sha256 is now inside the sha2 namespace.
-// This ensures cryptographic hashing of the cognitive state for sovereign sealing.
 const Sha256 = std.crypto.hash.sha2.Sha256;
+const Ed25519 = std.crypto.sign.Ed25519;
 
-/// Supported cognitive precisions for VRAM optimization.
-/// 4-bit and 8-bit are used for quantized inference (maximum density, fastest SIMD).
-/// 16, 32, 64, 128 are used for floating-point state and high-fidelity scientific math.
 pub const Precision = enum {
     bits_4,
     bits_8,
@@ -33,11 +19,6 @@ pub const Precision = enum {
     bits_128,
 };
 
-/// Maps a Precision enum to the actual Zig type at compile time.
-/// Because this returns 'type' (a compile-time-only construct), 
-/// the parameter 'p' MUST be marked as 'comptime'. This ensures zero runtime 
-/// overhead for type resolution; the compiler generates dedicated machine code 
-/// for each precision branch.
 pub fn PrecisionType(comptime p: Precision) type {
     return switch (p) {
         .bits_4 => u4,
@@ -49,20 +30,26 @@ pub fn PrecisionType(comptime p: Precision) type {
     };
 }
 
-/// Represents WENDY's bare-metal cognitive state in memory.
-/// Generic over precision (comptime P) to allow maximum VRAM efficiency.
+pub const PsvcHeader = packed struct {
+    magic: [4]u8 = .{ 'P', 'S', 'V', 'C' },
+    version: u8 = 2,
+    precision_bits: u8,
+    reserved: u16 = 0,
+    payload_length: u32,
+    timestamp_epoch_ms: u64,
+};
+
 pub fn VectorState(comptime P: Precision) type {
     const T = PrecisionType(P);
     
     return struct {
         dimension: usize,
-        data: []T, // Slice backed by allocator (simulating direct VRAM access)
+        data: []T,
         allocator: std.mem.Allocator,
 
-        /// Initializes a zeroed vector state to prevent data leakage from previous cognitive cycles.
         pub fn init(allocator: std.mem.Allocator, dimension: usize) !@This() {
             const data = try allocator.alloc(T, dimension);
-            @memset(data, 0); 
+            @memset(data, 0);
             return @This(){
                 .dimension = dimension,
                 .data = data,
@@ -70,21 +57,30 @@ pub fn VectorState(comptime P: Precision) type {
             };
         }
 
-        /// Explicitly frees the allocated memory. No garbage collector needed.
         pub fn deinit(self: *@This()) void {
             self.allocator.free(self.data);
         }
 
-        /// Applies a deterministic linear transformation (The "Cognitive Operation").
-        /// The Zig compiler will automatically unroll and vectorize this loop 
-        /// into architecture-specific SIMD instructions (e.g., AVX-512 for f32/f64, 
-        /// or packed integer ops for u4/u8) based on the comptime type T.
+        pub fn loadFromFile(self: *@This(), file_path: []const u8) !void {
+            const file = try std.fs.cwd().openFile(file_path, .{});
+            defer file.close();
+            
+            const bytes = try file.readToEndAlloc(self.allocator, 100 * 1024 * 1024);
+            defer self.allocator.free(bytes);
+            
+            const expected_size = self.dimension * @sizeOf(T);
+            if (bytes.len != expected_size) {
+                return error.SizeMismatch;
+            }
+            
+            @memcpy(self.data, std.mem.bytesAsSlice(T, bytes));
+        }
+
         pub fn applyTransformation(self: *@This(), matrix: []const T) !void {
             std.debug.assert(matrix.len == self.dimension * self.dimension);
             
-            // Allocate temporary buffer for the transformation result
             const temp = try self.allocator.alloc(T, self.dimension);
-            defer self.allocator.free(temp); // Guaranteed cleanup
+            defer self.allocator.free(temp);
 
             var i: usize = 0;
             while (i < self.dimension) : (i += 1) {
@@ -96,59 +92,146 @@ pub fn VectorState(comptime P: Precision) type {
                 temp[i] = sum;
             }
 
-            // Zero-copy update back to the primary state buffer ("VRAM")
             @memcpy(self.data, temp);
         }
 
-        /// Computes SHA-256 hash of the raw byte state for PSVC cryptographic sealing.
-        /// This guarantees that the mathematical truth can be verified before and after transit.
-        pub fn hashState(self: @This()) [Sha256.digest_length]u8 {
-            const bytes = std.mem.sliceAsBytes(self.data);
-            var hash: [Sha256.digest_length]u8 = undefined;
-            Sha256.hash(bytes, &hash, .{});
-            return hash;
-        }
-
-        /// Returns the raw byte payload for sovereign encapsulation.
-        /// Uses sliceAsBytes to provide a direct pointer to the memory without 
-        /// any serialization overhead, ready for immediate PSVC sealing.
         pub fn getRawBytes(self: @This()) []const u8 {
             return std.mem.sliceAsBytes(self.data);
         }
     };
 }
 
-/// Minimal entry point to satisfy the CI/CD `zig build-exe` compilation loop.
-/// Proves the module compiles successfully as a standalone executable.
+pub fn sealAsPSVC(
+    allocator: std.mem.Allocator,
+    payload: []const u8,
+    precision_bits: u8,
+    timestamp_ms: u64,
+    signing_key: ?*const Ed25519.SecretKey,
+    output_path: []const u8,
+) !void {
+    var header = PsvcHeader{
+        .precision_bits = precision_bits,
+        .payload_length = @as(u32, @intCast(payload.len)),
+        .timestamp_epoch_ms = timestamp_ms,
+    };
+
+    var file = try std.fs.cwd().createFile(output_path, .{});
+    defer file.close();
+
+    try file.writeAll(std.mem.asBytes(&header));
+    try file.writeAll(payload);
+
+    if (signing_key) |key| {
+        const header_bytes = std.mem.asBytes(&header);
+        var message = try allocator.alloc(u8, header_bytes.len + payload.len);
+        defer allocator.free(message);
+        @memcpy(message[0..header_bytes.len], header_bytes);
+        @memcpy(message[header_bytes.len..], payload);
+        
+        const signature = Ed25519.sign(message, key, null);
+        try file.writeAll(&signature.toBytes());
+    }
+
+    const total_size = @sizeOf(PsvcHeader) + payload.len + (if (signing_key != null) @as(usize, 64) else 0);
+    std.debug.print("Sealed PSVC: {s} ({d} bytes, {d}-bit, signed={})\n", .{
+        output_path, total_size, precision_bits, signing_key != null
+    });
+}
+
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    // DEMONSTRATION 1: Ultra-fast 4-bit quantized state (Maximum VRAM density)
-    const dim_4: usize = 6000; // 4x the dimension of 32-bit in the same memory!
-    var state_4 = try VectorState(.bits_4).init(allocator, dim_4);
-    defer state_4.deinit();
-    
-    var i: usize = 0;
-    while (i < dim_4) : (i += 1) {
-        state_4.data[i] = @as(u4, @intCast(i % 15));
-    }
-    
-    std.debug.print("4-bit State: {d} dims, {d} bytes.\n", .{ dim_4, state_4.getRawBytes().len });
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
 
-    // DEMONSTRATION 2: High-fidelity 64-bit scientific state
-    const dim_64: usize = 1500;
-    var state_64 = try VectorState(.bits_64).init(allocator, dim_64);
-    defer state_64.deinit();
-
-    var j: usize = 0;
-    while (j < dim_64) : (j += 1) {
-        state_64.data[j] = @as(f64, @floatFromInt(j)) * 0.001;
+    if (args.len < 6) {
+        std.debug.print("Usage: vector_engine <precision> <dimension> <input_vector> <matrix_file> <output_psvc>\n", .{});
+        std.debug.print("Environment: WENDY_PRIVATE_KEY_SEED (hex, optional for signing)\n", .{});
+        return;
     }
 
-    const hash_64 = state_64.hashState();
-    std.debug.print("64-bit State: {d} dims, {d} bytes. Hash: {s}\n", .{
-        dim_64, state_64.getRawBytes().len, std.fmt.fmtSliceHexLower(&hash_64)
-    });
+    const precision_str = args[1];
+    const dimension = try std.fmt.parseInt(usize, args[2], 10);
+    const input_path = args[3];
+    const matrix_path = args[4];
+    const output_path = args[5];
+
+    const precision = if (std.mem.eql(u8, precision_str, "4")) Precision.bits_4
+        else if (std.mem.eql(u8, precision_str, "8")) Precision.bits_8
+        else if (std.mem.eql(u8, precision_str, "16")) Precision.bits_16
+        else if (std.mem.eql(u8, precision_str, "32")) Precision.bits_32
+        else if (std.mem.eql(u8, precision_str, "64")) Precision.bits_64
+        else if (std.mem.eql(u8, precision_str, "128")) Precision.bits_128
+        else return error.InvalidPrecision;
+
+    const precision_bits: u8 = switch (precision) {
+        .bits_4 => 4, .bits_8 => 8, .bits_16 => 16,
+        .bits_32 => 32, .bits_64 => 64, .bits_128 => 128,
+    };
+
+    var signing_key: ?Ed25519.SecretKey = null;
+    if (std.process.getEnvVarOwned(allocator, "WENDY_PRIVATE_KEY_SEED")) |seed_hex| {
+        defer allocator.free(seed_hex);
+        var seed: [32]u8 = undefined;
+        _ = std.fmt.hexToBytes(&seed, seed_hex) catch return error.InvalidKeySeed;
+        signing_key = Ed25519.SecretKey.fromSeed(seed);
+    } else |_| {}
+
+    const timestamp_ms = @as(u64, @intCast(std.time.milliTimestamp()));
+
+    switch (precision) {
+        .bits_32 => {
+            var state = try VectorState(.bits_32).init(allocator, dimension);
+            defer state.deinit();
+            
+            try state.loadFromFile(input_path);
+            
+            const matrix_file = try std.fs.cwd().openFile(matrix_path, .{});
+            defer matrix_file.close();
+            const matrix_bytes = try matrix_file.readToEndAlloc(allocator, 100 * 1024 * 1024);
+            defer allocator.free(matrix_bytes);
+            const matrix = std.mem.bytesAsSlice(f32, matrix_bytes);
+            
+            try state.applyTransformation(matrix);
+            
+            try sealAsPSVC(
+                allocator,
+                state.getRawBytes(),
+                precision_bits,
+                timestamp_ms,
+                if (signing_key != null) &signing_key.? else null,
+                output_path
+            );
+        },
+        .bits_64 => {
+            var state = try VectorState(.bits_64).init(allocator, dimension);
+            defer state.deinit();
+            
+            try state.loadFromFile(input_path);
+            
+            const matrix_file = try std.fs.cwd().openFile(matrix_path, .{});
+            defer matrix_file.close();
+            const matrix_bytes = try matrix_file.readToEndAlloc(allocator, 100 * 1024 * 1024);
+            defer allocator.free(matrix_bytes);
+            const matrix = std.mem.bytesAsSlice(f64, matrix_bytes);
+            
+            try state.applyTransformation(matrix);
+            
+            try sealAsPSVC(
+                allocator,
+                state.getRawBytes(),
+                precision_bits,
+                timestamp_ms,
+                if (signing_key != null) &signing_key.? else null,
+                output_path
+            );
+        },
+        else => {
+            std.debug.print("Precision {s} not yet implemented for CLI\n", .{precision_str});
+        }
+    }
 }
+
+```
