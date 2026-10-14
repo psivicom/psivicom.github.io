@@ -36,28 +36,36 @@ class SelfHealingAgent:
             missing_name = name_error_match.group(1)
             if missing_name in TYPING_IMPORTS:
                 logger.info(f"🔍 Diagnosing: Missing typing import '{missing_name}'. Attempting auto-import...")
-                file_match = re.search(r'File "([^"]+)", line \d+', error_output)
-                if file_match:
-                    error_file = Path(file_match.group(1))
+                # CRITICAL FIX: Find all .py files in traceback and take the LAST one (the actual error source)
+                file_matches = re.findall(r'File "([^"]+\.py)", line (\d+)', error_output)
+                if file_matches:
+                    error_file = Path(file_matches[-1][0])
                     if self._inject_typing_import(error_file):
                         return True
+                else:
+                    logger.warning("⚠️ Could not find a .py file in the traceback for NameError.")
 
         # 3. Check for Keyword Mismatch (TypeError)
         kwarg_match = re.search(r"unexpected keyword argument '(\w+)'", error_output)
-        file_match = re.search(r'File "([^"]+)", line (\d+)', error_output)
+        # CRITICAL FIX: Find all .py files in traceback and take the LAST one
+        file_matches_kwarg = re.findall(r'File "([^"]+\.py)", line (\d+)', error_output)
         
-        if not kwarg_match or not file_match:
+        if not kwarg_match or not file_matches_kwarg:
             logger.warning("⚠️ Error not recognized as auto-healable. Cannot auto-heal.")
             return False
 
         bad_kwarg = kwarg_match.group(1)
-        error_file = Path(file_match.group(1))
-        error_line = int(file_match.group(2))
+        error_file = Path(file_matches_kwarg[-1][0])
+        error_line = int(file_matches_kwarg[-1][1])
 
         logger.info(f"🔍 Diagnosing: Unexpected kwarg '{bad_kwarg}' in {error_file.name}:{error_line}")
 
-        with open(error_file, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
+        try:
+            with open(error_file, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+        except FileNotFoundError:
+            logger.warning(f"⚠️ File not found: {error_file}")
+            return False
             
         target_line = lines[error_line - 1]
         func_match = re.search(r'(\w+)\.(\w+)\s*\(', target_line)
