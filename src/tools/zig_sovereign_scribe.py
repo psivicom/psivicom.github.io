@@ -30,15 +30,13 @@ def sync_zig_architecture():
     for zig_file in zig_files:
         name = zig_file.stem
         
-        # 1. Sync to ZIG_UNCOMMENTED_SOURCE
         dest_uncommented = uncommented_dir / f"{name}.zig"
         shutil.copy2(zig_file, dest_uncommented)
         
-        # 2. Sync to ZIG_COMMENTED_SOURCE (Markdown format)
-        # SAFE STRING CONCATENATION: Prevents Markdown parser conflicts with nested quotes
         dest_commented = commented_dir / f"{name}.md"
         code_content = zig_file.read_text(encoding='utf-8')
         
+        # SAFE STRING CONCATENATION: Prevents Markdown parser conflicts
         md_content = (
             f"# {name.replace('_', ' ').title()} - WENDY Bare-Metal ZIG Module\n\n"
             f"> **SOVEREIGN PROTOCOL ENFORCED**: This file is the pristine, human-readable master source.\n"
@@ -53,7 +51,6 @@ def sync_zig_architecture():
 
     logger.info(f"🏁 ZIG Sovereign Scribe complete. {synced_count} files synchronized.")
     
-    # 3. Autonomous Commit of Documentation
     try:
         subprocess.check_call(["git", "config", "user.name", "PSIVI ZIG Scribe"])
         subprocess.check_call(["git", "config", "user.email", "zig-scribe@psivi.com"])
