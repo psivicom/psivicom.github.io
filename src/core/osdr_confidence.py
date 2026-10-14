@@ -1,3 +1,4 @@
+from typing import List, Dict, Optional, Tuple, Any, Union
 def calculate_match_confidence(mesh_meta: Dict, osdr_record: Dict) -> float:
     """
     Returns 0.0-1.0 confidence score based on:

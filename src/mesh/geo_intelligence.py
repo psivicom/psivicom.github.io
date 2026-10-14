@@ -1,3 +1,4 @@
+from typing import List, Dict, Optional, Tuple, Any, Union
 class SpatialClusterer:
     """Grid-based spatial clustering for low-latency volunteer node grouping."""
     def __init__(self, radius_km: float):

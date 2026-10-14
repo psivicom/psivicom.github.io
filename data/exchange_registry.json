@@ -1,0 +1,75 @@
+{
+  "updated_at": "2026-10-14T16:46:13.528Z",
+  "agent_id": "intelligence_agent",
+  "active_core_kin": [
+    "bumble_alpha"
+  ],
+  "registry_summary": [
+    {
+      "id": "bumble_alpha",
+      "status": "core_kin",
+      "score": 0.738,
+      "security_samples": 2,
+      "resource_samples": 2
+    },
+    {
+      "id": "thief_beta",
+      "status": "hostile",
+      "score": 0.055,
+      "security_samples": 1,
+      "resource_samples": 1
+    }
+  ],
+  "registry": {
+    "bumble_alpha": {
+      "status": "core_kin",
+      "security_samples": [
+        4.0,
+        3.5
+      ],
+      "resource_samples": [
+        {
+          "volume": 500.0,
+          "quality": 0.8,
+          "time": 1791996373.5202367
+        },
+        {
+          "volume": 600.0,
+          "quality": 0.9,
+          "time": 1791996373.5202713
+        }
+      ],
+      "first_seen": 1791996373.5201614,
+      "last_heartbeat": 1791996373.5202718,
+      "total_value_score": 0.7375
+    },
+    "thief_beta": {
+      "status": "hostile",
+      "security_samples": [
+        9.0
+      ],
+      "resource_samples": [
+        {
+          "volume": 100.0,
+          "quality": 0.1,
+          "time": 1791996373.52049
+        }
+      ],
+      "first_seen": 1791996373.5203466,
+      "last_heartbeat": 1791996373.5204906,
+      "total_value_score": 0.0548828125
+    }
+  },
+  "audit_excerpt": {
+    "mesh_stats": {
+      "vram_queries": 2,
+      "pico_queries": 2,
+      "seed_queries": 2,
+      "node_registrations": 2,
+      "exchange_evaluations": 3
+    },
+    "vram_containers": 1,
+    "pico_containers": 0,
+    "seed_containers": 0
+  }
+}

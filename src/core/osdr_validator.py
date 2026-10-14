@@ -1,3 +1,4 @@
+from typing import List, Dict, Optional, Tuple, Any, Union
 def validate_osdr_record(record: Dict) -> bool:
     """Ensures OSDR records have required fields: gene, organism, tissue, evidence"""
     required = ['gene', 'organism', 'tissue', 'evidence', 'item_type']
