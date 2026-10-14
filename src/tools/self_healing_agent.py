@@ -10,7 +10,6 @@ from pathlib import Path
 import logging
 
 logger = logging.getLogger("SELF_HEALING_AGENT")
-
 TYPING_IMPORTS = {"List", "Dict", "Optional", "Tuple", "Any", "Union", "Set"}
 
 class SelfHealingAgent:
@@ -18,7 +17,7 @@ class SelfHealingAgent:
         self.root = Path(__file__).parent.parent.parent
 
     def analyze_and_heal(self, module_name: str, error_output: str) -> bool:
-        # 1. Check for Missing Module (ImportError / ModuleNotFoundError)
+        # 1. Check for Missing Module
         module_match = re.search(r"No module named ['\"](\w+)['\"]", error_output)
         if module_match:
             missing_module = module_match.group(1)
@@ -31,7 +30,7 @@ class SelfHealingAgent:
                 logger.warning(f"⚠️ Failed to dynamically install '{missing_module}'.")
                 return False
 
-        # 2. Check for NameError (e.g., name 'List' is not defined)
+        # 2. Check for NameError (Missing typing imports)
         name_error_match = re.search(r"NameError: name '(\w+)' is not defined", error_output)
         if name_error_match:
             missing_name = name_error_match.group(1)
