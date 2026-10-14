@@ -99,8 +99,7 @@ def main():
     if packages_list:
         subprocess.check_call([sys.executable, "-m", "pip", "install"] + packages_list + ["-q"])
 
-    logger.info("\n🔨 Initiating Autonomous ZIG Compilation Cycle...")
-    subprocess.check_call([sys.executable, "-m", "src.tools.zig_compiler_healer"])
+    # NOTE: ZIG compilation is intentionally handled exclusively by .github/workflows/zig-verify.yml
     
     for item in files:
         logger.info(f"\n🚀 Processing {item['module']}...")
