@@ -17,11 +17,11 @@ on:
 
 permissions:
   contents: write
+  actions: write # CRITICAL: Required for Cache Governor to manage remote caches
 
 jobs:
   orchestrate:
-    # SURGICAL FIX: Enforce a strict 15-minute execution boundary to prevent 
-    # indefinite hangs and guarantee clean failure instead of Exit Code 143.
+    # SURGICAL FIX: Enforce a strict 15-minute execution boundary
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -35,27 +35,52 @@ jobs:
         with:
           python-version: '3.12'
 
+      # SURGICAL UPGRADE: Install Zig toolchain so WENDY can compile her own binaries
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
+
+      # COGNITIVE CONTINUITY: Restore WENDY's Twin State before execution
+      - name: Restore WENDY Twin Continuity State
+        uses: actions/cache@v4
+        with:
+          path: data/wendy_twin_state.json
+          key: wendy-twin-continuity-main # STATIC KEY: Overwrites the same slot, preventing fragmentation
+          restore-keys: |
+            wendy-twin-continuity-
+
       - name: WENDY Autonomous Execution
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.tools.autonomous_mesh_orchestrator
 
-      - name: Commit Generated Artifacts and Healed Source (Race-Condition Proof)
+      # COGNITIVE CONTINUITY: Save WENDY's Twin State after execution
+      - name: Save WENDY Twin Continuity State
+        uses: actions/cache@v4
+        with:
+          path: data/wendy_twin_state.json
+          key: wendy-twin-continuity-main
+
+      - name: Commit Generated Artifacts and Healed Source
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Autonomous Orchestrator"
           git config user.email "orchestrator@psivi.com"
-          
-          # CRITICAL: Include src/ so WENDY can commit her own healed Python code
           git add src/ reports/ data/ config/
-          
           if ! git diff --staged --quiet; then
-            git commit -m "auto: autonomous orchestrator sealed artifacts and healed source code [skip ci]"
-            
+            git commit -m "auto: autonomous orchestrator sealed artifacts, healed source, and compiled ZIG binaries [skip ci]"
             for i in 1 2 3; do
               git pull --rebase origin main && git push origin main && break || sleep 2
             done
           else
             echo "ℹ️ No new artifacts or healed source code to commit."
           fi
+
+      # MEMORY GOVERNANCE: WENDY autonomously scrubs orphaned caches and archives local ambiguity
+      - name: WENDY Autonomous Memory Governance
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python -m src.tools.cache_governor
