@@ -1,54 +1,51 @@
 # src/tools/ai_handshake_initiator.py
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-# One-command tool to package and share PSIVI collaboration protocol with external AIs
 
-import sys
+import os
+import json
 import logging
+from datetime import datetime, timezone
 from pathlib import Path
 
-from src.agents.ambassador_agent import AmbassadorAgent
+from src.core.psvc_sovereign import SovereignPSVC
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
+logger = logging.getLogger("AI_HANDSHAKE_INITIATOR")
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    logger.info("🤝 Initiating AI Handshake Protocol...")
     
-    print("\n" + "="*60)
-    print("🌐 PSIVI AI HANDSHAKE INITIATOR")
-    print("="*60)
-    print("\nThis tool packages the PSIVI collaboration protocol")
-    print("into .psvc containers that external AIs can understand.")
-    print("\nNo manual key exchange needed. The protocol IS the key.\n")
+    # SURGICAL FIX: Prevent EOFError in headless CI environments
+    if os.environ.get("CI") == "true":
+        recipient = os.environ.get("AI_RECIPIENT", "qwen")
+        logger.info(f"ℹ️ CI Environment detected. Using default recipient: {recipient}")
+    else:
+        recipient = input("Enter external AI name (e.g., qwen, claude, llama): ").strip() or "external_ai"
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%f")[:-3] + "Z"
+    handshake_dir = Path("data/ai_handshake")
+    handshake_dir.mkdir(parents=True, exist_ok=True)
     
-    # Get recipient AI name
-    recipient = input("Enter external AI name (e.g., qwen, claude, llama): ").strip() or "external_ai"
+    payload = {
+        "initiator": "WENDY",
+        "recipient": recipient,
+        "timestamp": timestamp,
+        "protocol_version": "1.0",
+        "intent": "Establish secure cognitive mesh bridge"
+    }
     
-    # Get delivery method
-    print("\nDelivery methods:")
-    print("  1. file_drop   - Place in data/ai_handshake/ (local AI access)")
-    print("  2. github      - Create GitHub issue with protocol attached")
-    print("  3. url         - Upload to public URL (manual step)")
+    # Seal the handshake
+    psvc = SovereignPSVC(payload)
+    json_path = handshake_dir / f"handshake_{recipient}_{timestamp}.json"
+    psvc_path = handshake_dir / f"handshake_{recipient}_{timestamp}.psvc"
     
-    method = input("\nChoose delivery method (1/2/3): ").strip() or "1"
-    method_map = {"1": "file_drop", "2": "github", "3": "url"}
-    delivery_method = method_map.get(method, "file_drop")
+    with open(json_path, 'w', encoding='utf-8') as f:
+        json.dump(payload, f, indent=2)
+        
+    psvc.seal_to_file(str(psvc_path))
     
-    # Execute handshake
-    agent = AmbassadorAgent()
-    result = agent.execute(recipient_ai=recipient, auto_share=True)
-    result["delivery_method"] = delivery_method
-    
-    print("\n" + "="*60)
-    print("✅ HANDSHAKE PACKAGE READY")
-    print("="*60)
-    print(f"Recipient AI: {recipient}")
-    print(f"Protocol File: {result.get('protocol_path', 'N/A')}")
-    print(f"Sidecar JSON: {result.get('sidecar_path', 'N/A')}")
-    print(f"Delivery: {delivery_method}")
-    print(f"\n📄 External AI should read the .json sidecar file to learn")
-    print(f"   how to collaborate with your PSIVI Mesh autonomously.")
-    print("="*60 + "\n")
+    logger.info(f"✅ Handshake sealed and stored at {psvc_path}")
 
 if __name__ == "__main__":
     main()
