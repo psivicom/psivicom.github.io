@@ -13,7 +13,6 @@ def heal_zig_file(zig_file: Path) -> bool:
     binary_name = zig_file.stem
     binary_path = zig_file.parent / binary_name
     
-    # Attempt initial compilation
     cmd = ["zig", "build-exe", str(zig_file), "-O", "ReleaseSafe", "-fstrip", f"-femit-bin={binary_path}"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     
@@ -23,12 +22,10 @@ def heal_zig_file(zig_file: Path) -> bool:
         
     error_output = result.stderr
     
-    # HEALING RULE 1: Missing 'std' import
     if "use of undeclared identifier 'std'" in error_output:
         logger.info(f"🩹 Diagnosed missing 'std' import in {zig_file.name}. Injecting...")
         try:
             lines = zig_file.read_text(encoding='utf-8').split('\n')
-            # Insert at the very top, after any initial comments
             insert_idx = 0
             for i, line in enumerate(lines):
                 if line.startswith('//') or line.strip() == '':
@@ -40,7 +37,6 @@ def heal_zig_file(zig_file: Path) -> bool:
             zig_file.write_text('\n'.join(lines), encoding='utf-8')
             logger.info(f"✅ Injected 'std' import into {zig_file.name}. Retrying compilation...")
             
-            # Retry compilation
             retry_result = subprocess.run(cmd, capture_output=True, text=True)
             if retry_result.returncode == 0:
                 logger.info(f"✅ Healing successful! {zig_file.name} compiled.")
