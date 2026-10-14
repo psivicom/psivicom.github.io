@@ -24,9 +24,21 @@ from nacl.exceptions import CryptoError
 
 logger = logging.getLogger("SOVEREIGN_KEYS")
 
+# SURGICAL FIX: Add SovereignKeyPair class to resolve ImportError in mesh_node, robotic_bridge, and governor_agent
+class SovereignKeyPair:
+    """Represents a cryptographically secure Ed25519 key pair for sovereign mesh operations."""
+    def __init__(self, public_key: bytes, private_key: bytes):
+        self.public_key = public_key
+        self.private_key = private_key
+
+    def to_dict(self) -> dict:
+        return {
+            "public_key": self.public_key.hex(),
+            # Private key is intentionally omitted from dict serialization for security
+        }
+
 class SovereignPSVC:
     """Manages sovereign identity and cryptographic integrity of PSVC containers."""
-    
     # Class-level cache for the ephemeral/loaded instance
     _instance: Optional['SovereignPSVC'] = None
 
@@ -60,17 +72,17 @@ class SovereignPSVC:
                 passphrase = env_passphrase
             else:
                 passphrase = getpass.getpass(f"🔐 Enter passphrase to unlock {self.key_file.name}: ")
-
+            
             raw_data = self.key_file.read_bytes()
             salt_len = nacl.pwhash.argon2id.SALTBYTES
             salt = raw_data[:salt_len]
             encrypted_payload = raw_data[salt_len:]
-
+            
             derived_key = nacl.pwhash.argon2id.kdf(
-                nacl.secret.SecretBox.KEY_SIZE, 
-                passphrase.encode('utf-8'), 
-                salt, 
-                nacl.pwhash.argon2id.OPSLIMIT_INTERACTIVE, 
+                nacl.secret.SecretBox.KEY_SIZE,
+                passphrase.encode('utf-8'),
+                salt,
+                nacl.pwhash.argon2id.OPSLIMIT_INTERACTIVE,
                 nacl.pwhash.argon2id.MEMLIMIT_INTERACTIVE
             )
             
@@ -143,7 +155,6 @@ class SovereignPSVC:
             
             logger.debug("✅ PSVC container signature cryptographically verified.")
             return True
-            
         except Exception as e:
             logger.error(f"❌ Failed to verify PSVC container: {e}")
             return False
@@ -167,7 +178,7 @@ class SovereignPSVC:
         payload_str = json.dumps(data, sort_keys=True, separators=(',', ':'))
         message = f"psvc:{payload_str}".encode('utf-8')
         signature_hex = self.sign(message).hex()
-
+        
         container = {
             "version": "1.0.0",
             "type": "psvc",
@@ -176,4 +187,5 @@ class SovereignPSVC:
             "signature": signature_hex,
             "public_key": self.get_public_key_hex()
         }
+        
         return json.dumps(container, indent=2).encode('utf-8')
