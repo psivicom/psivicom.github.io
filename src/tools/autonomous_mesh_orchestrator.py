@@ -7,6 +7,7 @@ import sys
 import subprocess
 from pathlib import Path
 import logging
+
 from src.tools.self_healing_agent import heal_and_retry
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
@@ -14,13 +15,14 @@ logger = logging.getLogger("AUTONOMOUS_ORCHESTRATOR")
 
 # BULLETPROOF: Hardcoded standard library modules + dynamic fallback
 STDLIB_MODULES = {
-    "ast", "asyncio", "collections", "ctypes", "dataclasses", "datetime", 
-    "enum", "functools", "getpass", "hashlib", "importlib", "json", "logging", 
-    "math", "os", "pathlib", "random", "re", "shutil", "socket", "statistics", 
-    "struct", "subprocess", "sys", "tempfile", "threading", "time", "traceback", 
+    "ast", "asyncio", "collections", "ctypes", "dataclasses", "datetime",
+    "enum", "functools", "getpass", "hashlib", "importlib", "json", "logging",
+    "math", "os", "pathlib", "random", "re", "shutil", "socket", "statistics",
+    "struct", "subprocess", "sys", "tempfile", "threading", "time", "traceback",
     "typing", "urllib", "uuid", "websockets", "copy", "itertools", "string",
     "warnings", "io", "builtins", "errno", "gc", "inspect", "operator"
 }
+
 try:
     STDLIB_MODULES.update(sys.stdlib_module_names)
 except AttributeError:
@@ -28,9 +30,9 @@ except AttributeError:
 
 # Internal project namespaces that should NEVER be pip installed
 INTERNAL_MODULES = {
-    "src", "mesh_governor", "psvc_containers", "psvc_reference", "vram_mesh", 
-    "base", "core", "agents", "tools", "mesh", "orchestrator", "pipelines", 
-    "nodes", "models", "automation", "calculating", "generated_agents", "kernel", 
+    "src", "mesh_governor", "psvc_containers", "psvc_reference", "vram_mesh",
+    "base", "core", "agents", "tools", "mesh", "orchestrator", "pipelines",
+    "nodes", "models", "automation", "calculating", "generated_agents", "kernel",
     "utils", "breath_engine"
 }
 
@@ -41,8 +43,17 @@ IMPORT_EXCEPTIONS = {
     "dotenv": "python-dotenv", "bs4": "beautifulsoup4", "PIL": "Pillow"
 }
 
+# SURGICAL FIX: Prevent infinite recursion (Exit Code 143) by excluding top-level entry points.
+# NOTE: This DOES NOT skip ZIG healing. zig_compiler_healer.py and all other modules remain fully active.
+SKIP_FILES = {
+    "autonomous_mesh_orchestrator.py",
+    "self_healing_agent.py"
+}
+
 def get_required_packages(file_path: Path) -> set:
-    if not file_path.exists(): return set()
+    if not file_path.exists(): 
+        return set()
+    
     with open(file_path, 'r', encoding='utf-8') as f:
         try:
             tree = ast.parse(f.read(), filename=file_path)
@@ -69,11 +80,17 @@ def get_required_packages(file_path: Path) -> set:
 
 def discover_all_python_files() -> list:
     src_dir = Path("src")
-    if not src_dir.exists(): return []
-    
+    if not src_dir.exists(): 
+        return []
+        
     files = []
     for file in src_dir.rglob("*.py"):
-        if file.name == "__init__.py": continue
+        if file.name == "__init__.py": 
+            continue
+        # SURGICAL FIX: Skip top-level entry points to prevent infinite recursion hangs
+        if file.name in SKIP_FILES: 
+            continue
+            
         module_path = str(file).replace('/', '.').replace('.py', '')
         files.append({"file": file, "module": module_path})
     return files
@@ -99,8 +116,7 @@ def main():
     if packages_list:
         subprocess.check_call([sys.executable, "-m", "pip", "install"] + packages_list + ["-q"])
 
-    # NOTE: ZIG compilation is intentionally handled exclusively by .github/workflows/zig-verify.yml
-    
+    # NOTE: ZIG compilation/healing is handled by zig_compiler_healer.py, which remains fully active.
     for item in files:
         logger.info(f"\n🚀 Processing {item['module']}...")
         success = heal_and_retry(item["module"])
@@ -108,7 +124,7 @@ def main():
             logger.info(f"✅ {item['module']} completed successfully.")
         else:
             logger.error(f"❌ {item['module']} failed and could not be autonomously healed.")
-
+            
     logger.info("\n🏁 WENDY Unbounded Autonomy Execution Cycle Complete.")
 
 if __name__ == "__main__":
