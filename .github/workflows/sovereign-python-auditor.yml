@@ -1,7 +1,6 @@
 # .github/workflows/sovereign-python-auditor.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 name: Sovereign Python Workflow Auditor
 
 on:
@@ -21,77 +20,92 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: python -m pip install requests
 
       - name: Audit and Heal Workflows
         env:
           GH_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
-          python3 << 'PYTHON_SCRIPT'
-          import os, re, requests
+          python3 <<'PYTHON_SCRIPT'
+          import os
+          import re
+          import requests
 
-          GITHUB_TOKEN = os.environ.get('GH_TOKEN')
-          WORKFLOWS_DIR = '.github/workflows'
+          GITHUB_TOKEN = os.environ.get("GH_TOKEN")
+          WORKFLOWS_DIR = ".github/workflows"
 
           def get_sha(owner, repo, ref):
+              headers = {"Authorization": f"Bearer {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
               url = f"https://api.github.com/repos/{owner}/{repo}/git/ref/tags/{ref}"
-              r = requests.get(url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
-              if r.status_code == 200:
-                  data = r.json()
-                  if data['object']['type'] == 'tag':
-                      r2 = requests.get(data['object']['url'], headers={"Authorization": f"token {GITHUB_TOKEN}"})
-                      if r2.status_code == 200:
-                          return r2.json()['object']['sha']
-                  return data['object']['sha']
+              response = requests.get(url, headers=headers, timeout=30)
+
+              if response.status_code == 200:
+                  data = response.json()
+                  if data["object"]["type"] == "tag":
+                      tag_response = requests.get(
+                          data["object"]["url"], headers=headers, timeout=30
+                      )
+                      if tag_response.status_code == 200:
+                          return tag_response.json()["object"]["sha"]
+                  return data["object"]["sha"]
+
               url = f"https://api.github.com/repos/{owner}/{repo}/git/ref/heads/{ref}"
-              r = requests.get(url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
-              if r.status_code == 200:
-                  return r.json()['object']['sha']
+              response = requests.get(url, headers=headers, timeout=30)
+              if response.status_code == 200:
+                  return response.json()["object"]["sha"]
+
               return None
 
           known_shas = {
-              'configure-pages': '983d7736d9b0ae728b81ab479565c72886d7745b',
-              'deploy-pages': 'd6db90164ac5ed86f2b6aed7e0febac5b3c0c03e',
-              'upload-pages-artifact': '56afc609e74202658d3ffba0e8f6dda462b719fa',
-              'upload-artifact': 'ea165f8d65b6e75b540449e92b4886f43607fa02',
-              'checkout': '11bd71901bbe5b1630ceea73d27597364c9af683',
-              'setup-python': '0a5c61591373683505ea898e09a3ea4f39ef2b9c'
+              "configure-pages": "983d7736d9b0ae728b81ab479565c72886d7745b",
+              "deploy-pages": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
+              "upload-pages-artifact": "56afc609e74202658d3ffba0e8f6dda462b719fa",
+              "upload-artifact": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+              "checkout": "11bd71901bbe5b1630ceea73d27597364c9af683",
+              "setup-python": "0a5c61591373683505ea898e09a3ea4f39ef2b9c",
           }
 
-          for filename in os.listdir(WORKFLOWS_DIR):
-              if filename.endswith('.yml') or filename.endswith('.yaml'):
-                  filepath = os.path.join(WORKFLOWS_DIR, filename)
-                  with open(filepath, 'r') as f:
-                      content = f.read()
-                  
-                  new_content = content
-                  pattern = re.compile(r'(uses:\s+[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+(?:/[a-zA-Z0-9_.-]+)*)@([^\s#]+)')
-                  
-                  for match in pattern.finditer(content):
-                      action_path = match.group(1).replace('uses:', '').strip()
-                      ref = match.group(2)
-                      
-                      if re.match(r'^([0-9a-f]{40})@\1$', ref):
-                          real_sha = ref.split('@')[0]
-                          new_content = new_content.replace(f"{match.group(1)}@{ref}", f"{match.group(1)}@{real_sha}")
-                          continue
-                          
-                      if re.match(r'^[0-9a-f]{40}$', ref):
-                          continue
-                          
-                      if 'PLACEHOLDER' in ref:
-                          repo_name = action_path.split('/')[1]
-                          if repo_name in known_shas:
-                              new_content = new_content.replace(f"{match.group(1)}@{ref}", f"{match.group(1)}@{known_shas[repo_name]}")
-                          continue
+          pattern = re.compile(
+              r"(uses:\s+[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+"
+              r"(?:/[a-zA-Z0-9_.-]+)*)@([^\s#]+)"
+          )
 
-                      parts = action_path.split('/')
+          for filename in os.listdir(WORKFLOWS_DIR):
+              if not filename.endswith((".yml", ".yaml")):
+                  continue
+
+              filepath = os.path.join(WORKFLOWS_DIR, filename)
+              with open(filepath, "r", encoding="utf-8") as file:
+                  content = file.read()
+
+              new_content = content
+
+              for match in pattern.finditer(content):
+                  action_path = match.group(1).replace("uses:", "").strip()
+                  ref = match.group(2)
+
+                  if re.fullmatch(r"[0-9a-f]{40}", ref):
+                      continue
+
+                  parts = action_path.split("/")
+                  if "PLACEHOLDER" in ref:
+                      repo_name = parts[1]
+                      sha = known_shas.get(repo_name)
+                  else:
                       sha = get_sha(parts[0], parts[1], ref)
-                      if sha:
-                          new_content = new_content.replace(f"{match.group(1)}@{ref}", f"{match.group(1)}@{sha}")
-                  
-                  if new_content != content:
-                      with open(filepath, 'w') as f:
-                          f.write(new_content)
+
+                  if sha and re.fullmatch(r"[0-9a-f]{40}", sha):
+                      old_reference = f"{match.group(1)}@{ref}"
+                      new_reference = f"{match.group(1)}@{sha}"
+                      new_content = new_content.replace(old_reference, new_reference)
+
+              if new_content != content:
+                  with open(filepath, "w", encoding="utf-8") as file:
+                      file.write(new_content)
           PYTHON_SCRIPT
 
       - name: Commit and Push Safely
@@ -101,22 +115,24 @@ jobs:
           git config user.name "WENDY Sovereign Auditor"
           git config user.email "auditor@psivi.com"
           git add .github/workflows/
+
           if ! git diff --staged --quiet; then
             git commit -m "chore: sovereign audit - fix malformed action SHAs [skip ci]"
-            
+
             PUSH_SUCCESS=false
             for attempt in 1 2 3; do
               if git pull --rebase origin main; then
-                if git push origin main; then
+                if git push origin HEAD:refs/heads/main; then
                   echo "✅ Push successful on attempt $attempt"
                   PUSH_SUCCESS=true
                   break
                 fi
               fi
+
               echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
               sleep 2
             done
-            
+
             if [ "$PUSH_SUCCESS" = false ]; then
               echo "❌ CRITICAL: Failed to push after 3 attempts."
               exit 1
