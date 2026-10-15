@@ -25,11 +25,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
+      - name: Force Clean Previous Builds
+        run: rm -rf ./_site
+
       - name: Build Jekyll Site
         uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697
         with:
           source: ./
           destination: ./_site
+
+      - name: Check _site Size Before Upload
+        run: |
+          echo "📦 Checking _site directory size and file count..."
+          du -sh ./_site || echo "_site is empty or missing"
+          find ./_site -type f | wc -l
 
       - name: Upload Pages Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
