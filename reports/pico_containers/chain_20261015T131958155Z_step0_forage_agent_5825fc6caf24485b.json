@@ -1,0 +1,11 @@
+{
+  "chain_id": "77e3c0f704df4231",
+  "step_index": 0,
+  "agent": "forage_agent",
+  "status": "SUCCESS",
+  "output": {
+    "result": "Processed by forage_agent",
+    "chain_id": "77e3c0f704df4231"
+  },
+  "timestamp": "2026-10-15T13:19:58.152Z"
+}
