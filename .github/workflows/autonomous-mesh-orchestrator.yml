@@ -42,7 +42,7 @@ jobs:
         with:
           python-version: ${{ steps.versions.outputs.python_version }}
 
-      - name: Install Zig Toolchain (Allowlist Bypass)
+      - name: Install Zig Toolchain (Absolute Path Fail-Safe)
         run: |
           ZIG_VER="${{ steps.versions.outputs.zig_version }}"
           ZIG_OS="${{ steps.versions.outputs.zig_os }}"
@@ -54,7 +54,7 @@ jobs:
           EXTRACTED_DIR="zig-${ZIG_OS}-${ZIG_VER}"
           sudo mv "${EXTRACTED_DIR}" /opt/zig
           
-          # CRITICAL: Use absolute path to bypass any GitHub Actions PATH caching quirks
+          # CRITICAL: Use absolute path to completely bypass GitHub Actions PATH caching quirks
           if [ -f /opt/zig/zig ]; then
             echo "✅ Zig binary verified at /opt/zig/zig"
             /opt/zig/zig version
