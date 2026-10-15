@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Deploy GitHub Pages (Sanitized & Sovereign)
+name: Deploy GitHub Pages
 
 on:
   push:
@@ -22,33 +22,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Setup Pages
-        uses: actions/configure-pages@1f0c5cde4bc74860b937b13184214c7e6427d50a
-
-      - name: Sanitize Build Output (Ultimate Cleanup)
-        run: |
-          echo "🧹 Sanitizing _site/ directory..."
-          rm -rf _site_clean
-          cp -rL _site _site_clean
-          rm -rf _site
-          mv _site_clean _site
-          rm -rf _site/.git
-          rm -rf _site/.jekyll-cache
-          rm -rf _site/.sass-cache
-          rm -rf _site/.jekyll-metadata
-          find _site -name ".*" -type f -delete || true
-          chmod -R 755 _site
-          echo "📦 Final _site size:"
-          du -sh _site
-          echo "✅ Build output fully sanitized."
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@56afc609e7420a128f0da65e7c2c9c950f0e3f83
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
         with:
           path: ./_site
 
