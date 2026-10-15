@@ -1,7 +1,6 @@
 # .github/workflows/sovereign-workflow-auditor.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 name: Sovereign Workflow Auditor
 
 on:
@@ -24,55 +23,58 @@ jobs:
           GH_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
           echo "🧠 WENDY Sovereign Workflow Auditor Initializing..."
-          
+
           for FILE in .github/workflows/*.yml .github/workflows/*.yaml; do
             [ -f "$FILE" ] || continue
             echo "🔍 Auditing $FILE..."
-            
-            # Extract unique unpinned actions (ignores local paths and already pinned SHAs)
-            grep -oE 'uses:[[:space:]]+[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+[^[:space:]]*@[^[:space:]]+' "$FILE" | \
-            sed -E 's/^uses:[[:space:]]+//' | \
-            grep -vE '@[0-9a-f]{40}$' | \
-            sort -u | while read -r ACTION_REF; do
-              
-              OWNER=$(echo "$ACTION_REF" | cut -d'/' -f1)
-              REPO_NAME=$(echo "$ACTION_REF" | cut -d'/' -f2)
-              REF=$(echo "$ACTION_REF" | sed -E 's/^[^@]+@//')
-              ACTION_PREFIX=$(echo "$ACTION_REF" | sed -E "s/@${REF}$//")
-              
-              echo "  🔍 Resolving $OWNER/$REPO_NAME@$REF..."
-              
-              # Try fetching as a tag first
-              REF_DATA=$(curl -s -H "Authorization: token $GH_TOKEN" "https://api.github.com/repos/$OWNER/$REPO_NAME/git/ref/tags/$REF")
-              OBJ_TYPE=$(echo "$REF_DATA" | jq -r '.object.type // empty')
-              
-              SHA=""
-              if [ "$OBJ_TYPE" == "tag" ]; then
-                # Dereference annotated tag to get the actual commit SHA
-                TAG_URL=$(echo "$REF_DATA" | jq -r '.object.url')
-                SHA=$(curl -s -H "Authorization: token $GH_TOKEN" "$TAG_URL" | jq -r '.object.sha')
-              elif [ "$OBJ_TYPE" == "commit" ]; then
-                SHA=$(echo "$REF_DATA" | jq -r '.object.sha')
-              else
-                # Try as a branch
-                REF_DATA=$(curl -s -H "Authorization: token $GH_TOKEN" "https://api.github.com/repos/$OWNER/$REPO_NAME/git/ref/heads/$REF")
-                OBJ_TYPE=$(echo "$REF_DATA" | jq -r '.object.type // empty')
-                if [ "$OBJ_TYPE" == "commit" ]; then
-                  SHA=$(echo "$REF_DATA" | jq -r '.object.sha')
-                fi
-              fi
-              
-              if [ -n "$SHA" ] && [ "$SHA" != "null" ]; then
-                echo "  ✅ Found SHA: $SHA"
-                # Use sed with '|' delimiter to safely replace the action ref
-                sed -i "s|$ACTION_REF|$ACTION_PREFIX@$SHA|g" "$FILE"
-              else
-                echo "  ❌ Could not resolve SHA for $ACTION_REF"
-              fi
-            done
+
+            grep -oE 'uses:[[:space:]]+[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+[^[:space:]]*@[^[:space:]]+' "$FILE" \
+              | sed -E 's/^uses:[[:space:]]+//' \
+              | grep -vE '@[0-9a-f]{40}$' \
+              | sort -u \
+              | while read -r ACTION_REF; do
+                  OWNER=$(echo "$ACTION_REF" | cut -d'/' -f1)
+                  REPO_NAME=$(echo "$ACTION_REF" | cut -d'/' -f2)
+                  REF=$(echo "$ACTION_REF" | sed -E 's/^[^@]+@//')
+                  ACTION_PREFIX=$(echo "$ACTION_REF" | sed -E "s/@${REF}$//")
+
+                  echo "🔍 Resolving $OWNER/$REPO_NAME@$REF..."
+
+                  REF_DATA=$(curl --fail --silent --show-error \
+                    -H "Authorization: Bearer $GH_TOKEN" \
+                    "https://api.github.com/repos/$OWNER/$REPO_NAME/git/ref/tags/$REF" || true)
+
+                  OBJ_TYPE=$(echo "$REF_DATA" | jq -r '.object.type // empty')
+                  SHA=""
+
+                  if [ "$OBJ_TYPE" = "tag" ]; then
+                    TAG_URL=$(echo "$REF_DATA" | jq -r '.object.url')
+                    SHA=$(curl --fail --silent --show-error \
+                      -H "Authorization: Bearer $GH_TOKEN" \
+                      "$TAG_URL" | jq -r '.object.sha // empty')
+                  elif [ "$OBJ_TYPE" = "commit" ]; then
+                    SHA=$(echo "$REF_DATA" | jq -r '.object.sha // empty')
+                  else
+                    REF_DATA=$(curl --fail --silent --show-error \
+                      -H "Authorization: Bearer $GH_TOKEN" \
+                      "https://api.github.com/repos/$OWNER/$REPO_NAME/git/ref/heads/$REF" || true)
+                    OBJ_TYPE=$(echo "$REF_DATA" | jq -r '.object.type // empty')
+
+                    if [ "$OBJ_TYPE" = "commit" ]; then
+                      SHA=$(echo "$REF_DATA" | jq -r '.object.sha // empty')
+                    fi
+                  fi
+
+                  if [[ "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
+                    echo "✅ Found SHA: $SHA"
+                    sed -i "s|$ACTION_REF|$ACTION_PREFIX@$SHA|g" "$FILE"
+                  else
+                    echo "❌ Could not resolve SHA for $ACTION_REF"
+                  fi
+                done
           done
-          
-          if git diff --quiet .github/workflows/; then
+
+          if git diff --quiet -- .github/workflows/; then
             echo "ℹ️ No changes needed. All workflows are sovereign."
           else
             echo "🚀 Committing sovereign heals..."
@@ -80,6 +82,6 @@ jobs:
             git config user.email "auditor@psivi.com"
             git add .github/workflows/
             git commit -m "chore: sovereign audit - pin all actions to 40-char SHAs [skip ci]"
-            git push
+            git push origin HEAD:refs/heads/main
             echo "🏆 Workflows successfully healed and committed."
           fi
