@@ -1,0 +1,77 @@
+# .github/workflows/direct-pages-fixer.yml
+name: Direct Pages Fixer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Directly Overwrite pages.yml
+        run: |
+          cat << 'EOF' > .github/workflows/pages.yml
+# .github/workflows/pages.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+EOF
+
+      - name: Commit and Push
+        run: |
+          git config user.name "PSIVI Sovereign Fixer"
+          git config user.email "fixer@psivi.com"
+          git add .github/workflows/pages.yml
+          if ! git diff --staged --quiet; then
+            git commit -m "fix: overwrite pages.yml with verified 40-char SHAs [skip ci]"
+            git push
+          else
+            echo "File already matches."
+          fi
