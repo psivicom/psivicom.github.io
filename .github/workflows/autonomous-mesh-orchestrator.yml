@@ -14,14 +14,14 @@ on:
       - 'src/tools/**'
       - 'src/mesh/**'
       - 'src/core/**'
+      - 'config/system_versions.json'
 
 permissions:
   contents: write
-  actions: write # CRITICAL: Required for Cache Governor to manage remote caches
+  actions: write
 
 jobs:
   orchestrate:
-    # SURGICAL FIX: Enforce a strict 15-minute execution boundary
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -30,28 +30,34 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Read System Versions
+        id: versions
+        run: |
+          echo "python_version=$(jq -r '.python.version' config/system_versions.json)" >> $GITHUB_OUTPUT
+          echo "zig_version=$(jq -r '.zig.version' config/system_versions.json)" >> $GITHUB_OUTPUT
+          echo "zig_os=$(jq -r '.zig.os' config/system_versions.json)" >> $GITHUB_OUTPUT
+
       - name: Setup Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          python-version: '3.12'
+          python-version: ${{ steps.versions.outputs.python_version }}
 
-      # SURGICAL FIX: Native Zig installation bypasses third-party action allowlist restrictions entirely
       - name: Install Zig Toolchain
         run: |
-          echo "⚡ Downloading Zig 0.13.0..."
-          curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o zig.tar.xz
+          ZIG_VER=${{ steps.versions.outputs.zig_version }}
+          ZIG_OS=${{ steps.versions.outputs.zig_os }}
+          echo "⚡ Downloading Zig ${ZIG_VER}..."
+          curl -sL "https://ziglang.org/download/${ZIG_VER}/zig-${ZIG_OS}-${ZIG_VER}.tar.xz" -o zig.tar.xz
           tar -xf zig.tar.xz
-          sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+          sudo mv zig-${ZIG_OS}-${ZIG_VER} /opt/zig
           echo "/opt/zig" >> $GITHUB_PATH
           zig version
 
-      # COGNITIVE CONTINUITY: Restore WENDY's Twin State before execution
-      # PINNED: Full 40-character SHA to satisfy strict repository security policy
       - name: Restore WENDY Twin Continuity State
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
         with:
           path: data/wendy_twin_state.json
-          key: wendy-twin-continuity-main # STATIC KEY: Overwrites the same slot, preventing fragmentation
+          key: wendy-twin-continuity-main
           restore-keys: |
             wendy-twin-continuity-
 
@@ -60,8 +66,6 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.tools.autonomous_mesh_orchestrator
 
-      # COGNITIVE CONTINUITY: Save WENDY's Twin State after execution
-      # PINNED: Full 40-character SHA to satisfy strict repository security policy
       - name: Save WENDY Twin Continuity State
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
         with:
@@ -84,7 +88,6 @@ jobs:
             echo "ℹ️ No new artifacts or healed source code to commit."
           fi
 
-      # MEMORY GOVERNANCE: WENDY autonomously scrubs orphaned caches and archives local ambiguity
       - name: WENDY Autonomous Memory Governance
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
