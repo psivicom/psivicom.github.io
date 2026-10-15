@@ -53,7 +53,7 @@ class SovereignPSVC:
 
     def _decrypt_from_disk(self):
         try:
-            passphrase = os.environ.get("WENDY_PASSPHRASE") or getpass.getpass(f"🔐 Enter passphrase: ")
+            passphrase = os.environ.get("WENDY_PASSPHRASE") or getpass.getpass("🔐 Enter passphrase: ")
             raw_data = self.key_file.read_bytes()
             salt = raw_data[:nacl.pwhash.argon2id.SALTBYTES]
             encrypted_payload = raw_data[nacl.pwhash.argon2id.SALTBYTES:]
@@ -105,4 +105,7 @@ class SovereignPSVC:
     @staticmethod
     def extract_data(container: Union[Dict[str, Any], str, bytes]) -> Dict[str, Any]:
         try:
-            data = json.loads(container) if isinstance(container, (str, bytes)) else
+            data = json.loads(container) if isinstance(container, (str, bytes)) else container
+            return data.get("payload", {})
+        except Exception:
+            return {}
