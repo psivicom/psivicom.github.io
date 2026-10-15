@@ -10,12 +10,13 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -23,10 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@11bd71964cd0e5481b7f50a4962d9f4e01e11a75
 
-      - name: Force Clean Previous Builds
-        run: rm -rf ./_site
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
 
       - name: Build Jekyll Site
         uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697
@@ -34,31 +35,30 @@ jobs:
           source: ./
           destination: ./_site
 
-      - name: Remove Symlinks from _site
+      - name: Check Built Site
         run: |
-          echo "🔍 Searching for symlinks in ./_site..."
-          find ./_site -type l -print -delete
-          echo "✅ Symlinks removed."
-
-      - name: Check _site Size Before Upload
-        run: |
-          echo "📦 Checking _site directory size and file count..."
-          du -sh ./_site || echo "_site is empty or missing"
+          test -d ./_site
+          echo "📦 Built site size:"
+          du -sh ./_site
+          echo "📄 File count:"
           find ./_site -type f | wc -l
+          if find ./_site -type l -print -quit | grep -q .; then
+            echo "Error: _site contains symlinks."
+            find ./_site -type l -print
+            exit 1
+          fi
 
       - name: Upload Pages Artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
         with:
-          name: github-pages
           path: ./_site
-          if-no-files-found: error
 
   deploy:
+    runs-on: ubuntu-latest
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
