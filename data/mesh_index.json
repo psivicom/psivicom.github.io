@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-10-14T22:41:11.956542+00:00",
-  "node_count": 3,
+  "updated_at": "2026-10-15T00:56:18.276789+00:00",
+  "node_count": 2,
   "nodes": [
     {
       "node_id": "mirror-node-local",
-      "timestamp": "2026-10-14T22:41:11.641Z",
+      "timestamp": "2026-10-15T00:56:17.905Z",
       "status": "ALIVE",
       "role": "MIRROR",
       "coords": {
@@ -15,23 +15,10 @@
       "latency_ms": 2
     },
     {
-      "node_id": "runnervmmprz5",
-      "timestamp": "2026-10-14T22:12:50.491Z",
-      "status": "ALIVE",
-      "signature": "1252a227d443a65dcab6c372cf913c50",
-      "velocity": 1.0,
-      "role": "VOLUNTEER",
-      "coords": {
-        "x": 0.54,
-        "y": -0.46,
-        "z": -0.9
-      }
-    },
-    {
       "node_id": "psivicom-primary",
-      "timestamp": "2026-10-14T22:41:11.912Z",
+      "timestamp": "2026-10-15T00:56:18.227Z",
       "status": "ALIVE",
-      "signature": "b6383ceec91958c35d6b0603da092357",
+      "signature": "cf6e80a3821703ca2d16194d1d262512",
       "velocity": 1.0,
       "role": "VOLUNTEER",
       "coords": {
