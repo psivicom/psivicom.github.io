@@ -1,0 +1,11 @@
+{
+  "chain_id": "b5e39ca6cc5c4dfc",
+  "step_index": 1,
+  "agent": "literature_agent",
+  "status": "SUCCESS",
+  "output": {
+    "result": "Processed by literature_agent",
+    "chain_id": "b5e39ca6cc5c4dfc"
+  },
+  "timestamp": "2026-10-15T22:07:40.782Z"
+}
