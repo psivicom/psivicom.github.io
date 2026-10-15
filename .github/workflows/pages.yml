@@ -34,6 +34,12 @@ jobs:
           source: ./
           destination: ./_site
 
+      - name: Remove Symlinks from _site
+        run: |
+          echo "🔍 Searching for symlinks in ./_site..."
+          find ./_site -type l -print -delete
+          echo "✅ Symlinks removed."
+
       - name: Check _site Size Before Upload
         run: |
           echo "📦 Checking _site directory size and file count..."
