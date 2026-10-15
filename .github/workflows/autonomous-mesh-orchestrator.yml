@@ -26,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        # ALLOWED: actions/checkout@* (Pinned to 40-char SHA)
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
@@ -39,7 +38,6 @@ jobs:
           echo "zig_os=$(jq -r '.zig.os' config/system_versions.json)" >> $GITHUB_OUTPUT
 
       - name: Setup Python
-        # ALLOWED: actions/setup-python@* (Pinned to 40-char SHA)
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ steps.versions.outputs.python_version }}
@@ -53,14 +51,12 @@ jobs:
           tar -xf zig.tar.xz
           sudo mv zig-${ZIG_OS}-${ZIG_VER} /opt/zig
           
-          # CRITICAL: Export PATH for current shell and future steps
           export PATH="/opt/zig:$PATH"
           echo "/opt/zig" >> $GITHUB_PATH
           
           zig version
 
       - name: Restore WENDY Twin Continuity State
-        # ALLOWED: actions/cache@* (Pinned to 40-char SHA)
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
         with:
           path: data/wendy_twin_state.json
@@ -74,7 +70,6 @@ jobs:
         run: python -m src.tools.autonomous_mesh_orchestrator
 
       - name: Save WENDY Twin Continuity State
-        # ALLOWED: actions/cache@* (Pinned to 40-char SHA)
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
         with:
           path: data/wendy_twin_state.json
