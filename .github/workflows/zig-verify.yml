@@ -1,13 +1,12 @@
 # .github/workflows/zig-verify.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 name: Intelligent Zig Binary Compiler
 
 on:
   push:
     paths:
-      - 'src/core/*.zig'
+      - "src/core/*.zig"
   workflow_dispatch:
 
 permissions:
@@ -25,14 +24,16 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install Zig Toolchain
         run: |
-          curl -sL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
+          curl --fail --location --silent --show-error \
+            https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz \
+            --output z.tar.xz
           tar -xf z.tar.xz
           sudo mv zig-linux-x86_64-0.13.0 /opt/zig
-          echo "/opt/zig" >> $GITHUB_PATH
+          echo "/opt/zig" >> "$GITHUB_PATH"
           /opt/zig/zig version
 
       - name: Heal and Scribe
@@ -45,33 +46,43 @@ jobs:
 
       - name: Compile Binaries
         run: |
-          for f in src/core/*.zig; do
-            /opt/zig/zig build-exe "$f" -O ReleaseSafe -fstrip -femit-bin="src/core/$(basename "$f" .zig)"
+          shopt -s nullglob
+          files=(src/core/*.zig)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No Zig source files found in src/core."
+            exit 1
+          fi
+
+          for file in "${files[@]}"; do
+            /opt/zig/zig build-exe "$file" \
+              -O ReleaseSafe \
+              -fstrip \
+              -femit-bin="src/core/$(basename "$file" .zig)"
           done
 
       - name: Commit and Push Safely
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Zig Compiler"
           git config user.email "zig-compiler@psivi.com"
-          git add src/core/ docs/ || true
+          git add src/core/ docs/
+
           if ! git diff --staged --quiet; then
             git commit -m "chore: auto-update compiled Zig binaries [skip ci]"
-            
+
             PUSH_SUCCESS=false
             for attempt in 1 2 3; do
               if git pull --rebase origin main; then
-                if git push origin main; then
+                if git push origin HEAD:refs/heads/main; then
                   echo "✅ Push successful on attempt $attempt"
                   PUSH_SUCCESS=true
                   break
                 fi
               fi
+
               echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
               sleep 2
             done
-            
+
             if [ "$PUSH_SUCCESS" = false ]; then
               echo "❌ CRITICAL: Failed to push after 3 attempts."
               exit 1
