@@ -7,6 +7,7 @@ import sys
 import subprocess
 import threading
 import json
+import os
 from pathlib import Path
 from datetime import datetime, timezone
 import logging
@@ -154,8 +155,24 @@ def main():
         if packages_list:
             logger.info(f"📦 WENDY dynamically declared dependencies: {', '.join(packages_list)}")
             logger.info("⚡ Installing task-specific dependencies...")
+            
+            # Upgrade pip first
             subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip", "-q"])
-            subprocess.check_call([sys.executable, "-m", "pip", "install"] + packages_list + ["-q"])
+            
+            # SOVEREIGN OPTIMIZATION: Detect CI environment to avoid downloading massive CUDA wheels
+            is_ci = os.environ.get("GITHUB_ACTIONS") == "true"
+            
+            if is_ci:
+                logger.info("🌐 CI Environment detected. Forcing lightweight CPU-only ML wheels to conserve resources.")
+                # Use PyTorch's CPU-only index to skip the 2GB+ CUDA downloads
+                install_cmd = [sys.executable, "-m", "pip", "install"] + packages_list + [
+                    "-q", "--extra-index-url", "https://download.pytorch.org/whl/cpu"
+                ]
+            else:
+                logger.info("💻 Local environment detected. Installing standard dependencies.")
+                install_cmd = [sys.executable, "-m", "pip", "install"] + packages_list + ["-q"]
+                
+            subprocess.check_call(install_cmd)
 
         for item in files:
             module_name = item['module']
