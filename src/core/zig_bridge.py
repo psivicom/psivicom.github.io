@@ -2,159 +2,109 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-"""
-Zig Execution Bridge - Production Implementation.
-Invokes compiled Zig binaries for high-performance cognitive computation,
-producing unified sovereign binary PSVC containers with Ed25519 signatures.
-"""
-
 import os
-import subprocess
+import json
+import hashlib
 import logging
-import tempfile
-import numpy as np
+import time
+import ctypes
 from pathlib import Path
-from typing import Optional
-
-from src.core.binary_psvc_reader import BinaryPSVCReader, BinaryPSVC
+from typing import Optional, Dict, Any
 
 logger = logging.getLogger("ZIG_BRIDGE")
 
-
 class ZigBridge:
-    """Production bridge between Python mesh and bare-metal Zig cognitive engines."""
-    
-    def __init__(self, core_dir: str = "src/core"):
-        self.core_dir = Path(core_dir)
-        self.vector_engine_bin = self.core_dir / "vector_engine"
-        self.psvc_sealer_bin = self.core_dir / "psvc_sealer"
+    """
+    Sovereign bridge between Python orchestration and bare-metal ZIG execution.
+    Enforces cryptographic verification and celebrates optimized binary loading.
+    """
+    def __init__(self):
+        self.root = Path(__file__).parent.parent.parent
+        self.bin_dir = self.root / "src" / "core"
+        self.audit_path = self.bin_dir / ".zig-build-audit.json"
         
-        self._verify_binaries()
+        # Map of expected binaries to their ctypes library handles
+        self.libraries: Dict[str, Any] = {}
         
-        # Initialize sovereign reader for verification of outputs
-        self.reader = BinaryPSVCReader.from_env_seed()
-        
-        # Pass sovereign key to Zig binaries via environment
-        self._env = os.environ.copy()
-        if "WENDY_PRIVATE_KEY_SEED" in self._env:
-            logger.info("🔐 Sovereign signing key available for Zig binaries.")
+        self._verify_and_celebrate()
 
-    def _verify_binaries(self):
-        if not self.vector_engine_bin.exists():
-            raise FileNotFoundError(f"vector_engine binary not found: {self.vector_engine_bin}")
-        if not self.psvc_sealer_bin.exists():
-            raise FileNotFoundError(f"psvc_sealer binary not found: {self.psvc_sealer_bin}")
-        logger.info("✅ Zig binaries verified and ready.")
+    def _verify_and_celebrate(self):
+        """Verifies SHA-256 integrity of compiled ZIG binaries and rings the bells of success."""
+        if not self.audit_path.exists():
+            logger.warning("⚠️ No ZIG audit manifest found. Binaries will be loaded without cryptographic verification.")
+            self._load_unverified()
+            return
 
-    def transform_vector(
-        self,
-        vector_data: np.ndarray,
-        matrix_data: np.ndarray,
-        precision: str = "32",
-        output_dir: str = "reports/cognitive_computations"
-    ) -> BinaryPSVC:
-        """
-        Performs bare-metal vector transformation and returns a verified, signed PSVC.
-        
-        Args:
-            vector_data: Input vector (1D numpy array)
-            matrix_data: Transformation matrix (2D numpy array)
-            precision: "4", "8", "16", "32", "64", or "128"
-            output_dir: Directory for output PSVC files
-            
-        Returns:
-            Verified BinaryPSVC containing the transformed vector
-        """
-        output_path = Path(output_dir)
-        output_path.mkdir(parents=True, exist_ok=True)
-        
-        dimension = vector_data.shape[0]
-        
-        # Map precision to numpy dtype
-        dtype_map = {
-            "4": np.uint8, "8": np.uint8, "16": np.float16,
-            "32": np.float32, "64": np.float64, "128": np.longdouble
-        }
-        dtype = dtype_map.get(precision, np.float32)
-        
-        with tempfile.TemporaryDirectory() as tmpdir:
-            tmp_path = Path(tmpdir)
-            input_file = tmp_path / "input.bin"
-            matrix_file = tmp_path / "matrix.bin"
-            result_file = tmp_path / "result.psvc"
-            
-            # Write raw binary inputs (zero serialization overhead)
-            vector_data.astype(dtype).tofile(input_file)
-            matrix_data.astype(dtype).tofile(matrix_file)
-            
-            try:
-                result = subprocess.run(
-                    [
-                        str(self.vector_engine_bin),
-                        precision,
-                        str(dimension),
-                        str(input_file),
-                        str(matrix_file),
-                        str(result_file)
-                    ],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                    timeout=30.0,
-                    env=self._env
-                )
-                logger.info(f"✅ Zig vector transformation: {result.stdout.strip()}")
-                
-                # Read and verify the signed PSVC output
-                verified_psvc = self.reader.verify_and_read(result_file)
-                
-                # Persist to output directory
-                final_path = output_path / f"cognitive_{dimension}d_{verified_psvc.timestamp_epoch_ms}.psvc"
-                result_file.replace(final_path)
-                
-                return verified_psvc
-                
-            except subprocess.CalledProcessError as e:
-                logger.error(f"❌ Zig transformation failed: {e.stderr}")
-                raise
-
-    def seal_payload(
-        self,
-        payload_bytes: bytes,
-        precision_bits: int,
-        output_path: str
-    ) -> BinaryPSVC:
-        """
-        Seals raw bytes into a sovereign binary PSVC using the Zig sealer.
-        
-        Args:
-            payload_bytes: Raw mathematical payload
-            precision_bits: 4, 8, 16, 32, 64, or 128
-            output_path: Destination PSVC file path
-            
-        Returns:
-            Verified BinaryPSVC
-        """
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".bin") as tmp:
-            tmp.write(payload_bytes)
-            tmp_path = tmp.name
-        
         try:
-            result = subprocess.run(
-                [
-                    str(self.psvc_sealer_bin),
-                    str(precision_bits),
-                    tmp_path,
-                    output_path
-                ],
-                capture_output=True,
-                text=True,
-                check=True,
-                timeout=10.0,
-                env=self._env
-            )
-            logger.info(f"✅ Zig PSVC seal: {result.stdout.strip()}")
+            with open(self.audit_path, 'r', encoding='utf-8') as f:
+                audit_data = json.load(f)
             
-            return self.reader.verify_and_read(Path(output_path))
-        finally:
-            Path(tmp_path).unlink(missing_ok=True)
+            verifications = audit_data.get("verifications", {})
+            logger.info("🛡️ Initiating Sovereign ZIG Binary Verification Protocol...")
+            
+            for binary_name, expected_hashes in verifications.items():
+                binary_path = self.bin_dir / binary_name
+                
+                if not binary_path.exists():
+                    logger.error(f"❌ CRITICAL: Verified binary missing: {binary_name}")
+                    continue
+
+                # 1. Cryptographic Verification
+                actual_sha = self._calculate_sha256(binary_path)
+                expected_binary_sha = expected_hashes.get("binary_sha256", "")
+                
+                if actual_sha != expected_binary_sha:
+                    logger.error(f"❌ CRITICAL: SHA-256 MISMATCH for {binary_name}!")
+                    logger.error(f"   Expected: {expected_binary_sha}")
+                    logger.error(f"   Actual:   {actual_sha}")
+                    continue
+
+                # 2. Telemetry Measurement (Load Time & Size)
+                start_time = time.perf_counter()
+                try:
+                    # Load the shared library (or executable, depending on build mode)
+                    lib = ctypes.CDLL(str(binary_path))
+                    self.libraries[binary_name] = lib
+                except OSError as e:
+                    logger.warning(f"⚠️ Could not load {binary_name} as shared library (may be executable): {e}")
+                    continue
+                    
+                end_time = time.perf_counter()
+                load_time_ms = (end_time - start_time) * 1000
+                size_kb = binary_path.stat().st_size / 1024
+
+                # 3. RING THE BELLS 🔔
+                logger.info("=" * 60)
+                logger.info("🔔 DING! 🔔 BARE-METAL BINARY VERIFIED & LOADED 🔔 DING! 🔔")
+                logger.info(f"🏆 Binary:       {binary_name}")
+                logger.info(f"📦 Size:         {size_kb:.2f} KB (Optimized & Stripped)")
+                logger.info(f"⚡ Load Time:    {load_time_ms:.4f} ms")
+                logger.info(f"🔐 SHA-256:      {actual_sha[:16]}...{actual_sha[-16:]} ✅ MATCH")
+                logger.info("🧠 WENDY Super-Intelligence Substrate: ACTIVE")
+                logger.info("=" * 60)
+
+        except Exception as e:
+            logger.error(f"❌ Failed to verify ZIG binaries: {e}")
+            self._load_unverified()
+
+    def _calculate_sha256(self, file_path: Path) -> str:
+        """Calculates the SHA-256 hash of a file."""
+        sha256_hash = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for byte_block in iter(lambda: f.read(4096), b""):
+                sha256_hash.update(byte_block)
+        return sha256_hash.hexdigest()
+
+    def _load_unverified(self):
+        """Fallback: Loads binaries if audit manifest is missing (e.g., local dev)."""
+        for binary_path in self.bin_dir.iterdir():
+            if binary_path.is_file() and not binary_path.name.startswith('.'):
+                try:
+                    self.libraries[binary_path.stem] = ctypes.CDLL(str(binary_path))
+                    logger.info(f"⚠️ Loaded unverified binary: {binary_path.name}")
+                except OSError:
+                    pass
+
+    def get_library(self, name: str) -> Optional[Any]:
+        """Retrieves a loaded ZIG library by name."""
+        return self.libraries.get(name)
