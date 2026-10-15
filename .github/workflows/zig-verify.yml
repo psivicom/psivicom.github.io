@@ -58,15 +58,24 @@ jobs:
           git add src/core/ docs/ || true
           if ! git diff --staged --quiet; then
             git commit -m "chore: auto-update compiled Zig binaries [skip ci]"
+            
+            PUSH_SUCCESS=false
             for attempt in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
-                echo "✅ Push successful on attempt $attempt"
-                break
-              else
-                echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
-                sleep 2
+              if git pull --rebase origin main; then
+                if git push origin main; then
+                  echo "✅ Push successful on attempt $attempt"
+                  PUSH_SUCCESS=true
+                  break
+                fi
               fi
+              echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
+              sleep 2
             done
+            
+            if [ "$PUSH_SUCCESS" = false ]; then
+              echo "❌ CRITICAL: Failed to push after 3 attempts."
+              exit 1
+            fi
           else
             echo "ℹ️ No changes to commit."
           fi
