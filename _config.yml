@@ -1,11 +1,16 @@
-# _config.yml 
+# _config.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 title: PSIVI
+description: Sovereign Intelligence and Autonomous Mesh Research
+baseurl: ""
+url: "https://psivicom.github.io"
+
 theme: minima
 
 # BULLETPROOF: Exclude autonomously generated files and directories from Jekyll Liquid parsing
+# This prevents crashes when WENDY generates files containing raw JSON or code snippets with {{ }}
 exclude:
   - "AGENTS.md"
   - "WENDY_QWEN_ZIG_MESH.md.md"
@@ -19,3 +24,17 @@ exclude:
   - "Gemfile.lock"
   - "node_modules/"
   - "vendor/"
+  - ".github/"
+
+# Markdown and Plugins
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Default Front Matter
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
