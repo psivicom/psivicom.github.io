@@ -28,12 +28,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Download Zig Toolchain
+      - name: Download Zig 0.13.0 Toolchain
         run: |
-          echo "Downloading Zig 0.11.0..."
-          curl -sL https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz -o zig.tar.xz
+          echo "⚡ Downloading Zig 0.13.0..."
+          curl -sL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o zig.tar.xz
           tar -xf zig.tar.xz
-          echo "$PWD/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+          echo "$PWD/zig-linux-x86_64-0.13.0" >> $GITHUB_PATH
 
       - name: Step 1: Attempt Autonomous ZIG Syntax Healing
         env:
