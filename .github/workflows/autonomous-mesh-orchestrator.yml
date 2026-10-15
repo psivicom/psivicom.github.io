@@ -44,17 +44,27 @@ jobs:
 
       - name: Install Zig Toolchain (Allowlist Bypass)
         run: |
-          ZIG_VER=${{ steps.versions.outputs.zig_version }}
-          ZIG_OS=${{ steps.versions.outputs.zig_os }}
-          echo "⚡ Downloading Zig ${ZIG_VER} via native curl (bypasses action allowlist)..."
+          ZIG_VER="${{ steps.versions.outputs.zig_version }}"
+          ZIG_OS="${{ steps.versions.outputs.zig_os }}"
+          
+          echo "⚡ Downloading Zig ${ZIG_VER}..."
           curl -sL "https://ziglang.org/download/${ZIG_VER}/zig-${ZIG_OS}-${ZIG_VER}.tar.xz" -o zig.tar.xz
           tar -xf zig.tar.xz
-          sudo mv zig-${ZIG_OS}-${ZIG_VER} /opt/zig
           
-          export PATH="/opt/zig:$PATH"
-          echo "/opt/zig" >> $GITHUB_PATH
+          EXTRACTED_DIR="zig-${ZIG_OS}-${ZIG_VER}"
+          sudo mv "${EXTRACTED_DIR}" /opt/zig
           
-          zig version
+          # CRITICAL: Use absolute path to bypass any GitHub Actions PATH caching quirks
+          if [ -f /opt/zig/zig ]; then
+            echo "✅ Zig binary verified at /opt/zig/zig"
+            /opt/zig/zig version
+            echo "/opt/zig" >> $GITHUB_PATH
+          else
+            echo "❌ CRITICAL: Zig binary not found after extraction!"
+            echo "Contents of /opt/:"
+            ls -la /opt/
+            exit 1
+          fi
 
       - name: Restore WENDY Twin Continuity State
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
