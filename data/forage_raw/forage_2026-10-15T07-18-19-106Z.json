@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-15T07:18:19.106Z",
+  "location": "Goldstream Watershed, Langford BC",
+  "coordinates": {
+    "lat": 48.4456,
+    "lon": -123.5017
+  },
+  "metrics": {
+    "temp_c": 8.9,
+    "humidity_pct": 77.0,
+    "wind_kmh": 8.3,
+    "solar_wm2": 0.0
+  },
+  "source": "Open-Meteo API",
+  "license": "CC BY-4.0 (Data)"
+}
