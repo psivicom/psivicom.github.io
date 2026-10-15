@@ -13,7 +13,9 @@ theme: minima
 # This prevents crashes when WENDY generates files containing raw JSON or code snippets with {{ }}
 exclude:
   - "AGENTS.md"
+  - "WENDY_QWEN_ZIG_MESH.md"
   - "WENDY_QWEN_ZIG_MESH.md.md"
+  - "docs/QWEN/"
   - "reports/"
   - "data/"
   - "src/"
