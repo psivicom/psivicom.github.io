@@ -10,12 +10,13 @@ url: "https://psivicom.github.io"
 theme: minima
 
 # BULLETPROOF: Exclude autonomously generated files and directories from Jekyll Liquid parsing
-# This prevents crashes when WENDY generates files containing raw JSON or code snippets with {{ }}
+# This prevents crashes when WENDY generates files containing raw JSON or GitHub Actions syntax with {{ }}
 exclude:
   - "AGENTS.md"
   - "WENDY_QWEN_ZIG_MESH.md"
   - "WENDY_QWEN_ZIG_MESH.md.md"
   - "docs/QWEN/"
+  - "docs/experimental_wendy_latency.md"
   - "reports/"
   - "data/"
   - "src/"
