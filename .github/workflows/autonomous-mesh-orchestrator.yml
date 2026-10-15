@@ -50,7 +50,14 @@ jobs:
           curl -sL "https://ziglang.org/download/${ZIG_VER}/zig-${ZIG_OS}-${ZIG_VER}.tar.xz" -o zig.tar.xz
           tar -xf zig.tar.xz
           sudo mv zig-${ZIG_OS}-${ZIG_VER} /opt/zig
+          
+          # CRITICAL FIX: Export PATH for the current shell session immediately
+          export PATH="/opt/zig:$PATH"
+          
+          # Append to GITHUB_PATH for all subsequent steps
           echo "/opt/zig" >> $GITHUB_PATH
+          
+          # Sanity check now works because the current shell knows the path
           zig version
 
       - name: Restore WENDY Twin Continuity State
