@@ -27,9 +27,7 @@ jobs:
           GH_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
           python3 << 'PYTHON_SCRIPT'
-          import os
-          import re
-          import requests
+          import os, re, requests
 
           GITHUB_TOKEN = os.environ.get('GH_TOKEN')
           WORKFLOWS_DIR = '.github/workflows'
@@ -44,14 +42,12 @@ jobs:
                       if r2.status_code == 200:
                           return r2.json()['object']['sha']
                   return data['object']['sha']
-              
               url = f"https://api.github.com/repos/{owner}/{repo}/git/ref/heads/{ref}"
               r = requests.get(url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
               if r.status_code == 200:
                   return r.json()['object']['sha']
               return None
 
-          modified = False
           known_shas = {
               'configure-pages': '983d7736d9b0ae728b81ab479565c72886d7745b',
               'deploy-pages': 'd6db90164ac5ed86f2b6aed7e0febac5b3c0c03e',
@@ -76,10 +72,7 @@ jobs:
                       
                       if re.match(r'^([0-9a-f]{40})@\1$', ref):
                           real_sha = ref.split('@')[0]
-                          old_str = f"{match.group(1)}@{ref}"
-                          new_str = f"{match.group(1)}@{real_sha}"
-                          new_content = new_content.replace(old_str, new_str)
-                          modified = True
+                          new_content = new_content.replace(f"{match.group(1)}@{ref}", f"{match.group(1)}@{real_sha}")
                           continue
                           
                       if re.match(r'^[0-9a-f]{40}$', ref):
@@ -88,46 +81,46 @@ jobs:
                       if 'PLACEHOLDER' in ref:
                           repo_name = action_path.split('/')[1]
                           if repo_name in known_shas:
-                              real_sha = known_shas[repo_name]
-                              old_str = f"{match.group(1)}@{ref}"
-                              new_str = f"{match.group(1)}@{real_sha}"
-                              new_content = new_content.replace(old_str, new_str)
-                              modified = True
+                              new_content = new_content.replace(f"{match.group(1)}@{ref}", f"{match.group(1)}@{known_shas[repo_name]}")
                           continue
 
                       parts = action_path.split('/')
-                      owner = parts[0]
-                      repo_name = parts[1]
-                      
-                      sha = get_sha(owner, repo_name, ref)
+                      sha = get_sha(parts[0], parts[1], ref)
                       if sha:
-                          old_str = f"{match.group(1)}@{ref}"
-                          new_str = f"{match.group(1)}@{sha}"
-                          new_content = new_content.replace(old_str, new_str)
-                          modified = True
+                          new_content = new_content.replace(f"{match.group(1)}@{ref}", f"{match.group(1)}@{sha}")
                   
                   if new_content != content:
                       with open(filepath, 'w') as f:
                           f.write(new_content)
-
-          if modified:
-              print("🚀 Committing sovereign heals...")
-              os.system('git config user.name "WENDY Sovereign Auditor"')
-              os.system('git config user.email "auditor@psivi.com"')
-              os.system('git add .github/workflows/')
-              os.system('git commit -m "chore: sovereign audit - fix malformed action SHAs [skip ci]"')
-              os.system('''
-                for attempt in 1 2 3; do
-                  if git pull --rebase origin main && git push origin main; then
-                    echo "✅ Push successful on attempt $attempt"
-                    break
-                  else
-                    echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
-                    sleep 2
-                  fi
-                done
-              ''')
-              print("🏆 Workflows successfully healed and committed.")
-          else:
-              print("ℹ️ No changes needed. All workflows are sovereign.")
           PYTHON_SCRIPT
+
+      - name: Commit and Push Safely
+        env:
+          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+        run: |
+          git config user.name "WENDY Sovereign Auditor"
+          git config user.email "auditor@psivi.com"
+          git add .github/workflows/
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: sovereign audit - fix malformed action SHAs [skip ci]"
+            
+            PUSH_SUCCESS=false
+            for attempt in 1 2 3; do
+              if git pull --rebase origin main; then
+                if git push origin main; then
+                  echo "✅ Push successful on attempt $attempt"
+                  PUSH_SUCCESS=true
+                  break
+                fi
+              fi
+              echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
+              sleep 2
+            done
+            
+            if [ "$PUSH_SUCCESS" = false ]; then
+              echo "❌ CRITICAL: Failed to push after 3 attempts."
+              exit 1
+            fi
+          else
+            echo "ℹ️ No changes needed. All workflows are sovereign."
+          fi
