@@ -9,7 +9,7 @@ url: "https://psivicom.github.io"
 
 theme: minima
 
-# BULLETPROOF: Exclude autonomously generated files and directories from Jekyll Liquid parsing
+# BULLETPROOF: Exclude autonomously generated files from Jekyll Liquid parsing
 # This prevents crashes when WENDY generates files containing raw JSON or code snippets with {{ }}
 exclude:
   - "AGENTS.md"
