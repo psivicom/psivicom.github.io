@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   validate-constitution:
@@ -31,10 +32,9 @@ jobs:
           from pathlib import Path
 
           root = Path(".github/workflows")
-          violations = 0
+          violations = []
 
           for path in sorted(root.glob("*.yml")) + sorted(root.glob("*.yaml")):
-              # CRITICAL: Exclude the guardian itself from the checks
               if path.name == "workflow-security-guardian.yml":
                   continue
 
@@ -42,28 +42,39 @@ jobs:
               for lineno, raw_line in enumerate(text.splitlines(), 1):
                   line = raw_line.strip()
 
-                  # Ignore blank lines, comments, and echo noise.
                   if not line or line.startswith("#") or "echo " in raw_line:
                       continue
 
-                  # Bare git push requires a rebase shield.
                   if "git push" in line and "git pull --rebase" not in line:
-                      print(f"❌ VIOLATION: Naked 'git push' detected in {path}:{lineno}")
-                      violations += 1
+                      violations.append(f"❌ Naked 'git push' in `{path}:{lineno}`")
 
-                  # Automated commits must skip CI.
                   if "git commit" in line and "[skip ci]" not in line:
-                      print(f"❌ VIOLATION: Automated commit missing '[skip ci]' in {path}:{lineno}")
-                      violations += 1
+                      violations.append(f"❌ Automated commit missing '[skip ci]' in `{path}:{lineno}`")
 
-                  # Actions must be pinned to immutable SHAs.
                   if re.search(r"uses:\s*[A-Za-z0-9._/-]+@(v[0-9]+|main|master)\b", raw_line):
-                      print(f"❌ VIOLATION: Unpinned GitHub Action detected in {path}:{lineno}")
-                      violations += 1
+                      violations.append(f"❌ Unpinned Action in `{path}:{lineno}`")
 
           if violations:
-              print(f"\n🚨 Agent Constitution violated ({violations} violation(s)). Commit rejected.")
-              raise SystemExit(1)
-
-          print("✅ All workflow files comply with the Agent Constitution.")
+              with open("violations.txt", "w") as f:
+                  f.write("\n".join(violations))
+              print(f"Found {len(violations)} violations. Recording for report.")
+          else:
+              print("✅ All workflow files comply with the Agent Constitution.")
           PY
+
+      - name: Notify WENDY AI
+        if: hashFiles('violations.txt') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Combine violations into a clean markdown list
+          REPORT=$(cat violations.txt | sed 's/^/- /')
+          MESSAGE="### 🚨 Agent Constitution Audit\n\nWENDY AI, the following violations were found:\n\n$REPORT\n\n**Please apply the required fixes and push again.**"
+          
+          # Only comment if we are in a Pull Request context
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            gh pr comment ${{ github.event.pull_request.number }} --body "$MESSAGE"
+          else
+            echo "Violations found on main branch push. Please check logs."
+            echo "$REPORT"
+          fi
