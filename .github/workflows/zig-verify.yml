@@ -40,6 +40,11 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.tools.zig_compiler_healer
 
+      - name: Step 1.5: Execute Telemetry-Driven ZIG Evolution
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.tools.zig_evolution_engine
+
       - name: Step 2: Enforce ZIG Sovereign Protocol (Sync & Strip Docs)
         env:
           PYTHONPATH: ${{ github.workspace }}
