@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@1f0c5cde4bc74860b937b13184214c7e6427d50a
 
       - name: Sanitize Build Output (Ultimate Cleanup)
         run: |
@@ -48,7 +48,7 @@ jobs:
           echo "✅ Build output fully sanitized."
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@56afc609e7420a128f0da65e7c2c9c950f0e3f83
         with:
           path: ./_site
 
@@ -61,4 +61,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
