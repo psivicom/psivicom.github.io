@@ -1,169 +1,30 @@
-# .github/workflows/zig-verify.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
-name: Intelligent Zig Binary Compiler (SHA-Verified & Self-Healing)
-
+name: Intelligent Zig Binary Compiler
 on:
   push:
     paths:
       - 'src/core/*.zig'
-      - 'docs/ZIG_COMMENTED_SOURCE/*.md'
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   build-and-commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
-
-      - name: Download Zig Toolchain (Absolute Path Fail-Safe)
-        run: |
-          ZIG_VER="0.13.0"
-          ZIG_OS="linux-x86_64"
-          
-          echo "⚡ Downloading Zig ${ZIG_VER}..."
-          curl -sL "https://ziglang.org/download/${ZIG_VER}/zig-${ZIG_OS}-${ZIG_VER}.tar.xz" -o zig.tar.xz
-          tar -xf zig.tar.xz
-          
-          EXTRACTED_DIR="zig-${ZIG_OS}-${ZIG_VER}"
-          sudo mv "${EXTRACTED_DIR}" /opt/zig
-          
-          if [ -f /opt/zig/zig ]; then
-            echo "✅ Zig binary verified at /opt/zig/zig"
-            /opt/zig/zig version
-            echo "/opt/zig" >> $GITHUB_PATH
-          else
-            echo "❌ CRITICAL: Zig binary not found after extraction!"
-            ls -la /opt/
-            exit 1
-          fi
-
-      - name: Step 0.5: Enforce ZIG Architectural Sovereignty (Patrol & Correct)
+      - name: Install Zig
+        run: curl -sL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz && tar -xf z.tar.xz && sudo mv zig-linux-x86_64-0.13.0 /opt/zig && echo "/opt/zig" >> $GITHUB_PATH && /opt/zig/zig version
+      - name: Heal and Scribe
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.tools.zig_sovereign_governor
-
-      - name: Step 1: Attempt Autonomous ZIG Syntax Healing
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.tools.zig_compiler_healer
-
-      - name: Step 1.5: Execute Telemetry-Driven ZIG Evolution
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.tools.zig_evolution_engine
-
-      - name: Step 2: Enforce ZIG Sovereign Protocol (Sync & Strip Docs)
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python -m src.tools.zig_sovereign_scribe
-
-      - name: Step 3: Compile Stripped ZIG Binaries with Fallback
-        run: |
-          cd $GITHUB_WORKSPACE
-          MANIFEST_VERIFICATIONS=""
-          
-          for zig_file in src/core/*.zig; do
-            if [ -f "$zig_file" ]; then
-              binary_name=$(basename "$zig_file" .zig)
-              binary_path="src/core/$binary_name"
-              stripped_file="docs/ZIG_UNCOMMENTED_SOURCE/${binary_name}.zig"
-              md_file="docs/ZIG_COMMENTED_SOURCE/${binary_name}.md"
-              
-              echo "Enforcing stripped compilation target for $binary_name..."
-              
-              if [ -f "$stripped_file" ]; then
-                cp "$stripped_file" "$zig_file"
-                echo "✅ Loaded 100% uncommented source for compilation."
-              fi
-              
-              echo "Attempting final compilation of $zig_file..."
-              
-              if ! /opt/zig/zig build-exe "$zig_file" -O ReleaseSafe -fstrip -femit-bin="$binary_path" 2> compile_error.log; then
-                echo "CRITICAL: Compilation of stripped source failed. Attempting pristine fallback..."
-                
-                if [ -f "$md_file" ]; then
-                  echo "Extracting pristine source from $md_file..."
-                  sed -n '/^```zig$/,/^```$/p' "$md_file" | sed '1d;$d' > "$zig_file"
-                  
-                  if ! /opt/zig/zig build-exe "$zig_file" -O ReleaseSafe -fstrip -femit-bin="$binary_path" 2> compile_error.log; then
-                    echo "CRITICAL: Even pristine source failed to compile. Halting."
-                    cat compile_error.log
-                    exit 1
-                  else
-                    echo "SUCCESS: Pristine fallback compiled successfully."
-                  fi
-                else
-                  echo "CRITICAL: No pristine source found. Halting."
-                  cat compile_error.log
-                  exit 1
-                fi
-              else
-                echo "SUCCESS: Compiled $binary_name from stripped source."
-              fi
-              
-              chmod +x "$binary_path"
-              
-              SOURCE_SHA=$(sha256sum "$zig_file" | awk '{print $1}')
-              BINARY_SHA=$(sha256sum "$binary_path" | awk '{print $1}')
-              MANIFEST_VERIFICATIONS="$MANIFEST_VERIFICATIONS
-              \"$binary_name\": {
-                \"source_sha256\": \"$SOURCE_SHA\",
-                \"binary_sha256\": \"$BINARY_SHA\"
-              },"
-            fi
-          done
-          
-          MANIFEST_VERIFICATIONS=$(echo "$MANIFEST_VERIFICATIONS" | sed '$ s/,$//')
-          MANIFEST="src/core/.zig-build-audit.json"
-          
-          cat > "$MANIFEST" << EOF
-          {
-            "workflow_run_id": "$GITHUB_RUN_ID",
-            "commit_sha": "$GITHUB_SHA",
-            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)",
-            "verifications": {$MANIFEST_VERIFICATIONS
-            }
-          }
-          EOF
-
-      - name: Step 4: Commit and Push Binaries (Race-Condition Proof)
+        run: python -m src.tools.zig_compiler_healer && python -m src.tools.zig_evolution_engine && python -m src.tools.zig_sovereign_scribe
+      - name: Compile
+        run: for f in src/core/*.zig; do /opt/zig/zig build-exe "$f" -O ReleaseSafe -fstrip -femit-bin="src/core/$(basename "$f" .zig)"; done
+      - name: Commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd $GITHUB_WORKSPACE
-          git config user.name "PSIVI Zig Compiler"
-          git config user.email "zig-compiler@psivi.com"
-          
-          # BULLETPROOF: Dynamically add entire directories. || true prevents crash if a specific binary is missing.
-          git add src/core/ docs/ || true
-          
-          if ! git diff --staged --quiet; then
-            echo "Committing and pushing updated binaries and documentation..."
-            git commit -m "chore: auto-update compiled Zig binaries, SHA audit, and sovereign docs [skip ci]"
-            
-            for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
-                echo "Successfully pushed compiled Zig binaries and docs."
-                break
-              else
-                echo "Concurrent push detected. Rebasing and retrying in 2s..."
-                sleep 2
-              fi
-            done
-          else
-            echo "Binaries compiled, but no git changes detected."
-          fi
+        run: git config user.name "PSIVI Zig Compiler" && git config user.email "zig-compiler@psivi.com" && git add src/core/ docs/ || true && if ! git diff --staged --quiet; then git commit -m "chore: auto-update compiled Zig binaries [skip ci]" && git push origin main; fi
