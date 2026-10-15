@@ -18,68 +18,77 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "🔍 Fetching cryptographic SHAs via gh CLI..."
-          CONFIGURE_SHA=$(gh api repos/actions/configure-pages/releases/tags/v4.0.0 --jq .target_commitish)
-          UPLOAD_SHA=$(gh api repos/actions/upload-pages-artifact/releases/tags/v3.0.1 --jq .target_commitish)
-          DEPLOY_SHA=$(gh api repos/actions/deploy-pages/releases/tags/v4.0.5 --jq .target_commitish)
+          echo "🔍 Fetching cryptographic SHAs via gh CLI (git/ref endpoint)..."
+          
+          # The /git/ref/tags/ endpoint guarantees a 40-character commit SHA
+          CONFIGURE_SHA=$(gh api repos/actions/configure-pages/git/ref/tags/v4.0.0 --jq .object.sha)
+          UPLOAD_SHA=$(gh api repos/actions/upload-pages-artifact/git/ref/tags/v3.0.1 --jq .object.sha)
+          DEPLOY_SHA=$(gh api repos/actions/deploy-pages/git/ref/tags/v4.0.5 --jq .object.sha)
           
           echo "✅ configure-pages: $CONFIGURE_SHA"
           echo "✅ upload-pages-artifact: $UPLOAD_SHA"
           echo "✅ deploy-pages: $DEPLOY_SHA"
           
+          # Safety check: ensure we got actual SHAs and not branch refs
+          if [[ "$CONFIGURE_SHA" == refs/* ]] || [[ -z "$CONFIGURE_SHA" ]]; then
+            echo "❌ CRITICAL: API returned a branch ref instead of a SHA. Halting."
+            exit 1
+          fi
+          
           echo "📝 Generating flawless pages.yml..."
           cat << 'YAML_EOF' > .github/workflows/pages.yml
-          # .github/workflows/pages.yml
-          # SPDX-License-Identifier: EUPL-1.2
-          # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-          
-          name: Deploy GitHub Pages
-          
-          on:
-            push:
-              branches: ["main"]
-            workflow_dispatch:
-          
-          permissions:
-            contents: read
-            pages: write
-            id-token: write
-          
-          concurrency:
-            group: "pages"
-            cancel-in-progress: false
-          
-          jobs:
-            build:
-              runs-on: ubuntu-latest
-              steps:
-                - name: Checkout
-                  uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-          
-                - name: Setup Pages
-                  uses: actions/configure-pages@SHA_PLACEHOLDER_CONFIGURE
-          
-                - name: Upload artifact
-                  uses: actions/upload-pages-artifact@SHA_PLACEHOLDER_UPLOAD
-                  with:
-                    path: ./_site
-          
-            deploy:
-              environment:
-                name: github-pages
-                url: ${{ steps.deployment.outputs.page_url }}
-              runs-on: ubuntu-latest
-              needs: build
-              steps:
-                - name: Deploy to GitHub Pages
-                  id: deployment
-                  uses: actions/deploy-pages@SHA_PLACEHOLDER_DEPLOY
-          YAML_EOF
+# .github/workflows/pages.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Pages
+        uses: actions/configure-pages@SHA_PLACEHOLDER_CONFIGURE
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@SHA_PLACEHOLDER_UPLOAD
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@SHA_PLACEHOLDER_DEPLOY
+YAML_EOF
           
           echo "🔧 Injecting verified SHAs into pages.yml..."
-          sed -i "s/SHA_PLACEHOLDER_CONFIGURE/$CONFIGURE_SHA/g" .github/workflows/pages.yml
-          sed -i "s/SHA_PLACEHOLDER_UPLOAD/$UPLOAD_SHA/g" .github/workflows/pages.yml
-          sed -i "s/SHA_PLACEHOLDER_DEPLOY/$DEPLOY_SHA/g" .github/workflows/pages.yml
+          # Using '|' as delimiter to prevent crashes if variables contain '/'
+          sed -i "s|SHA_PLACEHOLDER_CONFIGURE|$CONFIGURE_SHA|g" .github/workflows/pages.yml
+          sed -i "s|SHA_PLACEHOLDER_UPLOAD|$UPLOAD_SHA|g" .github/workflows/pages.yml
+          sed -i "s|SHA_PLACEHOLDER_DEPLOY|$DEPLOY_SHA|g" .github/workflows/pages.yml
           
           echo "📄 Final pages.yml content:"
           cat .github/workflows/pages.yml
