@@ -40,17 +40,20 @@ jobs:
           EXTRACTED_DIR="zig-${ZIG_OS}-${ZIG_VER}"
           sudo mv "${EXTRACTED_DIR}" /opt/zig
           
-          # CRITICAL: Use absolute path to completely bypass GitHub Actions PATH caching quirks
           if [ -f /opt/zig/zig ]; then
             echo "✅ Zig binary verified at /opt/zig/zig"
             /opt/zig/zig version
             echo "/opt/zig" >> $GITHUB_PATH
           else
             echo "❌ CRITICAL: Zig binary not found after extraction!"
-            echo "Contents of /opt/:"
             ls -la /opt/
             exit 1
           fi
+
+      - name: Step 0.5: Enforce ZIG Architectural Sovereignty (Patrol & Correct)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.tools.zig_sovereign_governor
 
       - name: Step 1: Attempt Autonomous ZIG Syntax Healing
         env:
@@ -145,7 +148,8 @@ jobs:
           git config user.name "PSIVI Zig Compiler"
           git config user.email "zig-compiler@psivi.com"
           
-          git add src/core/actuation_engine src/core/zulu_clock src/core/psvc_sealer src/core/vector_engine src/core/.zig-build-audit.json docs/
+          # BULLETPROOF: Dynamically add entire directories. || true prevents crash if a specific binary is missing.
+          git add src/core/ docs/ || true
           
           if ! git diff --staged --quiet; then
             echo "Committing and pushing updated binaries and documentation..."
