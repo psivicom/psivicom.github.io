@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 import logging
 
 from src.tools.self_healing_agent import heal_and_retry
+from src.tools.telemetry_dashboard_generator import TelemetryDashboardGenerator
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
 logger = logging.getLogger("AUTONOMOUS_ORCHESTRATOR")
@@ -168,6 +169,11 @@ def main():
                 logger.error(f"❌ {module_name} failed and could not be autonomously healed.")
                 
         CheckpointManager.clear()
+        
+        # Generate the Emperor's Visual Telemetry Dashboard
+        logger.info("📊 Generating WENDY Telemetry Dashboard for Emperor visibility...")
+        TelemetryDashboardGenerator().generate()
+        
         logger.info("\n🏁 WENDY Unbounded Autonomy Execution Cycle Complete.")
     finally:
         heartbeat.stop()
