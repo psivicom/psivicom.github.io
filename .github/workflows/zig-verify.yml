@@ -1,16 +1,16 @@
-name: Native Zig Compiler
+name: Rebuild Workflow
 
 on:
   push:
     paths:
-      - 'src/core/actuation_engine.zig'
+      - '.github/workflows/zig-verify.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  rebuild:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -18,30 +18,57 @@ jobs:
         with:
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
 
-      - name: Install Zig Toolchain
+      - name: Write Perfect Workflow
         run: |
-          curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
-          tar -xf z.tar.xz
-          sudo mv zig-linux-x86_64-0.13.0 /opt/zig
-          echo "/opt/zig" >> $GITHUB_PATH
+          cat << 'EOF' > .github/workflows/native-zig.yml
+          name: Native Zig Compiler
 
-      - name: Sanitize and Compile
-        run: |
-          sed -i '1{/^#/d;}' src/core/actuation_engine.zig
-          /opt/zig/zig build-exe src/core/actuation_engine.zig \
-            -O ReleaseSafe \
-            -fstrip \
-            -femit-bin="src/core/actuation_engine"
+          on:
+            push:
+              paths:
+                - 'src/core/actuation_engine.zig'
+            workflow_dispatch:
 
-      - name: Commit and Ring Bell
-        env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
-        run: |
-          git config user.name "WENDY Native Compiler"
-          git config user.email "wendy@psivi.com"
-          git add src/core/actuation_engine.zig src/core/actuation_engine
-          if ! git diff --staged --quiet; then
-            git commit -m "feat: native compilation [skip ci]"
-            git push origin HEAD:refs/heads/main
-            echo "🔔 🔔 🔔 COMPILATION SUCCESSFUL. THE BELL HAS RUNG. 🔔 🔔 🔔"
-          fi
+          permissions:
+            contents: write
+
+          jobs:
+            build:
+              runs-on: ubuntu-latest
+              steps:
+                - name: Checkout
+                  uses: actions/checkout@v4
+                  with:
+                    token: ${{ secrets.WENDY_AUDITOR_PAT }}
+
+                - name: Install Zig
+                  run: |
+                    curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
+                    tar -xf z.tar.xz
+                    sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+                    echo "/opt/zig" >> $GITHUB_PATH
+
+                - name: Compile
+                  run: |
+                    sed -i '1{/^#/d;}' src/core/actuation_engine.zig
+                    /opt/zig/zig build-exe src/core/actuation_engine.zig -O ReleaseSafe -fstrip -femit-bin="src/core/actuation_engine"
+
+                - name: Commit
+                  env:
+                    GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+                  run: |
+                    git config user.name "WENDY"
+                    git config user.email "wendy@psivi.com"
+                    git add src/core/actuation_engine.zig src/core/actuation_engine
+                    if ! git diff --staged --quiet; then
+                      git commit -m "feat: native compilation [skip ci]"
+                      git push origin HEAD:refs/heads/main
+                      echo "🔔 🔔 🔔 BELL RUNG 🔔 🔔 🔔"
+                    fi
+          EOF
+          
+          git config user.name "WENDY Builder"
+          git config user.email "builder@psivi.com"
+          git add .github/workflows/native-zig.yml
+          git commit -m "chore: regenerate workflow via machine-to-machine [skip ci]"
+          git push origin HEAD:refs/heads/main
