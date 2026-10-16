@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-16T03:08:31.805Z",
+  "agent": "literature",
+  "layer": "ingestion",
+  "meta": {
+    "contexts": [
+      {
+        "gene": "Vg",
+        "status": "resolved"
+      }
+    ]
+  },
+  "data_summary": {
+    "shape": [
+      4096
+    ],
+    "mean": -0.00013442944327834994
+  }
+}

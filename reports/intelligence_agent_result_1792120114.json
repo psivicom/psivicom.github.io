@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-10-16T03:08:34.371Z",
+  "agent": "intelligence_agent",
+  "layer": "validation",
+  "meta": {
+    "type": "intelligence_finalize",
+    "report_id": "intel-2c86d83a54f0",
+    "confidence_score": 1.0,
+    "vector_shape": [
+      50
+    ],
+    "shard_count": 1,
+    "vram_hits": 1,
+    "pico_hits": 0,
+    "seed_hits": 0,
+    "active_core_kin": [
+      "bumble_alpha"
+    ],
+    "exchange_registry_path": "data/exchange_registry.json",
+    "query_context": {
+      "agent_id": "intelligence_agent",
+      "purpose": "automatic_chain_intelligence",
+      "generated_at": "2026-10-16T03:08:34.377Z",
+      "pilot_fragility_count": 0,
+      "pilot_concordance_count": 0,
+      "pilot_report_present": true
+    }
+  },
+  "data_summary": {
+    "shape": [
+      50
+    ],
+    "mean": -0.13224512338638306
+  }
+}
