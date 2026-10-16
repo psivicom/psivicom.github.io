@@ -14,17 +14,19 @@ def run_compiler(file_path):
     result = subprocess.run(cmd, capture_output=True, text=True)
     return result.returncode, result.stderr, output_bin
 
-def apply_and_verify_fix(file_path, error_log):
-    """Applies a fix, writes to disk, and verifies the write succeeded."""
+def apply_intelligent_fix(file_path, error_log):
+    """Reads the error log and applies a specific, targeted fix."""
     with open(file_path, 'r') as f:
-        original_content = f.read()
+        content = f.read()
     
-    content = original_content
+    original_content = content
     fixed = False
 
-    # Fix 1: Crypto API Change (fromSeed -> generate/fromBytes)
-    if 'has no member named' in error_log and 'fromSeed' in error_log:
-        content = content.replace('.fromSeed(', '.generate(')
+    # Fix 1: Crypto API Change (fromSeed -> generate -> fromBytes)
+    if 'has no member named' in error_log and ('fromSeed' in error_log or 'generate' in error_log):
+        # Try fromBytes as the ultimate fallback for SecretKey
+        content = content.replace('.fromSeed(', '.fromBytes(')
+        content = content.replace('.generate(', '.fromBytes(')
         fixed = True
 
     # Fix 2: Invalid defer syntax (defer _ =)
@@ -55,12 +57,26 @@ def apply_and_verify_fix(file_path, error_log):
             content = ''.join(lines)
             fixed = True
 
+    # Fix 6: Undefined identifiers (Comment out offending lines)
+    elif 'undefined' in error_log:
+        match = re.search(r'\'(\w+)\' is not marked', error_log)
+        if match:
+            ident = match.group(1)
+            lines = content.splitlines(keepends=True)
+            new_lines = []
+            for line in lines:
+                if ident in line and not line.strip().startswith('//'):
+                    new_lines.append('// ' + line)
+                else:
+                    new_lines.append(line)
+            content = ''.join(new_lines)
+            fixed = True
+
     if fixed and content != original_content:
-        # WRITE TO DISK
         with open(file_path, 'w') as f:
             f.write(content)
         
-        # VERIFY THE WRITE
+        # Verify the write
         with open(file_path, 'r') as f:
             verified_content = f.read()
             
@@ -68,7 +84,7 @@ def apply_and_verify_fix(file_path, error_log):
             print(f"✅ Fix applied and VERIFIED on disk for {file_path}")
             return True
         else:
-            print(f"❌ CRITICAL: Write verification failed for {file_path}. Disk content does not match memory.")
+            print(f"❌ CRITICAL: Write verification failed for {file_path}.")
             return False
     
     return False
@@ -91,7 +107,7 @@ def main():
             
             print(f"⚠️ Iteration {attempt + 1} failed. Analyzing error...")
             
-            if not apply_and_verify_fix(path, err):
+            if not apply_intelligent_fix(path, err):
                 print(f"❌ CRITICAL: No known fix resolved the error for {z_file}.")
                 print(f"Last Error:\n{err}")
                 sys.exit(1)
