@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-16T07:12:14.850Z",
+  "updated_at": "2026-10-16T08:41:03.519Z",
   "agent_id": "intelligence_agent",
   "active_core_kin": [
     "bumble_alpha"
@@ -39,16 +39,6 @@
         {
           "volume": 500.0,
           "quality": 0.8,
-          "time": 1792133352.9981008
-        },
-        {
-          "volume": 600.0,
-          "quality": 0.9,
-          "time": 1792133352.9981368
-        },
-        {
-          "volume": 500.0,
-          "quality": 0.8,
           "time": 1792133446.3244357
         },
         {
@@ -85,10 +75,20 @@
           "volume": 600.0,
           "quality": 0.9,
           "time": 1792134734.843165
+        },
+        {
+          "volume": 500.0,
+          "quality": 0.8,
+          "time": 1792140063.5140862
+        },
+        {
+          "volume": 600.0,
+          "quality": 0.9,
+          "time": 1792140063.5141292
         }
       ],
       "first_seen": 1791996373.5201614,
-      "last_heartbeat": 1792134734.8431654,
+      "last_heartbeat": 1792140063.5141296,
       "total_value_score": 0.7375
     },
     "thief_beta": {
@@ -106,11 +106,6 @@
         9.0
       ],
       "resource_samples": [
-        {
-          "volume": 100.0,
-          "quality": 0.1,
-          "time": 1792102054.1818168
-        },
         {
           "volume": 100.0,
           "quality": 0.1,
@@ -155,10 +150,15 @@
           "volume": 100.0,
           "quality": 0.1,
           "time": 1792134734.843188
+        },
+        {
+          "volume": 100.0,
+          "quality": 0.1,
+          "time": 1792140063.514148
         }
       ],
       "first_seen": 1791996373.5203466,
-      "last_heartbeat": 1792134734.8431883,
+      "last_heartbeat": 1792140063.5141482,
       "total_value_score": 0.098828125
     }
   },
