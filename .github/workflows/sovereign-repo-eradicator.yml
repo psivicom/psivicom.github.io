@@ -126,34 +126,31 @@ jobs:
         run: |
           git config user.name "WENDY Sovereign Eradicator"
           git config user.email "eradicator@psivi.com"
+          
+          # PARADOX BREAKER: Force local eradicator file to match remote main to guarantee zero merge conflicts
+          git fetch origin main
+          git checkout origin/main -- .github/workflows/sovereign-repo-eradicator.yml
+          
           git add .github/workflows/
           
           if ! git diff --staged --quiet; then
             git commit -m "chore: annihilate hardcoded secrets and big AI artifacts [skip ci]"
             
-            PUSH_SUCCESS=false
-            for attempt in 1 2 3; do
-              # Attempt rebase. If it conflicts, abort to keep the workspace clean for the next retry
-              if git pull --rebase origin main; then
-                if git push origin main; then
-                  echo "✅ Push successful on attempt $attempt"
-                  PUSH_SUCCESS=true
-                  break
-                else
-                  echo "⚠️ Push failed after rebase. Aborting rebase to reset state..."
-                  git rebase --abort || true
-                fi
+            # Attempt a clean rebase and push
+            if git pull --rebase origin main && git push origin main; then
+              echo "✅ Push successful."
+            else
+              echo "⚠️ Rebase/Push failed. Forcing conflict resolution..."
+              git checkout --theirs .github/workflows/sovereign-repo-eradicator.yml || true
+              git add .github/workflows/sovereign-repo-eradicator.yml
+              git rebase --continue || true
+              
+              if git push origin main; then
+                echo "✅ Push successful after conflict resolution."
               else
-                echo "⚠️ Rebase failed (conflict). Aborting rebase to reset state..."
-                git rebase --abort || true
+                echo "❌ CRITICAL: Failed to push sovereign state."
+                exit 1
               fi
-              echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
-              sleep 2
-            done
-            
-            if [ "$PUSH_SUCCESS" = false ]; then
-              echo "❌ CRITICAL: Failed to push sovereign state."
-              exit 1
             fi
           else
             echo "ℹ️ No artifacts or secrets detected. System is already sovereign."
