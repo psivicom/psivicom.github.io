@@ -128,7 +128,7 @@ class ReflexiveCortex:
 
         self.log("🚀 Committing sovereign heals...")
         self.run_cmd('git config user.name "WENDY Reflexive Cortex"')
-        self.run_cmd('git config user.email "cortex@psivi.com"")
+        self.run_cmd('git config user.email "cortex@psivi.com"')
         self.run_cmd('git add .')
         self.run_cmd('git commit -m "chore: reflexive cortex - autonomous healing [skip ci]"')
         
