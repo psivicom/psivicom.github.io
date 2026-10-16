@@ -1,77 +1,48 @@
-# .github/workflows/zig-verify.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
-name: Native Zig Compiler
+name: Space-Grade Zig Self-Healing Compiler
 
 on:
   push:
     paths:
-      - "src/core/*.zig"
+      - 'src/core/*.zig'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  build-and-heal:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
 
       - name: Install Zig Toolchain
         run: |
-          curl --fail --location --silent --show-error \
-            https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz \
-            --output z.tar.xz
+          curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
           tar -xf z.tar.xz
           sudo mv zig-linux-x86_64-0.13.0 /opt/zig
-          echo "/opt/zig" >> "$GITHUB_PATH"
-          /opt/zig/zig version
+          echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Compile Zig Sources
+      - name: Install Python Dependencies
         run: |
-          shopt -s nullglob
-          files=(src/core/*.zig)
-          if [ "${#files[@]}" -eq 0 ]; then
-            echo "No Zig source files found in src/core."
-            exit 1
-          fi
+          python -m pip install --upgrade pip
+          pip install pygments
 
-          for file in "${files[@]}"; do
-            echo "Compiling $file..."
-            OUTPUT_BIN="${file%.zig}"
-            
-            # Native, bare-metal compilation. No healers. No patches.
-            /opt/zig/zig build-exe "$file" \
-              -O ReleaseSafe \
-              -fstrip \
-              -femit-bin="$OUTPUT_BIN"
-              
-            echo "✅ Successfully compiled: $OUTPUT_BIN"
-          done
+      - name: Autonomous Compilation and Refactoring
+        run: |
+          python src/tools/refactor_engine.py
 
-      - name: Commit Compiled Binaries
+      - name: Commit Production-Ready Artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
-          git config user.name "WENDY Native Compiler"
-          git config user.email "wendy@psivi.com"
-          git add src/core/*.zig src/core/actuation_engine src/core/wendy_engine
-
+          git config user.name "WENDY Architect"
+          git config user.email "architect@psivi.com"
+          git add src/core/*.zig src/core/*
           if ! git diff --staged --quiet; then
-            git commit -m "feat: native compilation of pure Zig sources [skip ci]"
-            
-            if git push origin HEAD:refs/heads/main; then
-              echo "🔔 🔔 🔔 COMPILATION SUCCESSFUL. THE BELL HAS RUNG. 🔔 🔔 🔔"
-            else
-              echo "❌ CRITICAL: Failed to push compiled binaries."
-              exit 1
-            fi
-          else
-            echo "ℹ️ No changes to commit."
+            git commit -m "feat: autonomous refinement and space-grade compilation [skip ci]"
+            git push origin HEAD:refs/heads/main
+            echo "🔔 PRODUCTION SEAL APPLIED 🔔"
           fi
