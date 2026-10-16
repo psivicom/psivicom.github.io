@@ -31,7 +31,7 @@ jobs:
           python -m pip install --upgrade pip
           # CRITICAL: Mesh evolution requires the full stack. 
           # Keeping requirements.txt ensures all ML and networking dependencies are present.
-          pip install -r requirements.txt
+          pip install -r requirements-tiny.txt
 
       - name: Force Install WebSockets
         run: |
