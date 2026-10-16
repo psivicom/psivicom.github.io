@@ -1,9 +1,9 @@
 {
   "version": 3,
-  "updated_at": "2026-10-16T07:01:46.728064+00:00",
+  "updated_at": "2026-10-16T07:07:09.348167+00:00",
   "synapses": {
     "defense_weight": 1.0,
-    "explore_weight": 2.9208,
+    "explore_weight": 2.882384,
     "maintain_weight": 1.0,
     "stress_accumulator": 0.0,
     "novelty_seeker": 0.5,
@@ -11,27 +11,6 @@
     "conscious_mass_influence": 0.0
   },
   "history": [
-    {
-      "timestamp": "2026-10-15T02:46:15.741140+00:00",
-      "context": {
-        "energy": 0.59564,
-        "fragility": 0,
-        "concordance": 0,
-        "social_value": 0.2,
-        "internal_variance": 0.0,
-        "conscious_mass": 0.0
-      },
-      "weights_snapshot": {
-        "defense_weight": 1.0,
-        "explore_weight": 2.96,
-        "maintain_weight": 1.0,
-        "stress_accumulator": 0.0,
-        "novelty_seeker": 0.5,
-        "stagnation_counter": 0,
-        "conscious_mass_influence": 0.0
-      },
-      "stagnation_flag": false
-    },
     {
       "timestamp": "2026-10-15T03:24:28.818783+00:00",
       "context": {
@@ -423,6 +402,27 @@
       "weights_snapshot": {
         "defense_weight": 1.0,
         "explore_weight": 2.9208,
+        "maintain_weight": 1.0,
+        "stress_accumulator": 0.0,
+        "novelty_seeker": 0.5,
+        "stagnation_counter": 0,
+        "conscious_mass_influence": 0.0
+      },
+      "stagnation_flag": false
+    },
+    {
+      "timestamp": "2026-10-16T07:07:09.348111+00:00",
+      "context": {
+        "energy": 0.111046,
+        "fragility": 0,
+        "concordance": 0,
+        "social_value": 0.2,
+        "internal_variance": 0.0,
+        "conscious_mass": 0.0
+      },
+      "weights_snapshot": {
+        "defense_weight": 1.0,
+        "explore_weight": 2.882384,
         "maintain_weight": 1.0,
         "stress_accumulator": 0.0,
         "novelty_seeker": 0.5,
