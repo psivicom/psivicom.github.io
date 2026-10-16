@@ -1,13 +1,19 @@
 {
-  "timestamp": "2026-10-15T23:28:58.409Z",
+  "timestamp": "2026-10-16T00:56:39.444Z",
   "agent": "optimizer",
   "current_state": {
-    "nodes": 3,
+    "nodes": 2,
     "active_agents": 0,
     "latency_ms": 12.5,
     "health": "optimal"
   },
   "optimization_proposals": [
+    {
+      "action": "SCALE_UP",
+      "target": "volunteer_nodes",
+      "reason": "Node count below optimal threshold (3)",
+      "priority": "high"
+    },
     {
       "action": "MAINTENANCE",
       "target": "vector_memory",
