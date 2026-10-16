@@ -1,6 +1,7 @@
 # .github/workflows/zig-verify.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 name: Intelligent Zig Binary Compiler
 
 on:
@@ -20,11 +21,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
-        with:
-          python-version: "3.12"
+          token: ${{ secrets.WENDY_AUDITOR_PAT }}
 
       - name: Install Zig Toolchain
         run: |
@@ -36,14 +33,6 @@ jobs:
           echo "/opt/zig" >> "$GITHUB_PATH"
           /opt/zig/zig version
 
-      - name: Heal and Scribe
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: |
-          python -m src.tools.zig_compiler_healer
-          python -m src.tools.zig_evolution_engine
-          python -m src.tools.zig_sovereign_scribe
-
       - name: Compile Binaries
         run: |
           shopt -s nullglob
@@ -54,6 +43,7 @@ jobs:
           fi
 
           for file in "${files[@]}"; do
+            echo "Compiling $file..."
             /opt/zig/zig build-exe "$file" \
               -O ReleaseSafe \
               -fstrip \
@@ -61,10 +51,12 @@ jobs:
           done
 
       - name: Commit and Push Safely
+        env:
+          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
           git config user.name "PSIVI Zig Compiler"
           git config user.email "zig-compiler@psivi.com"
-          git add src/core/ docs/
+          git add src/core/
 
           if ! git diff --staged --quiet; then
             git commit -m "chore: auto-update compiled Zig binaries [skip ci]"
@@ -78,7 +70,6 @@ jobs:
                   break
                 fi
               fi
-
               echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
               sleep 2
             done
