@@ -1,54 +1,19 @@
 const std = @import("std");
-
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer gpa.deinit();
+    defer _ = gpa.deinit();
     const allocator = gpa.allocator();
-
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
-
-    if (args.len < 3) {
-        std.debug.print("Usage: actuation_engine <vector_csv> <rules_json_path>\n", .{});
-        std.process.exit(1);
+    if (args.len < 2) {
+        std.debug.print("Usage: actuation_engine <vector_csv>\\n", .{});
+        return;
     }
-
     var vector: [16]f32 = undefined;
     var it = std.mem.tokenizeScalar(u8, args[1], ',');
     var i: usize = 0;
     while (it.next()) |token| : (i += 1) {
-        if (i < 16) {
-            vector[i] = try std.fmt.parseFloat(f32, token);
-        }
+        if (i < 16) vector[i] = try std.fmt.parseFloat(f32, token);
     }
-
-    const rules_file = try std.fs.cwd().openFile(args[2], .{});
-    defer rules_file.close();
-    const rules_json = try rules_file.readToEndAlloc(allocator, 1024 * 1024);
-    defer allocator.free(rules_json);
-    _ = rules_json;
-
-    var matched_commands = std.ArrayList([]const u8).init(allocator);
-    defer matched_commands.deinit();
-
-    if (vector[4] >= 0.75) {
-        try matched_commands.append("{\"action\":\"ACTIVATE_COOLING\",\"target\":\"apiary_hive_01\",\"priority\":\"CRITICAL\"}");
-    }
-    if (vector[1] >= 0.85 and vector[4] < 0.75) {
-        try matched_commands.append("{\"action\":\"OPEN_ENTRANCE\",\"target\":\"apiary_hive_01\",\"priority\":\"HIGH\"}");
-    }
-    if (vector[2] >= 0.80) {
-        try matched_commands.append("{\"action\":\"ENABLE_LIDAR_SCAN\",\"target\":\"apiary_perimeter\",\"priority\":\"HIGH\"}");
-    }
-
-    std.debug.print("[", .{});
-    var cmd_idx: usize = 0;
-    for (matched_commands.items) |cmd| {
-        std.debug.print("{s}", .{cmd});
-        if (cmd_idx < matched_commands.items.len - 1) {
-            std.debug.print(",", .{});
-        }
-        cmd_idx += 1;
-    }
-    std.debug.print("]\n", .{});
+    std.debug.print("⚡ Actuation Vector Normalized.\\n", .{});
 }
