@@ -25,11 +25,6 @@ jobs:
           sudo mv zig-linux-x86_64-0.13.0 /opt/zig
           echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Install Python Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pygments
-
       - name: Autonomous Compilation and Refactoring
         run: |
           python src/tools/refactor_engine.py
@@ -45,4 +40,6 @@ jobs:
             git commit -m "feat: autonomous refinement and space-grade compilation [skip ci]"
             git push origin HEAD:refs/heads/main
             echo "🔔 PRODUCTION SEAL APPLIED 🔔"
+          else
+            echo "ℹ️ No changes to commit."
           fi
