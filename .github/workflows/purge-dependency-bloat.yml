@@ -1,0 +1,106 @@
+# .github/workflows/purge-dependency-bloat.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Dependency Bloat Eradicator
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  purge-bloat:
+    name: Surgical Dependency Isolation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          token: ${{ secrets.WENDY_AUDITOR_PAT }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
+        with:
+          python-version: '3.12'
+
+      - name: Execute Bloat Eradication
+        run: |
+          python3 << 'PYTHON_SCRIPT'
+          import os
+          import re
+          from pathlib import Path
+
+          workflows_dir = Path('.github/workflows')
+          
+          # Workflows that ACTUALLY require the heavy ML stack (PyTorch, JAX, Transformers)
+          # Everything else gets the hyper-minimal tiny stack.
+          ml_exempt_workflows = {
+              'wendy-deep-cognition.yml',
+              'intelligence-agent.yml',
+              'literature-ingest.yml',
+              'ingest-knowledge-base.yml',
+              'wendy-reactive-cognition.yml',
+              'neuroplasticity.yml'
+          }
+
+          changes_made = 0
+          print("🔍 Scanning workflows for thermodynamic bloat...")
+
+          for wf in workflows_dir.glob('*.yml'):
+              if wf.name in ml_exempt_workflows:
+                  print(f"🛡️ Exempting {wf.name} (Requires ML stack)")
+                  continue
+              
+              content = wf.read_text()
+              new_content = content
+              
+              # Surgically replace heavy requirements with tiny ones
+              # Matches: pip install -r requirements.txt OR pip install -r requirements-ml.txt
+              new_content = re.sub(
+                  r'pip install -r requirements(-ml)?\.txt',
+                  'pip install -r requirements-tiny.txt',
+                  new_content
+              )
+              
+              if new_content != content:
+                  wf.write_text(new_content)
+                  changes_made += 1
+                  print(f"🧹 PURGED: Replaced heavy dependencies in {wf.name}")
+
+          print(f"\n🏁 Eradication complete. Purged {changes_made} workflows.")
+          PYTHON_SCRIPT
+
+      - name: Commit and Push Sovereign Isolation
+        env:
+          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+        run: |
+          git config user.name "WENDY Bloat Eradicator"
+          git config user.email "eradicator@psivi.com"
+          git add .github/workflows/
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: eradicate ML bloat from lightweight autonomous agents [skip ci]"
+            
+            PUSH_SUCCESS=false
+            for attempt in 1 2 3; do
+              if git pull --rebase origin main; then
+                if git push origin main; then
+                  echo "✅ Push successful on attempt $attempt"
+                  PUSH_SUCCESS=true
+                  break
+                fi
+              fi
+              echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
+              sleep 2
+            done
+            
+            if [ "$PUSH_SUCCESS" = false ]; then
+              echo "❌ CRITICAL: Failed to push bloat purge."
+              exit 1
+            fi
+          else
+            echo "ℹ️ No bloat detected. System is already lean."
+          fi
