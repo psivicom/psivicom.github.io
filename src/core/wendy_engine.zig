@@ -1,7 +1,6 @@
 const std = @import("std");
 
 const PSVC_MAGIC = "PSVC";
-const PSVC_VERSION = 0x0100;
 
 const PSVCHeader = extern struct {
     magic: [4]u8,
