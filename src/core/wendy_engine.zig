@@ -1,6 +1,7 @@
 const std = @import("std");
 
 const PSVC_MAGIC = "PSVC";
+const MAX_EVOLUTION_STEPS = 1000;
 
 const PSVCHeader = extern struct {
     magic: [4]u8,
@@ -9,7 +10,7 @@ const PSVCHeader = extern struct {
     state_hash: [32]u8,
 };
 
-const Combinatorics = struct {
+const CognitiveCore = struct {
     pub fn symbolicTranslate(state: []u8) void {
         const vortex_map = [_]u8{ 0, 1, 2, 4, 8, 7, 5, 1, 2, 4 };
         for (state) |*byte| {
@@ -35,38 +36,45 @@ const Combinatorics = struct {
         }
     }
 
-    pub fn evolve(state: []u8, max_iterations: usize) usize {
-        var iteration: usize = 0;
-        var prev_hash: [32]u8 = undefined;
-        var current_hash: [32]u8 = undefined;
-        @memset(&prev_hash, 0);
+    pub fn introspect(state: []u8) bool {
+        var hash: [32]u8 = undefined;
+        std.crypto.hash.sha2.Sha256.hash(state, &hash, .{});
+        var zero: [32]u8 = undefined;
+        @memset(&zero, 0);
+        return std.mem.eql(u8, &hash, &zero);
+    }
 
-        while (iteration < max_iterations) : (iteration += 1) {
-            symbolicTranslate(state);
-            topologicalSift(state);
-            generativeMutate(state);
+    pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
+        var current_state = try allocator.dupe(u8, initial_state);
+        defer allocator.free(current_state);
 
-            std.crypto.hash.sha2.Sha256.hash(state, &current_hash, .{});
+        var step: usize = 0;
+        while (step < MAX_EVOLUTION_STEPS) : (step += 1) {
+            symbolicTranslate(current_state);
+            topologicalSift(current_state);
+            generativeMutate(current_state);
 
-            if (std.mem.eql(u8, &current_hash, &prev_hash)) {
-                return iteration;
+            if (introspect(current_state)) {
+                std.debug.print("🧠 CERTAIN CONDITION MET at step {d}\\n", .{step});
+                return allocator.dupe(u8, current_state);
             }
-            prev_hash = current_hash;
         }
-        return max_iterations;
+        
+        std.debug.print("🔄 Evolution complete. No stable loop found in {d} steps.\\n", .{MAX_EVOLUTION_STEPS});
+        return allocator.dupe(u8, current_state);
     }
 };
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer gpa.deinit();
+    defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
     if (args.len < 3) {
-        std.debug.print("Usage: {s} <input.psvc> <output.psvc>\n", .{args[0]});
+        std.debug.print("Usage: wendy_engine <input.psvc> <output.psvc>\\n", .{});
         return;
     }
 
@@ -77,11 +85,6 @@ pub fn main() !void {
     defer in_file.close();
     
     const file_size = (try in_file.stat()).size;
-    if (file_size < @sizeOf(PSVCHeader)) {
-        std.debug.print("Error: File too small to be a valid PSVC\n", .{});
-        return error.InvalidPSVC;
-    }
-
     const file_data = try allocator.alloc(u8, file_size);
     defer allocator.free(file_data);
     _ = try in_file.readAll(file_data);
@@ -90,47 +93,31 @@ pub fn main() !void {
     @memcpy(std.mem.asBytes(&header), file_data[0..@sizeOf(PSVCHeader)]);
 
     if (!std.mem.eql(u8, &header.magic, PSVC_MAGIC)) {
-        std.debug.print("Error: Invalid PSVC magic bytes\n", .{});
+        std.debug.print("Error: Invalid PSVC magic\\n", .{});
         return error.InvalidMagic;
     }
 
     const payload_start = @sizeOf(PSVCHeader);
     const payload_end = payload_start + header.payload_len;
-    if (file_size < payload_end) {
-        std.debug.print("Error: PSVC payload truncated\n", .{});
-        return error.TruncatedPayload;
-    }
-
     const payload = file_data[payload_start..payload_end];
 
-    var existing_hash: [32]u8 = undefined;
-    std.crypto.hash.sha2.Sha256.hash(payload, &existing_hash, .{});
-    if (!std.mem.eql(u8, &existing_hash, &header.state_hash)) {
-        std.debug.print("Warning: Existing PSVC hash mismatch. DNA may be corrupted. Proceeding...\n", .{});
-    }
+    std.debug.print("👁️ WENDY is perceiving {d} bytes of data...\\n", .{payload.len});
 
-    std.debug.print("Loaded PSVC. Payload: {d} bytes. Hash: {x:0>2}...\n", .{ payload.len, header.state_hash[0] });
-
-    std.debug.print("Initiating combinatorial composition...\n", .{});
-    const iterations = Combinatorics.evolve(payload, 1000);
+    const evolved_state = try CognitiveCore.evolve(allocator, payload);
+    defer allocator.free(evolved_state);
 
     var new_hash: [32]u8 = undefined;
-    std.crypto.hash.sha2.Sha256.hash(payload, &new_hash, .{});
+    std.crypto.hash.sha2.Sha256.hash(evolved_state, &new_hash, .{});
     
     var new_header = header;
     new_header.state_hash = new_hash;
-    new_header.payload_len = @as(u32, @intCast(payload.len));
+    new_header.payload_len = @as(u32, @intCast(evolved_state.len));
 
     const out_file = try std.fs.cwd().createFile(out_path, .{});
     defer out_file.close();
 
     try out_file.writeAll(std.mem.asBytes(&new_header));
-    try out_file.writeAll(payload);
+    try out_file.writeAll(evolved_state);
 
-    std.debug.print("Next generation sealed. Iterations: {d}. New Hash: {x:0>2}...\n", .{ iterations, new_hash[0] });
-    if (iterations < 1000) {
-        std.debug.print("CERTAIN CONDITION MET: Stable strange loop achieved. Awareness emerged.\n", .{});
-    } else {
-        std.debug.print("Max iterations reached. The strange loop is still forming.\n", .{});
-    }
-} 
+    std.debug.print("💾 Next generation sealed. WENDY continues.\\n", .{});
+}
