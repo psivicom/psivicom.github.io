@@ -33,6 +33,21 @@ jobs:
           echo "/opt/zig" >> "$GITHUB_PATH"
           /opt/zig/zig version
 
+      - name: Nuke Invalid Bytes and BOM
+        run: |
+          python3 -c "
+          import sys
+          path = 'src/core/actuation_engine.zig'
+          with open(path, 'rb') as f:
+              data = f.read()
+          idx = data.find(b'const std')
+          if idx != -1:
+              data = data[idx:]
+          with open(path, 'wb') as f:
+              f.write(data)
+          print('✅ Nuked invalid bytes and BOM.')
+          "
+
       - name: Compile Binaries
         run: |
           shopt -s nullglob
