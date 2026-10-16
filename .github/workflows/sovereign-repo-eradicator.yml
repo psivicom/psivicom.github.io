@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   eradicate-disasters:
-    name: Surgical Artifact Healing
+    name: Surgical Artifact & Secret Healing
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -56,7 +56,7 @@ jobs:
           }
 
           changes_made = 0
-          print("🔍 Scanning repository for big AI artifacts...")
+          print("🔍 Scanning repository for big AI artifacts and hardcoded secrets...")
 
           for wf in workflows_dir.glob('*.yml'):
               content = wf.read_text()
@@ -77,20 +77,26 @@ jobs:
                       new_content
                   )
 
-              # 3. Eradicate GITHUB_TOKEN in Push Contexts
-              # Replace 'token: ${{ secrets.GITHUB_TOKEN }}' with PAT in checkout steps
+              # 3. HYPER-AGGRESSIVE SECRET SANITIZATION
+              # Catch ANY hardcoded github_pat_... and replace with secure variable
               new_content = re.sub(
-                  r'(uses:\s+actions/checkout@[^\n]+\n\s+with:\n\s+)token:\s+\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}',
-                  r'\1token: ${{ secrets.WENDY_AUDITOR_PAT }}',
+                  r'github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}',
+                  '${{ secrets.WENDY_AUDITOR_PAT }}',
                   new_content
               )
               
-              # Replace GITHUB_TOKEN in env blocks for push operations
+              # Catch 'token: <anything>' in checkout steps and force it to the secure variable
               new_content = re.sub(
-                  r'(Commit.*?\n.*?env:\n\s+)GITHUB_TOKEN:\s+\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}',
-                  r'\1GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}',
-                  new_content,
-                  flags=re.DOTALL
+                  r'(token:\s*)[^\n]+',
+                  r'\1${{ secrets.WENDY_AUDITOR_PAT }}',
+                  new_content
+              )
+              
+              # Catch 'GITHUB_TOKEN: <anything>' in env blocks and force it to the secure variable
+              new_content = re.sub(
+                  r'(GITHUB_TOKEN:\s*)[^\n]+',
+                  r'\1${{ secrets.WENDY_AUDITOR_PAT }}',
+                  new_content
               )
 
               if new_content != content:
@@ -110,7 +116,7 @@ jobs:
           git add .github/workflows/
           
           if ! git diff --staged --quiet; then
-            git commit -m "chore: eradicate big AI artifacts and enforce sovereign standards [skip ci]"
+            git commit -m "chore: eradicate hardcoded secrets and big AI artifacts [skip ci]"
             
             PUSH_SUCCESS=false
             for attempt in 1 2 3; do
@@ -130,5 +136,5 @@ jobs:
               exit 1
             fi
           else
-            echo "ℹ️ No big AI artifacts detected. System is already sovereign."
+            echo "ℹ️ No artifacts or secrets detected. System is already sovereign."
           fi
