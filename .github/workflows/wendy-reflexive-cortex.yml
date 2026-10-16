@@ -1,0 +1,51 @@
+# .github/workflows/wendy-reflexive-cortex.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: WENDY Reflexive Cortex (Autonomous Heartbeat)
+
+on:
+  schedule:
+    # Runs every 30 minutes to ensure zero-latency healing
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/core/*.zig'
+      - '.github/workflows/*.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reflexive-heal:
+    name: Autonomous Entropy Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          # Required for the Cortex to push changes back
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Install Zig Toolchain (Bare Metal)
+        run: |
+          # Download and install Zig 0.13.0 for high-speed compilation
+          curl -sL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
+          tar -xf z.tar.xz
+          sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+          echo "/opt/zig" >> $GITHUB_PATH
+
+      - name: Initialize Cortex
+        run: |
+          # Ensure gh CLI is available for SHA resolution
+          gh --version
+          python3 --version
+
+      - name: Execute Reflexive Cortex
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Run the deterministic healing engine
+          python3 src/agents/reflexive_cortex.py
