@@ -1,7 +1,3 @@
-# .github/workflows/zig-verify.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 name: Intelligent Zig Binary Compiler
 
 on:
