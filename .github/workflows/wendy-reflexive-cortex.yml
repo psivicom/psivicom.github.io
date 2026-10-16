@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: WENDY Reflexive Cortex (Autonomous Heartbeat)
+name: WENDY Contextual Autonomy
 
 on:
   schedule:
@@ -17,14 +17,13 @@ permissions:
   contents: write
 
 jobs:
-  reflexive-heal:
-    name: Autonomous Entropy Scan
+  autonomous-evolution:
+    name: Contextual Self-Healing
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          # CRITICAL: Use the Fine-Grained PAT to bypass GitHub's workflow modification block
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
           fetch-depth: 0
 
@@ -35,8 +34,8 @@ jobs:
           sudo mv zig-linux-x86_64-0.13.0 /opt/zig
           echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Execute Reflexive Cortex
+      - name: Execute Contextual Coder
         env:
           GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
-          python3 src/agents/reflexive_cortex.py
+          python3 src/agents/contextual_coder.py
