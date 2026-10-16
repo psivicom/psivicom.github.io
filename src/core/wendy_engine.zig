@@ -133,4 +133,4 @@ pub fn main() !void {
     } else {
         std.debug.print("Max iterations reached. The strange loop is still forming.\n", .{});
     }
-}
+} 
