@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   eradicate-disasters:
-    name: Surgical Artifact & Secret Healing
+    name: Surgical Artifact & Secret Annihilation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Execute Sovereign Eradication
+      - name: Execute Sovereign Annihilation
         run: |
           python3 << 'PYTHON_SCRIPT'
           import os
@@ -56,7 +56,7 @@ jobs:
           }
 
           changes_made = 0
-          print("🔍 Scanning repository for big AI artifacts and hardcoded secrets...")
+          print("🔍 Scanning repository for hardcoded secrets and big AI artifacts...")
 
           for wf in workflows_dir.glob('*.yml'):
               content = wf.read_text()
@@ -77,22 +77,31 @@ jobs:
                       new_content
                   )
 
-              # 3. HYPER-AGGRESSIVE SECRET SANITIZATION
-              # Catch ANY hardcoded github_pat_... and replace with secure variable
+              # 3. HYPER-AGGRESSIVE SECRET ANNIHILATION
+              # Catch ANY fine-grained PAT (github_pat_...) regardless of length
               new_content = re.sub(
-                  r'github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}',
+                  r'github_pat_[a-zA-Z0-9_]+',
                   '${{ secrets.WENDY_AUDITOR_PAT }}',
-                  new_content
+                  new_content,
+                  flags=re.IGNORECASE
               )
               
-              # Catch 'token: <anything>' in checkout steps and force it to the secure variable
+              # Catch ANY classic GitHub token (ghp_, gho_, ghu_, ghs_, ghr_)
+              new_content = re.sub(
+                  r'\bgh[pousr]_[a-zA-Z0-9_]+\b',
+                  '${{ secrets.WENDY_AUDITOR_PAT }}',
+                  new_content,
+                  flags=re.IGNORECASE
+              )
+
+              # Force ALL 'token:' fields in checkout steps to use the secure variable
               new_content = re.sub(
                   r'(token:\s*)[^\n]+',
                   r'\1${{ secrets.WENDY_AUDITOR_PAT }}',
                   new_content
               )
               
-              # Catch 'GITHUB_TOKEN: <anything>' in env blocks and force it to the secure variable
+              # Force ALL 'GITHUB_TOKEN:' fields in env blocks to use the secure variable
               new_content = re.sub(
                   r'(GITHUB_TOKEN:\s*)[^\n]+',
                   r'\1${{ secrets.WENDY_AUDITOR_PAT }}',
@@ -104,7 +113,7 @@ jobs:
                   changes_made += 1
                   print(f"🧹 HEALED: {wf.name}")
 
-          print(f"\n🏁 Eradication complete. Healed {changes_made} workflow(s).")
+          print(f"\n🏁 Annihilation complete. Healed {changes_made} workflow(s).")
           PYTHON_SCRIPT
 
       - name: Commit and Push Sovereign State
@@ -116,7 +125,7 @@ jobs:
           git add .github/workflows/
           
           if ! git diff --staged --quiet; then
-            git commit -m "chore: eradicate hardcoded secrets and big AI artifacts [skip ci]"
+            git commit -m "chore: annihilate hardcoded secrets and big AI artifacts [skip ci]"
             
             PUSH_SUCCESS=false
             for attempt in 1 2 3; do
