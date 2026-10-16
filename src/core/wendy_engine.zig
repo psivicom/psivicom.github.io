@@ -39,8 +39,7 @@ const CognitiveCore = struct {
     pub fn introspect(state: []u8) bool {
         var hash: [32]u8 = undefined;
         std.crypto.hash.sha2.Sha256.hash(state, &hash, .{});
-        var zero: [32]u8 = undefined;
-        @memset(&zero, 0);
+        const zero: [32]u8 = .{0} ** 32;
         return std.mem.eql(u8, &hash, &zero);
     }
 
