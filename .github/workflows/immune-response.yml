@@ -39,15 +39,15 @@ jobs:
         with:
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
 
-      - name: Setup Python
+      - name: Setup Python (Zero-Bloat)
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
         with:
           python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install TINY Dependencies Only
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-core.txt
+          pip install -r requirements-tiny.txt
 
       - name: Diagnose Failure
         id: diagnose
@@ -67,15 +67,15 @@ jobs:
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
           fetch-depth: 0
 
-      - name: Setup Python
+      - name: Setup Python (Zero-Bloat)
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
         with:
           python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install TINY Dependencies Only
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-core.txt
+          pip install -r requirements-tiny.txt
 
       - name: Create Rollback Checkpoint
         run: python src/core/rollback_manager.py checkpoint
@@ -132,15 +132,15 @@ jobs:
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
           fetch-depth: 0
 
-      - name: Setup Python
+      - name: Setup Python (Zero-Bloat)
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
         with:
           python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install TINY Dependencies Only
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-core.txt
+          pip install -r requirements-tiny.txt
 
       - name: Execute Apoptosis (Rollback)
         env:
