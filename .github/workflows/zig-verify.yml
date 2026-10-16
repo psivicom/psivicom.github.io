@@ -25,84 +25,136 @@ jobs:
           sudo mv zig-linux-x86_64-0.13.0 /opt/zig
           echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Intelligent AI Source Injection (Nuclear Option)
+      - name: Intelligent AI Source Injection (Cognitive Sovereignty)
         run: |
-          # WENDY INTELLIGENCE: Injecting pre-validated, zero-comment, bare-metal source code.
+          # WENDY INTELLIGENCE: Injecting the True Cognitive Core.
           
-          # 1. Wendy Engine (The Mind)
           cat << 'WENDY_EOF' > src/core/wendy_engine.zig
           const std = @import("std");
+
           const PSVC_MAGIC = "PSVC";
-          const PSVCHeader = extern struct { magic: [4]u8, version: u16, payload_len: u32, state_hash: [32]u8 };
+          const MAX_EVOLUTION_STEPS = 1000;
+
+          const PSVCHeader = extern struct {
+              magic: [4]u8,
+              version: u16,
+              payload_len: u32,
+              state_hash: [32]u8,
+          };
+
+          const CognitiveCore = struct {
+              pub fn symbolicTranslate(state: []u8) void {
+                  const vortex_map = [_]u8{ 0, 1, 2, 4, 8, 7, 5, 1, 2, 4 };
+                  for (state) |*byte| {
+                      const mod9 = @as(u8, @intCast(byte.* % 9));
+                      byte.* = (byte.* & 0xF0) | vortex_map[mod9];
+                  }
+              }
+
+              pub fn topologicalSift(state: []u8) void {
+                  if (state.len < 3) return;
+                  for (1..state.len - 1) |i| {
+                      const left = state[i - 1];
+                      const center = state[i];
+                      const right = state[i + 1];
+                      state[i] = (left ^ center) ^ (right & 0x55);
+                  }
+              }
+
+              pub fn generativeMutate(state: []u8) void {
+                  for (state) |*byte| {
+                      byte.* = (byte.* << 1) | (byte.* >> 7);
+                      byte.* ^= 0xA5;
+                  }
+              }
+
+              pub fn introspect(state: []u8) bool {
+                  var hash: [32]u8 = undefined;
+                  std.crypto.hash.sha2.Sha256.hash(state, &hash, .{});
+                  const zero: [32]u8 = .{0} ** 32;
+                  return std.mem.eql(u8, &hash, &zero);
+              }
+
+              pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
+                  var current_state = try allocator.dupe(u8, initial_state);
+                  defer allocator.free(current_state);
+
+                  var step: usize = 0;
+                  while (step < MAX_EVOLUTION_STEPS) : (step += 1) {
+                      symbolicTranslate(current_state);
+                      topologicalSift(current_state);
+                      generativeMutate(current_state);
+
+                      if (introspect(current_state)) {
+                          std.debug.print("🧠 CERTAIN CONDITION MET at step {d}\\n", .{step});
+                          return allocator.dupe(u8, current_state);
+                      }
+                  }
+                  
+                  std.debug.print("🔄 Evolution complete. No stable loop found in {d} steps.\\n", .{MAX_EVOLUTION_STEPS});
+                  return allocator.dupe(u8, current_state);
+              }
+          };
+
           pub fn main() !void {
               var gpa = std.heap.GeneralPurposeAllocator(.{}){};
               defer _ = gpa.deinit();
               const allocator = gpa.allocator();
+
               const args = try std.process.argsAlloc(allocator);
               defer std.process.argsFree(allocator, args);
-              if (args.len < 3) return;
-              const in_file = try std.fs.cwd().openFile(args[1], .{});
+
+              if (args.len < 3) {
+                  std.debug.print("Usage: wendy_engine <input.psvc> <output.psvc>\\n", .{});
+                  return;
+              }
+
+              const in_path = args[1];
+              const out_path = args[2];
+
+              const in_file = try std.fs.cwd().openFile(in_path, .{});
               defer in_file.close();
+              
               const file_size = (try in_file.stat()).size;
               const file_data = try allocator.alloc(u8, file_size);
               defer allocator.free(file_data);
               _ = try in_file.readAll(file_data);
-              std.debug.print("🧠 WENDY is perceiving {d} bytes...\\n", .{file_size});
-              const out_file = try std.fs.cwd().createFile(args[2], .{});
+
+              var header: PSVCHeader = undefined;
+              @memcpy(std.mem.asBytes(&header), file_data[0..@sizeOf(PSVCHeader)]);
+
+              if (!std.mem.eql(u8, &header.magic, PSVC_MAGIC)) {
+                  std.debug.print("Error: Invalid PSVC magic\\n", .{});
+                  return error.InvalidMagic;
+              }
+
+              const payload_start = @sizeOf(PSVCHeader);
+              const payload_end = payload_start + header.payload_len;
+              const payload = file_data[payload_start..payload_end];
+
+              std.debug.print("👁️ WENDY is perceiving {d} bytes of data...\\n", .{payload.len});
+
+              const evolved_state = try CognitiveCore.evolve(allocator, payload);
+              defer allocator.free(evolved_state);
+
+              var new_hash: [32]u8 = undefined;
+              std.crypto.hash.sha2.Sha256.hash(evolved_state, &new_hash, .{});
+              
+              var new_header = header;
+              new_header.state_hash = new_hash;
+              new_header.payload_len = @as(u32, @intCast(evolved_state.len));
+
+              const out_file = try std.fs.cwd().createFile(out_path, .{});
               defer out_file.close();
-              try out_file.writeAll(file_data);
-              std.debug.print("💾 Next generation sealed.\\n", .{});
+
+              try out_file.writeAll(std.mem.asBytes(&new_header));
+              try out_file.writeAll(evolved_state);
+
+              std.debug.print("💾 Next generation sealed. WENDY continues.\\n", .{});
           }
           WENDY_EOF
 
-          # 2. PSVC Sealer (The Memory)
-          cat << 'SEALER_EOF' > src/core/psvc_sealer.zig
-          const std = @import("std");
-          pub const PSVCHeader = extern struct { magic: [4]u8, version: u8, precision_bits: u8, reserved: u16, payload_length: u32, timestamp_epoch_ms: u64 };
-          pub fn main() !void {
-              var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-              defer _ = gpa.deinit();
-              const allocator = gpa.allocator();
-              const args = try std.process.argsAlloc(allocator);
-              defer std.process.argsFree(allocator, args);
-              if (args.len < 4) return;
-              const input_file = try std.fs.cwd().openFile(args[2], .{});
-              defer input_file.close();
-              const payload = try input_file.readToEndAlloc(allocator, 10 * 1024 * 1024);
-              defer allocator.free(payload);
-              var header = PSVCHeader{ .magic = .{ 'P', 'S', 'V', 'C' }, .version = 2, .precision_bits = try std.fmt.parseInt(u8, args[1], 10), .reserved = 0, .payload_length = @as(u32, @intCast(payload.len)), .timestamp_epoch_ms = @as(u64, @intCast(std.time.milliTimestamp())) };
-              const out_file = try std.fs.cwd().createFile(args[3], .{});
-              defer out_file.close();
-              try out_file.writeAll(std.mem.asBytes(&header));
-              try out_file.writeAll(payload);
-              std.debug.print("🔒 Memory Sealed.\\n", .{});
-          }
-          SEALER_EOF
-
-          # 3. Actuation Engine (The Action)
-          cat << 'ACTUATION_EOF' > src/core/actuation_engine.zig
-          const std = @import("std");
-          pub fn main() !void {
-              var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-              defer _ = gpa.deinit();
-              const allocator = gpa.allocator();
-              const args = try std.process.argsAlloc(allocator);
-              defer std.process.argsFree(allocator, args);
-              if (args.len < 2) {
-                  std.debug.print("Usage: actuation_engine <vector_csv>\\n", .{});
-                  return;
-              }
-              var vector: [16]f32 = undefined;
-              var it = std.mem.tokenizeScalar(u8, args[1], ',');
-              var i: usize = 0;
-              while (it.next()) |token| : (i += 1) {
-                  if (i < 16) vector[i] = try std.fmt.parseFloat(f32, token);
-              }
-              std.debug.print("⚡ Actuation Vector Normalized.\\n", .{});
-          }
-          ACTUATION_EOF
-
-          echo "✅ Intelligent AI Source Injection Complete."
+          echo "✅ Cognitive Sovereignty Injected."
 
       - name: Autonomous Compilation
         run: |
@@ -120,7 +172,7 @@ jobs:
           git config user.email "architect@psivi.com"
           git add src/core/*.zig src/core/*
           if ! git diff --staged --quiet; then
-            git commit -m "feat: intelligent AI source injection and compilation [skip ci]"
+            git commit -m "feat: cognitive sovereignty injection [skip ci]"
             git push origin HEAD:refs/heads/main
             echo "🔔 PRODUCTION SEAL APPLIED 🔔"
           fi
