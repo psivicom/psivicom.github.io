@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "updated_at": "2026-10-16T16:51:58.796722+00:00",
+  "updated_at": "2026-10-16T17:56:58.384623+00:00",
   "synapses": {
     "defense_weight": 1.0,
     "explore_weight": 3.0,
@@ -11,27 +11,6 @@
     "conscious_mass_influence": 0.0
   },
   "history": [
-    {
-      "timestamp": "2026-10-15T17:15:35.791729+00:00",
-      "context": {
-        "energy": 0.109683,
-        "fragility": 0,
-        "concordance": 0,
-        "social_value": 0.2,
-        "internal_variance": 0.0,
-        "conscious_mass": 0.0
-      },
-      "weights_snapshot": {
-        "defense_weight": 1.0,
-        "explore_weight": 2.84473632,
-        "maintain_weight": 1.0,
-        "stress_accumulator": 0.0,
-        "novelty_seeker": 0.5,
-        "stagnation_counter": 0,
-        "conscious_mass_influence": 0.0
-      },
-      "stagnation_flag": false
-    },
     {
       "timestamp": "2026-10-15T18:12:02.966101+00:00",
       "context": {
@@ -414,6 +393,27 @@
       "timestamp": "2026-10-16T16:51:58.796675+00:00",
       "context": {
         "energy": 0.911635,
+        "fragility": 0,
+        "concordance": 0,
+        "social_value": 0.2,
+        "internal_variance": 0.0,
+        "conscious_mass": 0.0
+      },
+      "weights_snapshot": {
+        "defense_weight": 1.0,
+        "explore_weight": 3.0,
+        "maintain_weight": 1.0,
+        "stress_accumulator": 0.0,
+        "novelty_seeker": 0.5,
+        "stagnation_counter": 0,
+        "conscious_mass_influence": 0.0
+      },
+      "stagnation_flag": false
+    },
+    {
+      "timestamp": "2026-10-16T17:56:58.384588+00:00",
+      "context": {
+        "energy": 0.911116,
         "fragility": 0,
         "concordance": 0,
         "social_value": 0.2,
