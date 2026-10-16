@@ -1,13 +1,9 @@
-# .github/workflows/zig-verify.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 name: Native Zig Compiler
 
 on:
   push:
     paths:
-      - "src/core/actuation_engine.zig"
+      - 'src/core/actuation_engine.zig'
   workflow_dispatch:
 
 permissions:
@@ -18,51 +14,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
 
       - name: Install Zig Toolchain
         run: |
-          curl --fail --location --silent --show-error \
-            https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz \
-            --output z.tar.xz
+          curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
           tar -xf z.tar.xz
           sudo mv zig-linux-x86_64-0.13.0 /opt/zig
-          echo "/opt/zig" >> "$GITHUB_PATH"
-          /opt/zig/zig version
+          echo "/opt/zig" >> $GITHUB_PATH
 
       - name: Sanitize and Compile
         run: |
-          # Surgical strike: Remove accidental '#' from the first line only
           sed -i '1{/^#/d;}' src/core/actuation_engine.zig
-          
-          echo "Compiling src/core/actuation_engine.zig..."
           /opt/zig/zig build-exe src/core/actuation_engine.zig \
             -O ReleaseSafe \
             -fstrip \
             -femit-bin="src/core/actuation_engine"
-            
-          echo "✅ Successfully compiled: src/core/actuation_engine"
 
-      - name: Commit Compiled Binary
+      - name: Commit and Ring Bell
         env:
           GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
           git config user.name "WENDY Native Compiler"
           git config user.email "wendy@psivi.com"
           git add src/core/actuation_engine.zig src/core/actuation_engine
-
           if ! git diff --staged --quiet; then
-            git commit -m "feat: native compilation of actuation_engine [skip ci]"
-            
-            if git push origin HEAD:refs/heads/main; then
-              echo "🔔 🔔 🔔 COMPILATION SUCCESSFUL. THE BELL HAS RUNG. 🔔 🔔 🔔"
-            else
-              echo "❌ CRITICAL: Failed to push compiled binary."
-              exit 1
-            fi
-          else
-            echo "ℹ️ No changes to commit."
+            git commit -m "feat: native compilation [skip ci]"
+            git push origin HEAD:refs/heads/main
+            echo "🔔 🔔 🔔 COMPILATION SUCCESSFUL. THE BELL HAS RUNG. 🔔 🔔 🔔"
           fi
