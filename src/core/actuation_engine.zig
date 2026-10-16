@@ -1,26 +1,8 @@
 const std = @import("std");
 
-fn evaluateRule(rule_condition: []const u8, vector: [16]f32) bool {
-    const intensity = vector[1];
-    const stress = vector[4];
-    const defense = vector[2];
-
-    if (std.mem.indexOf(u8, rule_condition, "stress_accumulator >= 0.75") != null) {
-        return stress >= 0.75;
-    }
-    if (std.mem.indexOf(u8, rule_condition, "intensity >= 0.85") != null and std.mem.indexOf(u8, rule_condition, "stress_accumulator < 0.75") != null) {
-        return intensity >= 0.85 and stress < 0.75;
-    }
-    if (std.mem.indexOf(u8, rule_condition, "defense_weight >= 0.80") != null) {
-        return defense >= 0.80;
-    }
-    
-    return false;
-}
-
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
+    defer gpa.deinit();
     const allocator = gpa.allocator();
 
     const args = try std.process.argsAlloc(allocator);
