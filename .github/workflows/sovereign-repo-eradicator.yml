@@ -59,6 +59,10 @@ jobs:
           print("🔍 Scanning repository for hardcoded secrets and big AI artifacts...")
 
           for wf in workflows_dir.glob('*.yml'):
+              # CRITICAL: Do not modify this eradicator script to prevent self-inflicted merge conflicts
+              if wf.name == 'sovereign-repo-eradicator.yml':
+                  continue
+                  
               content = wf.read_text()
               new_content = content
               
@@ -129,12 +133,19 @@ jobs:
             
             PUSH_SUCCESS=false
             for attempt in 1 2 3; do
+              # Attempt rebase. If it conflicts, abort to keep the workspace clean for the next retry
               if git pull --rebase origin main; then
                 if git push origin main; then
                   echo "✅ Push successful on attempt $attempt"
                   PUSH_SUCCESS=true
                   break
+                else
+                  echo "⚠️ Push failed after rebase. Aborting rebase to reset state..."
+                  git rebase --abort || true
                 fi
+              else
+                echo "⚠️ Rebase failed (conflict). Aborting rebase to reset state..."
+                git rebase --abort || true
               fi
               echo "⚠️ Push attempt $attempt failed, retrying in 2s..."
               sleep 2
