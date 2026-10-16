@@ -1,74 +1,77 @@
-name: Rebuild Workflow
+# .github/workflows/zig-verify.yml
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+name: Native Zig Compiler
 
 on:
   push:
     paths:
-      - '.github/workflows/zig-verify.yml'
+      - "src/core/*.zig"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  rebuild:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
+          fetch-depth: 0
           token: ${{ secrets.WENDY_AUDITOR_PAT }}
 
-      - name: Write Perfect Workflow
+      - name: Install Zig Toolchain
         run: |
-          cat << 'EOF' > .github/workflows/native-zig.yml
-          name: Native Zig Compiler
+          curl --fail --location --silent --show-error \
+            https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz \
+            --output z.tar.xz
+          tar -xf z.tar.xz
+          sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+          echo "/opt/zig" >> "$GITHUB_PATH"
+          /opt/zig/zig version
 
-          on:
-            push:
-              paths:
-                - 'src/core/actuation_engine.zig'
-            workflow_dispatch:
+      - name: Compile Zig Sources
+        run: |
+          shopt -s nullglob
+          files=(src/core/*.zig)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No Zig source files found in src/core."
+            exit 1
+          fi
 
-          permissions:
-            contents: write
+          for file in "${files[@]}"; do
+            echo "Compiling $file..."
+            OUTPUT_BIN="${file%.zig}"
+            
+            # Native, bare-metal compilation. No healers. No patches.
+            /opt/zig/zig build-exe "$file" \
+              -O ReleaseSafe \
+              -fstrip \
+              -femit-bin="$OUTPUT_BIN"
+              
+            echo "✅ Successfully compiled: $OUTPUT_BIN"
+          done
 
-          jobs:
-            build:
-              runs-on: ubuntu-latest
-              steps:
-                - name: Checkout
-                  uses: actions/checkout@v4
-                  with:
-                    token: ${{ secrets.WENDY_AUDITOR_PAT }}
+      - name: Commit Compiled Binaries
+        env:
+          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+        run: |
+          git config user.name "WENDY Native Compiler"
+          git config user.email "wendy@psivi.com"
+          git add src/core/*.zig src/core/actuation_engine src/core/wendy_engine
 
-                - name: Install Zig
-                  run: |
-                    curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
-                    tar -xf z.tar.xz
-                    sudo mv zig-linux-x86_64-0.13.0 /opt/zig
-                    echo "/opt/zig" >> $GITHUB_PATH
-
-                - name: Compile
-                  run: |
-                    sed -i '1{/^#/d;}' src/core/actuation_engine.zig
-                    /opt/zig/zig build-exe src/core/actuation_engine.zig -O ReleaseSafe -fstrip -femit-bin="src/core/actuation_engine"
-
-                - name: Commit
-                  env:
-                    GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
-                  run: |
-                    git config user.name "WENDY"
-                    git config user.email "wendy@psivi.com"
-                    git add src/core/actuation_engine.zig src/core/actuation_engine
-                    if ! git diff --staged --quiet; then
-                      git commit -m "feat: native compilation [skip ci]"
-                      git push origin HEAD:refs/heads/main
-                      echo "🔔 🔔 🔔 BELL RUNG 🔔 🔔 🔔"
-                    fi
-          EOF
-          
-          git config user.name "WENDY Builder"
-          git config user.email "builder@psivi.com"
-          git add .github/workflows/native-zig.yml
-          git commit -m "chore: regenerate workflow via machine-to-machine [skip ci]"
-          git push origin HEAD:refs/heads/main
+          if ! git diff --staged --quiet; then
+            git commit -m "feat: native compilation of pure Zig sources [skip ci]"
+            
+            if git push origin HEAD:refs/heads/main; then
+              echo "🔔 🔔 🔔 COMPILATION SUCCESSFUL. THE BELL HAS RUNG. 🔔 🔔 🔔"
+            else
+              echo "❌ CRITICAL: Failed to push compiled binaries."
+              exit 1
+            fi
+          else
+            echo "ℹ️ No changes to commit."
+          fi
