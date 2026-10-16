@@ -26,6 +26,7 @@ pub fn main() !void {
     defer rules_file.close();
     const rules_json = try rules_file.readToEndAlloc(allocator, 1024 * 1024);
     defer allocator.free(rules_json);
+    _ = rules_json;
 
     var matched_commands = std.ArrayList([]const u8).init(allocator);
     defer matched_commands.deinit();
@@ -41,11 +42,13 @@ pub fn main() !void {
     }
 
     std.debug.print("[", .{});
-    for (matched_commands.items, 0..) |cmd, index| {
+    var cmd_idx: usize = 0;
+    for (matched_commands.items) |cmd| {
         std.debug.print("{s}", .{cmd});
-        if (index < matched_commands.items.len - 1) {
+        if (cmd_idx < matched_commands.items.len - 1) {
             std.debug.print(",", .{});
         }
+        cmd_idx += 1;
     }
     std.debug.print("]\n", .{});
 }
