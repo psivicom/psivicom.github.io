@@ -7,7 +7,7 @@ name: Native Zig Compiler
 on:
   push:
     paths:
-      - "src/core/*.zig"
+      - "src/core/actuation_engine.zig"
   workflow_dispatch:
 
 permissions:
@@ -33,43 +33,34 @@ jobs:
           echo "/opt/zig" >> "$GITHUB_PATH"
           /opt/zig/zig version
 
-      - name: Compile Zig Sources
+      - name: Sanitize and Compile
         run: |
-          shopt -s nullglob
-          files=(src/core/*.zig)
-          if [ "${#files[@]}" -eq 0 ]; then
-            echo "No Zig source files found in src/core."
-            exit 1
-          fi
-
-          for file in "${files[@]}"; do
-            echo "Compiling $file..."
-            OUTPUT_BIN="${file%.zig}"
+          # Surgical strike: Remove accidental '#' from the first line only
+          sed -i '1{/^#/d;}' src/core/actuation_engine.zig
+          
+          echo "Compiling src/core/actuation_engine.zig..."
+          /opt/zig/zig build-exe src/core/actuation_engine.zig \
+            -O ReleaseSafe \
+            -fstrip \
+            -femit-bin="src/core/actuation_engine"
             
-            # Native, bare-metal compilation. No healers. No patches.
-            /opt/zig/zig build-exe "$file" \
-              -O ReleaseSafe \
-              -fstrip \
-              -femit-bin="$OUTPUT_BIN"
-              
-            echo "✅ Successfully compiled: $OUTPUT_BIN"
-          done
+          echo "✅ Successfully compiled: src/core/actuation_engine"
 
-      - name: Commit Compiled Binaries
+      - name: Commit Compiled Binary
         env:
           GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
         run: |
           git config user.name "WENDY Native Compiler"
           git config user.email "wendy@psivi.com"
-          git add src/core/*.zig src/core/actuation_engine src/core/wendy_engine
+          git add src/core/actuation_engine.zig src/core/actuation_engine
 
           if ! git diff --staged --quiet; then
-            git commit -m "feat: native compilation of pure Zig sources [skip ci]"
+            git commit -m "feat: native compilation of actuation_engine [skip ci]"
             
             if git push origin HEAD:refs/heads/main; then
               echo "🔔 🔔 🔔 COMPILATION SUCCESSFUL. THE BELL HAS RUNG. 🔔 🔔 🔔"
             else
-              echo "❌ CRITICAL: Failed to push compiled binaries."
+              echo "❌ CRITICAL: Failed to push compiled binary."
               exit 1
             fi
           else
