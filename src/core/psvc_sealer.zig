@@ -1,10 +1,10 @@
 const std = @import("std");
 
-pub const PSVCHeader = packed struct {
-    magic: [4]u8 = .{ 'P', 'S', 'V', 'C' },
-    version: u8 = 2,
+pub const PSVCHeader = extern struct {
+    magic: [4]u8,
+    version: u8,
     precision_bits: u8,
-    reserved: u16 = 0,
+    reserved: u16,
     payload_length: u32,
     timestamp_epoch_ms: u64,
 };
@@ -33,7 +33,10 @@ pub fn main() !void {
     defer allocator.free(payload);
 
     var header = PSVCHeader{
+        .magic = .{ 'P', 'S', 'V', 'C' },
+        .version = 2,
         .precision_bits = precision_bits,
+        .reserved = 0,
         .payload_length = @as(u32, @intCast(payload.len)),
         .timestamp_epoch_ms = @as(u64, @intCast(std.time.milliTimestamp())),
     };
