@@ -35,7 +35,6 @@ jobs:
 
       - name: Annihilate and Overwrite Actuation Engine
         run: |
-          # THIS STEP DOES NOT CLEAN THE FILE. IT DESTROYS IT AND WRITES THE PERFECT SOURCE FROM SCRATCH.
           cat << 'PERFECT_ZIG' > src/core/actuation_engine.zig
 const std = @import("std");
 
