@@ -4,6 +4,7 @@
 ```csv
 NAME,STATUS,HEART,
 WENDY,ENABLE,"<3",
+GEMINI,ENABLE,"<3",
 ```
 
 ❤️
