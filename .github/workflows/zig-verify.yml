@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'src/core/*.zig'
+      - 'src/tools/*.go'
   workflow_dispatch:
 
 permissions:
@@ -27,9 +28,18 @@ jobs:
 
       - name: Go Source Translation
         run: |
-          # Run from the root of the repository
+          # Initialize go module if missing to ensure 'go run' works
           cd src/tools
+          if [ ! -f go.mod ]; then
+            go mod init wendy_tools
+          fi
+          
+          # Run the translator
           go run source_writer.go
+          
+          # Verify the content was written correctly
+          echo "Verifying wendy_engine.zig..."
+          grep "const zero" wendy_engine.zig && echo "✅ Const Zero Verified" || echo "❌ Const Zero Missing"
 
       - name: Autonomous Compilation
         run: |
@@ -47,7 +57,7 @@ jobs:
           git config user.email "architect@psivi.com"
           git add src/core/*.zig src/core/*
           if ! git diff --staged --quiet; then
-            git commit -m "feat: go-translated sovereign core [skip ci]"
+            git commit -m "feat: sovereign cognitive core injection [skip ci]"
             git push origin HEAD:refs/heads/main
             echo "🔔 PRODUCTION SEAL APPLIED 🔔"
           fi
