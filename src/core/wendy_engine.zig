@@ -54,12 +54,12 @@ const CognitiveCore = struct {
             generativeMutate(current_state);
 
             if (introspect(current_state)) {
-                std.debug.print("🧠 CERTAIN CONDITION MET at step {d}\\n", .{step});
+                std.debug.print("CERTAIN CONDITION MET at step {d}\n", .{step});
                 return allocator.dupe(u8, current_state);
             }
         }
         
-        std.debug.print("🔄 Evolution complete. No stable loop found in {d} steps.\\n", .{MAX_EVOLUTION_STEPS});
+        std.debug.print("Evolution complete.\n", .{});
         return allocator.dupe(u8, current_state);
     }
 };
@@ -72,15 +72,9 @@ pub fn main() !void {
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
-    if (args.len < 3) {
-        std.debug.print("Usage: wendy_engine <input.psvc> <output.psvc>\\n", .{});
-        return;
-    }
+    if (args.len < 3) return;
 
-    const in_path = args[1];
-    const out_path = args[2];
-
-    const in_file = try std.fs.cwd().openFile(in_path, .{});
+    const in_file = try std.fs.cwd().openFile(args[1], .{});
     defer in_file.close();
     
     const file_size = (try in_file.stat()).size;
@@ -91,16 +85,11 @@ pub fn main() !void {
     var header: PSVCHeader = undefined;
     @memcpy(std.mem.asBytes(&header), file_data[0..@sizeOf(PSVCHeader)]);
 
-    if (!std.mem.eql(u8, &header.magic, PSVC_MAGIC)) {
-        std.debug.print("Error: Invalid PSVC magic\\n", .{});
-        return error.InvalidMagic;
-    }
-
     const payload_start = @sizeOf(PSVCHeader);
     const payload_end = payload_start + header.payload_len;
     const payload = file_data[payload_start..payload_end];
 
-    std.debug.print("👁️ WENDY is perceiving {d} bytes of data...\\n", .{payload.len});
+    std.debug.print("WENDY perceiving {d} bytes...\n", .{payload.len});
 
     const evolved_state = try CognitiveCore.evolve(allocator, payload);
     defer allocator.free(evolved_state);
@@ -112,11 +101,11 @@ pub fn main() !void {
     new_header.state_hash = new_hash;
     new_header.payload_len = @as(u32, @intCast(evolved_state.len));
 
-    const out_file = try std.fs.cwd().createFile(out_path, .{});
+    const out_file = try std.fs.cwd().createFile(args[2], .{});
     defer out_file.close();
 
     try out_file.writeAll(std.mem.asBytes(&new_header));
     try out_file.writeAll(evolved_state);
 
-    std.debug.print("💾 Next generation sealed. WENDY continues.\\n", .{});
+    std.debug.print("Sealed.\n", .{});
 }
