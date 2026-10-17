@@ -19,7 +19,6 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
-  models: read
 
 concurrency:
   group: wendy-evolution-${{ github.ref }}
@@ -29,7 +28,7 @@ jobs:
   evolve-wendy:
     name: Self-Optimization Run
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout Substrate
@@ -60,11 +59,17 @@ jobs:
           sudo mv zig-linux-x86_64-0.13.0 /usr/local/zig
           echo "/usr/local/zig" >> $GITHUB_PATH
 
-      # Free Auto-Failover Engine (Gemini 2.0 / 1.5 -> GitHub Models)
-      - name: Synthesize Production Code (Universal Free Engine)
+      # Pre-install Ollama for offline Qwen fallback
+      - name: Install Local Qwen Daemon (Offline Fallback Engine)
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          OLLAMA_HOST=127.0.0.1:11434 ollama serve > /dev/null 2>&1 &
+          sleep 4
+
+      # Hybrid Free Engine: Gemini 3.5 -> Local Qwen-Coder
+      - name: Synthesize Production Code (Gemini + Qwen Fallback)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET: ${{ github.event.inputs.evolution_target }}
         run: |
           python3 - << 'EOF'
@@ -77,7 +82,6 @@ jobs:
 
           target = os.environ.get("TARGET", "SELF_CODING_CORE")
           gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
-          github_token = os.environ.get("GITHUB_TOKEN", "").strip()
 
           prompt = f"""You are the lead architect for WENDY (autonomous cognitive AI across Zig, Go, Python, and .psvc mesh).
           Execute a recursive self-optimization cycle for target: {target}.
@@ -91,7 +95,7 @@ jobs:
              - PYTHON_COGNITIVE_HEURISTICS: Implement working memory, perception parsers, and fitness evaluators in Python.
              - BYZANTINE_SANDBOX_VERIFIER: Implement cryptographic task verification and anti-poisoning for volunteer node compute.
 
-          You MUST respond ONLY with a raw JSON object (no markdown backticks, no preamble) matching:
+          You MUST respond ONLY with a raw JSON object (no markdown, no backticks, no text before or after) formatted as:
           {{
             "files": [
               {{
@@ -99,21 +103,17 @@ jobs:
                 "content": "Full source code here..."
               }}
             ],
-            "team_ai_update": "Markdown summary of the evolutionary step to append to TEAM-AI.md"
+            "team_ai_update": "Markdown summary to append to TEAM-AI.md"
           }}"""
 
-          def clean_json(text):
-              t = text.strip()
-              if t.startswith("```"):
-                  lines = t.splitlines()
-                  if lines[0].startswith("```"):
-                      lines = lines[1:]
-                  if lines and lines[-1].startswith("```"):
-                      lines = lines[:-1]
-                  t = "\n".join(lines).strip()
-              return json.loads(t)
-
-          def apply_files(data):
+          def clean_and_apply(raw_text):
+              t = raw_text.strip()
+              if "```json" in t:
+                  t = t.split("```json", 1)[1].split("```", 1)[0].strip()
+              elif "```" in t:
+                  t = t.split("```", 1)[1].split("```", 1)[0].strip()
+              
+              data = json.loads(t)
               files = data.get("files", [])
               for f in files:
                   path = f["path"]
@@ -129,10 +129,11 @@ jobs:
                       doc.write(f"\n\n### Self-Evolution Cycle: {target}\n{update}\n")
                   print("  [+] Appended to TEAM-AI.md")
 
-          # Strategy 1: Multi-Model Gemini Cascade (Free Tier)
           success = False
+
+          # Tier 1: Try Gemini Active High-Capacity Flash-Lite Models
           if gemini_key:
-              gemini_models = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"]
+              gemini_models = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.1-flash-lite"]
               for model in gemini_models:
                   print(f"Attempting Google Free Model [{model}]...")
                   url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
@@ -146,59 +147,57 @@ jobs:
                       headers={"Content-Type": "application/json"}
                   )
                   try:
-                      with urllib.request.urlopen(req, timeout=90) as response:
+                      with urllib.request.urlopen(req, timeout=60) as response:
                           res_data = json.loads(response.read().decode("utf-8"))
                           raw = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                          data = clean_json(raw)
-                          apply_files(data)
-                          print(f"==> Successfully generated code using [{model}]!")
+                          clean_and_apply(raw)
+                          print(f"==> Successfully synthesized via Gemini [{model}]!")
                           success = True
                           break
                   except urllib.error.HTTPError as e:
-                      err = e.read().decode('utf-8', errors='ignore')
-                      print(f"  [!] Model {model} unavailable (HTTP {e.code}). Switching to next model...")
+                      print(f"  [!] Gemini {model} unavailable (HTTP {e.code}). Switching...")
                       time.sleep(2)
                   except Exception as e:
-                      print(f"  [!] Model {model} error: {e}. Switching...")
+                      print(f"  [!] Gemini {model} error: {e}. Switching...")
                       time.sleep(2)
 
-          # Strategy 2: GitHub Models (Free Azure Inference with GITHUB_TOKEN)
+          # Tier 2: Local Qwen-Coder Fallback (100% Free, Zero External Dependencies)
           if not success:
-              print("\n==> Switching to Free GitHub Models Engine (Azure Inference)...")
-              gh_models = ["gpt-4o-mini", "Meta-Llama-3.1-70B-Instruct"]
-              for model in gh_models:
-                  print(f"Attempting GitHub Model [{model}]...")
-                  url = "https://models.inference.ai.azure.com/chat/completions"
-                  payload = {
-                      "messages": [
-                          {"role": "system", "content": "You are an autonomous code synthesis engine. You only reply with raw valid JSON."},
-                          {"role": "user", "content": prompt}
-                      ],
-                      "model": model,
-                      "temperature": 0.2
+              print("\n==> Cloud endpoints busy. Booting Local Qwen-Coder Engine on runner...")
+              print("Pulling Qwen2.5-Coder model into local runner...")
+              os.system("ollama pull qwen2.5-coder:1.5b")
+
+              print("Synthesizing code with local Qwen2.5-Coder (JSON mode)...")
+              ollama_url = "http://127.0.0.1:11434/api/generate"
+              ollama_payload = {
+                  "model": "qwen2.5-coder:1.5b",
+                  "prompt": prompt,
+                  "format": "json",
+                  "stream": False,
+                  "options": {
+                      "temperature": 0.2,
+                      "num_ctx": 4096
                   }
-                  req = urllib.request.Request(
-                      url,
-                      data=json.dumps(payload).encode("utf-8"),
-                      headers={
-                          "Content-Type": "application/json",
-                          "Authorization": f"Bearer {github_token}"
-                      }
-                  )
-                  try:
-                      with urllib.request.urlopen(req, timeout=120) as response:
-                          res_data = json.loads(response.read().decode("utf-8"))
-                          raw = res_data["choices"][0]["message"]["content"]
-                          data = clean_json(raw)
-                          apply_files(data)
-                          print(f"==> Successfully generated code using GitHub Model [{model}]!")
-                          success = True
-                          break
-                  except Exception as e:
-                      print(f"  [!] GitHub Model {model} error: {e}")
+              }
+
+              req = urllib.request.Request(
+                  ollama_url,
+                  data=json.dumps(ollama_payload).encode("utf-8"),
+                  headers={"Content-Type": "application/json"}
+              )
+
+              try:
+                  with urllib.request.urlopen(req, timeout=300) as response:
+                      res_data = json.loads(response.read().decode("utf-8"))
+                      raw = res_data.get("response", "")
+                      clean_and_apply(raw)
+                      print("==> Successfully synthesized code using Local Qwen-Coder!")
+                      success = True
+              except Exception as e:
+                  print(f"Local Qwen Engine error: {e}", file=sys.stderr)
 
           if not success:
-              print("FATAL: All free inference channels failed.", file=sys.stderr)
+              print("FATAL: Both Gemini and Local Qwen synthesis failed.", file=sys.stderr)
               sys.exit(1)
           EOF
 
@@ -245,7 +244,8 @@ jobs:
               --title "🧬 WENDY Self-Evolution: ${TARGET}" \
               --body "### Autonomous Recursive Evolution Cycle
               - **Target Subsystem:** \`${TARGET}\`
-              - **Status:** Verified and synthesized via Free Multi-Engine Cascade." \
+              - **Synthesis Engine:** Hybrid (Gemini 3.5 / Local Qwen2.5-Coder)
+              - **Status:** Verified and committed." \
               --base main \
               --head "$BRANCH_NAME" || echo "PR already active."
           fi
