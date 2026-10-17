@@ -14,6 +14,14 @@ on:
           - 'GO_MESH_SCHEDULER'
           - 'PYTHON_COGNITIVE_HEURISTICS'
           - 'BYZANTINE_SANDBOX_VERIFIER'
+      model:
+        description: 'Gemini Model'
+        required: true
+        default: 'gemini-2.5-flash'
+        type: choice
+        options:
+          - 'gemini-2.5-flash'
+          - 'gemini-2.5-pro'
 
 permissions:
   contents: write
@@ -56,7 +64,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      # 5. Direct Zig official binary install (No 3rd-party action)
+      # 5. Direct Zig official binary install
       - name: Install Zig Compiler
         run: |
           curl -fsSL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o zig.tar.xz
@@ -64,12 +72,14 @@ jobs:
           sudo mv zig-linux-x86_64-0.13.0 /usr/local/zig
           echo "/usr/local/zig" >> $GITHUB_PATH
 
-# 6. Install & Execute Gemini CLI directly via npm
+      # 6. Install & Execute Gemini CLI targeting the Free-Tier Flash Model
       - name: Run Gemini CLI Engine
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_CLI_TRUST_WORKSPACE: "true"
+          GEMINI_MODEL: ${{ github.event.inputs.model }}
           TARGET: ${{ github.event.inputs.evolution_target }}
+          MODEL: ${{ github.event.inputs.model }}
         run: |
           npm install -g @google/gemini-cli
 
@@ -87,7 +97,9 @@ jobs:
              - If BYZANTINE_SANDBOX_VERIFIER: Implement cryptographic task verification for volunteer node compute.
           4. Update TEAM-AI.md with WENDY's evolutionary progress and architectural invariants."
 
-          gemini -p "$PROMPT" --skip-trust --yolo
+          # Explicitly pass model to prevent default Pro quota lockout
+          gemini -m "$MODEL" -p "$PROMPT" --skip-trust --yolo
+
       # 7. Verification Steps
       - name: Verify Zig Code
         continue-on-error: true
@@ -108,11 +120,12 @@ jobs:
         run: |
           python3 -m compileall . || true
 
-      # 8. Pull Request Creation via Native GitHub CLI (gh)
+      # 8. Commit and Pull Request Creation
       - name: Commit Changes and Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET: ${{ github.event.inputs.evolution_target }}
+          MODEL: ${{ github.event.inputs.model }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -124,14 +137,15 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes detected during this evolution cycle."
           else
-            git commit -m "feat(wendy): self-evolution of ${TARGET}"
+            git commit -m "feat(wendy): self-evolution of ${TARGET} via ${MODEL}"
             git push origin "$BRANCH_NAME" --force
 
             gh pr create \
               --title "🧬 WENDY Self-Evolution: ${TARGET}" \
               --body "### Autonomous Recursive Evolution Cycle
               - **Target Subsystem:** \`${TARGET}\`
-              - **Executed By:** Native Gemini CLI Engine
+              - **Model:** \`${MODEL}\`
+              - **Executed By:** Gemini CLI Autonomous Engine
               - **Integrity Gate:** Passed native compilation and syntax verification." \
               --base main \
               --head "$BRANCH_NAME" || echo "PR already active."
