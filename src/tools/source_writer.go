@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 const wendyEngineSource = `const std = @import("std");
@@ -121,9 +122,21 @@ pub fn main() !void {
 func main() {
 	fmt.Println("🚀 Go Source Translator: Writing Sovereign Core...")
 	
-	err := os.WriteFile("src/core/wendy_engine.zig", []byte(wendyEngineSource), 0644)
+	// Get the repository root (assuming script is in src/tools)
+	// We go up two levels: src/tools -> src -> root
+	rootDir := "../.."
+	coreDir := filepath.Join(rootDir, "src", "core")
+	
+	// Ensure the directory exists
+	if err := os.MkdirAll(coreDir, 0755); err != nil {
+		fmt.Printf("❌ Failed to create directory %s: %v\n", coreDir, err)
+		os.Exit(1)
+	}
+
+	filePath := filepath.Join(coreDir, "wendy_engine.zig")
+	err := os.WriteFile(filePath, []byte(wendyEngineSource), 0644)
 	if err != nil {
-		fmt.Printf("❌ Failed to write wendy_engine.zig: %v\n", err)
+		fmt.Printf("❌ Failed to write %s: %v\n", filePath, err)
 		os.Exit(1)
 	}
 	
