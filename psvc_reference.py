@@ -70,7 +70,6 @@ def seal(vec: np.ndarray, precision: int = PRECISION_INT8) -> bytes:
     dim = len(vec)
 
     if precision == PRECISION_INT8:
-        # Scale-normalized INT8 quantization
         scale = float(np.max(np.abs(vec)))
         if scale == 0:
             scale = 1.0
@@ -86,7 +85,6 @@ def seal(vec: np.ndarray, precision: int = PRECISION_INT8) -> bytes:
     else:
         raise PSVCError(f"Unsupported precision: {precision}")
 
-    # Compress payload
     compressed_payload = zlib.compress(raw_payload)
     payload_size = len(compressed_payload)
 
@@ -117,7 +115,7 @@ def open_container(data: bytes) -> np.ndarray:
     expected_total_size = HEADER_SIZE + payload_size
     if len(data) != expected_total_size:
         raise PSVCError(
-            f"Size mismatch: expected {expected_total_size} bytes (header + payload), got {len(data)} bytes."
+            f"Size mismatch: expected {expected_total_size} bytes, got {len(data)} bytes."
         )
 
     compressed_payload = data[HEADER_SIZE:expected_total_size]
