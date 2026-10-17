@@ -15,13 +15,12 @@ on:
           - 'PYTHON_COGNITIVE_HEURISTICS'
           - 'BYZANTINE_SANDBOX_VERIFIER'
       model:
-        description: 'Gemini Model'
+        description: 'Free-Tier Model'
         required: true
         default: 'gemini-3.8-flash'
         type: choice
         options:
           - 'gemini-3.8-flash'
-          - 'gemini-3.1-pro'
 
 permissions:
   contents: write
@@ -36,29 +35,29 @@ jobs:
   evolve-wendy:
     name: Self-Optimization Run
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 20
 
     steps:
-      # 1. Checkout
+      # 1. Allowed: actions/checkout@*
       - name: Checkout Substrate
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2. Node.js 24 (Eliminates the Node 20 deprecation warning)
+      # 2. Allowed: actions/setup-node@*
       - name: Setup Node.js Runtime
         uses: actions/setup-node@v4
         with:
           node-version: '24'
 
-      # 3. Go Runtime
+      # 3. Allowed: actions/setup-go@*
       - name: Setup Go Runtime
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
           cache: false
 
-      # 4. Python Runtime
+      # 4. Allowed: actions/setup-python@*
       - name: Setup Python Runtime
         uses: actions/setup-python@v5
         with:
@@ -72,31 +71,102 @@ jobs:
           sudo mv zig-linux-x86_64-0.13.0 /usr/local/zig
           echo "/usr/local/zig" >> $GITHUB_PATH
 
-      # 6. Execute Gemini CLI targeting the active gemini-3.8-flash model
-      - name: Run Gemini CLI Engine
+      # 6. Single-Shot Generator: Consumes exactly 1 API call (Never hits the 5 RPM quota limit)
+      - name: Synthesize Production Code (Single-Shot Free Engine)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_CLI_TRUST_WORKSPACE: "true"
           TARGET: ${{ github.event.inputs.evolution_target }}
           MODEL: ${{ github.event.inputs.model }}
         run: |
-          npm install -g @google/gemini-cli
+          python3 - << 'EOF'
+          import os
+          import json
+          import sys
+          import urllib.request
+          import urllib.error
 
-          PROMPT="You are operating as WENDY's self-coding catalyst for TEAM-AI.
-          Target Subsystem: ${TARGET}
+          api_key = os.environ.get("GEMINI_API_KEY")
+          target = os.environ.get("TARGET", "SELF_CODING_CORE")
+          model = os.environ.get("MODEL", "gemini-3.8-flash")
+
+          if not api_key:
+              print("FATAL: GEMINI_API_KEY is not set.")
+              sys.exit(1)
+
+          prompt = f"""You are the lead architect for WENDY (autonomous cognitive AI across Zig, Go, Python, and .psvc mesh).
+          Execute a recursive self-optimization cycle for target: {target}.
 
           MANDATORY OBJECTIVES:
-          1. Author production-grade code for WENDY's autonomous, evolving cognitive mesh.
-          2. Eliminate all placeholders, mocks, and TODOs. All functions must be fully implemented.
-          3. Implement the selected target:
-             - If SELF_CODING_CORE: Implement AST introspection, self-modification loops, and verification gates.
-             - If ZIG_ARENA_SIMD: Build zero-leak cache-aligned memory arenas and SIMD math routines in Zig.
-             - If GO_MESH_SCHEDULER: Build P2P volunteer node daemons (RAM/CPU pooling) and .psvc container task dispatch in Go.
-             - If PYTHON_COGNITIVE_HEURISTICS: Implement working memory, perception parsers, and fitness evaluators.
-             - If BYZANTINE_SANDBOX_VERIFIER: Implement cryptographic task verification for volunteer node compute.
-          4. Update TEAM-AI.md with WENDY's evolutionary progress and architectural invariants."
+          1. Provide PRODUCTION-READY, FULLY FUNCTIONAL code. Zero placeholders, zero TODOs, zero mock code.
+          2. Depending on the target ({target}):
+             - SELF_CODING_CORE: Implement AST introspection kernel in Zig, self-modification orchestrator in Go, and heuristic fitness evaluator in Python.
+             - ZIG_ARENA_SIMD: Implement zero-leak cache-aligned memory arena with SIMD operations in Zig.
+             - GO_MESH_SCHEDULER: Implement P2P volunteer node daemon (RAM/CPU pooling) and .psvc work-stealing scheduler in Go.
+             - PYTHON_COGNITIVE_HEURISTICS: Implement working memory, perception parsers, and fitness evaluators in Python.
+             - BYZANTINE_SANDBOX_VERIFIER: Implement cryptographic task verification and anti-poisoning for volunteer node compute.
 
-          gemini -m "$MODEL" -p "$PROMPT" --skip-trust --yolo
+          You MUST respond ONLY with a raw JSON object (without markdown code blocks, backticks, or preamble) formatted strictly as:
+          {{
+            "files": [
+              {{
+                "path": "relative/path/to/file.ext",
+                "content": "Full source code here..."
+              }}
+            ],
+            "team_ai_update": "Markdown text summarizing evolutionary step to append to TEAM-AI.md"
+          }}"""
+
+          payload = {
+              "contents": [
+                  {
+                      "parts": [{"text": prompt}]
+                  }
+              ],
+              "generationConfig": {
+                  "temperature": 0.2,
+                  "responseMimeType": "application/json"
+              }
+          }
+
+          url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+          req = urllib.request.Request(
+              url,
+              data=json.dumps(payload).encode("utf-8"),
+              headers={"Content-Type": "application/json"}
+          )
+
+          print(f"Connecting to Gemini API [{model}] for {target} (Single-Request Mode)...")
+          try:
+              with urllib.request.urlopen(req) as response:
+                  res_data = json.loads(response.read().decode("utf-8"))
+                  text_output = res_data["candidates"][0]["content"]["parts"][0]["text"]
+                  
+                  data = json.loads(text_output)
+                  files = data.get("files", [])
+                  for f in files:
+                      path = f["path"]
+                      content = f["content"]
+                      os.makedirs(os.path.dirname(path), exist_ok=True)
+                      with open(path, "w", encoding="utf-8") as out:
+                          out.write(content)
+                      print(f"  [+] Synthesized: {path}")
+
+                  update = data.get("team_ai_update", "")
+                  if update:
+                      with open("TEAM-AI.md", "a", encoding="utf-8") as doc:
+                          doc.write(f"\n\n### Self-Evolution Cycle: {target}\n{update}\n")
+                      print("  [+] Appended to TEAM-AI.md")
+
+                  print("Single-shot synthesis completed successfully using 1 request.")
+
+          except urllib.error.HTTPError as e:
+              err_msg = e.read().decode('utf-8')
+              print(f"HTTP Error {e.code}: {err_msg}", file=sys.stderr)
+              sys.exit(1)
+          except Exception as e:
+              print(f"Execution Error: {str(e)}", file=sys.stderr)
+              sys.exit(1)
+          EOF
 
       # 7. Verification Steps
       - name: Verify Zig Code
@@ -118,7 +188,7 @@ jobs:
         run: |
           python3 -m compileall . || true
 
-      # 8. Commit and Pull Request Creation
+      # 8. Pull Request Creation via Native GitHub CLI
       - name: Commit Changes and Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -133,7 +203,7 @@ jobs:
 
           git add -A
           if git diff --cached --quiet; then
-            echo "No changes detected during this evolution cycle."
+            echo "No code changes detected."
           else
             git commit -m "feat(wendy): self-evolution of ${TARGET} via ${MODEL}"
             git push origin "$BRANCH_NAME" --force
@@ -142,8 +212,8 @@ jobs:
               --title "🧬 WENDY Self-Evolution: ${TARGET}" \
               --body "### Autonomous Recursive Evolution Cycle
               - **Target Subsystem:** \`${TARGET}\`
-              - **Model:** \`${MODEL}\`
-              - **Executed By:** Gemini CLI Autonomous Engine
+              - **Model Engine:** \`${MODEL}\` (Free Tier Single-Shot)
+              - **Quota Usage:** 1 request (Bypasses 5 RPM rate limits)
               - **Integrity Gate:** Passed native compilation and syntax verification." \
               --base main \
               --head "$BRANCH_NAME" || echo "PR already active."
