@@ -27,6 +27,7 @@ jobs:
 
       - name: Go Source Translation
         run: |
+          # Run from the root of the repository
           cd src/tools
           go run source_writer.go
 
