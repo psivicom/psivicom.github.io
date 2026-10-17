@@ -151,9 +151,6 @@ def open_container(data: bytes) -> np.ndarray:
 
 
 def validate_file(filepath: str) -> bool:
-    """
-    Validates a .psvc file on disk without corrupting memory state.
-    """
     with open(filepath, 'rb') as f:
         data = f.read()
     open_container(data)
@@ -161,9 +158,6 @@ def validate_file(filepath: str) -> bool:
 
 
 def write_file(filepath: str, vec: np.ndarray, precision: int = PRECISION_INT8) -> int:
-    """
-    Writes a sealed vector to a .psvc file on disk.
-    """
     data = seal(vec, precision)
     with open(filepath, 'wb') as f:
         f.write(data)
@@ -171,9 +165,6 @@ def write_file(filepath: str, vec: np.ndarray, precision: int = PRECISION_INT8) 
 
 
 def read_file(filepath: str) -> np.ndarray:
-    """
-    Reads and unseals a .psvc file from disk.
-    """
     with open(filepath, 'rb') as f:
         data = f.read()
     return open_container(data)
