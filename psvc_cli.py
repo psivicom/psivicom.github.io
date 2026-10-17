@@ -6,6 +6,7 @@
 # RFC 1001 Command Line Interface
 # Usage: python psvc_cli.py [create|inspect|validate|open] ...
 
+import os
 import sys
 import argparse
 import numpy as np
@@ -17,6 +18,9 @@ from psvc_reference import (
 )
 
 PRECISION_MAP = {"int8": PRECISION_INT8, "float16": PRECISION_FLOAT16, "float32": PRECISION_FLOAT32}
+
+# Tell Python to load modules from src/core/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src', 'core'))
 
 def cmd_create(args):
     if args.text:
