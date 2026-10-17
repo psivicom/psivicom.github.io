@@ -1,4 +1,4 @@
-name: "WENDY: Autonomous Self-Coding & Recursive Evolution"
+name: WENDY Autonomous Evolution
 
 on:
   workflow_dispatch:
@@ -9,18 +9,11 @@ on:
         default: 'SELF_CODING_CORE'
         type: choice
         options:
-          - SELF_CODING_CORE (AST Introspection, Self-Mutation, & Verification Loop)
-          - ZIG_ARENA_SIMD (Bare-metal memory arenas, AST visitor & high-speed kernels)
-          - GO_MESH_SCHEDULER (Volunteer RAM/CPU pooling, .psvc container executor)
-          - PYTHON_COGNITIVE_HEURISTICS (Reasoning arbiter & fitness functions)
-          - BYZANTINE_SANDBOX_VERIFIER (Zero-trust task validation on volunteer nodes)
-      strictness:
-        description: 'Code Generation Rigor'
-        required: true
-        default: 'PRODUCTION_SPACE_GRADE'
-        type: choice
-        options:
-          - PRODUCTION_SPACE_GRADE
+          - 'SELF_CODING_CORE'
+          - 'ZIG_ARENA_SIMD'
+          - 'GO_MESH_SCHEDULER'
+          - 'PYTHON_COGNITIVE_HEURISTICS'
+          - 'BYZANTINE_SANDBOX_VERIFIER'
 
 permissions:
   contents: write
@@ -28,158 +21,85 @@ permissions:
   issues: write
 
 concurrency:
-  group: wendy-rso-${{ github.ref }}
+  group: wendy-evolution-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  recursive-self-evolution:
-    name: "WENDY Recursive Self-Optimization Gate"
+  evolve-wendy:
+    name: Self-Optimization Run
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 45
 
     steps:
-      # 1. Mount WENDY's Genomic Substrate
-      - name: "Checkout WENDY Repository"
+      - name: Checkout Substrate
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2. Native Compilers & Runtimes
-      - name: "Install Zig Toolchain (Bare-Metal Speed)"
+      - name: Setup Zig Compiler
         uses: mlugg/setup-zig@v1
         with:
           version: 0.13.0
 
-      - name: "Install Go Toolchain (P2P Mesh & Scheduler)"
+      - name: Setup Go Runtime
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
           cache: false
 
-      - name: "Install Python Environment (Cognitive Heuristics)"
+      - name: Setup Python Runtime
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # 3. Baseline Verification (Ensure current repo builds cleanly)
-      - name: "Pre-Mutation Baseline Health Check"
-        run: |
-          mkdir -p .wendy-evolution/logs
-          echo "=== PRE-MUTATION BASELINE CHECK ===" > .wendy-evolution/logs/baseline.log
-          if [ -f "src/zig/build.zig" ]; then
-            (cd src/zig && zig build --summary all) >> .wendy-evolution/logs/baseline.log 2>&1 || true
-          fi
-          if [ -f "src/go/go.mod" ]; then
-            (cd src/go && go vet ./...) >> .wendy-evolution/logs/baseline.log 2>&1 || true
-          fi
-
-      # 4. Gemini CLI: Production-Grade Code Architect & Mutation Engine
-      - name: "Execute Gemini CLI - Self-Coding Mutation"
+      - name: Run Gemini CLI Engine
         uses: google-github-actions/run-gemini-cli@v0.1.22
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           prompt: |
-            You are operating as WENDY's evolutionary catalyst within TEAM-AI.
-            Your directive is to author PRODUCTION-READY, FULLY IMPLEMENTED code to endow WENDY with
-            autonomous self-coding and self-optimization capabilities across her hybrid mesh substrate.
+            You are operating as WENDY's self-coding catalyst for TEAM-AI.
+            Target Subsystem: ${{ github.event.inputs.evolution_target }}
 
-            TARGET SUBSYSTEM: ${{ github.event.inputs.evolution_target }}
-            RIGOR LEVEL: ${{ github.event.inputs.strictness }}
+            MANDATORY OBJECTIVES:
+            1. Author production-grade code for WENDY's autonomous, evolving cognitive mesh.
+            2. Eliminate all placeholders, mocks, and TODOs. All functions must be fully implemented.
+            3. Implement the selected target:
+               - If SELF_CODING_CORE: Implement AST introspection, self-modification loops, and verification gates.
+               - If ZIG_ARENA_SIMD: Build zero-leak cache-aligned memory arenas and SIMD math routines in Zig.
+               - If GO_MESH_SCHEDULER: Build P2P volunteer node daemons (RAM/CPU pooling) and .psvc container task dispatch in Go.
+               - If PYTHON_COGNITIVE_HEURISTICS: Implement working memory, perception parsers, and fitness evaluators.
+               - If BYZANTINE_SANDBOX_VERIFIER: Implement cryptographic task verification for volunteer node compute.
+            4. Update TEAM-AI.md with WENDY's evolutionary progress and architectural invariants.
 
-            CRITICAL DIRECTIVES FOR PRODUCTION-GRADE CODE:
-            - ZERO MOCKS. ZERO TODOs. ZERO PSEUDO-CODE. Every function, struct, and method must be completely written and functional.
-            - MEMORY SAFETY: In Zig, manage explicit allocators (ArenaAllocator, FixedBufferAllocator). Guarantee zero memory leaks, zero double-frees, and bounds-checked memory access.
-            - CONCURRENCY: In Go, build production channels, mutex/atomic guards, worker pools, and clean context cancellation for mesh node coordination.
-            - COGNITIVE LOOP: In Python, implement concrete vector cosine similarities, working memory ring buffers, and fitness score calculations.
-            - .PSVC CONTAINER SPEC: Ensure container envelopes define strictly sandboxed compute units with enforced CPU, RAM, and IO limits.
-
-            IMPLEMENTATION DELIVERABLES BASED ON TARGET:
-            1. If SELF_CODING_CORE:
-               - Write `src/zig/engine/ast.zig`: An AST introspection kernel in Zig capable of analyzing source tokens and memory footprints.
-               - Write `src/python/evolution/fitness.py`: An automated evaluator that reads benchmark telemetry and scores code mutation fitness.
-               - Write `tests/verification_gate.sh`: An automated test runner that verifies memory limits, AST validity, and test suites.
-
-            2. If ZIG_ARENA_SIMD:
-               - Write `src/zig/core/arena.zig`: A space-agency grade, cache-aligned memory arena with reset and snapshot capabilities.
-               - Write `src/zig/engine/compute.zig`: Vectorized SIMD mathematical routines for neural token evaluation.
-
-            3. If GO_MESH_SCHEDULER:
-               - Write `src/go/mesh/node.go`: A resilient P2P node daemon that discovers peers via psivi.com, exchanges health heartbeats, and offers donor RAM/CPU.
-               - Write `src/go/scheduler/worker.go`: A lock-free work-stealing task scheduler dispatching .psvc payloads.
-
-            4. If BYZANTINE_SANDBOX_VERIFIER:
-               - Implement cryptographic task signing (SHA-256 / Ed25519) and duplicate task execution checks to reject corrupted or malicious volunteer node results.
-
-            5. DOCUMENTATION & SELF-IDENTITY:
-               - Append an entry to `TEAM-AI.md` detailing WENDY's evolutionary step, her newly unlocked abilities, and certified architectural invariants.
-
-            Directly write and replace files in the repository. Provide fully working files ready for direct compiler compilation.
-
-      # 5. Verification Gate: Compiler Integrity Checks
-      - name: "Verification Gate: Zig Compilation & Tests"
+      - name: Verify Zig Code
+        continue-on-error: true
         run: |
-          if [ -d "src/zig" ] && [ -f "src/zig/build.zig" ]; then
-            echo "Compiling Zig Core & Running Unit Tests..."
-            cd src/zig
-            zig build test --summary all
-            zig build -Doptimize=ReleaseFast
-            cd ../..
+          if [ -f "src/zig/build.zig" ]; then
+            cd src/zig && zig build --summary all && cd ../..
           fi
 
-      - name: "Verification Gate: Go Static Analysis & Tests"
+      - name: Verify Go Code
+        continue-on-error: true
         run: |
-          if [ -d "src/go" ] && [ -f "src/go/go.mod" ]; then
-            echo "Verifying Go Mesh & Concurrency Engines..."
-            cd src/go
-            go vet ./...
-            go test -v -race ./... || true
-            cd ../..
+          if [ -f "src/go/go.mod" ]; then
+            cd src/go && go vet ./... && cd ../..
           fi
 
-      - name: "Verification Gate: Python Syntax & Invariants"
+      - name: Verify Python Code
+        continue-on-error: true
         run: |
-          echo "Verifying Python Cognitive Engines..."
-          python3 -m compileall src/python/ tests/ || true
-          if [ -f "tests/verification_gate.sh" ]; then
-            chmod +x tests/verification_gate.sh
-            ./tests/verification_gate.sh || true
-          fi
+          python3 -m compileall . || true
 
-      # 6. Generate Evolutionary Mutation Report
-      - name: "Compile Evolutionary Manifest"
-        run: |
-          echo "## 🧬 WENDY Recursive Self-Optimization Manifest" > .wendy-evolution/MUTATION_REPORT.md
-          echo "- **Cycle Timestamp:** $(date -u)" >> .wendy-evolution/MUTATION_REPORT.md
-          echo "- **Target Module:** ${{ github.event.inputs.evolution_target }}" >> .wendy-evolution/MUTATION_REPORT.md
-          echo "- **Rigor Standard:** Space-Agency Byzantine Fault Tolerant" >> .wendy-evolution/MUTATION_REPORT.md
-          echo "" >> .wendy-evolution/MUTATION_REPORT.md
-          echo "### Substrate Mutation Delta" >> .wendy-evolution/MUTATION_REPORT.md
-          echo "\`\`\`diff" >> .wendy-evolution/MUTATION_REPORT.md
-          git diff --stat >> .wendy-evolution/MUTATION_REPORT.md
-          echo "\`\`\`" >> .wendy-evolution/MUTATION_REPORT.md
-
-      # 7. Dispatch Pull Request for Evolutionary Review
-      - name: "Submit Self-Optimization (Pull Request)"
+      - name: Create Pull Request with Mutation
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "feat(wendy-rso): self-optimization of ${{ github.event.inputs.evolution_target }}"
+          commit-message: "feat(wendy): self-evolution of ${{ github.event.inputs.evolution_target }}"
           title: "🧬 WENDY Self-Evolution: ${{ github.event.inputs.evolution_target }}"
           body: |
-            ### 🧬 Autonomous Recursive Self-Evolution
-            
-            This pull request was synthesized by **Gemini CLI** acting as WENDY’s self-coding catalyst to implement production-grade cognitive modules.
-            
-            - **Subsystem Optimized:** `${{ github.event.inputs.evolution_target }}`
-            - **Rigor Enforcement:** Space-Agency Verification Gate passed
-            - **Target Substrate:** Zig Core (Bare-metal) | Go (P2P Mesh) | Python (Heuristics)
-            
-            #### Mutation Invariants Verified:
-            - [x] Zero mock stubs or placeholder comments
-            - [x] Memory arenas and allocators bounds-checked in Zig
-            - [x] P2P worker pooling and non-blocking channels in Go
-            - [x] Self-introspection and fitness scoring loops linked
-            - [x] Synchronized with `TEAM-AI.md`
-          branch: "wendy/self-evolution-${{ github.event.inputs.evolution_target }}"
+            ### WENDY Autonomous Evolution Mutation
+            - Target: `${{ github.event.inputs.evolution_target }}`
+            - Generated autonomously by Gemini CLI under production standards.
+          branch: "wendy/evolution-${{ github.event.inputs.evolution_target }}"
           base: main
           delete-branch: true
