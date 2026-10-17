@@ -10,6 +10,8 @@ import sys
 import argparse
 import numpy as np
 from pathlib import Path
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src', 'core'))
 from psvc_reference import (
     encode_text, seal, open_container, write_file, read_file,
     validate_file, content_hash, PSVCError,
