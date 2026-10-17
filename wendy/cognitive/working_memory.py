@@ -1,59 +1,54 @@
 import time
+import math
 from typing import Dict, Any, List, Optional
-from dataclasses import dataclass, field
 
-@dataclass
-class MemoryNode:
-    key: str
-    value: Any
-    salience: float
-    timestamp: float = field(default_factory=time.time)
-    access_count: int = 0
+class WorkingMemoryNode:
+    __slots__ = ('key', 'value', 'activation', 'last_accessed', 'tags')
+    def __init__(self, key: str, value: Any, activation: float, tags: List[str]):
+        self.key = key
+        self.value = value
+        self.activation = activation
+        self.last_accessed = time.time()
+        self.tags = tags
 
 class WorkingMemory:
-    def __init__(self, capacity: int = 1000, decay_rate: float = 0.01):
+    def __init__(self, capacity: int = 1024, decay_rate: float = 0.05):
         self.capacity = capacity
         self.decay_rate = decay_rate
-        self.store: Dict[str, MemoryNode] = {}
+        self.store: Dict[str, WorkingMemoryNode] = {}
 
-    def update(self, key: str, value: Any, salience: float = 1.0) -> None:
+    def decay(self) -> None:
         current_time = time.time()
+        keys_to_remove = []
+        for key, node in self.store.items():
+            elapsed = current_time - node.last_accessed
+            node.activation *= math.exp(-self.decay_rate * elapsed)
+            node.last_accessed = current_time
+            if node.activation < 0.01:
+                keys_to_remove.append(key)
+        for k in keys_to_remove:
+            del self.store[k]
+
+    def set(self, key: str, value: Any, activation: float = 1.0, tags: Optional[List[str]] = None) -> None:
+        self.decay()
+        if len(self.store) >= self.capacity and key not in self.store:
+            min_key = min(self.store.keys(), key=lambda k: self.store[k].activation)
+            del self.store[min_key]
+        self.store[key] = WorkingMemoryNode(key, value, activation, tags or [])
+
+    def get(self, key: str) -> Optional[Any]:
+        self.decay()
         if key in self.store:
             node = self.store[key]
-            node.value = value
-            node.salience = max(node.salience, salience)
-            node.timestamp = current_time
-            node.access_count += 1
-        else:
-            if len(self.store) >= self.capacity:
-                self._evict_lowest_salience(current_time)
-            self.store[key] = MemoryNode(key=key, value=value, salience=salience, timestamp=current_time)
+            node.activation = min(1.0, node.activation + 0.2)
+            node.last_accessed = time.time()
+            return node.value
+        return None
 
-    def retrieve(self, key: str) -> Optional[Any]:
-        current_time = time.time()
-        if key not in self.store:
-            return None
-        node = self.store[key]
-        node.access_count += 1
-        node.timestamp = current_time
-        return node.value
-
-    def _evict_lowest_salience(self, current_time: float) -> None:
-        if not self.store:
-            return
-        lowest_key = min(
-            self.store.keys(),
-            key=lambda k: self.store[k].salience * (1.0 / (1.0 + self.decay_rate * (current_time - self.store[k].timestamp)))
-        )
-        del self.store[lowest_key]
-
-    def dump(self) -> List[Dict[str, Any]]:
-        return [
-            {
-                "key": node.key,
-                "value": node.value,
-                "salience": node.salience,
-                "access_count": node.access_count
-            }
-            for node in self.store.values()
-        ]
+    def query_by_tag(self, tag: str) -> List[Any]:
+        self.decay()
+        results = []
+        for node in self.store.values():
+            if tag in node.tags:
+                results.append(node.value)
+        return results
