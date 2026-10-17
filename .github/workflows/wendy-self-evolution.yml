@@ -52,11 +52,13 @@ jobs:
         with:
           python-version: '3.11'
 
+      # 5. Direct Zig official binary install
       - name: Install Zig Compiler
         run: |
           curl -fsSL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o zig.tar.xz
           tar -xf zig.tar.xz
           sudo mv zig-linux-x86_64-0.13.0 /usr/local/zig
+          rm -f zig.tar.xz
           echo "/usr/local/zig" >> $GITHUB_PATH
 
       # Pre-install Ollama for offline Qwen fallback
