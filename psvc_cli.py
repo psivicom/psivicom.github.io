@@ -11,6 +11,8 @@ import sys
 import argparse
 import numpy as np
 from pathlib import Path
+# Tell Python to load modules from src/core/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src', 'core'))
 from psvc_reference import (
     encode_text, seal, open_container, write_file, read_file,
     validate_file, content_hash, PSVCError,
@@ -18,9 +20,6 @@ from psvc_reference import (
 )
 
 PRECISION_MAP = {"int8": PRECISION_INT8, "float16": PRECISION_FLOAT16, "float32": PRECISION_FLOAT32}
-
-# Tell Python to load modules from src/core/
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src', 'core'))
 
 def cmd_create(args):
     if args.text:
