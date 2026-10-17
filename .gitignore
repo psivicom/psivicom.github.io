@@ -1,3 +1,7 @@
+# GEMINI
+.gemini/
+gha-creds-*.json
+
 # Python caches and environments
 __pycache__/
 *.py[cod]
