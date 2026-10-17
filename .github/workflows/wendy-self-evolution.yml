@@ -64,10 +64,11 @@ jobs:
           sudo mv zig-linux-x86_64-0.13.0 /usr/local/zig
           echo "/usr/local/zig" >> $GITHUB_PATH
 
-      # 6. Install & Execute Gemini CLI directly via npm (Bypasses pnpm/action-setup completely)
+# 6. Install & Execute Gemini CLI directly via npm
       - name: Run Gemini CLI Engine
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_CLI_TRUST_WORKSPACE: "true"
           TARGET: ${{ github.event.inputs.evolution_target }}
         run: |
           npm install -g @google/gemini-cli
@@ -86,8 +87,7 @@ jobs:
              - If BYZANTINE_SANDBOX_VERIFIER: Implement cryptographic task verification for volunteer node compute.
           4. Update TEAM-AI.md with WENDY's evolutionary progress and architectural invariants."
 
-          gemini -p "$PROMPT"
-
+          gemini -p "$PROMPT" --skip-trust --yolo
       # 7. Verification Steps
       - name: Verify Zig Code
         continue-on-error: true
