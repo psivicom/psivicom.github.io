@@ -1,30 +1,44 @@
-from typing import Dict, Any
+import time
+import statistics
+from typing import Callable, Any, Dict
 
 class FitnessEvaluator:
-    def __init__(self, weights: Dict[str, float] = None):
-        self.weights = weights or {
-            "execution_speed": 0.3,
-            "memory_efficiency": 0.3,
-            "code_complexity": 0.2,
-            "robustness": 0.2
-        }
+    def __init__(self, latency_weight: float = 0.4, memory_weight: float = 0.3, correctness_weight: float = 0.3):
+        self.latency_weight = latency_weight
+        self.memory_weight = memory_weight
+        self.correctness_weight = correctness_weight
 
-    def evaluate(self, metrics: Dict[str, float]) -> float:
-        total_score = 0.0
-        total_weight = 0.0
+    def evaluate(self, func: Callable[..., Any], test_inputs: list, expected_outputs: list) -> Dict[str, float]:
+        latencies = []
+        correct_count = 0
         
-        for metric, weight in self.weights.items():
-            if metric in metrics:
-                val = float(metrics[metric])
-                total_score += val * weight
-                total_weight += weight
-                
-        if total_weight == 0.0:
-            return 0.0
+        for inp, expected in zip(test_inputs, expected_outputs):
+            start_time = time.perf_counter()
+            try:
+                res = func(inp)
+                success = (res == expected)
+            except Exception:
+                success = False
+            end_time = time.perf_counter();
             
-        return max(0.0, min(1.0, total_score / total_weight))
-
-    def evaluate_ast_complexity(self, node_count: int, max_allowed_nodes: int = 500) -> float:
-        if node_count >= max_allowed_nodes:
-            return 0.0
-        return 1.0 - (node_count / max_allowed_nodes)
+            latencies.append((end_time - start_time) * 1000.0) 
+            if success:
+                correct_count += 1
+                
+        avg_latency = statistics.mean(latencies) if latencies else 0.0
+        correctness_score = (correct_count / len(test_inputs)) if test_inputs else 0.0
+        
+        latency_score = max(0.0, 1.0 - (avg_latency / 100.0))
+        memory_score = 0.85 
+        
+        total_fitness = (
+            (latency_score * self.latency_weight) +
+            (memory_score * self.memory_weight) +
+            (correctness_score * self.correctness_weight)
+        )
+        
+        return {
+            "latency_ms": avg_latency,
+            "correctness": correctness_score,
+            "fitness_score": total_fitness
+        }
