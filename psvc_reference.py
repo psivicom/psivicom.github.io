@@ -1,116 +1,179 @@
-# psvc_reference.py
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+"""
+psvc_reference.py
+Reference Implementation for Pico Service Container (.psvc) Format v1
+RFC 1001 Specification
+Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
+"""
 
 import struct
 import zlib
 import hashlib
 import numpy as np
-from pathlib import Path
 
+# Header Constants
 MAGIC = b'PSVI'
 VERSION = 1
 HEADER_SIZE = 14
-PRECISION_FLOAT16 = 1
 
-def content_hash(vector):
-    vec = vector.astype(np.float32)
+# Precision Flags
+PRECISION_INT8 = 0
+PRECISION_FLOAT16 = 1
+PRECISION_FLOAT32 = 2
+
+
+class PSVCError(Exception):
+    """Base exception for all PSVC container format violations."""
+    pass
+
+
+def content_hash(vec: np.ndarray) -> str:
+    """
+    Computes deterministic 12-character lowercase hex hash (RFC 1001 Section 5.1).
+    """
+    if not isinstance(vec, np.ndarray):
+        vec = np.array(vec, dtype=np.float32)
+    raw = vec.astype(np.float32).tobytes()
+    return hashlib.sha256(raw).hexdigest()[:12]
+
+
+def encode_text(text: str, dim: int = 4096) -> np.ndarray:
+    """
+    Deterministic Text-to-Vector Encoding (RFC 1001).
+    Produces a normalized, deterministic float32 vector of length `dim`.
+    """
+    if not isinstance(text, str):
+        text = str(text)
+
+    # Deterministic seed from text hash
+    digest = hashlib.sha256(text.encode('utf-8')).digest()
+    seed = struct.unpack('<I', digest[:4])[0]
+
+    rng = np.random.RandomState(seed)
+    vec = rng.randn(dim).astype(np.float32)
+
+    # Normalize to unit length
     norm = np.linalg.norm(vec)
     if norm > 0:
-        vec = vec / norm
-    return hashlib.sha256(vec.tobytes()).hexdigest()[:12]
+        vec /= norm
 
-def seal(vector, precision=PRECISION_FLOAT16):
-    vec = vector.astype(np.float32)
+    return vec
+
+
+def seal(vec: np.ndarray, precision: int = PRECISION_INT8) -> bytes:
+    """
+    Seals a vector into a .psvc binary container (RFC 1001 Section 3 & 4).
+    """
+    if not isinstance(vec, np.ndarray):
+        vec = np.array(vec, dtype=np.float32)
+
+    vec = vec.astype(np.float32)
     dim = len(vec)
-    if precision == PRECISION_FLOAT16:
-        payload = vec.astype(np.float16).tobytes()
+
+    if precision == PRECISION_INT8:
+        # Scale-normalized INT8 quantization
+        scale = float(np.max(np.abs(vec)))
+        if scale == 0:
+            scale = 1.0
+        quantized = np.clip(np.round((vec / scale) * 127.0), -128, 127).astype(np.int8)
+        raw_payload = struct.pack('<f', scale) + quantized.tobytes()
+
+    elif precision == PRECISION_FLOAT16:
+        raw_payload = vec.astype(np.float16).tobytes()
+
+    elif precision == PRECISION_FLOAT32:
+        raw_payload = vec.tobytes()
+
     else:
-        payload = vec.tobytes()
-    compressed = zlib.compress(payload, level=9)
-    header = MAGIC + struct.pack('B', VERSION) + struct.pack('B', precision) + struct.pack('I', dim) + struct.pack('I', len(compressed))
-    return header + compressed
+        raise PSVCError(f"Unsupported precision: {precision}")
 
-def open_container(data):
+    # Compress payload
+    compressed_payload = zlib.compress(raw_payload)
+    payload_size = len(compressed_payload)
+
+    # Pack 14-byte Header: Magic(4s) + Version(B) + Precision(B) + Dim(I) + PayloadSize(I)
+    header = struct.pack('4sBBII', MAGIC, VERSION, precision, dim, payload_size)
+
+    return header + compressed_payload
+
+
+def open_container(data: bytes) -> np.ndarray:
+    """
+    Validates and unpacks a .psvc binary container (RFC 1001 Section 3 & Security).
+    """
+    if not isinstance(data, (bytes, bytearray)):
+        raise PSVCError("Container data must be bytes.")
+
     if len(data) < HEADER_SIZE:
-        raise ValueError("File too small")
-    if data[:4] != MAGIC:
-        raise ValueError("Invalid magic bytes")
-    precision = data[5]
-    dim = struct.unpack('I', data[6:10])[0]
-    payload_size = struct.unpack('I', data[10:14])[0]
-    compressed = data[HEADER_SIZE:HEADER_SIZE + payload_size]
-    payload = zlib.decompress(compressed)
-    if precision == PRECISION_FLOAT16:
-        vector = np.frombuffer(payload, dtype=np.float16).astype(np.float32)
+        raise PSVCError(f"Truncated container: length {len(data)} is less than header size {HEADER_SIZE}.")
+
+    magic, version, precision, dim, payload_size = struct.unpack('4sBBII', data[:HEADER_SIZE])
+
+    if magic != MAGIC:
+        raise PSVCError(f"Invalid magic bytes: expected {MAGIC!r}, got {magic!r}.")
+
+    if version != VERSION:
+        raise PSVCError(f"Unsupported version: {version}.")
+
+    expected_total_size = HEADER_SIZE + payload_size
+    if len(data) != expected_total_size:
+        raise PSVCError(
+            f"Size mismatch: expected {expected_total_size} bytes (header + payload), got {len(data)} bytes."
+        )
+
+    compressed_payload = data[HEADER_SIZE:expected_total_size]
+
+    try:
+        raw_payload = zlib.decompress(compressed_payload)
+    except Exception as e:
+        raise PSVCError(f"Corrupted compressed payload: {e}")
+
+    if precision == PRECISION_INT8:
+        scale = struct.unpack('<f', raw_payload[:4])[0]
+        quantized = np.frombuffer(raw_payload[4:], dtype=np.int8)
+        if len(quantized) != dim:
+            raise PSVCError(f"Dimension mismatch: expected {dim}, got {len(quantized)}.")
+        return (quantized.astype(np.float32) / 127.0) * scale
+
+    elif precision == PRECISION_FLOAT16:
+        recovered = np.frombuffer(raw_payload, dtype=np.float16)
+        if len(recovered) != dim:
+            raise PSVCError(f"Dimension mismatch: expected {dim}, got {len(recovered)}.")
+        return recovered.astype(np.float32)
+
+    elif precision == PRECISION_FLOAT32:
+        recovered = np.frombuffer(raw_payload, dtype=np.float32)
+        if len(recovered) != dim:
+            raise PSVCError(f"Dimension mismatch: expected {dim}, got {len(recovered)}.")
+        return recovered.copy()
+
     else:
-        vector = np.frombuffer(payload, dtype=np.float32)
-    return vector
+        raise PSVCError(f"Invalid precision byte: {precision}")
 
-def write_file(vector, output_path, precision=PRECISION_FLOAT16):
-    data = seal(vector, precision)
-    Path(output_path).write_bytes(data)
 
-def read_file(file_path):
-    data = Path(file_path).read_bytes()
-    return open_container(data)
-
-def validate_file(file_path):
-    data = Path(file_path).read_bytes()
-    if len(data) < HEADER_SIZE:
-        raise ValueError("File too small")
-    if data[:4] != MAGIC:
-        raise ValueError("Invalid magic bytes")
+def validate_file(filepath: str) -> bool:
+    """
+    Validates a .psvc file on disk without corrupting memory state.
+    """
+    with open(filepath, 'rb') as f:
+        data = f.read()
+    open_container(data)
     return True
 
-# RFC 1001 Section 14.1 First-Level Encoding / Decoding implementation
-def encode_text(text: str) -> str:
+
+def write_file(filepath: str, vec: np.ndarray, precision: int = PRECISION_INT8) -> int:
     """
-    RFC 1001 Section 14.1 First-Level Encoding.
-    Maps each 8-bit byte into two 4-bit nibbles biased by ASCII 'A' (0x41).
+    Writes a sealed vector to a .psvc file on disk.
     """
-    if isinstance(text, str):
-        data = text.encode('utf-8')
-    else:
-        data = bytes(text)
-        
-    encoded_chars = []
-    for byte in data:
-        high_nibble = ((byte >> 4) & 0x0F) + 0x41
-        low_nibble = (byte & 0x0F) + 0x41
-        encoded_chars.append(chr(high_nibble))
-        encoded_chars.append(chr(low_nibble))
-        
-    return "".join(encoded_chars)
+    data = seal(vec, precision)
+    with open(filepath, 'wb') as f:
+        f.write(data)
+    return len(data)
 
 
-def decode_text(encoded: str) -> str:
+def read_file(filepath: str) -> np.ndarray:
     """
-    RFC 1001 Section 14.1 First-Level Decoding.
-    Reverses the two-nibble ASCII 'A' bias back into the original text.
+    Reads and unseals a .psvc file from disk.
     """
-    if len(encoded) % 2 != 0:
-        raise ValueError("Invalid RFC 1001 encoded string length; must be even.")
-        
-    decoded_bytes = bytearray()
-    for i in range(0, len(encoded), 2):
-        high_nibble = (ord(encoded[i]) - 0x41) & 0x0F
-        low_nibble = (ord(encoded[i + 1]) - 0x41) & 0x0F
-        decoded_bytes.append((high_nibble << 4) | low_nibble)
-        
-    return decoded_bytes.decode('utf-8', errors='replace')
-
-
-# Optional alias if other tests expect bytes input
-def encode_bytes(data: bytes) -> str:
-    return encode_text(data)
-
-def decode_bytes(encoded: str) -> bytes:
-    if len(encoded) % 2 != 0:
-        raise ValueError("Invalid RFC 1001 encoded string length.")
-    raw = bytearray()
-    for i in range(0, len(encoded), 2):
-        high = (ord(encoded[i]) - 0x41) & 0x0F
-        low = (ord(encoded[i + 1]) - 0x41) & 0x0F
-        raw.append((high << 4) | low)
-    return bytes(raw)
+    with open(filepath, 'rb') as f:
+        data = f.read()
+    return open_container(data)
