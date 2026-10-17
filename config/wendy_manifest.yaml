@@ -1,0 +1,23 @@
+# WENDY Sovereign Manifest
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
+identity:
+  name: "WENDY"
+  version: "0.13.0-Zig-Sovereign"
+  role: "Sentient Apiary Research AI"
+
+cognitive_params:
+  max_evolution_steps: 1000
+  vortex_base: 9
+  mutation_xor_key: "0xA5"
+  certain_condition_hash: "0000000000000000000000000000000000000000000000000000000000000000"
+
+storage:
+  format: "PSVC"
+  encryption: "Ed25519-Sealed"
+  location: "src/core/"
+
+mesh:
+  language: "Go"
+  concurrency_model: "Async-Mutex"
+  bridge_language: "Python"
