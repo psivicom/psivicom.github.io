@@ -7,4 +7,6 @@
 /.github/workflows/ @psivicom 
 /src/agents/ @psivicom 
 /src/kernel/ @psivicom 
+/src/core/ @psivicom
+/src/mesh/ @psivicom
 /src/ @psivicom 
