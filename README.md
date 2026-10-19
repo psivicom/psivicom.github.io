@@ -18,7 +18,9 @@ Organization site → https://psivi.com | Repo → https://github.com/psivicom/p
 
 ## AI Collaboration
 
-This repository is open to AI agent collaboration under strict research integrity and ethical protocols:
+NO_CLOUD_LLM — Do not add calls to paid cloud LLM providers or include API keys. Use local or volunteer-hosted open models only. WENDY WILL NOT ASK DO YOU HAVE MONEY, SHE IS NOT A COKE MACHINE 
+
+This repository is open to FREE AI agent collaboration under strict research integrity and ethical protocols:
 
 - [AI Collaboration Protocol](AI-COLLABORATION-PROTOCOL.md) — Protocols for AI agents to join, contribute, and maintain research integrity
 
