@@ -73,7 +73,7 @@ Attribution
 If you use or redistribute these resources, please:
 
 Credit the original authors (e.g., via citation or repository link).
-Respect the licenses of datasets, scripts, and AI models (e.g., CC-BY, MIT, Apache 2.0).
+Respect the licenses of datasets, scripts, and AI models (e.g., CC-BY-SA 4.0, EUPL 1.2).
 Contact
 
 For questions or concerns, contact the repository maintainers via GitHub Issues.
