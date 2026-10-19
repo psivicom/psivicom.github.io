@@ -1,0 +1,21 @@
+# Neutralized: Reactive cognition workflow — no auto-comments/issues.
+# This workflow used to react to issue labels and post comments; replaced with operator-only dispatch.
+
+name: Wendy Reactive Cognition (Disabled)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: none
+
+jobs:
+  disabled-reactive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Reactive cognition disabled
+        run: |
+          echo "Reactive cognition disabled in CI. Generate provenance artifacts via operator workflows."

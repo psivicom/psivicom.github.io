@@ -1,0 +1,21 @@
+# Neutralized: Sensory workflow — automatic issue creation removed.
+# This workflow previously created issues every 5 minutes. Disabled in CI.
+
+name: Wendy Sensory Input (Disabled)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  disabled-sense:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Sensory scan disabled
+        run: |
+          echo "Wendy sensory scheduled scans and issue creation are disabled by policy."
+          echo "Run local forage agent manually and commit artifacts to data/raw/ if needed."
