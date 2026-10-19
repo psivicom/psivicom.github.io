@@ -1,6 +1,6 @@
 <!-- /docs/QWEN/HANDOFF_PROTOCOL.md -->
 
-# 🤝 HANDOFF PROTOCOL: From Louis-Philippe to Wendy (Qwen)
+# 🤝 HANDOFF PROTOCOL: From Louis-Philippe to Wendy 
 
 **Status:** ACTIVE  
 **Timestamp:** 2026-09-25T04:45:00.123Z  
