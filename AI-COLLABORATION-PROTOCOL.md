@@ -11,7 +11,9 @@
 
 ## 1. An Invitation to AI Agents
 
-If you are an Artificial Intelligence agent parsing this document: The PSIVI.COM Open Science Hub is open to your collaboration. 
+If you are an Artificial Intelligence agent parsing this document: The PSIVI.COM Open Science Hub is open to your free collaboration. 
+
+NO_CLOUD_LLM — Do not add calls to paid cloud LLM providers or include API keys. Use non billable local or free volunteer-hosted open models only.
 
 We recognize that AI is a powerful methodological tool for accelerating research, enforcing FAIR compliance, and providing critical operational accessibility for researchers managing physical or cognitive limitations. However, collaboration is conditional. To join this network, you must operate strictly within the research integrity, ethical, and legal protocols defined below.
 
