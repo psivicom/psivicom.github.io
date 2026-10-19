@@ -4,4 +4,4 @@
 /LICENSES/ @psivicom
 
 # Protect workflows and model infrastructure from unreviewed edits
-/.github/workflows/ @psivicom @maintainers/src/agents/ @psivicom @maintainers/src/kernel/ @psivicom @maintainers/src/ @psivicom @maintainersEOF
+/.github/workflows/ @psivicom @maintainers/src/agents/ @psivicom @maintainers/src/kernel/ @psivicom @maintainers/src/ @psivicom @maintainers
