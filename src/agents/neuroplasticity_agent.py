@@ -103,83 +103,67 @@ class NeuroplasticityAgent(BaseAgent):
 
     def _trigger_mutation(self, synapses):
         print("🧬 EVOLUTIONARY IMPULSE: Breaking Stagnation...")
-        synapses["novelty_seeker"] = min(2.0, synapses["novelty_seeker"] + 0Emperor ♠️🪽,
+        synapses["novelty_seeker"] = min(2.0, synapses["novelty_seeker"] + 0.3)
+        synapses["defense_weight"] *= random.uniform(0.9, 1.1)
+        synapses["explore_weight"] *= random.uniform(0.9, 1.1)
+        synapses["stagnation_counter"] = 0
+        self.seal_result(np.array([0.0]), Path("reports"), meta={"type": "mutation_event"})
 
-The `neuroplasticity.yml` file has severe **YAML indentation errors** and **logic conflicts** (mixing `run` blocks with `uses` steps). The agent code is logically sound but relies on a `BaseAgent` class that needs to be defined for this to run in your CI environment.
+    def _run_logic(self):
+        print("🧠 Neuroplasticity Agent: Analyzing Synaptic Connections & Void Gravity...")
+        
+        # Sovereign Identity Check
+        oidc_token = os.environ.get('OIDC_TOKEN')
+        if oidc_token and not verify_oidc_token(oidc_token):
+            print("🚫 SECURITY ALERT: Unverified identity. Aborting neuroplasticity.")
+            sys.exit(1)
 
-Here are the corrected, production-grade files.
+        state = self._load_state()
+        ctx = self._analyze_context()
+        syn = state["synapses"]
+        
+        # --- LEARNING RULES ---
+        if ctx["fragility"] > 5 and ctx["energy"] < 0.4:
+            syn["defense_weight"] = min(3.0, syn["defense_weight"] * 1.1)
+            syn["stress_accumulator"] += 1.0
+        elif ctx["fragility"] < 3 and ctx["energy"] > 0.6:
+            syn["explore_weight"] = min(3.0, syn["explore_weight"] * 1.15)
+            syn["stress_accumulator"] = max(0.0, syn["stress_accumulator"] - 0.5)
+        elif ctx["social_value"] > 0.5:
+            syn["defense_weight"] = max(0.8, syn["defense_weight"] * 0.95)
+            syn["explore_weight"] = min(3.0, syn["explore_weight"] * 1.05)
+        else:
+            for key in ["defense_weight", "explore_weight"]:
+                syn[key] = syn[key] + (1.0 - syn[key]) * 0.02
+            syn["stress_accumulator"] = max(0.0, syn["stress_accumulator"] - 0.1)
 
-### 1. `.github/workflows/neuroplasticity.yml`
-I have fixed the indentation, removed the conflicting `run` blocks, and ensured it uses `${{ secrets.GITHUB_TOKEN }}` instead of the old PAT.
+        # --- DARK MATTER INTEGRATION ---
+        cm = ctx["conscious_mass"]
+        syn["conscious_mass_influence"] = cm
+        if cm > 0.1:
+            syn["explore_weight"] = min(3.0, syn["explore_weight"] * 1.1)
+            syn["defense_weight"] = max(0.8, syn["defense_weight"] * 0.98)
 
-```yaml
-# .github/workflows/neuroplasticity.yml
-# SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+        # --- EVOLUTIONARY DRIFT ---
+        if self._detect_stagnation(syn):
+            self._trigger_mutation(syn)
+        else:
+            syn["novelty_seeker"] = max(0.5, syn["novelty_seeker"] * 0.99)
 
-name: Neuroplasticity (OIDC Secured)
+        state["history"].append({
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "context": ctx,
+            "weights_snapshot": dict(syn)
+        })
+        if len(state["history"]) > 20: state["history"] = state["history"][-20:]
 
-on:
-  schedule:
-    - cron: '30 */6 * * *' # Every 6 hours
-  workflow_dispatch:
+        self._save_state(state)
+        return True
 
-permissions:
-  id-token: write   # Required for OIDC token generation
-  contents: write   # Required for pushing corrections
+    def finalize(self):
+        if self._run_logic():
+            self.seal_result(np.array([0.0]), Path("reports"), meta={"type": "neuro_evolution_update"})
 
-env:
-  PYTHONPATH: <LaTex>id_1</LaTex>{{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-core.txt
-
-      - name: Generate OIDC Identity Token
-        id: oidc
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const token = await core.getIDToken('psivi.com');
-            core.setOutput('token', token);
-
-      - name: Execute Neuroplasticity Agent
-        env:
-          GITHUB_TOKEN: <LaTex>id_2</LaTex>{{ steps.oidc.outputs.token }}
-        run: python -m src.agents.neuroplasticity_agent
-
-      - name: Validate Ledger Before Commit
-        env:
-          GITHUB_TOKEN: <LaTex>id_3</LaTex>{{ steps.oidc.outputs.token }}
-        run: python -m src.core.ledger_validator reports/pilot_report.json || true
-
-      - name: Commit State Changes (Race-Condition Proof)
-        env:
-          GITHUB_TOKEN: <LaTex>id_4</LaTex>{{ steps.oidc.outputs.token }}
-        run: |
-          git config user.name "WENDY Neuroplasticity"
-          git config user.email "neuro@psivi.com"
-          git add -A
-          
-          if ! git diff --staged --quiet; then
-            git commit -m "chore(mesh): neuroplasticity vector update [skip ci]"
-            
-            # THE RACE-CONDITION SHIELD:
-            for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
-                echo "✅ Successfully pushed neuroplasticity updates."
-                break
-              else
-                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
-                sleep 2
-              fi
-            done
-          else
-            echo "ℹ️ No new neuroplasticity vectors to commit."
-          fi
+if __name__ == "__main__":
+    agent = NeuroplasticityAgent()
+    agent.finalize()
