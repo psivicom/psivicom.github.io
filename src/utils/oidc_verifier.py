@@ -1,3 +1,4 @@
+# src/utils/oidc_verifier.py
 import os
 import json
 import time
@@ -15,35 +16,32 @@ def get_github_public_keys():
     return response.json()['public_keys']
 
 def decode_jwt_part(part):
-    """Decodes a base64url encoded JWT part."""
-    part += '=' * (4 - len(part) % 4)  # Add padding
+    """Decodes a base64url encoded JWT part with proper padding."""
+    part += '=' * (4 - len(part) % 4)
     return json.loads(base64.urlsafe_b64decode(part))
 
 def verify_oidc_token(token: str, audience: str = "psivi.com") -> bool:
-    """
-    Verifies a GitHub OIDC token.
-    
-    Args:
-        token: The JWT string from ${{ steps.get-token.outputs.result }}
-        audience: The expected audience (e.g., 'psivi.com')
-        
-    Returns:
-        True if the token is valid and signed by GitHub.
-    """
     try:
         header, payload, signature = token.split('.')
         
-        # 1. Check Expiration
-        if payload['exp'] < time.time():
+        # 1. Decode Payload to check Expiration and Audience
+        payload_data = decode_jwt_part(payload)
+        
+        # Check Expiration
+        if payload_data['exp'] < time.time():
             print("❌ Token has expired.")
             return False
 
-        # 2. Check Audience
-        if audience not in payload.get('aud', []):
-            print(f"❌ Invalid audience. Expected: {audience}")
+        # Check Audience (Handle both String and Array formats)
+        token_aud = payload_data.get('aud')
+        if isinstance(token_aud, str):
+            token_aud = [token_aud]
+            
+        if audience not in token_aud:
+            print(f"❌ Invalid audience. Expected: {audience}, Got: {token_aud}")
             return False
 
-        # 3. Verify Signature against GitHub Public Keys
+        # 2. Verify Signature against GitHub Public Keys
         keys = get_github_public_keys()
         header_data = decode_jwt_part(header)
         key_id = header_data.get('kid')
@@ -81,10 +79,3 @@ def verify_oidc_token(token: str, audience: str = "psivi.com") -> bool:
     except Exception as e:
         print(f"❌ OIDC Verification failed: {e}")
         return False
-
-if __name__ == "__main__":
-    oidc_token = os.environ.get('OIDC_TOKEN')
-    if oidc_token:
-        verify_oidc_token(oidc_token)
-    else:
-        print("⚠️ No OIDC_TOKEN found in environment.")
