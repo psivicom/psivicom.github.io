@@ -1,19 +1,23 @@
 # src/utils/oidc_verifier.py
+
 import os
 import json
 import time
 import base64
 import requests
 from cryptography.hazmat.primitives import serialization, hashes
-from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.backends import default_backend
+from cryptography.x509 import load_pem_x509_certificate
+
+# CORRECTED ENDPOINT: GitHub's OIDC JWKS URL
+GITHUB_JWKS_URL = "https://token.actions.githubusercontent.com/.well-known/jwks"
 
 def get_github_public_keys():
-    """Fetches the current public keys from GitHub's OIDC endpoint."""
-    url = "https://api.github.com/meta/public-keys/token_signing"
-    response = requests.get(url)
+    """Fetches the current public keys from GitHub's OIDC JWKS endpoint."""
+    response = requests.get(GITHUB_JWKS_URL)
     response.raise_for_status()
-    return response.json()['public_keys']
+    return response.json()['keys']
 
 def decode_jwt_part(part):
     """Decodes a base64url encoded JWT part with proper padding."""
@@ -26,6 +30,7 @@ def verify_oidc_token(token: str, audience: str = "psivi.com") -> bool:
         
         # 1. Decode Payload to check Expiration and Audience
         payload_data = decode_jwt_part(payload)
+        header_data = decode_jwt_part(header)
         
         # Check Expiration
         if payload_data['exp'] < time.time():
@@ -41,26 +46,29 @@ def verify_oidc_token(token: str, audience: str = "psivi.com") -> bool:
             print(f"❌ Invalid audience. Expected: {audience}, Got: {token_aud}")
             return False
 
-        # 2. Verify Signature against GitHub Public Keys
+        # 2. Verify Signature against GitHub Public Keys (JWKS)
         keys = get_github_public_keys()
-        header_data = decode_jwt_part(header)
         key_id = header_data.get('kid')
         
         signing_key = None
         for key in keys:
-            if key['key_identifier'] == key_id:
-                signing_key = key['key']
+            if key['kid'] == key_id:
+                signing_key = key
                 break
         
         if not signing_key:
             print("❌ No matching public key found for this token.")
             return False
 
-        # Convert PEM key to cryptography object
-        public_key = serialization.load_pem_public_key(
-            signing_key.encode(),
-            backend=default_backend()
-        )
+        # Convert JWK to PEM/Cryptography object
+        # GitHub provides x5c (certificate chain) in their JWKS
+        if 'x5c' in signing_key:
+            cert_str = f"-----BEGIN CERTIFICATE-----\n{signing_key['x5c'][0]}\n-----END CERTIFICATE-----"
+            cert = load_pem_x509_certificate(cert_str.encode(), backend=default_backend())
+            public_key = cert.public_key()
+        else:
+            print("❌ Key format not supported (missing x5c).")
+            return False
 
         # Verify the signature
         message = f"{header}.{payload}".encode()
