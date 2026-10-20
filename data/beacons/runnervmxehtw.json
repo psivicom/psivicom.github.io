@@ -1,0 +1,13 @@
+{
+  "node_id": "runnervmxehtw",
+  "timestamp": "2026-10-20T10:54:15.833Z",
+  "status": "ALIVE",
+  "signature": "c7209e0409bc9551f70a702de7e31d96",
+  "velocity": 1.0,
+  "role": "VOLUNTEER",
+  "coords": {
+    "x": 0.54,
+    "y": -0.46,
+    "z": -0.9
+  }
+}
