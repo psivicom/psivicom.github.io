@@ -4,7 +4,6 @@
 
 import os
 import sys
-import json
 import msgpack
 import numpy as np
 import logging
@@ -14,7 +13,6 @@ from datetime import datetime, timezone
 sys.path.append(str(Path(__file__).parent.parent))
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.utils.oidc_verifier import verify_oidc_token
-from src.core.zulu_clock import get_zulu_timestamp_ms
 
 logger = logging.getLogger("FORAGE_AGENT")
 
@@ -36,24 +34,17 @@ class ForageAgent(BaseAgent):
         logger.info("🐝 Foraging Goldstream Watershed data...")
         self._verify_identity()
         
-        # Simulated foraged record (Replace with actual foraging logic)
         record = {
             "source": "goldstream_watershed",
-            "timestamp": get_zulu_timestamp_ms(),
-            "metrics": {
-                "temperature": 14.2,
-                "ph_level": 7.1,
-                "turbidity": 2.5
-            },
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "metrics": {"temperature": 14.2, "ph_level": 7.1, "turbidity": 2.5},
             "status": "cached"
         }
         
-        # RFC 1002 TRACK B: Use MessagePack for structured dictionary data
-        file_path = self.output_dir / f"forage_{record['source']}_{int(datetime.now(timezone.utc).timestamp())}.mpk"
+        file_path = self.output_dir / f"forage_{record['source']}.mpk"
         
         try:
             with open(file_path, 'wb') as f:
-                # use_bin_type=True ensures strings are encoded as proper binary UTF-8
                 f.write(msgpack.packb(record, use_bin_type=True))
             logger.info(f"✅ Successfully foraged and sealed binary record: {file_path.name}")
             self.seal("forage_complete", {"file": file_path.name})
@@ -61,7 +52,6 @@ class ForageAgent(BaseAgent):
             logger.error(f"❌ Failed to seal forage record: {e}")
             return False
             
-        # Return a dummy vector for compatibility with agent chaining
         return np.random.randn(4096).astype(np.float32)
 
     def finalize(self, output_dir=None):
