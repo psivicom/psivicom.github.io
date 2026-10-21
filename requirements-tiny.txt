@@ -3,6 +3,7 @@
 # ONLY for deterministic, zero-bloat autonomous agents (Cortex, Governor, Immune System).
 # NO machine learning, NO heavy data science, NO bloat.
 pyyaml>=6.0.2
+numpy>=2.1.0        # The engine for all dense vector math and PSVC operations
 requests>=2.32.3 # Required for fetching GitHub public keys
 cryptography>=42.0.5 # For verifying OIDC JWT signatures
 loguru>=0.7.2
