@@ -9,13 +9,14 @@ from enum import Enum
 class AgentLayer(Enum):
     """
     RFC 1001: Canonical Agent Layers for the WENDY Platform.
-    Ensures every organ has a defined role in the sovereign architecture.
+    Ensures every organ has a defined, non-overlapping role in the sovereign architecture.
     """
-    SENSORY = "sensory"       # e.g., Pilot Scan (External input)
-    COGNITIVE = "cognitive"   # e.g., Neuroplasticity (Learning/Drift)
-    SYNTHESIS = "synthesis"   # e.g., Report Generator, Metabolic Sync (Aggregation)
-    VALIDATION = "validation" # e.g., Ledger Validator, Void Metrics (Checks)
-    MOTOR = "motor"           # e.g., Mirror Agent (Action/Commit)
+    SENSORY = "sensory"       # e.g., Pilot Scan (External input scanning)
+    COGNITIVE = "cognitive"   # e.g., Neuroplasticity (Learning, drift, adaptation)
+    SYNTHESIS = "synthesis"   # e.g., Metabolic Sync, Report Generator (Aggregation)
+    VALIDATION = "validation" # e.g., Ledger Validator, Void Metrics (Integrity checks)
+    MOTOR = "motor"           # e.g., Mirror Agent (Action, commit, structural repair)
+    INGESTION = "ingestion"   # e.g., Discovery Agent, Literature Agent (Data intake/parsing)
 
 class BaseAgent:
     """
@@ -24,6 +25,7 @@ class BaseAgent:
     def __init__(self, name: str, capabilities: list = None):
         self.name = name
         self.capabilities = capabilities or []
+        # Graceful fallback if an agent forgets to define its LAYER
         self.layer = getattr(self, 'LAYER', AgentLayer.COGNITIVE)
 
     def seal_result(self, data: np.ndarray, path: Path, meta: dict = None):
