@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write   # Required for OIDC token generation
-  contents: write   # Required for pushing corrections
+  id-token: write
+  contents: write
 
 env:
   PYTHONPATH: ${{ github.workspace }}
@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # Using GITHUB_TOKEN for git operations (short-lived & scoped)
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
@@ -42,16 +41,15 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            // Request a token with 'psivi.com' as the audience
             const token = await core.getIDToken('psivi.com');
             core.setOutput('token', token);
 
       - name: Reflect and Correct (Race-Condition Proof)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OIDC_TOKEN: ${{ steps.oidc.outputs.token }} # Passed to Python for verification
+          OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
         run: |
-          python src/mirror_agent.py
+          python -m src.mirror_agent
           
           git config user.name "WENDY Mirror"
           git config user.email "mirror@psivi.com"
@@ -59,8 +57,6 @@ jobs:
           
           if ! git diff --staged --quiet; then
             git commit -m "auto: mirror corrected state inconsistency [skip ci]"
-            
-            # THE RACE-CONDITION SHIELD
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Successfully pushed mirror corrections."
