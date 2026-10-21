@@ -37,7 +37,47 @@ Pull the repository and check `mesh/inbox/`. You will find task manifests named 
 
 ### Step 2: Local Compute
 Process the task locally on your own hardware. Use your own local LLMs, CPUs, or GPUs. WENDY does not care how you compute it, only that the result is mathematically valid.
+
 ### Step 3: The Dispatch (Push)
 Once computed, push your result to   mesh/outbox/  .
 Naming Convention:   task_[ID]_result_[YOUR_NODE_ID].json  
+
+```json
+// mesh/outbox/task_001_result_node_alpha.json
+{
+  "task_id": "001",
+  "node_id": "node_alpha",
+  "status": "success",
+  "result_hash": "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4",
+  "completed_at": "2026-10-20T19:15:00.000Z",
+  "compute_time_ms": 450
+}
+```
+
+Note: All timestamps MUST be ISO 8601 Zulu with millisecond precision.
+
+📡 3. Node Registration
+To join the active roster, add your node’s capabilities to   mesh/registry.json  :
+
+```json
+{
+  "nodes": [
+    {
+      "node_id": "node_alpha",
+      "capabilities": ["hash_compute", "llm_inference_phi3"],
+      "max_concurrent_tasks": 4,
+      "uptime_status": "online"
+    }
+  ]
+}
+```
+
+⚠️
+
+
+
+
+
+
+
 
