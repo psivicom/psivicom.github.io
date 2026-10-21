@@ -43,7 +43,7 @@ class MeshValidator:
         self.check_file_exists("src/agents/pilot_agent.py", "Pilot Agent")
         self.check_file_exists("src/orchestrator/chain_orchestrator.py", "Chain Orchestrator")
         self.check_file_exists("src/base/base_agent.py", "Base Agent")
-        self.check_file_exists("psvc_reference.py", "PSVC Reference (Root)")
+        self.check_file_exists("src/core/psvc_reference.py", "PSVC Reference")
         self.check_file_exists("src/core/psvc_containers.py", "PSVC Containers")
         
         print("=" * 60)
