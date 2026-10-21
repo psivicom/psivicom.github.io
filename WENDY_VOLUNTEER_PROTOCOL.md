@@ -33,3 +33,10 @@ Pull the repository and check `mesh/inbox/`. You will find task manifests named 
   "issued_at": "2026-10-20T18:22:49.955Z",
   "timeout_hours": 24
 }
+```
+
+### Step 2: Local Compute
+Process the task locally on your own hardware. Use your own local LLMs, CPUs, or GPUs. WENDY does not care how you compute it, only that the result is mathematically valid.
+Step 3: The Dispatch (Push)
+Once computed, push your result to   mesh/outbox/  .
+Naming Convention:   task_[ID]_result_[YOUR_NODE_ID].json  
