@@ -37,7 +37,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          token: ${{ secrets.WENDY_AUDITOR_PAT }}
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: Setup Python (Zero-Bloat)
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
@@ -52,7 +53,7 @@ jobs:
       - name: Diagnose Failure
         id: diagnose
         env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FAILED_RUN_ID: ${{ github.event.workflow_run.id }}
         run: python src/core/immune_system.py diagnose
 
@@ -64,7 +65,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          token: ${{ secrets.WENDY_AUDITOR_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Python (Zero-Bloat)
@@ -82,7 +83,7 @@ jobs:
 
       - name: Apply Treatment
         env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ERROR_CLASS: ${{ needs.immune-diagnosis.outputs.error_class }}
           ERROR_FILE: ${{ needs.immune-diagnosis.outputs.error_file }}
           ERROR_LINE: ${{ needs.immune-diagnosis.outputs.error_line }}
@@ -95,7 +96,7 @@ jobs:
 
       - name: Commit Healing Patch (Race-Condition Proof)
         env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Immune System"
           git config user.email "immune@psivi.com"
@@ -129,7 +130,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          token: ${{ secrets.WENDY_AUDITOR_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Python (Zero-Bloat)
@@ -144,12 +145,12 @@ jobs:
 
       - name: Execute Apoptosis (Rollback)
         env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python src/core/rollback_manager.py apoptosis
 
       - name: Commit Rollback (Race-Condition Proof)
         env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Immune System"
           git config user.email "immune@psivi.com"
