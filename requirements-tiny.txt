@@ -7,3 +7,4 @@ numpy>=2.1.0        # The engine for all dense vector math and PSVC operations
 requests>=2.32.3 # Required for fetching GitHub public keys
 cryptography>=42.0.5 # For verifying OIDC JWT signatures
 loguru>=0.7.2
+msgpack>=1.0.7      # Binary serialization for wendy_twin.psvec
