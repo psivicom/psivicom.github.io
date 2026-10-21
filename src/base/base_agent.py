@@ -7,25 +7,42 @@ from pathlib import Path
 from enum import Enum
 
 class AgentLayer(Enum):
-    SENSORY = "sensory"
-    COGNITIVE = "cognitive"
-    SYNTHESIS = "synthesis"
-    VALIDATION = "validation"
-    MOTOR = "motor"
-    INGESTION = "ingestion"
+    """
+    RFC 1001: Canonical Agent Layers for the WENDY Platform.
+    Ensures every organ has a defined, non-overlapping role in the sovereign architecture.
+    """
+    SENSORY = "sensory"       # e.g., Pilot Scan (External input scanning)
+    COGNITIVE = "cognitive"   # e.g., Neuroplasticity (Learning, drift, adaptation)
+    SYNTHESIS = "synthesis"   # e.g., Metabolic Sync, Report Generator (Aggregation)
+    VALIDATION = "validation" # e.g., Ledger Validator, Void Metrics (Integrity checks)
+    MOTOR = "motor"           # e.g., Mirror Agent (Action, commit, structural repair)
+    INGESTION = "ingestion"   # e.g., Discovery Agent, Literature Agent, Forage Agent (Data intake)
+    ORCHESTRATION = "orchestration" # e.g., Optimization Agent (Workflow coordination)
 
 class BaseAgent:
+    """
+    The foundational contract for all WENDY agents.
+    """
     def __init__(self, name: str, capabilities: list = None):
         self.name = name
         self.capabilities = capabilities or []
+        # Graceful fallback if an agent forgets to define its LAYER
         self.layer = getattr(self, 'LAYER', AgentLayer.COGNITIVE)
 
     def seal(self, action: str, meta: dict = None):
+        """
+        Utility to log and seal an agent's action/result securely.
+        Used by agents to record discrete events.
+        """
         if meta is None:
             meta = {}
         print(f"💾 [SEALED] {self.name} | Action: {action} | Meta: {meta}")
 
     def seal_result(self, data: np.ndarray, path: Path, meta: dict = None):
+        """
+        Utility to save agent results securely and consistently to disk.
+        Used by agents to persist state (Track A: .npy / .psvc).
+        """
         if meta is None:
             meta = {}
         path.mkdir(parents=True, exist_ok=True)
