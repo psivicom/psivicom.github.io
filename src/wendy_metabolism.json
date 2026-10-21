@@ -1,10 +1,12 @@
 {
   "last_updated": "2026-10-21T19:05:42.208444Z",
-  "last_intensity": 0.672,
+  "last_intensity": 0.0,
   "stress_level": 0.08,
   "state": "Rest",
   "inputs": {
     "pilot_sync": "2026-10-21T18:34:47.551100Z",
     "void_sync": "N/A"
-  }
+  },
+  "period_minutes": 59,
+  "last_phase": 0.0
 }
