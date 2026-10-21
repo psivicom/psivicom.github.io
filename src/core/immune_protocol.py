@@ -4,7 +4,6 @@
 
 import os
 import sys
-import json
 import msgpack
 from pathlib import Path
 from datetime import datetime, timezone
@@ -19,7 +18,8 @@ except ImportError:
 class ImmuneProtocol:
     def __init__(self):
         self.quarantine_file = Path("data/immune_quarantine.mpk")
-        self.metabolism_file = Path("src/wendy_metabolism.json")
+        # UPGRADE: Track B Binary Metabolism File
+        self.metabolism_file = Path("src/wendy_metabolism.mpk")
         
     def _verify_identity(self):
         oidc_token = os.environ.get('OIDC_TOKEN')
@@ -52,9 +52,10 @@ class ImmuneProtocol:
 
     def _induce_metabolic_stress(self):
         try:
+            # UPGRADE: Pure binary deserialization (Track B)
             if self.metabolism_file.exists():
-                with open(self.metabolism_file, 'r') as f:
-                    meta = json.load(f)
+                with open(self.metabolism_file, 'rb') as f:
+                    meta = msgpack.unpackb(f.read(), raw=False)
             else:
                 meta = {"stress_level": 0.0, "last_intensity": 0.5}
                 
@@ -63,8 +64,10 @@ class ImmuneProtocol:
             meta["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             meta["state"] = "Focus"
             
-            with open(self.metabolism_file, 'w') as f:
-                json.dump(meta, f, indent=2)
+            # UPGRADE: Pure binary serialization (Track B)
+            with open(self.metabolism_file, 'wb') as f:
+                f.write(msgpack.packb(meta, use_bin_type=True))
+                
             print(f"🧠 Metabolic stress induced: {meta['stress_level']}. Adaptation queued.")
         except Exception as e:
             print(f"⚠️ Failed to update metabolism: {e}")
