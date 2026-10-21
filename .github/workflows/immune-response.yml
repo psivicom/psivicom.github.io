@@ -22,19 +22,19 @@ env:
   PYTHONPATH: ${{ github.workspace }}
 
 jobs:
-  autonomic-reset:
+  autonomic-observation:
+    # ONLY run if a critical workflow actually failed.
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-24.04
-    # Prevent the entire job from hanging indefinitely
-    timeout-minutes: 5 
+    timeout-minutes: 3
     steps:
-      - name: Checkout Repository (Minimal History for Revert)
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # Only need the last 2 commits to revert to HEAD~1. Much faster than 0.
+          fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Python (Zero-Bloat)
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -42,7 +42,6 @@ jobs:
       - name: Install Core Dependencies
         run: |
           python -m pip install --upgrade pip
-          # --no-cache-dir prevents pip from hanging on cache resolution
           pip install --no-cache-dir -r requirements-core.txt
 
       - name: Generate OIDC Identity Token
@@ -53,7 +52,7 @@ jobs:
             const token = await core.getIDToken('psivi.com');
             core.setOutput('token', token);
 
-      - name: Execute Immune Protocol (Quarantine, Revert, Learn)
+      - name: Execute Immune Protocol (Observe & Learn)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
@@ -62,31 +61,21 @@ jobs:
           FAILED_COMMIT: ${{ github.event.workflow_run.head_sha }}
         run: python -m src.core.immune_protocol execute
 
-      - name: Commit Homeostatic Reset (Race-Condition Proof)
+      - name: Commit Metabolic & Quarantine Updates
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
         run: |
           git config user.name "PSIVI Immune System"
           git config user.email "immune@psivi.com"
-          git add -A
+          git add data/immune_quarantine.mpk src/wendy_metabolism.json
           
           if ! git diff --staged --quiet; then
-            git commit -m "heal(mesh): autonomic homeostatic reset [skip ci]" \
+            git commit -m "heal(mesh): autonomic observation & stress induction [skip ci]" \
                        -m "Quarantined Commit: ${{ github.event.workflow_run.head_sha }}" \
                        -m "Failed Workflow: ${{ github.event.workflow_run.name }}" \
-                       -m "Failed Run ID: ${{ github.event.workflow_run.id }}" \
-                       -m "🛡️ State restored. Metabolic stress logged for neuroplastic adaptation."
+                       -m "🧠 Trauma recorded. Metabolic stress increased for neuroplastic adaptation."
             
-            for i in 1 2 3; do
-              if git pull --rebase origin main && git push origin main; then
-                echo "✅ Homeostasis restored and pushed."
-                break
-              else
-                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
-                sleep 2
-              fi
-            done
+            git push origin main || echo "⚠️ Push failed, likely due to concurrent run. State will sync next cycle."
           else
-            echo "ℹ️ No state changes required for homeostasis."
+            echo "ℹ️ No state changes required."
           fi
