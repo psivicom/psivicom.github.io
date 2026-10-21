@@ -6,12 +6,12 @@ name: Neuroplasticity (OIDC Secured)
 
 on:
   schedule:
-    - cron: '30 */6 * * *' # Every 6 hours
+    - cron: '30 */6 * * *'
   workflow_dispatch:
 
 permissions:
-  id-token: write   # Required for OIDC token generation
-  contents: write   # Required for pushing corrections
+  id-token: write
+  contents: write
 
 env:
   PYTHONPATH: ${{ github.workspace }}
@@ -67,8 +67,6 @@ jobs:
           
           if ! git diff --staged --quiet; then
             git commit -m "chore(mesh): neuroplasticity vector update [skip ci]"
-            
-            # THE RACE-CONDITION SHIELD:
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Successfully pushed neuroplasticity updates."
