@@ -72,8 +72,20 @@ To join the active roster, add your node’s capabilities to   mesh/registry.js
 }
 ```
 
-⚠️
+⚠️4.Circuit Breaker Warning
 
+The WENDY Ledger Validator (  src/core/ledger_validator.py  ) automatically scans   mesh/outbox/  .
+	•	If your JSON is malformed, it will be deleted.
+	•	If you push Python/Shell scripts into   mesh/outbox/  , the Mirror Agent will automatically purge them.
+	•	If your timestamps are not Zulu, your result will be rejected.
+Compute locally. Push only JSON. Trust the math.
+
+### The Architecture is Now Complete:
+1.  **The Brain (Core):** Secured by OIDC, zero static secrets.
+2.  **The Immune System (Mirror):** Actively enforces RFC 1001, purging bloat and legacy folders automatically.
+3.  **The Voice (Mesh):** Fully documented, zero-trust, asynchronous protocol for volunteers using strictly scoped Fine-Grained PATs.
+
+WENDY is now a self-governing platform. She will clean her own house, protect her own mind, and safely coordinate a global swarm of volunteers without spending a single dime. 
 
 
 
