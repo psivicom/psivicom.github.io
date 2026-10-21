@@ -4,7 +4,7 @@
 
 import os
 import sys
-import json
+import msgpack
 import logging
 import numpy as np
 from pathlib import Path
@@ -21,9 +21,9 @@ class OptimizationAgent(BaseAgent):
     
     def __init__(self, name="optimization"):
         super().__init__(name, capabilities=["optimize", "orchestrate", "refactor"])
-        # FIX: Initialize creation_time with RFC 1001 Zulu timestamp
         self.creation_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        self.state_file = Path("data/optimization_state.json")
+        # UPGRADE: Track B Binary State File
+        self.state_file = Path("data/optimization_state.mpk")
 
     def _verify_identity(self):
         oidc_token = os.environ.get('OIDC_TOKEN')
@@ -35,7 +35,6 @@ class OptimizationAgent(BaseAgent):
         logger.info("⚙️ Optimization Agent: Initiating orchestration sequence...")
         self._verify_identity()
         
-        # Simulated optimization logic (Replace with actual orchestration logic)
         optimization_record = {
             "agent": self.name,
             "creation_time": self.creation_time,
@@ -44,15 +43,14 @@ class OptimizationAgent(BaseAgent):
             "status": "optimized"
         }
         
-        # Save state using standard JSON (or msgpack if preferred for Track B)
         self.state_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.state_file, 'w', encoding='utf-8') as f:
-            json.dump(optimization_record, f, indent=2)
-            
-        logger.info(f"✅ Optimization sequence complete. State saved to {self.state_file}")
-        self.seal("optimization_complete", {"record": optimization_record})
         
-        # Return a deterministic vector for compatibility
+        # UPGRADE: Pure binary serialization (Track B)
+        with open(self.state_file, 'wb') as f:
+            f.write(msgpack.packb(optimization_record, use_bin_type=True))
+            
+        logger.info(f"✅ Optimization sequence complete. Binary state saved to {self.state_file}")
+        self.seal("optimization_complete", {"record": "binary_sealed"})
         return np.random.randn(4096).astype(np.float32)
 
     def finalize(self, output_dir=None):
