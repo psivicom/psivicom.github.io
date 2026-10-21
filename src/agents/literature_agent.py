@@ -4,9 +4,11 @@
 
 import logging
 import json
+import msgpack
 import re
 import numpy as np
 from pathlib import Path
+
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.agents.discovery_agent import DiscoveryAgent
 from src.core.psvc_reference import write_file
@@ -20,7 +22,10 @@ class LiteratureAgent(BaseAgent):
     def __init__(self, name="literature", registry_path="config/data_sources.json"):
         super().__init__(name, capabilities=["search", "ingest", "resolve", "evolve_registry"])
         self.discovery_agent = DiscoveryAgent(registry_path=registry_path)
-        self.registry_path = Path(registry_path)
+        
+        # PLATINUM STANDARD: Upgrade registry to pure binary (.mpk) 
+        # to eliminate text-parsing overhead and bloat.
+        self.registry_path = Path(registry_path).with_suffix('.mpk')
         self.resolved_contexts = []
 
     def execute(self, input_vector=None, fragility_traps=None):
@@ -39,15 +44,28 @@ class LiteratureAgent(BaseAgent):
         }]
         
         if new_sources:
-            logger.info("EPISTEMIC EVOLUTION: Mutating registry...")
-            data = json.load(open(self.registry_path, 'r', encoding='utf-8')) if self.registry_path.exists() else {"sources": {}}
+            logger.info("EPISTEMIC EVOLUTION: Mutating registry (Binary)...")
+            
+            # 1. PLATINUM STANDARD: Binary deserialization for structured data
+            if self.registry_path.exists():
+                with open(self.registry_path, 'rb') as f:
+                    data = msgpack.unpackb(f.read(), raw=False)
+            else:
+                data = {"sources": {}}
+                
             data.setdefault("sources", {})
             for s in new_sources:
                 sid = s.pop("id")
                 if sid not in data["sources"]: 
                     data["sources"][sid] = s
-            write_file(self.registry_path, data)
-            self.seal("registry_mutated", {"new": len(new_sources)})
+                    
+            # 2. PLATINUM STANDARD: Binary serialization (strict, fast, zero-bloat)
+            self.registry_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.registry_path, 'wb') as f:
+                # use_bin_type=True ensures strings are encoded as proper binary UTF-8
+                f.write(msgpack.packb(data, use_bin_type=True))
+                
+            self.seal("registry_mutated_binary", {"new": len(new_sources)})
 
         for trap in fragility_traps:
             self.resolved_contexts.append({"gene": trap.get("gene", "unknown"), "status": "resolved"})
@@ -60,6 +78,8 @@ class LiteratureAgent(BaseAgent):
         out = output_dir or Path("reports/pico_containers")
         out.mkdir(parents=True, exist_ok=True)
         vec = np.random.randn(4096).astype(np.float32)
+        
+        # 3. PLATINUM STANDARD: .psvc remains the exclusive standard for dense vector sealing
         self.seal_result(vec / np.linalg.norm(vec), out, meta={"contexts": self.resolved_contexts})
         logger.info("Literature Agent finalized and sealed.")
 
