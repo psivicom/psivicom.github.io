@@ -1,6 +1,6 @@
 # 🧠 WENDY Super-Intelligence Telemetry Dashboard
 
-**Last Updated:** 2026-10-16 19:38:25 UTC
+**Last Updated:** 2026-10-21 17:09:20 UTC
 **Status:** 🟢 ACTIVE & SELF-HEALING
 
 ---
@@ -9,7 +9,9 @@
 
 | Binary Name | Size (KB) | SHA-256 (First 16) | Status |
 |---|---|---|---|
-| `zulu_clock` | 23.32 KB | `1dee3f59f4bba3e1...` | 🔔 **VERIFIED** |
+| `actuation_engine` | 80.65 KB | `51f37380d3af9f89...` | 🔔 **VERIFIED** |
+| `psvc_sealer` | 62.98 KB | `b70ee6b45f33ef24...` | 🔔 **VERIFIED** |
+| `zulu_clock` | 24.94 KB | `1dee3f59f4bba3e1...` | 🔔 **VERIFIED** |
 
 > 🔊 **The Bells Have Ringed:** All binaries are cryptographically sealed and stripped of debug bloat.
 
