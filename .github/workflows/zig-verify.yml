@@ -17,7 +17,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WENDY_AUDITOR_PAT }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }} # <-- ADD THIS LINE
 
       - name: Install Zig Toolchain
         run: |
@@ -51,7 +52,7 @@ jobs:
 
       - name: Commit Production-Ready Artifacts
         env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "WENDY Architect"
           git config user.email "architect@psivi.com"
