@@ -6,7 +6,7 @@ name: Void Metrics (Dark Matter Sensing)
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Daily at midnight Zulu
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
