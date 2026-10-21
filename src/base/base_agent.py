@@ -28,13 +28,22 @@ class BaseAgent:
         # Graceful fallback if an agent forgets to define its LAYER
         self.layer = getattr(self, 'LAYER', AgentLayer.COGNITIVE)
 
-    def seal_result(self, data: np.ndarray, path: Path, meta: dict = None):
+    def seal(self, action: str, meta: dict = None):
         """
-        Utility to save agent results securely and consistently.
+        Utility to log and seal an agent's action/result securely.
+        Used by agents like DiscoveryAgent to record discrete events.
         """
         if meta is None:
             meta = {}
-            
+        print(f"💾 [SEALED] {self.name} | Action: {action} | Meta: {meta}")
+
+    def seal_result(self, data: np.ndarray, path: Path, meta: dict = None):
+        """
+        Utility to save agent results securely and consistently to disk.
+        Used by agents like NeuroplasticityAgent to persist state.
+        """
+        if meta is None:
+            meta = {}
         path.mkdir(parents=True, exist_ok=True)
         output_file = path / f"{self.name}_output.npy"
         np.save(output_file, data)
