@@ -45,5 +45,5 @@
     }
   ],
   "protocol": "RFC 1001",
-  "library": "psvc_reference.py"
+  "library": "src/core/psvc_reference.py"
 }
