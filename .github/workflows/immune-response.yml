@@ -23,7 +23,6 @@ env:
 
 jobs:
   autonomic-observation:
-    # ONLY run if a critical workflow actually failed.
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
@@ -74,8 +73,7 @@ jobs:
                        -m "Quarantined Commit: ${{ github.event.workflow_run.head_sha }}" \
                        -m "Failed Workflow: ${{ github.event.workflow_run.name }}" \
                        -m "🧠 Trauma recorded. Metabolic stress increased for neuroplastic adaptation."
-            
-            git push origin main || echo "⚠️ Push failed, likely due to concurrent run. State will sync next cycle."
+            git push origin main || echo "⚠️ Push failed, state will sync next cycle."
           else
             echo "ℹ️ No state changes required."
           fi
