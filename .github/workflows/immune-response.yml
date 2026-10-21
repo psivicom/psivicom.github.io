@@ -70,11 +70,14 @@ jobs:
           git add -A
           
           if ! git diff --staged --quiet; then
+            # DIRECT INJECTION: Uses GitHub context directly to guarantee the variables are never blank
             git commit -m "heal(mesh): autonomic homeostatic reset [skip ci]" \
-                        -m "Quarantined Commit: ${{ env.FAILED_COMMIT }}" \
-                        -m "Failed Workflow: ${{ env.FAILED_WORKFLOW }}" \
-                        -m "🛡️ State restored. Metabolic stress logged for neuroplastic adaptation."
+                       -m "Quarantined Commit: ${{ github.event.workflow_run.head_sha }}" \
+                       -m "Failed Workflow: ${{ github.event.workflow_run.name }}" \
+                       -m "Failed Run ID: ${{ github.event.workflow_run.id }}" \
+                       -m "🛡️ State restored. Metabolic stress logged for neuroplastic adaptation."
             
+            # THE RACE-CONDITION SHIELD
             for i in 1 2 3; do
               if git pull --rebase origin main && git push origin main; then
                 echo "✅ Homeostasis restored and pushed."
