@@ -19,11 +19,6 @@ except ImportError:
         return True
 
 class ImmuneProtocol:
-    """
-    WENDY's Autonomic Homeostasis Engine.
-    Does not guess errors. Restores state, quarantines bad commits, and triggers metabolic learning.
-    """
-    
     def __init__(self):
         self.quarantine_file = Path("data/immune_quarantine.mpk")
         self.metabolism_file = Path("src/wendy_metabolism.json")
@@ -35,25 +30,28 @@ class ImmuneProtocol:
             sys.exit(1)
 
     def _revert_to_last_green(self):
-        """Finds the last successful commit and reverts the current HEAD to it."""
         failed_commit = os.environ.get('FAILED_COMMIT', 'HEAD')
         print(f"🛑 Quarantining failed commit: {failed_commit}")
         
         try:
-            # Safety Check: Ensure HEAD~1 exists before attempting reset
-            result = subprocess.run(['git', 'rev-parse', '--verify', 'HEAD~1'], capture_output=True, text=True)
+            # Timeout of 10 seconds prevents indefinite hanging
+            result = subprocess.run(
+                ['git', 'rev-parse', '--verify', 'HEAD~1'], 
+                capture_output=True, text=True, timeout=10
+            )
             if result.returncode == 0:
-                subprocess.run(['git', 'reset', '--hard', 'HEAD~1'], check=True)
-                subprocess.run(['git', 'clean', '-fd'], check=True) # Remove untracked generated files
+                subprocess.run(['git', 'reset', '--hard', 'HEAD~1'], check=True, timeout=10)
+                subprocess.run(['git', 'clean', '-fd'], check=True, timeout=10)
                 print("✅ State reverted to previous known configuration.")
             else:
                 print("⚠️ Cannot revert: This appears to be the first commit. Cleaning working tree only.")
-                subprocess.run(['git', 'clean', '-fd'], check=True)
+                subprocess.run(['git', 'clean', '-fd'], check=True, timeout=10)
+        except subprocess.TimeoutExpired:
+            print("⚠️ Git command timed out. Proceeding with quarantine logging only.")
         except subprocess.CalledProcessError as e:
             print(f"⚠️ Revert failed: {e}. Proceeding with quarantine logging only.")
 
     def _log_quarantine(self):
-        """Logs the failure to the Track B binary quarantine ledger."""
         quarantine_data = {
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "quarantined_commit": os.environ.get('FAILED_COMMIT', 'unknown'),
@@ -64,14 +62,13 @@ class ImmuneProtocol:
         
         self.quarantine_file.parent.mkdir(parents=True, exist_ok=True)
         
-        # Append to binary log (RFC 1002 Track B)
         existing_logs = []
         if self.quarantine_file.exists():
             try:
                 with open(self.quarantine_file, 'rb') as f:
                     existing_logs = msgpack.unpackb(f.read(), raw=False)
             except Exception:
-                existing_logs = [] # Degrade gracefully if file is corrupted
+                existing_logs = []
                 
         existing_logs.append(quarantine_data)
         
@@ -81,11 +78,6 @@ class ImmuneProtocol:
         print(f"💾 Quarantine logged: {quarantine_data['quarantined_commit']}")
 
     def _induce_metabolic_stress(self):
-        """
-        Injects a stress event into WENDY's metabolism.
-        Ensures the Neuroplasticity Agent reads this on its next cycle 
-        and increases 'defense_weight' to prevent similar future failures.
-        """
         try:
             if self.metabolism_file.exists():
                 with open(self.metabolism_file, 'r') as f:
@@ -93,11 +85,10 @@ class ImmuneProtocol:
             else:
                 meta = {"stress_level": 0.0, "last_intensity": 0.5}
                 
-            # Increase stress level, capped at 1.0
             current_stress = float(meta.get("stress_level", 0.0))
             meta["stress_level"] = round(min(1.0, current_stress + 0.3), 4)
             meta["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-            meta["state"] = "Focus" # High stress triggers Focus state
+            meta["state"] = "Focus"
             
             with open(self.metabolism_file, 'w') as f:
                 json.dump(meta, f, indent=2)
