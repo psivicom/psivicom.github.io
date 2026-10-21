@@ -28,7 +28,7 @@ jobs:
           echo "python_version=$(jq -r '.python.version' config/system_versions.json)" >> $GITHUB_OUTPUT
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4022e16d87065
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.versions.outputs.python_version }}
 
