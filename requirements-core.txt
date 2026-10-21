@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # requirements-core.txt
 # Lightweight dependencies for agent logic, governance, and basic mesh operations
-numpy>=2.1.0
+numpy>=2.1.0        # The engine for all dense vector math and PSVC operations
 pyyaml>=6.0.2
 requests>=2.32.3
 python-dateutil>=2.9.0.post0
