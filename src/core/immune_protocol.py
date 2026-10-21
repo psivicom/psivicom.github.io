@@ -17,12 +17,6 @@ except ImportError:
         return True
 
 class ImmuneProtocol:
-    """
-    WENDY's Autonomic Observer.
-    Does not destroy history. Records trauma and induces metabolic stress 
-    so the Neuroplasticity Agent can learn from the failure.
-    """
-    
     def __init__(self):
         self.quarantine_file = Path("data/immune_quarantine.mpk")
         self.metabolism_file = Path("src/wendy_metabolism.json")
@@ -34,7 +28,6 @@ class ImmuneProtocol:
             sys.exit(1)
 
     def _log_quarantine(self):
-        """Logs the failure to the Track B binary quarantine ledger."""
         quarantine_data = {
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "quarantined_commit": os.environ.get('FAILED_COMMIT', 'unknown'),
@@ -44,7 +37,6 @@ class ImmuneProtocol:
         }
         
         self.quarantine_file.parent.mkdir(parents=True, exist_ok=True)
-        
         existing_logs = []
         if self.quarantine_file.exists():
             try:
@@ -54,18 +46,11 @@ class ImmuneProtocol:
                 existing_logs = []
                 
         existing_logs.append(quarantine_data)
-        
         with open(self.quarantine_file, 'wb') as f:
             f.write(msgpack.packb(existing_logs, use_bin_type=True))
-            
         print(f"💾 Trauma logged: {quarantine_data['quarantined_commit']}")
 
     def _induce_metabolic_stress(self):
-        """
-        Injects a stress event into WENDY's metabolism.
-        The Neuroplasticity Agent will read this on its next cycle 
-        and increase 'defense_weight' to prevent similar future failures.
-        """
         try:
             if self.metabolism_file.exists():
                 with open(self.metabolism_file, 'r') as f:
@@ -74,14 +59,12 @@ class ImmuneProtocol:
                 meta = {"stress_level": 0.0, "last_intensity": 0.5}
                 
             current_stress = float(meta.get("stress_level", 0.0))
-            # Increase stress, capped at 1.0
             meta["stress_level"] = round(min(1.0, current_stress + 0.2), 4)
             meta["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             meta["state"] = "Focus"
             
             with open(self.metabolism_file, 'w') as f:
                 json.dump(meta, f, indent=2)
-                
             print(f"🧠 Metabolic stress induced: {meta['stress_level']}. Adaptation queued.")
         except Exception as e:
             print(f"⚠️ Failed to update metabolism: {e}")
