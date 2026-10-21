@@ -1,8 +1,9 @@
 # WENDY PLATFORM STANDARD (RFC 1001)
 
 Status: Active | Protocol: Sovereign AI Architecture | Time Standard: ISO 8601 Zulu
-***Preamble***
-WENDY is not merely a repository; she is a sovereign, self-healing, zero-cost AI platform. This document defines the strict architectural contracts required for all agents, data states, and volunteer mesh nodes to ensure infinite scalability without systemic collapse.
+
+***Preamble:
+WENDY is not merely a repository; she is a sovereign, self-healing, zero-cost AI platform. This document defines the strict architectural contracts required for all agents, data states, and volunteer mesh nodes to ensure infinite scalability without systemic collapse.***
 
 1. The Organ Standard (Agent Architecture)
 All cognitive functions must be implemented as modular “Organs” (Agents) that inherit from the   BaseAgent   class.
