@@ -1,10 +1,10 @@
 {
-  "cycle_start_time": "2026-09-28T19:11:13.251Z",
-  "period_minutes": 120,
-  "amplitude": 1.0,
-  "last_intensity": 0.902303,
-  "total_cycles_completed": 260,
-  "spawned_agents": [],
-  "last_known_checkpoint": {},
-  "last_phase": 0.627271
+  "last_updated": "2026-10-21T03:58:40.952501Z",
+  "last_intensity": 0.651,
+  "stress_level": 0.08,
+  "state": "Rest",
+  "inputs": {
+    "pilot_sync": "2026-10-21T01:31:22.741520Z",
+    "void_sync": "N/A"
+  }
 }
