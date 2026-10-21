@@ -6,7 +6,7 @@ name: Pilot Scan (Sensory Input)
 
 on:
   schedule:
-    - cron: '0 */4 * * *' # Every 4 hours
+    - cron: '0 */4 * * *'
   workflow_dispatch:
   push:
     paths:
