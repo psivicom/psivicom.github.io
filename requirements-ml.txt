@@ -2,6 +2,7 @@
 # WENDY Sovereign Mesh - Zero-Bloat Core
 
 # 1. Data & State Management (Lightweight)
+numpy>=2.1.0        # The engine for all dense vector math and PSVC operations
 pandas>=2.2.2       # For structured data analysis
 orjson>=3.9.15      # Ultra-fast JSON parsing for mesh status
 msgpack>=1.0.7      # Binary serialization for wendy_twin.psvec
