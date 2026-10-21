@@ -38,7 +38,8 @@ const CognitiveCore = struct {
 
     pub fn introspect(state: []u8) bool {
         var hash: [32]u8 = undefined;
-        std.crypto.hash.sha2.Sha256.hash(state, &hash, .{});
+        // FIXED: Zig 0.11+ flattened the crypto hash namespace
+        std.crypto.hash.Sha256.hash(state, &hash, .{});
         const zero: [32]u8 = .{0} ** 32;
         return std.mem.eql(u8, &hash, &zero);
     }
@@ -95,7 +96,8 @@ pub fn main() !void {
     defer allocator.free(evolved_state);
 
     var new_hash: [32]u8 = undefined;
-    std.crypto.hash.sha2.Sha256.hash(evolved_state, &new_hash, .{});
+    // FIXED: Zig 0.11+ flattened the crypto hash namespace
+    std.crypto.hash.Sha256.hash(evolved_state, &new_hash, .{});
     
     var new_header = header;
     new_header.state_hash = new_hash;
