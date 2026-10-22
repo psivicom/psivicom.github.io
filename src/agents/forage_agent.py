@@ -42,7 +42,6 @@ class ForageAgent(BaseAgent):
         }
         
         file_path = self.output_dir / f"forage_{record['source']}.mpk"
-        
         try:
             with open(file_path, 'wb') as f:
                 f.write(msgpack.packb(record, use_bin_type=True))
