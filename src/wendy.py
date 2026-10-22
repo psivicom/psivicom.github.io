@@ -6,17 +6,31 @@ Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
 """
 
 import os
+import sys
 import time
 import subprocess
 from pathlib import Path
 import numpy as np
+import importlib.util
 
+# Load core libraries directly from file path (no sys.path hacks, works from any directory)
 try:
-    from core.psvc_reference import (
-        encode_text, seal, open_container, content_hash,
-        PRECISION_INT8, DEFAULT_DIM, MAGIC
-    )
-except ImportError as e:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    module_path = os.path.join(script_dir, "core", "psvc_reference.py")
+    
+    spec = importlib.util.spec_from_file_location("psvc_reference", module_path)
+    psvc_ref = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(psvc_ref)
+    
+    encode_text = psvc_ref.encode_text
+    seal = psvc_ref.seal
+    open_container = psvc_ref.open_container
+    content_hash = psvc_ref.content_hash
+    PRECISION_INT8 = psvc_ref.PRECISION_INT8
+    DEFAULT_DIM = psvc_ref.DEFAULT_DIM
+    MAGIC = psvc_ref.MAGIC
+
+except Exception as e:
     print(f"[!] Warning: psvc_reference import fallback: {e}")
 
 
