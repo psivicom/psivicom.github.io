@@ -6,16 +6,13 @@ Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
 """
 
 import os
-import sys
 import time
 import subprocess
 from pathlib import Path
 import numpy as np
 
-# Bind core libraries to path
-
 try:
-    from psvc_reference import (
+    from core.psvc_reference import (
         encode_text, seal, open_container, content_hash,
         PRECISION_INT8, DEFAULT_DIM, MAGIC
     )
