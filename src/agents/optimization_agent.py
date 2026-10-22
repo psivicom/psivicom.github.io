@@ -9,8 +9,6 @@ import logging
 import numpy as np
 from pathlib import Path
 from datetime import datetime, timezone
-
-sys.path.append(str(Path(__file__).parent.parent))
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.utils.oidc_verifier import verify_oidc_token
 

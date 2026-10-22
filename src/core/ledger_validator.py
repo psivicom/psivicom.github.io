@@ -13,7 +13,6 @@ import os
 from datetime import datetime, timezone
 
 # Import the sovereign identity verifier
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 try:
     from utils.oidc_verifier import verify_oidc_token
 except ImportError:

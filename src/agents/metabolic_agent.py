@@ -7,8 +7,6 @@ import sys
 import msgpack
 from pathlib import Path
 from datetime import datetime, timezone
-
-sys.path.append(str(Path(__file__).parent.parent))
 from src.utils.oidc_verifier import verify_oidc_token
 
 class MetabolicAgent:

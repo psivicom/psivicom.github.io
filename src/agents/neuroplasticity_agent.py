@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from collections import deque
 
 # Add project root to path for local testing if needed
-sys.path.append(str(Path(__file__).parent.parent))
 
 from src.base.base_agent import BaseAgent, AgentLayer
 from src.utils.oidc_verifier import verify_oidc_token

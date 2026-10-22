@@ -13,7 +13,6 @@ from pathlib import Path
 import numpy as np
 
 # Bind core libraries to path
-sys.path.insert(0, os.path.abspath('src/core'))
 
 try:
     from psvc_reference import (
