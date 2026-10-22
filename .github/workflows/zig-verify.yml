@@ -40,9 +40,9 @@ jobs:
       - name: Add Zig to PATH (Always)
         run: echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Install Python Dependencies (System-Wide)
+      - name: Install Python Dependencies (Ubuntu 24.04 Compatible)
         run: |
-          sudo pip3 install pynacl h5py bitshuffle numpy
+          python3 -m pip install --break-system-packages pynacl h5py bitshuffle numpy
           python3 -c "import nacl.signing; print('✅ PyNaCl Verified')"
 
       - name: Python Atomic Injection (Wendy Engine)
