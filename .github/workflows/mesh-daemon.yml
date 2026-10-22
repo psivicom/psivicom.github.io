@@ -1,102 +1,95 @@
-# .github/workflows/mesh-daemon.yml
+# .github/workflows/mesh_daemon.yml
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
 name: Mesh Daemon (Auto-Process, Optimize & Heal)
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'data/instruction_queue/**'
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 */2 * * *' # Run every 2 hours
   workflow_dispatch:
 
 permissions:
+  id-token: write
   contents: write
-  actions: read
 
 env:
   PYTHONPATH: ${{ github.workspace }}
 
 jobs:
-  process-instructions:
-    runs-on: ubuntu-latest
+  daemon-cycle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read System Versions
-        id: versions
-        run: |
-          echo "python_version=$(jq -r '.python.version' config/system_versions.json)" >> $GITHUB_OUTPUT
-
       - name: Setup Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ steps.versions.outputs.python_version }}
+          python-version: '3.12'
 
-      - name: Setup Go
-        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff
-        with:
-          go-version: '1.22'
-          cache: false
-
-      - name: Install Dependencies
+      - name: Install Core Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-core.txt
+          pip install --no-cache-dir -r requirements-core.txt
 
-      - name: Ensure Directories Exist
+      - name: Generate OIDC Identity Token
+        id: oidc
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('psivi.com');
+            core.setOutput('token', token);
+
+      - name: Ensure Directory Structure
         run: |
-          mkdir -p data/instruction_queue
-          mkdir -p data/processed_instructions
-          mkdir -p reports/scientific_reports
-          mkdir -p logs
-          mkdir -p config
+          mkdir -p data/instruction_queue data/processed_instructions reports/scientific_reports logs config
 
-      - name: Compile Shannon-Z Kernel (Zero-Allocation Go Bridge)
-        run: |
-          if [ -d "src/kernel" ]; then
-            echo "🔨 Compiling Shannon-Z kernel for native Python bridge..."
-            cd src/kernel
-            go build -o libshannon.so -buildmode=c-shared shannon_z.go
-            echo "✅ Shannon-Z kernel compiled successfully."
-            cd ../..
-          else
-            echo "ℹ️ src/kernel directory not found. Skipping Go compilation."
-          fi
-
-      - name: Run Mesh Automation Loop
+      - name: Execute Automation Loop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
         run: python -m src.tools.auto_reporter
 
-      - name: Run Optimization Cycle (WENDY Authorized)
-        run: python -m src.agents.optimization_agent
+      - name: Execute Optimization & Self-Healing
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+        run: |
+          python -m src.agents.optimization_agent
+          python -m src.agents.self_healing_agent
 
-      - name: Run Self-Healing Audit (Autonomous Evolution)
-        run: python -m src.agents.self_healing_agent
-
-      - name: Execute Pending Mesh Queue Locally (Fallback Guarantee)
+      - name: Execute Local Mesh Executor
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/local_mesh_executor.py
 
-      - name: Commit Generated Artifacts (Race-Condition Proof)
+      - name: Commit Daemon Artifacts (Sovereign Autonomic)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "PSIVI Mesh Daemon (WENDY Authorized)"
           git config user.email "daemon@psivi.com"
           
-          git add src/agents/ reports/ data/ config/
+          # SOVEREIGN APPROACH: Stage ALL legitimate changes made by WENDY's organs
+          git add -A
           
           if ! git diff --staged --quiet; then
             git commit -m "auto: daemon processed instructions, optimized system, healed code [skip ci]"
             
+            # Race-Condition Shield
             for i in 1 2 3; do
-              git pull --rebase origin main && git push origin main && break || sleep 2
+              if git pull --rebase origin main && git push origin main; then
+                echo "✅ Successfully pushed daemon artifacts."
+                break
+              else
+                echo "⚠️ Concurrent push detected. Rebasing and retrying in 2s..."
+                sleep 2
+              fi
             done
           else
             echo "ℹ️ No new daemon artifacts to commit."
