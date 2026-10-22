@@ -22,7 +22,6 @@ class OptimizationAgent(BaseAgent):
     def __init__(self, name="optimization"):
         super().__init__(name, capabilities=["optimize", "orchestrate", "refactor"])
         self.creation_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        # UPGRADE: Track B Binary State File
         self.state_file = Path("data/optimization_state.mpk")
 
     def _verify_identity(self):
@@ -44,8 +43,6 @@ class OptimizationAgent(BaseAgent):
         }
         
         self.state_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        # UPGRADE: Pure binary serialization (Track B)
         with open(self.state_file, 'wb') as f:
             f.write(msgpack.packb(optimization_record, use_bin_type=True))
             
