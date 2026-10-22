@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/core/*.zig'
       - 'src/mesh/*.py'
+      - '.github/workflows/*.yml'
   workflow_dispatch:
 
 permissions:
@@ -40,21 +41,9 @@ jobs:
       - name: Add Zig to PATH (Always)
         run: echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Set up Python Environment
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install Python Dependencies
-        run: |
-          pip install --upgrade pip
-          pip install pynacl h5py bitshuffle numpy
-          python -c "import nacl.signing; print('✅ PyNaCl Verified at:', nacl.__file__)"
-
       - name: Python Atomic Injection (Wendy Engine)
         run: |
-          python << 'PYEOF'
+          python3 << 'PYEOF'
           import os
           os.makedirs('src/core', exist_ok=True)
           
@@ -186,10 +175,17 @@ pub fn main() !void {
             fi
           done
 
-      - name: Mesh Brain Execution
+      - name: Mesh Brain Execution (Nuclear Inline)
         run: |
-          python -c "import nacl.signing; print('✅ Pre-flight Check Passed')"
-          python -m src.mesh.mesh_brain
+          # NUCLEAR OPTION: Install using the EXACT executable that runs the script
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pynacl h5py bitshuffle numpy || python3 -m pip install --break-system-packages pynacl h5py bitshuffle numpy
+          
+          # Absolute verification before execution
+          python3 -c "import sys, nacl.signing; print('✅ NACL VERIFIED AT:', nacl.__file__, 'USING:', sys.executable)"
+          
+          # Execute
+          python3 -m src.mesh.mesh_brain
 
       - name: Commit Production-Ready Artifacts
         env:
@@ -199,7 +195,7 @@ pub fn main() !void {
           git config user.email "architect@psivi.com"
           git add src/core/*.zig src/core/*
           if ! git diff --staged --quiet; then
-            git commit -m "feat: python atomic injection and mesh execution [skip ci]"
+            git commit -m "feat: nuclear inline dependency injection [skip ci]"
             git push origin HEAD:refs/heads/main
             echo "🔔 PRODUCTION SEAL APPLIED 🔔"
           fi
