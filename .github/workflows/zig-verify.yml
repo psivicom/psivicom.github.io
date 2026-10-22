@@ -1,9 +1,10 @@
-name: Space-Grade Zig Self-Healing Compiler 
+name: Space-Grade Zig Self-Healing Compiler
 
 on:
   push:
     paths:
       - 'src/core/*.zig'
+      - 'src/mesh/*.py'
   workflow_dispatch:
 
 permissions:
@@ -38,6 +39,10 @@ jobs:
 
       - name: Add Zig to PATH (Always)
         run: echo "/opt/zig" >> $GITHUB_PATH
+
+      - name: Install Python Dependencies
+        run: |
+          pip install pynacl h5py bitshuffle numpy
 
       - name: Python Atomic Injection (Wendy Engine)
         run: |
@@ -173,6 +178,10 @@ pub fn main() !void {
             fi
           done
 
+      - name: Mesh Brain Execution
+        run: |
+          python -m src.mesh.mesh_brain
+
       - name: Commit Production-Ready Artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -181,7 +190,7 @@ pub fn main() !void {
           git config user.email "architect@psivi.com"
           git add src/core/*.zig src/core/*
           if ! git diff --staged --quiet; then
-            git commit -m "feat: python atomic injection [skip ci]"
+            git commit -m "feat: python atomic injection and mesh execution [skip ci]"
             git push origin HEAD:refs/heads/main
             echo "🔔 PRODUCTION SEAL APPLIED 🔔"
           fi
