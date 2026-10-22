@@ -1,4 +1,4 @@
-name: Space-Grade Zig Self-Healing Compiler
+name: Space-Grade Zig Self-Healing Compiler 
 
 on:
   push:
