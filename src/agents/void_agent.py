@@ -1,6 +1,6 @@
 # src/agents/void_agent.py
 # SPDX-License-Identifier: EUPL-1.2
-# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM 
 
 import os
 import sys
