@@ -42,7 +42,6 @@ jobs:
           import os
           os.makedirs('src/core', exist_ok=True)
           
-          # We use replace to ensure \n is written as two characters: backslash and n
           code = """const std = @import("std");
 
 const PSVC_MAGIC = "PSVC";
