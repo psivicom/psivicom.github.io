@@ -42,7 +42,8 @@ jobs:
           import os
           os.makedirs('src/core', exist_ok=True)
           
-          code = r'''const std = @import("std");
+          # Using standard string with explicit escaping for Zig compatibility
+          code = """const std = @import("std");
 
 const PSVC_MAGIC = "PSVC";
 const MAX_EVOLUTION_STEPS = 1000;
@@ -98,12 +99,12 @@ const CognitiveCore = struct {
             generativeMutate(current_state);
 
             if (introspect(current_state)) {
-                std.debug.print("CERTAIN CONDITION MET at step {d}\n", .{step});
+                std.debug.print("CERTAIN CONDITION MET at step {d}\\n", .{step});
                 return allocator.dupe(u8, current_state);
             }
         }
         
-        std.debug.print("Evolution complete.\n", .{});
+        std.debug.print("Evolution complete.\\n", .{});
         return allocator.dupe(u8, current_state);
     }
 };
@@ -133,7 +134,7 @@ pub fn main() !void {
     const payload_end = payload_start + header.payload_len;
     const payload = file_data[payload_start..payload_end];
 
-    std.debug.print("WENDY perceiving {d} bytes...\n", .{payload.len});
+    std.debug.print("WENDY perceiving {d} bytes...\\n", .{payload.len});
 
     const evolved_state = try CognitiveCore.evolve(allocator, payload);
     defer allocator.free(evolved_state);
@@ -151,9 +152,9 @@ pub fn main() !void {
     try out_file.writeAll(std.mem.asBytes(&new_header));
     try out_file.writeAll(evolved_state);
 
-    std.debug.print("Sealed.\n", .{});
+    std.debug.print("Sealed.\\n", .{});
 }
-'''
+"""
           with open('src/core/wendy_engine.zig', 'w') as f:
               f.write(code)
           print('✅ Python Atomic Injection Complete')
