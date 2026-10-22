@@ -16,9 +16,10 @@ except ImportError:
         return True
 
 class ImmuneProtocol:
+    """WENDY's Autonomic Observer. Records trauma and induces metabolic stress."""
+    
     def __init__(self):
         self.quarantine_file = Path("data/immune_quarantine.mpk")
-        # UPGRADE: Track B Binary Metabolism File
         self.metabolism_file = Path("src/wendy_metabolism.mpk")
         
     def _verify_identity(self):
@@ -52,7 +53,6 @@ class ImmuneProtocol:
 
     def _induce_metabolic_stress(self):
         try:
-            # UPGRADE: Pure binary deserialization (Track B)
             if self.metabolism_file.exists():
                 with open(self.metabolism_file, 'rb') as f:
                     meta = msgpack.unpackb(f.read(), raw=False)
@@ -64,10 +64,8 @@ class ImmuneProtocol:
             meta["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             meta["state"] = "Focus"
             
-            # UPGRADE: Pure binary serialization (Track B)
             with open(self.metabolism_file, 'wb') as f:
                 f.write(msgpack.packb(meta, use_bin_type=True))
-                
             print(f"🧠 Metabolic stress induced: {meta['stress_level']}. Adaptation queued.")
         except Exception as e:
             print(f"⚠️ Failed to update metabolism: {e}")
