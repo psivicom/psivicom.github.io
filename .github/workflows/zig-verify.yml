@@ -40,18 +40,21 @@ jobs:
       - name: Add Zig to PATH (Always)
         run: echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Install Python Dependencies (Targeted)
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
         run: |
-          # Force install into the specific python3 binary being used
-          python3 -m ensurepip --default-pip
-          python3 -m pip install --break-system-packages pynacl h5py bitshuffle numpy
-          
-          # Verify immediately in the same shell
-          python3 -c "import nacl.signing; print('✅ PyNaCl Verified at:', nacl.__file__)"
+          pip install --upgrade pip
+          pip install pynacl h5py bitshuffle numpy
+          python -c "import nacl.signing; print('✅ PyNaCl Verified at:', nacl.__file__)"
 
       - name: Python Atomic Injection (Wendy Engine)
         run: |
-          python3 << 'PYEOF'
+          python << 'PYEOF'
           import os
           os.makedirs('src/core', exist_ok=True)
           
@@ -185,9 +188,8 @@ pub fn main() !void {
 
       - name: Mesh Brain Execution
         run: |
-          # Re-verify before running to ensure environment consistency
-          python3 -c "import nacl.signing; print('✅ Pre-flight Check Passed')"
-          python3 -m src.mesh.mesh_brain
+          python -c "import nacl.signing; print('✅ Pre-flight Check Passed')"
+          python -m src.mesh.mesh_brain
 
       - name: Commit Production-Ready Artifacts
         env:
