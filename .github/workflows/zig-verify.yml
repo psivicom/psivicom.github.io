@@ -156,12 +156,15 @@ jobs:
           echo "✅ Nuclear Injection Complete. Verifying..."
           grep "const zero" src/core/wendy_engine.zig && echo "✅ Const Zero Verified" || echo "❌ FAILED"
 
-      - name: Autonomous Compilation
+      - name: Autonomous Compilation (Engine Only)
         run: |
           shopt -s nullglob
-          for file in src/core/*.zig; do
-            echo "Compiling $file..."
-            /opt/zig/zig build-exe "$file" -O ReleaseSafe -fstrip -femit-bin="${file%.zig}"
+          # Only compile known executables to avoid library errors
+          for file in src/core/wendy_engine.zig src/core/psvc_sealer.zig src/core/vector_engine.zig src/core/actuation_engine.zig src/core/zulu_clock.zig; do
+            if [ -f "$file" ]; then
+              echo "Compiling $file..."
+              /opt/zig/zig build-exe "$file" -O ReleaseSafe -fstrip -femit-bin="${file%.zig}"
+            fi
           done
 
       - name: Commit Production-Ready Artifacts
