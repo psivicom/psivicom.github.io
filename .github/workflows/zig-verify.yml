@@ -21,181 +21,105 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
 
       - name: Cache Zig Toolchain
-        id: cache-zig
         uses: actions/cache@v4
         with:
           path: /opt/zig
           key: zig-0.13.0-linux-x86_64
 
-      - name: Install Zig Toolchain (If Not Cached)
-        if: steps.cache-zig.outputs.cache-hit != 'true'
+      - name: Install Zig Toolchain
         run: |
-          curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
-          tar -xf z.tar.xz
-          sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+          if [ ! -f /opt/zig/zig ]; then
+            curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
+            tar -xf z.tar.xz
+            sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+          fi
           echo "/opt/zig" >> $GITHUB_PATH
-
-      - name: Add Zig to PATH (Always)
-        run: echo "/opt/zig" >> $GITHUB_PATH
 
       - name: Python Atomic Injection (Wendy Engine)
         run: |
           python3 << 'PYEOF'
           import os
           os.makedirs('src/core', exist_ok=True)
-          
           code = """const std = @import("std");
-
 const PSVC_MAGIC = "PSVC";
 const MAX_EVOLUTION_STEPS = 1000;
-
-const PSVCHeader = extern struct {
-    magic: [4]u8,
-    version: u16,
-    payload_len: u32,
-    state_hash: [32]u8,
-};
-
+const PSVCHeader = extern struct { magic: [4]u8, version: u16, payload_len: u32, state_hash: [32]u8 };
 const CognitiveCore = struct {
     pub fn symbolicTranslate(state: []u8) void {
         const vortex_map = [_]u8{ 0, 1, 2, 4, 8, 7, 5, 1, 2, 4 };
-        for (state) |*byte| {
-            const mod9 = @as(u8, @intCast(byte.* % 9));
-            byte.* = (byte.* & 0xF0) | vortex_map[mod9];
-        }
+        for (state) |*byte| { byte.* = (byte.* & 0xF0) | vortex_map[@as(u8, @intCast(byte.* % 9))]; }
     }
-
     pub fn topologicalSift(state: []u8) void {
         if (state.len < 3) return;
-        for (1..state.len - 1) |i| {
-            const left = state[i - 1];
-            const center = state[i];
-            const right = state[i + 1];
-            state[i] = (left ^ center) ^ (right & 0x55);
-        }
+        for (1..state.len - 1) |i| { state[i] = (state[i - 1] ^ state[i]) ^ (state[i + 1] & 0x55); }
     }
-
     pub fn generativeMutate(state: []u8) void {
-        for (state) |*byte| {
-            byte.* = (byte.* << 1) | (byte.* >> 7);
-            byte.* ^= 0xA5;
-        }
+        for (state) |*byte| { byte.* = (byte.* << 1) | (byte.* >> 7); byte.* ^= 0xA5; }
     }
-
     pub fn introspect(state: []u8) bool {
         var hash: [32]u8 = undefined;
         std.crypto.hash.sha2.Sha256.hash(state, &hash, .{});
         const zero: [32]u8 = .{0} ** 32;
         return std.mem.eql(u8, &hash, &zero);
     }
-
     pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
         var current_state = try allocator.dupe(u8, initial_state);
         defer allocator.free(current_state);
-
         var step: usize = 0;
         while (step < MAX_EVOLUTION_STEPS) : (step += 1) {
-            symbolicTranslate(current_state);
-            topologicalSift(current_state);
-            generativeMutate(current_state);
-
-            if (introspect(current_state)) {
-                std.debug.print("CERTAIN CONDITION MET at step {d}<NEWLINE>", .{step});
-                return allocator.dupe(u8, current_state);
-            }
+            symbolicTranslate(current_state); topologicalSift(current_state); generativeMutate(current_state);
+            if (introspect(current_state)) { std.debug.print("CERTAIN CONDITION MET\\n", .{}); return allocator.dupe(u8, current_state); }
         }
-        
-        std.debug.print("Evolution complete.<NEWLINE>", .{});
         return allocator.dupe(u8, current_state);
     }
 };
-
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){}; defer _ = gpa.deinit();
     const allocator = gpa.allocator();
-
-    const args = try std.process.argsAlloc(allocator);
-    defer std.process.argsFree(allocator, args);
-
+    const args = try std.process.argsAlloc(allocator); defer std.process.argsFree(allocator, args);
     if (args.len < 3) return;
-
-    const in_file = try std.fs.cwd().openFile(args[1], .{});
-    defer in_file.close();
-    
+    const in_file = try std.fs.cwd().openFile(args[1], .{}); defer in_file.close();
     const file_size = (try in_file.stat()).size;
-    const file_data = try allocator.alloc(u8, file_size);
-    defer allocator.free(file_data);
+    const file_data = try allocator.alloc(u8, file_size); defer allocator.free(file_data);
     _ = try in_file.readAll(file_data);
-
     var header: PSVCHeader = undefined;
     @memcpy(std.mem.asBytes(&header), file_data[0..@sizeOf(PSVCHeader)]);
-
-    const payload_start = @sizeOf(PSVCHeader);
-    const payload_end = payload_start + header.payload_len;
-    const payload = file_data[payload_start..payload_end];
-
-    std.debug.print("WENDY perceiving {d} bytes...<NEWLINE>", .{payload.len});
-
-    const evolved_state = try CognitiveCore.evolve(allocator, payload);
-    defer allocator.free(evolved_state);
-
-    var new_hash: [32]u8 = undefined;
-    std.crypto.hash.sha2.Sha256.hash(evolved_state, &new_hash, .{});
-    
-    var new_header = header;
-    new_header.state_hash = new_hash;
-    new_header.payload_len = @as(u32, @intCast(evolved_state.len));
-
-    const out_file = try std.fs.cwd().createFile(args[2], .{});
-    defer out_file.close();
-
-    try out_file.writeAll(std.mem.asBytes(&new_header));
-    try out_file.writeAll(evolved_state);
-
-    std.debug.print("Sealed.<NEWLINE>", .{});
-}
-""".replace("<NEWLINE>", "\\n")
-
-          with open('src/core/wendy_engine.zig', 'w') as f:
-              f.write(code)
-          print('✅ Python Atomic Injection Complete')
+    const payload = file_data[@sizeOf(PSVCHeader)..@sizeOf(PSVCHeader) + header.payload_len];
+    const evolved_state = try CognitiveCore.evolve(allocator, payload); defer allocator.free(evolved_state);
+    var new_hash: [32]u8 = undefined; std.crypto.hash.sha2.Sha256.hash(evolved_state, &new_hash, .{});
+    var new_header = header; new_header.state_hash = new_hash; new_header.payload_len = @as(u32, @intCast(evolved_state.len));
+    const out_file = try std.fs.cwd().createFile(args[2], .{}); defer out_file.close();
+    try out_file.writeAll(std.mem.asBytes(&new_header)); try out_file.writeAll(evolved_state);
+    std.debug.print("Sealed.\\n", .{});
+}""".replace("\\n", "\n")
+          with open('src/core/wendy_engine.zig', 'w') as f: f.write(code)
+          print('✅ Wendy Engine Injected')
           PYEOF
 
-      - name: Autonomous Compilation (Engine Only)
+      - name: Autonomous Compilation
         run: |
-          shopt -s nullglob
           for file in src/core/wendy_engine.zig src/core/psvc_sealer.zig src/core/vector_engine.zig src/core/actuation_engine.zig src/core/zulu_clock.zig; do
-            if [ -f "$file" ]; then
-              echo "Compiling $file..."
-              /opt/zig/zig build-exe "$file" -O ReleaseSafe -fstrip -femit-bin="${file%.zig}"
-            fi
+            [ -f "$file" ] && /opt/zig/zig build-exe "$file" -O ReleaseSafe -fstrip -femit-bin="${file%.zig}"
           done
 
-      - name: Mesh Brain Execution (Nuclear Inline)
+      - name: 🔥 NUCLEAR NACL FIX 🔥
         run: |
-          # NUCLEAR OPTION: Install using the EXACT executable that runs the script
+          echo "🔥 Forcing NaCl installation on exact Python executable..."
           python3 -m pip install --upgrade pip
           python3 -m pip install pynacl h5py bitshuffle numpy || python3 -m pip install --break-system-packages pynacl h5py bitshuffle numpy
-          
-          # Absolute verification before execution
-          python3 -c "import sys, nacl.signing; print('✅ NACL VERIFIED AT:', nacl.__file__, 'USING:', sys.executable)"
-          
-          # Execute
+          echo "🔥 Verifying NaCl..."
+          python3 -c "import nacl.signing; print('✅ NACL SUCCESSFULLY LOADED')"
+          echo "🔥 Executing Mesh Brain..."
           python3 -m src.mesh.mesh_brain
 
-      - name: Commit Production-Ready Artifacts
+      - name: Commit Artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "WENDY Architect"
           git config user.email "architect@psivi.com"
           git add src/core/*.zig src/core/*
-          if ! git diff --staged --quiet; then
-            git commit -m "feat: nuclear inline dependency injection [skip ci]"
-            git push origin HEAD:refs/heads/main
-            echo "🔔 PRODUCTION SEAL APPLIED 🔔"
-          fi
+          git diff --staged --quiet || (git commit -m "feat: nuclear nacl fix [skip ci]" && git push origin HEAD:refs/heads/main)
+          echo "🔔 PRODUCTION SEAL APPLIED 🔔"
