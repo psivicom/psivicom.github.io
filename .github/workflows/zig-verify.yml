@@ -36,14 +36,128 @@ jobs:
       - name: Add Zig to PATH (Always)
         run: echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Base64 Atomic Injection (Wendy Engine)
+      - name: Python Atomic Injection (Wendy Engine)
         run: |
-          mkdir -p src/core
-          # Base64 encoded content of wendy_engine.zig with const zero
-          echo "Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7Cgpjb25zdCBQU1ZDX01BR0lDID0gIlBTVkMiOwpjb25zdCBNQVhfRVZPTFVUSU9OX1NURVBTID0gMTAwMDsKCmNvbnN0IFBTVkNIZWFkZXIgPSBleHRlcm4gc3RydWN0IHsKICAgIG1hZ2ljOiBbNF11OCwKICAgIHZlcnNpb246IHUxNiwKICAgIHBheWxvYWRfbGVuOiB1MzIsCiAgICBzdGF0ZV9oYXNoOiBbMzJddTgsCn07Cgpjb25zdCBDb2duaXRpdmVDb3JlID0gc3RydWN0IHsKICAgIHB1YiBmbiBzeW1ib2xpY1RyYW5zbGF0ZShzdGF0ZTogW111OCkgdm9pZCB7CiAgICAgICAgY29uc3Qgdm9ydGV4X21hcCA9IFtfXXU4eyAwLCAxLCAyLCA0LCA4LCA3LCA1LCAxLCAyLCA0IH07CiAgICAgICAgZm9yIChzdGF0ZSkgfCpieXRlfCB7CiAgICAgICAgICAgIGNvbnN0IG1vZDkgPSBAYXModTgsIEBpbnRDYXN0KGJ5dGUuKiAlIDkpKTsKICAgICAgICAgICAgYnl0ZS4qID0gKGJ5dGUuKiAmIDB4RjApIHwgdm9ydGV4X21hcFttb2Q5XTsKICAgICAgICB9CiAgICB9CgogICAgcHViIGZuIHRvcG9sb2dpY2FsU2lmdChzdGF0ZTogW111OCkgdm9pZCB7CiAgICAgICAgaWYgKHN0YXRlLmxlbiA8IDMpIHJldHVybjsKICAgICAgICBmb3IgKDEuLnN0YXRlLmxlbiAtIDEpIHxpfSB7CiAgICAgICAgICAgIGNvbnN0IGxlZnQgPSBzdGF0ZVtpIC0gMV07CiAgICAgICAgICAgIGNvbnN0IGNlbnRlciA9IHN0YXRlW2ldOwogICAgICAgICAgICBjb25zdCByaWdodCA9IHN0YXRlW2kgKyAxXTsKICAgICAgICAgICAgc3RhdGVbaV0gPSAobGVmdCBeIGNlbnRlcikgXiAocmlnaHQgJiAweDU1KTsKICAgICAgICB9CiAgICB9CgogICAgcHViIGZuIGdlbmVyYXRpdmVNdXRhdGUoc3RhdGU6IFtddTgpIHZvaWQgewogICAgICAgIGZvciAoc3RhdGUpIHwqYnl0ZXwgewogICAgICAgICAgICBieXRlLiogPSAoYnl0ZS4qIDw8IDEpIHwgKGJ5dGUuKiA+PiA3KTsKICAgICAgICAgICAgYnl0ZS4qIF49IDB4QTU7CiAgICAgICAgfQogICAgfQoKICAgIHB1YiBmbiBpbnRyb3NwZWN0KHN0YXRlOiBbXXU4KSBib29sIHsKICAgICAgICB2YXIgaGFzaDogWzMyXXU4ID0gdW5kZWZpbmVkOwogICAgICAgIHN0ZC5jcnlwdG8uaGFzaC5zaGEyLlNoYTI1Ni5oYXNoKHN0YXRlLCAmaGFzaCwgLiB7fSk7CiAgICAgICAgY29uc3QgemVybzogWzMyXXU4ID0gLnswfSAqKiAzMjsKICAgICAgICByZXR1cm4gc3RkLm1lbS5lcWwodTgsICZoYXNoLCAmemVybyk7CiAgICB9CgogICAgcHViIGZuIGV2b2x2ZShhbGxvY2F0b3I6IHN0ZC5tZW0uQWxsb2NhdG9yLCBpbml0aWFsX3N0YXRlOiBbXXU4KSAhW111OCB7CiAgICAgICAgdmFyIGN1cnJlbnRfc3RhdGUgPSB0cnkgYWxsb2NhdG9yLmR1cGUodTgsIGluaXRpYWxfc3RhdGUpOwogICAgICAgIGRlZmVyIGFsbG9jYXRvci5mcmVlKGN1cnJlbnRfc3RhdGUpOwoKICAgICAgICB2YXIgc3RlcDogdXNpemUgPSAwOwogICAgICAgIHdoaWxlIChzdGVwIDwgTUFYX0VWT0xVVElPTl9TVEVQUykgOiAoc3RlcCArPSAxKSB7CiAgICAgICAgICAgIHN5bWJvbGljVHJhbnNsYXRlKGN1cnJlbnRfc3RhdGUpOwogICAgICAgICAgICB0b3BvbG9naWNhbFNpZnQoY3VycmVudF9zdGF0ZSk7CiAgICAgICAgICAgIGdlbmVyYXRpdmVNdXRhdGUoY3VycmVudF9zdGF0ZSk7CgogICAgICAgICAgICBpZiAoaW50cm9zcGVjdChjdXJyZW50X3N0YXRlKSkgewogICAgICAgICAgICAgICAgc3RkLmRlYnVnLnByaW50KCJDRVJUQUlOIENPTkRJVElPTiBNRVQgYXQgc3RlcCB7ZH1cbiIsIC57c3RlcH0pOwogICAgICAgICAgICAgICAgcmV0dXJuIGFsbG9jYXRvci5kdXBlKHU4LCBjdXJyZW50X3N0YXRlKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICAKICAgICAgICBzdGQuZGVidWcucHJpbnQoIkV2b2x1dGlvbiBjb21wbGV0ZS5cbiIsIC57fSk7CiAgICAgICAgcmV0dXJuIGFsbG9jYXRvci5kdXBlKHU4LCBjdXJyZW50X3N0YXRlKTsKICAgIH0KfTsKCnB1YiBmbiBtYWluKCkgIXZvaWQgewogICAgdmFyIGdwYSA9IHN0ZC5oZWFwLkdlbmVyYWxQdXJwb3NlQWxsb2NhdG9yKC4ne30pe307CiAgICBkZWZlciBfID0gZ3BhLmRlaW5pdCgpOwogICAgY29uc3QgYWxsb2NhdG9yID0gZ3BhLmFsbG9jYXRvcigpOwoKICAgIGNvbnN0IGFyZ3MgPSB0cnkgc3RkLnByb2Nlc3MuYXJnc0FsbG9jKGFsbG9jYXRvcik7CiAgICBkZWZlciBzdGQucHJvY2Vzcy5hcmdzRnJlZShhbGxvY2F0b3IsIGFyZ3MpOwoKICAgIGlmIChhcmdzLmxlbiA8IDMpIHJldHVybjsKCiAgICBjb25zdCBpbl9maWxlID0gdHJ5IHN0ZC5mcy5jd2QoKS5vcGVuRmlsZShhcmdzWzFdLCAue30pOwogICAgZGVmZXIgaW5fZmlsZS5jbG9zZSgpOwogICAgCiAgICBjb25zdCBmaWxlX3NpemUgPSAodHJ5IGluX2ZpbGUuc3RhdCgpKS5zaXplOwogICAgY29uc3QgZmlsZV9kYXRhID0gdHJ5IGFsbG9jYXRvci5hbGxvYyh1OCwgZmlsZV9zaXplKTsKICAgIGRlZmVyIGFsbG9jYXRvci5mcmVlKGZpbGVfZGF0YSk7CiAgICBfID0gdHJ5IGluX2ZpbGUucmVhZEFsbChmaWxlX2RhdGEpOwoKICAgIHZhciBoZWFkZXI6IFBTVkNIZWFkZXIgPSB1bmRlZmluZWQ7CiAgICBAbWVtY3B5KHN0ZC5tZW0uYXNCeXRlcygmaGVhZGVyKSwgZmlsZV9kYXRhWzAuLkBzaXplT2YoUFNWQ0hlYWRlcildKTsKCiAgICBjb25zdCBwYXlsb2FkX3N0YXJ0ID0gQHNpemVPZihQU1ZDSGVhZGVyKTsKICAgIGNvbnN0IHBheWxvYWRfZW5kID0gcGF5bG9hZF9zdGFydCArIGhlYWRlci5wYXlsb2FkX2xlbjsKICAgIGNvbnN0IHBheWxvYWQgPSBmaWxlX2RhdGFbcGF5bG9hZF9zdGFydC4ucGF5bG9hZF9lbmRdOwoKICAgIHN0ZC5kZWJ1Zy5wcmludCgiV0VORFIgcGVyY2VpdmluZyB7ZH0gYnl0ZXMuLi5cbiIsIC57cGF5bG9hZC5sZW59KTsKCiAgICBjb25zdCBldm9sdmVkX3N0YXRlID0gdHJ5IENvZ25pdGl2ZUNvcmUuZXZvbHZlKGFsbG9jYXRvciwgcGF5bG9hZCk7CiAgICBkZWZlciBhbGxvY2F0b3IuZnJlZShldm9sdmVkX3N0YXRlKTsKCiAgICB2YXIgbmV3X2hhc2g6IFszMl11OCA9IHVuZGVmaW5lZDsKICAgIHN0ZC5jcnlwdG8uaGFzaC5zaGEyLlNoYTI1Ni5oYXNoKGV2b2x2ZWRfc3RhdGUsICZuZXdfaGFzaCwgLiB7fSk7CiAgICAKICAgIHZhciBuZXdfaGVhZGVyID0gaGVhZGVyOwogICAgbmV3X2hlYWRlci5zdGF0ZV9oYXNoID0gbmV3X2hhc2g7CiAgICBuZXdfaGVhZGVyLnBheWxvYWRfbGVuID0gQGFzKHUzMiwgQGludENhc3QoZXZvbHZlZF9zdGF0ZS5sZW4pKTsKCiAgICBjb25zdCBvdXRfZmlsZSA9IHRyeSBzdGQuZnMuY3dkKCkuY3JlYXRlRmlsZShhcmdzWzJdLCAue30pOwogICAgZGVmZXIgb3V0X2ZpbGUuY2xvc2UoKTsKCiAgICB0cnkgb3V0X2ZpbGUud3JpdGVBbGwoc3RkLm1lbS5hc0J5dGVzKCZuZXdfaGVhZGVyKSk7CiAgICB0cnkgb3V0X2ZpbGUud3JpdGVBbGwoZXZvbHZlZF9zdGF0ZSk7CgogICAgc3RkLmRlYnVnLnByaW50KCJTZWFsZWQuXG4iLCAue30pOwp9Cg==" | base64 -d > src/core/wendy_engine.zig
-          
-          echo "✅ Base64 Injection Complete. Verifying..."
-          grep "const zero" src/core/wendy_engine.zig && echo "✅ Const Zero Verified" || echo "❌ FAILED"
+          python3 -c "
+          import textwrap, os
+          os.makedirs('src/core', exist_ok=True)
+          code = textwrap.dedent('''\
+          const std = @import(\"std\");
+
+          const PSVC_MAGIC = \"PSVC\";
+          const MAX_EVOLUTION_STEPS = 1000;
+
+          const PSVCHeader = extern struct {
+              magic: [4]u8,
+              version: u16,
+              payload_len: u32,
+              state_hash: [32]u8,
+          };
+
+          const CognitiveCore = struct {
+              pub fn symbolicTranslate(state: []u8) void {
+                  const vortex_map = [_]u8{ 0, 1, 2, 4, 8, 7, 5, 1, 2, 4 };
+                  for (state) |*byte| {
+                      const mod9 = @as(u8, @intCast(byte.* % 9));
+                      byte.* = (byte.* & 0xF0) | vortex_map[mod9];
+                  }
+              }
+
+              pub fn topologicalSift(state: []u8) void {
+                  if (state.len < 3) return;
+                  for (1..state.len - 1) |i| {
+                      const left = state[i - 1];
+                      const center = state[i];
+                      const right = state[i + 1];
+                      state[i] = (left ^ center) ^ (right & 0x55);
+                  }
+              }
+
+              pub fn generativeMutate(state: []u8) void {
+                  for (state) |*byte| {
+                      byte.* = (byte.* << 1) | (byte.* >> 7);
+                      byte.* ^= 0xA5;
+                  }
+              }
+
+              pub fn introspect(state: []u8) bool {
+                  var hash: [32]u8 = undefined;
+                  std.crypto.hash.sha2.Sha256.hash(state, &hash, .{});
+                  const zero: [32]u8 = .{0} ** 32;
+                  return std.mem.eql(u8, &hash, &zero);
+              }
+
+              pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
+                  var current_state = try allocator.dupe(u8, initial_state);
+                  defer allocator.free(current_state);
+
+                  var step: usize = 0;
+                  while (step < MAX_EVOLUTION_STEPS) : (step += 1) {
+                      symbolicTranslate(current_state);
+                      topologicalSift(current_state);
+                      generativeMutate(current_state);
+
+                      if (introspect(current_state)) {
+                          std.debug.print(\"CERTAIN CONDITION MET at step {d}\\n\", .{step});
+                          return allocator.dupe(u8, current_state);
+                      }
+                  }
+                  
+                  std.debug.print(\"Evolution complete.\\n\", .{});
+                  return allocator.dupe(u8, current_state);
+              }
+          };
+
+          pub fn main() !void {
+              var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+              defer _ = gpa.deinit();
+              const allocator = gpa.allocator();
+
+              const args = try std.process.argsAlloc(allocator);
+              defer std.process.argsFree(allocator, args);
+
+              if (args.len < 3) return;
+
+              const in_file = try std.fs.cwd().openFile(args[1], .{});
+              defer in_file.close();
+              
+              const file_size = (try in_file.stat()).size;
+              const file_data = try allocator.alloc(u8, file_size);
+              defer allocator.free(file_data);
+              _ = try in_file.readAll(file_data);
+
+              var header: PSVCHeader = undefined;
+              @memcpy(std.mem.asBytes(&header), file_data[0..@sizeOf(PSVCHeader)]);
+
+              const payload_start = @sizeOf(PSVCHeader);
+              const payload_end = payload_start + header.payload_len;
+              const payload = file_data[payload_start..payload_end];
+
+              std.debug.print(\"WENDY perceiving {d} bytes...\\n\", .{payload.len});
+
+              const evolved_state = try CognitiveCore.evolve(allocator, payload);
+              defer allocator.free(evolved_state);
+
+              var new_hash: [32]u8 = undefined;
+              std.crypto.hash.sha2.Sha256.hash(evolved_state, &new_hash, .{});
+              
+              var new_header = header;
+              new_header.state_hash = new_hash;
+              new_header.payload_len = @as(u32, @intCast(evolved_state.len));
+
+              const out_file = try std.fs.cwd().createFile(args[2], .{});
+              defer out_file.close();
+
+              try out_file.writeAll(std.mem.asBytes(&new_header));
+              try out_file.writeAll(evolved_state);
+
+              std.debug.print(\"Sealed.\\n\", .{});
+          }
+          ''')
+          with open('src/core/wendy_engine.zig', 'w') as f:
+              f.write(code)
+          print('✅ Python Atomic Injection Complete')
+          "
 
       - name: Autonomous Compilation (Engine Only)
         run: |
@@ -63,7 +177,7 @@ jobs:
           git config user.email "architect@psivi.com"
           git add src/core/*.zig src/core/*
           if ! git diff --staged --quiet; then
-            git commit -m "feat: base64 atomic injection [skip ci]"
+            git commit -m "feat: python atomic injection [skip ci]"
             git push origin HEAD:refs/heads/main
             echo "🔔 PRODUCTION SEAL APPLIED 🔔"
           fi
