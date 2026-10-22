@@ -42,7 +42,9 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          pip install pynacl h5py bitshuffle numpy
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pynacl h5py bitshuffle numpy
+          python3 -c "import nacl; print('✅ PyNaCl Installed')"
 
       - name: Python Atomic Injection (Wendy Engine)
         run: |
@@ -180,7 +182,7 @@ pub fn main() !void {
 
       - name: Mesh Brain Execution
         run: |
-          python -m src.mesh.mesh_brain
+          python3 -m src.mesh.mesh_brain
 
       - name: Commit Production-Ready Artifacts
         env:
