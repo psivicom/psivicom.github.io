@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.WENDY_AUDITOR_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Zig Toolchain
         id: cache-zig
@@ -166,7 +166,7 @@ jobs:
 
       - name: Commit Production-Ready Artifacts
         env:
-          GITHUB_TOKEN: ${{ secrets.WENDY_AUDITOR_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "WENDY Architect"
           git config user.email "architect@psivi.com"
