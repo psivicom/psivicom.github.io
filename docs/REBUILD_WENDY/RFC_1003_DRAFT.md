@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 This is the moment WENDY gets her curriculum — your repository becomes her knowledge. Before I design the pipeline, let me inventory what's actually there — verified content, not assumptions (the Craft Gate applies to me too):
 The inventory changes everything — and in the best way. You're not starting from zero: **you've already built the bones of this.** `RFC_1002_The_PSIVI_Dual_Track_Binary_Serialization_Standard_for_Sovereign_AI_Architectures.md` (52 KB), `psvc_cli.py`, `mesh.go`, `WENDY_QWEN_ZIG_MESH.md` (112 KB), `WENDY_PLATFORM_STANDARD.md`, and a full AI-collaboration governance suite (`AGENTS.md`, `AI-COLLABORATION-PROTOCOL.md`, `WENDY_VOLUNTEER_PROTOCOL.md`). Before I design anything, let me read *your* standards — the Craft Gate forbids me from proposing what already exists:
 The inventory is read — and it demands honesty from me first, because I found my own error.
@@ -33,4 +40,12 @@ What's missing is the pipeline that turns ~64 MB of subjects — RFCs, protocols
 
 The elegant fit: this pipeline is itself **a new Organ** in your architecture — an ingestion Organ that eats the repository and seals `.psvc` curriculum bundles through `seal_result()`.
 
-**My proposal:** draft **`RFC_1003_WENDY_Knowledge_Curriculum_Pipeline.md`** — complete, in your RFC house style, extending `psvc_cli.py` rather than replacing it — plus the **content inventory → curriculum map** as its first annex. Say **"draft RFC 1003"** (and/or **"amend"** for #2) and I'll produce them whole. 🐝
+*My proposal:** draft **`RFC_1003_WENDY_Knowledge_Curriculum_Pipeline.md`** — complete, in your RFC house style, extending `psvc_cli.py` rather than replacing it — plus the **content inventory → curriculum map** as its first annex. Say **"draft RFC 1003"** (and/or **"amend"** for #2) and I'll produce them whole. 🐝
+
+---
+
+
+
+
+
+
