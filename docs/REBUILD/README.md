@@ -1,5 +1,5 @@
 # REBUILD_WENDY 
-## path: /docs/REBUILD_WENDY/README.md
+####path: /docs/REBUILD_WENDY/README.md
 
 this folder contains documents after October 23, 3026 in NANAIMO bchpaconference.ca
 documents from me and AI to rebuild the repository and mesh with portability in mind without being trapped or enslaved to use Github.com for a fast well coded AI called WENDY 
