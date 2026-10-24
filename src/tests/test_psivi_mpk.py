@@ -1,4 +1,7 @@
 # tests/test_psivi_mpk.py
+# SPDX-License-Identifier: EUPL-1.2
+# SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 """
 Property-based correctness tests for PSIVI MPK Envelope.
 Validates: bit-exact round-trips, dtype identity, malformed header rejection.
@@ -6,9 +9,16 @@ Validates: bit-exact round-trips, dtype identity, malformed header rejection.
 import pytest
 import numpy as np
 from hypothesis import given, strategies as st
+
 from tools.psivi_mpk import (
-    PSIVIEncoder, PSIVIDecoder, HIVE_RECORD_DTYPE, 
-    compute_crc32c, MAGIC, HEADER_FORMAT, HEADER_SIZE
+    PSIVIEncoder, 
+    PSIVIDecoder, 
+    HIVE_RECORD_DTYPE, 
+    compute_crc32, 
+    MAGIC, 
+    HEADER_FORMAT, 
+    HEADER_SIZE,
+    CRC32_SIZE
 )
 import struct
 
@@ -16,7 +26,7 @@ encoder = PSIVIEncoder()
 decoder = PSIVIDecoder()
 
 # ============================================================================
-# 1. Bit-Exact Round-Trip Property
+# 1. Bit-Exact Round-Trip Property (Law #7)
 # ============================================================================
 @given(
     n=st.integers(min_value=1, max_value=10000),
@@ -37,13 +47,12 @@ def test_hive_stream_roundtrip_bit_exact(n: int, seed: int):
     envelope = encoder.encode_hive_stream(timestamps, weights, temps, flags)
     
     # Decode
-    decoded = decoder.decode_to_memmap(envelope, dtype=HIVE_RECORD_DTYPE)
+    decoded = decoder.decode_to_view(envelope, dtype=HIVE_RECORD_DTYPE)
     
     # Verify dtype identity
     assert decoded.dtype == HIVE_RECORD_DTYPE
     
     # Verify bit-exact round-trip (after sorting, which the encoder does)
-    # We reconstruct the expected sorted structured array to compare
     ts_delta = np.diff(timestamps, prepend=timestamps[0]).astype('<i2')
     expected_structured = np.rec.fromarrays(
         [ts_delta, np.asarray(weights, dtype='<i2'), np.asarray(temps, dtype='<i2'), flags],
@@ -56,7 +65,7 @@ def test_hive_stream_roundtrip_bit_exact(n: int, seed: int):
 
 
 # ============================================================================
-# 2. Malformed Header Rejection (Never Crash, Always Assert/ValueError)
+# 2. Malformed Header Rejection (Never Crash, Always ValueError)
 # ============================================================================
 @given(
     bad_magic=st.binary(min_size=4, max_size=4).filter(lambda x: x != MAGIC),
@@ -64,12 +73,12 @@ def test_hive_stream_roundtrip_bit_exact(n: int, seed: int):
 )
 def test_reject_bad_magic(bad_magic: bytes, payload: bytes):
     """Malformed magic must trip ValueError, never segfault or crash."""
-    header = struct.pack('<4sBBI', bad_magic, 0x01, 0x00, len(payload))
-    crc = struct.pack('<I', compute_crc32c(payload))
+    header = struct.pack(HEADER_FORMAT, bad_magic, 0x01, 0x00, len(payload))
+    crc = struct.pack('<I', compute_crc32(payload))
     bad_envelope = header + payload + crc
     
     with pytest.raises(ValueError, match="Invalid magic"):
-        decoder.decode_to_memmap(bad_envelope)
+        decoder.decode_to_view(bad_envelope)
 
 
 @given(
@@ -78,22 +87,22 @@ def test_reject_bad_magic(bad_magic: bytes, payload: bytes):
 )
 def test_reject_bad_version(bad_version: int, payload: bytes):
     """Unsupported version must trip ValueError."""
-    header = struct.pack('<4sBBI', MAGIC, bad_version, 0x00, len(payload))
-    crc = struct.pack('<I', compute_crc32c(payload))
+    header = struct.pack(HEADER_FORMAT, MAGIC, bad_version, 0x00, len(payload))
+    crc = struct.pack('<I', compute_crc32(payload))
     bad_envelope = header + payload + crc
     
     with pytest.raises(ValueError, match="Unsupported version"):
-        decoder.decode_to_memmap(bad_envelope)
+        decoder.decode_to_view(bad_envelope)
 
 
 def test_reject_truncated_envelope():
     """Envelope smaller than header + CRC must raise ValueError."""
     with pytest.raises(ValueError, match="Envelope too small"):
-        decoder.decode_to_memmap(b'PSVC\x01\x00')  # Only 6 bytes
+        decoder.decode_to_view(b'PSVC\x01\x00')  # Only 6 bytes
 
 
 def test_reject_corrupted_payload():
-    """Bit-flip in payload must be caught by CRC32C."""
+    """Bit-flip in payload must be caught by CRC32."""
     timestamps = np.array([1000, 2000, 3000], dtype=np.int64)
     weights = np.array([100, 100, 100], dtype=np.int16)
     temps = np.array([200, 200, 200], dtype=np.int16)
@@ -105,8 +114,8 @@ def test_reject_corrupted_payload():
     corrupted = bytearray(envelope)
     corrupted[10] ^= 0xFF  # Flip bits
     
-    with pytest.raises(ValueError, match="CRC32C mismatch"):
-        decoder.decode_to_memmap(bytes(corrupted))
+    with pytest.raises(ValueError, match="CRC32 mismatch"):
+        decoder.decode_to_view(bytes(corrupted))
 
 
 # ============================================================================
