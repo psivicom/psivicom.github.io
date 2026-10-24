@@ -1,0 +1,272 @@
+name: WENDY Amalgamation Protocol (Proving Ground)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ wendy-proving-ground ]
+
+permissions:
+  contents: write
+
+jobs:
+  elevate-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Proving Ground
+        uses: actions/checkout@v4
+
+      - name: Setup Isolated Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache Zig Toolchain
+        uses: actions/cache@v4
+        with:
+          path: /opt/zig
+          key: zig-0.13.0-linux-x86_64
+
+      - name: Install Zig (If Not Cached)
+        run: |
+          if [ ! -f /opt/zig/zig ]; then
+            curl -sL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
+            tar -xf z.tar.xz
+            sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+          fi
+          echo "/opt/zig" >> $GITHUB_PATH
+
+      - name: 🧬 Elevate Legacy Engines into Libraries
+        run: |
+          python3 << 'PYEOF'
+          import os
+          os.makedirs('src/core', exist_ok=True)
+
+          # 1. ARENA: The Cognitive Substrate (Memory Pool)
+          arena_code = """const std = @import("std");
+pub const Arena = struct {
+    buffer: []u8,
+    offset: usize,
+    pub fn init(buf: []u8) Arena { return .{ .buffer = buf, .offset = 0 }; }
+    pub fn allocate(self: *Arena, size: usize) ?[]u8 {
+        if (self.offset + size > self.buffer.len) return null;
+        const slice = self.buffer[self.offset..self.offset + size];
+        self.offset += size;
+        return slice;
+    }
+    pub fn reset(self: *Arena) void { self.offset = 0; }
+};
+"""
+          with open('src/core/arena.zig', 'w') as f: f.write(arena_code)
+
+          # 2. VECTOR: The Sensory Cortex
+          vector_code = """const std = @import("std");
+pub const Vector3 = struct { x: f32, y: f32, z: f32 };
+pub fn toVector(data: []const u8) Vector3 {
+    const x = if (data.len > 0) @as(f32, @floatFromInt(data[0])) / 255.0 else 0.0;
+    const y = if (data.len > 1) @as(f32, @floatFromInt(data[1])) / 255.0 else 0.0;
+    const z = if (data.len > 2) @as(f32, @floatFromInt(data[2])) / 255.0 else 0.0;
+    return .{ .x = x, .y = y, .z = z };
+}
+"""
+          with open('src/core/vector_engine.zig', 'w') as f: f.write(vector_code)
+
+          # 3. ZULU: The Chronos Anchor
+          zulu_code = """const std = @import("std");
+pub fn nowMillis() u64 {
+    return @as(u64, @intCast(std.time.milliTimestamp()));
+}
+"""
+          with open('src/core/zulu_clock.zig', 'w') as f: f.write(zulu_code)
+
+          # 4. ACTUATION: The Motor Cortex
+          actuation_code = """const std = @import("std");
+pub const ActuationState = enum(u8) { dormant, heating, feeding, alert };
+pub fn evaluate(entropy: f64) ActuationState {
+    if (entropy < 5.0) return .alert;
+    if (entropy < 7.0) return .heating;
+    return .dormant;
+}
+"""
+          with open('src/core/actuation_engine.zig', 'w') as f: f.write(actuation_code)
+
+          print('✅ Legacy Engines Elevated into Libraries')
+          PYEOF
+
+      - name: 🧠 Inject Conductor (wendy_main.zig)
+        run: |
+          python3 << 'PYEOF'
+          code = """const std = @import("std");
+const arena_mod = @import("arena.zig");
+const vector = @import("vector_engine.zig");
+const zulu = @import("zulu_clock.zig");
+const actuation = @import("actuation_engine.zig");
+
+const PSVCHeader = extern struct {
+    magic: [4]u8,
+    version: u8,
+    precision: u8,
+    reserved: u16,
+    payload_len: u32,
+    timestamp: u64,
+    entropy: f64,
+    vector_x: f32,
+    vector_y: f32,
+    vector_z: f32,
+    actuation: u8,
+};
+
+fn calculate_entropy(data: []const u8) f64 {
+    var counts: [256]usize = .{0} ** 256;
+    for (data) |b| counts[b] += 1;
+    var entropy: f64 = 0.0;
+    const len = @as(f64, @floatFromInt(data.len));
+    if (len == 0) return 0.0;
+    for (counts) |c| {
+        if (c > 0) {
+            const p = @as(f64, @floatFromInt(c)) / len;
+            entropy -= p * @log2(p);
+        }
+    }
+    return entropy;
+}
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
+    if (args.len < 3) std.process.exit(1);
+
+    const in_file = try std.fs.cwd().openFile(args[1], .{});
+    defer in_file.close();
+    const file_size = (try in_file.stat()).size;
+    const file_data = try allocator.alloc(u8, file_size);
+    defer allocator.free(file_data);
+    _ = try in_file.readAll(file_data);
+
+    const payload_start = 28; 
+    const payload = file_data[payload_start..];
+
+    var mem_buf: [4096]u8 = undefined;
+    var mem_arena = arena_mod.Arena.init(&mem_buf);
+    _ = mem_arena.allocate(payload.len); 
+
+    const vec = vector.toVector(payload);
+    const timestamp = zulu.nowMillis();
+    const entropy = calculate_entropy(payload);
+    const act_state = actuation.evaluate(entropy);
+
+    var new_header: PSVCHeader = .{
+        .magic = .{ 'P', 'S', 'V', 'C' },
+        .version = 3,
+        .precision = 16,
+        .reserved = 0,
+        .payload_len = @as(u32, @intCast(payload.len)),
+        .timestamp = timestamp,
+        .entropy = entropy,
+        .vector_x = vec.x,
+        .vector_y = vec.y,
+        .vector_z = vec.z,
+        .actuation = @intFromEnum(act_state),
+    };
+
+    const out_file = try std.fs.cwd().createFile(args[2], .{});
+    defer out_file.close();
+    try out_file.writeAll(std.mem.asBytes(&new_header));
+    try out_file.writeAll(payload);
+}
+"""
+          with open('src/core/wendy_main.zig', 'w') as f:
+              f.write(code)
+          print('✅ Conductor Injected')
+          PYEOF
+
+      - name: 🌐 Upgrade Mesh Brain for Multi-Dimensional Datagrams
+        run: |
+          python3 << 'PYEOF'
+          code = """import struct
+import os
+import sys
+
+class HiveDatagram:
+    HEADER_FMT = '<4sBBHIQdfffB' 
+    HEADER_SIZE = struct.calcsize(HEADER_FMT)
+
+    def __init__(self, filepath: str):
+        with open(filepath, 'rb') as f:
+            header_bytes = f.read(self.HEADER_SIZE)
+            if len(header_bytes) < self.HEADER_SIZE:
+                raise ValueError("Invalid PSVC Datagram")
+            
+            data = struct.unpack(self.HEADER_FMT, header_bytes)
+            self.magic = data[0].decode('ascii', errors='ignore').strip('\\x00')
+            self.length = data[4]
+            self.timestamp = data[5]
+            self.entropy = data[6]
+            self.vector = (data[7], data[8], data[9])
+            self.actuation = data[10]
+            self.payload = f.read(self.length)
+
+    def assess_biological_health(self) -> str:
+        act_map = {0: "Dormant", 1: "Heating", 2: "Feeding", 3: "ALERT"}
+        act_status = act_map.get(self.actuation, "Unknown")
+        
+        if self.entropy >= 7.5:
+            bio = "🟢 OPTIMAL"
+        elif self.entropy >= 5.0:
+            bio = "🟡 NOMINAL"
+        else:
+            bio = "🔴 CRITICAL"
+            
+        return f"{bio} | Actuation: {act_status} | Vector: ({self.vector[0]:.2f}, {self.vector[1]:.2f}, {self.vector[2]:.2f})"
+
+def route_mesh(directory: str):
+    print(f"🌐 [MESH BRAIN] Scanning {directory} for sovereign datagrams...")
+    for f in os.listdir(directory):
+        if f.endswith('.psvc'):
+            path = os.path.join(directory, f)
+            try:
+                dg = HiveDatagram(path)
+                status = dg.assess_biological_health()
+                print(f"  ➡️ Node: {f} | Entropy: {dg.entropy:.4f} | Status: {status}")
+            except Exception as e:
+                print(f"  ❌ Failed to route {f}: {e}")
+
+if __name__ == "__main__":
+    target_dir = sys.argv[1] if len(sys.argv) > 1 else "src/core"
+    route_mesh(target_dir)
+"""
+          with open('src/core/mesh_brain.py', 'w') as f:
+              f.write(code)
+          print('✅ Mesh Brain Upgraded')
+          PYEOF
+
+      - name: 🔨 Compile & Execute Unified Brain
+        run: |
+          /opt/zig/zig build-exe src/core/wendy_main.zig -O ReleaseSafe -fstrip -femit-bin=src/core/wendy_main
+          
+          python3 -c "
+          import struct
+          payload = b'\\x00\\x11\\x22\\x33' * 256 
+          header = struct.pack('<4sBBHIQd', b'PSVC', 2, 16, 0, len(payload), 1690000000, 0.0)
+          with open('src/core/hive_node_01.psvc', 'wb') as f:
+              f.write(header + payload)
+          "
+          
+          ./src/core/wendy_main src/core/hive_node_01.psvc src/core/hive_node_01_evolved.psvc
+          python3 src/core/mesh_brain.py src/core
+
+      - name: 💾 Commit Elevated State to Proving Ground
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "WENDY Architect"
+          git config user.email "architect@psivi.com"
+          
+          # Add the elevated files and the compiled binary
+          git add src/core/arena.zig src/core/vector_engine.zig src/core/zulu_clock.zig src/core/actuation_engine.zig src/core/wendy_main.zig src/core/mesh_brain.py src/core/wendy_main src/core/*.psvc
+          
+          git diff --staged --quiet || (git commit -m "feat: Amalgamation Protocol - Elevating soldiers for production [skip ci]" && git push origin HEAD)
+          echo "🔔 PROVING GROUND ELEVATION COMPLETE 🔔"
