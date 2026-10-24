@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: EUPL-1.2
+# WENDY VOICE ORGAN - local speech-to-text stack
+#
+# Install:  pip install -r requirements-voice.txt
+# System:   ffmpeg must be on PATH (brew install ffmpeg / apt install ffmpeg)
+#
+# faster-whisper runs CTranslate2 Whisper inference entirely on local CPU.
+# No paid cloud LLM APIs are used or required at any point.
+#
+# Note: model weights (e.g. 'base', ~142 MB) are fetched once from the
+# Hugging Face hub on first use, then cached offline in ~/.cache/huggingface.
+# For fully air-gapped nodes, download the model once and point
+# WENDY_VOICE_MODEL at the local directory.
+
+faster-whisper>=1.2.1
