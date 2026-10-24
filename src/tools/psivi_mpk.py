@@ -153,3 +153,24 @@ class MeshBloomFilter:
         bf = cls(size_bytes=len(data))
         bf.bitarray = np.unpackbits(np.frombuffer(data, dtype=np.uint8))[:bf.size_bits]
         return bf
+
+# tools/psivi_mpk.py (Additions for Big Science)
+
+# CERN / Awkward Array compatible: Fixed-size tensor chunk
+# Useful for sending quantized ML gradients or jet features
+TENSOR_CHUNK_DTYPE = np.dtype([
+    ('chunk_id', '<u4'),       # 4 bytes: Unique identifier
+    ('layer_idx', '<u2'),      # 2 bytes: Neural network layer
+    ('precision', 'u1'),       # 1 byte: 0=float32, 1=float16, 2=int8
+    ('data', 'V1024')          # 1024 bytes: Variable payload (zstd compressed inside)
+])
+
+# arXiv / Vector Search compatible: Quantized Embedding
+# 384 dimensions of int8 = 384 bytes + metadata
+VECTOR_EMBEDDING_DTYPE = np.dtype([
+    ('doc_hash', '<u8'),       # 8 bytes: SHA-256 truncated hash of source
+    ('timestamp', '<i8'),      # 8 bytes: Zulu epoch ms
+    ('dim_count', '<u2'),      # 2 bytes: e.g., 384
+    ('embeddings', 'i1', (384,)) # 384 bytes: int8 quantized vector
+])
+
