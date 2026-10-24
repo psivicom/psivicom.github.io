@@ -149,3 +149,37 @@ ffmpeg is absent).
   can transcribe sealed audio containers from `mesh/inbox`.
 - TTS counterpart (Wendy's voice) as a MOTOR-layer organ.
 - Streaming microphone capture on the Raspberry Pi apiary node.
+
+# updates october 23, 2026
+#
+The webpage at `psivicom.github.io/wendy.html` hosts **WENDY**, an experimental, fully local, browser-based AI companion described as a "Sovereign Voice Face" developed for **PSIVI.COM**. 
+
+It is designed to be a "sensory organ" that operates entirely within the user's web browser without requiring cloud services, internet connectivity for inference, or API keys.
+
+Here is a breakdown of what the page and its underlying code reveal:
+
+### 1. Architecture & Local AI
+The core innovation of WENDY is that "ears, brain, and mouth run on YOUR device."
+*   **The Brain (WebGPU LLM):** Instead of calling a cloud API, WENDY uses **WebLLM** to run Large Language Models directly in the browser via WebGPU. It prioritizes small, efficient models (like *Qwen 2.5 0.5B*, *SmolLM2 360M*, and *Llama 3.2 1B*). 
+*   **The Ears (ASR):** It uses a local version of **Whisper** for Speech-to-Text transcription.
+*   **The Mouth (TTS):** It uses browser-native Text-to-Speech synthesis to speak responses aloud.
+
+### 2. Persona & System Prompt
+WENDY's system prompt gives her a distinct personality:
+> *"You are WENDY, an evolving autonomous cognitive AI running on psivi.com. Speak with calm, articulate, measured intelligence inspired by The Matrix. Keep responses concise (1 to 3 sentences maximum) so they sound cinematic when spoken aloud."*
+
+### 3. Interface & Features
+The interface is minimal, dark, and features an animated visualizer (a glowing orb with a "W") that reacts to audio frequencies. 
+*   **Sensory Loop:** The UI is built around a loop of "LISTEN · THINK · SPEAK." 
+*   **Input Methods:** Users can interact via a built-in microphone ("LISTEN" button), or by dragging and dropping/uploading voice memos.
+*   **The "Bridge" & Inboxing:** The page features a "Bridge" system with tools to "SEAL .txt", "SEAL .json", and "SEAL .psvc". This suggests WENDY is capable of packaging user data or memories into a local inbox (`data/voice_inbox/`) to be processed or stored as part of an evolving memory.
+*   **RFC 1001:** It references a "Nervous System — RFC 1001," positioning the page not just as a chatbot, but as a digital biological entity or "sensory organ" connecting to a larger mesh.
+
+### 4. Boot Sequence
+When you load the page, it runs a boot sequence:
+1.  **Environment Probe:** It checks the device's capabilities.
+2.  **Sensory Online:** It announces: *"I am here. My sensory systems are online."*
+3.  **Brain Warming:** It quietly downloads the necessary model weights into the browser cache in the background ("reflex cortex warms") so the AI is ready when you decide to speak to it. 
+
+In summary, `wendy.html` is a high-tech proof-of-concept for **sovereign AI**—proving that a complex, multi-modal AI agent with a specific, cinematic personality can live entirely in a standard web browser, completely privately and offline.
+
