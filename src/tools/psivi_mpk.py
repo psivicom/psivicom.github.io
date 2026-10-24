@@ -45,6 +45,15 @@ VECTOR_EMBEDDING_DTYPE = np.dtype([
     ('embeddings', 'i1', (384,))  # 384 bytes: int8 quantized vector
 ])
 
+# Satellite EO/SAR Telemetry Record: 12 bytes fixed
+# Optimized for downlinking radar backscatter, GPS ephemeris, and thermal status
+SATELLITE_TELEMETRY_DTYPE = np.dtype([
+    ('epoch_ms', '<i8'),       # 8 bytes: Zulu timestamp (absolute, not delta, for orbital precision)
+    ('backscatter_db', '<i2'), # 2 bytes: SAR backscatter in centi-decibels (e.g., -2500 = -25.00 dB)
+    ('gps_alt_m', '<u1'),      # 1 byte: Altitude tier (quantized, e.g., 0-255 representing 400-800km)
+    ('thermal_status', 'u1')   # 1 byte: Bitmask for panel temp, battery health, radiation flags
+])
+
 # ============================================================================
 # 2. ENVELOPE GUARDS: LE-pinned, size-proof, crc32
 # ============================================================================
@@ -190,6 +199,51 @@ class PSIVIEncoder:
         
         return self._build_envelope(compressed)
 
+    def encode_satellite_telemetry(
+        self,
+        epoch_ms: np.ndarray,
+        backscatter_db: np.ndarray,
+        gps_alt_m: np.ndarray,
+        thermal_status: np.ndarray
+    ) -> bytes:
+        """
+        Encodes satellite EO/SAR telemetry into a zero-copy-ready MPK envelope.
+        
+        Args:
+            epoch_ms: Absolute Zulu timestamps in milliseconds
+            backscatter_db: SAR backscatter in centi-decibels
+            gps_alt_m: Quantized altitude tiers
+            thermal_status: Bitmask for thermal/radiation status
+        """
+        n = len(epoch_ms)
+        if n == 0:
+            return self._build_envelope(b'')
+            
+        if not (len(backscatter_db) == len(gps_alt_m) == len(thermal_status) == n):
+            raise ValueError("Array length mismatch in satellite telemetry")
+
+        # Ensure correct dtypes
+        epochs = np.asarray(epoch_ms, dtype='<i8')
+        backscatter = np.asarray(backscatter_db, dtype='<i2')
+        altitudes = np.asarray(gps_alt_m, dtype='u1')
+        thermals = np.asarray(thermal_status, dtype='u1')
+
+        # Structured Array Assembly
+        structured = np.rec.fromarrays(
+            [epochs, backscatter, altitudes, thermals],
+            dtype=SATELLITE_TELEMETRY_DTYPE
+        )
+
+        # Sort by epoch for optimal compression (Law #6)
+        sort_idx = np.argsort(structured['epoch_ms'])
+        sorted_structured = structured[sort_idx]
+
+        # Zstd Compression (Law #3)
+        raw_bytes = sorted_structured.tobytes()
+        compressed = self.cctx.compress(raw_bytes)
+
+        return self._build_envelope(compressed)
+
     def _build_envelope(self, payload: bytes) -> bytes:
         """Wraps payload with magic, version, flags, size, and crc32."""
         header = struct.pack(HEADER_FORMAT, MAGIC, VERSION, 0x00, len(payload))
@@ -291,15 +345,3 @@ class MeshBloomFilter:
     def clear(self):
         """Reset the Bloom filter."""
         self.bitarray.fill(0)
-        
-        # Add this to tools/psivi_mpk.py
-
-# Satellite EO/SAR Telemetry Record: 12 bytes fixed
-# Optimized for downlinking radar backscatter, GPS ephemeris, and thermal status
-SATELLITE_TELEMETRY_DTYPE = np.dtype([
-    ('epoch_ms', '<i8'),       # 8 bytes: Zulu timestamp (absolute, not delta, for orbital precision)
-    ('backscatter_db', '<i2'), # 2 bytes: SAR backscatter in centi-decibels (e.g., -2500 = -25.00 dB)
-    ('gps_alt_m', '<u1'),      # 1 byte: Altitude tier (quantized, e.g., 0-255 representing 400-800km)
-    ('thermal_status', 'u1')   # 1 byte: Bitmask for panel temp, battery health, radiation flags
-])
-
