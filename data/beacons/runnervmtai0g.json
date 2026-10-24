@@ -1,0 +1,13 @@
+{
+  "node_id": "runnervmtai0g",
+  "timestamp": "2026-10-24T03:11:21.628Z",
+  "status": "ALIVE",
+  "signature": "b50c049d0110d262489e4f257234d958",
+  "velocity": 1.0,
+  "role": "VOLUNTEER",
+  "coords": {
+    "x": 0.54,
+    "y": -0.46,
+    "z": -0.9
+  }
+}
