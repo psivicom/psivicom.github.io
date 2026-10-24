@@ -1,111 +1,142 @@
-597
-598
-599
-600
-601
-602
-603
-604
-605
-606
-607
-608
-609
-610
-611
-612
-613
-614
-615
-616
-617
-618
-619
-620
-621
-622
-623
-624
-625
-626
-627
-628
-629
-630
-631
-632
-633
-634
-635
-636
-637
-638
-639
-640
-641
-642
-643
-644
-645
-646
-647
-648
-649
-650
-651
-652
-653
-654
-655
-656
-657
-658
-659
-660
-661
-662
-663
-664
-665
-666
-667
-668
-669
-670
-671
-672
-673
-674
-675
-676
-677
-678
-679
-680
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
+⌄
 <!DOCTYPE html>
-<head>
-        const asr = await getASR((pct) => onStatus({ phase: 'model', pct }));
-        onStatus({ phase: 'transcribe', seconds: audio.length / 16000 });
-        const opts = { chunk_length_s: 30, stride_length_s: 5 };
-        if (!/\.en$/.test(WENDY_ASR_MODEL)) { opts.language = 'en'; opts.task = 'transcribe'; }
-        const out = await asr(audio, opts);
-        return (out && out.text ? out.text : '').trim();
-      }
-    };
+  #bridge .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  #bridge .path{font-family:var(--mono);font-size:11px;color:var(--dim);background:rgba(0,0,0,.25);border:1px dashed rgba(0,212,255,.2);border-radius:8px;padding:8px 10px;word-break:break-all}
+  #bridge .path b{color:var(--cyan);font-weight:600}
+  /* footer */
+  footer{padding:10px 18px 16px;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--dim)}
+  footer a{color:var(--cyan);text-decoration:none}
+  .drop-live #dropZone{border-color:var(--cyan);background:rgba(0,212,255,.07)}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:rgba(0,212,255,.18);border-radius:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="sigil" aria-hidden="true"></div>
+  <h1>WENDY<small>SOVEREIGN VOICE FACE</small></h1>
+  <div class="spacer"></div>
+  <span class="chip" id="envChip">ENV <b>&mdash;</b></span>
+  <span class="chip" id="brainChip">BRAIN <b>cold</b></span>
+  <span class="chip" id="zulu">&mdash;:&mdash;:&mdash;.<i>mmm</i>Z</span>
+</header>
 
-    // --- 10. Local Neural Brain: WebGPU LLM via WebLLM ---
-    // Free and fully local: no API keys, no tokens, no cloud service.
-    // Preference chain: smallest first; f16 variant preferred, f32 fallback for
-    // GPUs without the shader-f16 feature. Cached by the browser after first load.
-    const WEBLLM_CDN = 'https://esm.run/@mlc-ai/web-llm@0.2.86';
-    const LLM_SYSTEM_PROMPT = "You are WENDY, an evolving autonomous cognitive AI running on psivi.com. Speak with calm, articulate, measured intelligence inspired by The Matrix. Keep responses concise (1 to 3 sentences maximum) so they sound cinematic when spoken aloud.";
-    const MODEL_PREFS = [
-      { id: 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC', mb: '~350 MB' },
-      { id: 'Qwen2.5-0.5B-Instruct-q4f32_1-MLC', mb: '~430 MB' },
-      { id: 'SmolLM2-360M-Instruct-q4f16_1-MLC', mb: '~260 MB' },
-      { id: 'SmolLM2-360M-Instruct-q4f32_1-MLC', mb: '~320 MB' },
-      { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', mb: '~660 MB' },
-      { id: 'Llama-3.2-1B-Instruct-q4f32_1-MLC', mb: '~880 MB' }
-    ];
+<div id="banner"></div>
 
-    let llmLib = null, enginePromise = null;
+<main>
+  <section class="panel" aria-label="Conversation">
+    <h2><span class="dot live"></span> SENSORY LOOP &mdash; LISTEN &middot; THINK &middot; SPEAK</h2>
+    <div id="stage">
+      <div id="orbWrap"><canvas id="orb" width="420" height="420" aria-hidden="true"></canvas>
+        <div id="orbState">DORMANT</div>
+      </div>
+    </div>
+    <div id="chat" aria-live="polite"></div>
+    <div id="controls">
+      <button id="micBtn" title="Hold a conversation with Wendy">&#9678; LISTEN</button>
+      <button id="fileBtn" title="Drop an iPhone voice memo">VOICE MEMO&#8230;</button>
+      <input type="file" id="fileInput" accept="audio/*,.m4a,.wav,.mp3,.aac,.ogg,.flac">
+      <button id="muteBtn" title="Toggle her spoken voice">MOUTH: ON</button>
+    </div>
+    <div id="bridge">
+      <div class="path">Bridge target &rarr; <b>data/voice_inbox/</b> on psivicom.github.io &middot; organ reads <b>.txt + .json + .psvc</b> &middot; soul responds on the mesh</div>
+      <div class="row">
+        <button id="dlTxt">SEAL .txt</button>
+        <button id="dlJson">SEAL .json</button>
+        <button id="dlPsvc">SEAL .psvc</button>
+        <button id="dlAll">SEAL ALL</button>
+      </div>
+    </div>
+  </section>
+
+  <aside class="panel" aria-label="System console">
+    <h2><span class="dot" id="conDot"></span> NERVOUS SYSTEM &mdash; RFC 1001</h2>
+    <div id="console"></div>
+  </aside>
+</main>
+
+<footer>
+  PSIVI AETHER &middot; WENDY FACE v1.0 &middot; <a href="https://psivi.com" target="_blank" rel="noopener">psivi.com</a>
+  &middot; NO_CLOUD_LLM &middot; ears, brain &amp; mouth run on YOUR device
+</footer>
+
+<script type="module" id="wendy-core">
+/*P1JS*/
+</script>
+</body>
+</html>
