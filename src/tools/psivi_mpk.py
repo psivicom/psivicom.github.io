@@ -54,6 +54,17 @@ SATELLITE_TELEMETRY_DTYPE = np.dtype([
     ('thermal_status', 'u1')   # 1 byte: Bitmask for panel temp, battery health, radiation flags
 ])
 
+# Secure Uplink Command Record: 264 bytes fixed
+# Optimized for ground-to-space/drone command and control.
+# Includes replay-attack protection (cmd_id) and inline parameters.
+UPLINK_COMMAND_DTYPE = np.dtype([
+    ('cmd_id', '<u4'),         # 4 bytes: Monotonic command ID (prevents replay attacks)
+    ('target_sys', 'u1'),      # 1 byte: 0x01=Payload, 0x02=ADCS, 0x03=Comms, 0x04=Power
+    ('action_code', 'u1'),     # 1 byte: e.g., 0x10=Reboot, 0x20=Update Bloom Filter, 0x30=Point
+    ('payload_len', '<u2'),    # 2 bytes: Actual length of data in the payload block
+    ('payload', 'V256')        # 256 bytes: Inline parameters (e.g., quaternions, config bytes)
+])
+
 # ============================================================================
 # 2. ENVELOPE GUARDS: LE-pinned, size-proof, crc32
 # ============================================================================
@@ -97,100 +108,50 @@ class PSIVIEncoder:
         temps_c: np.ndarray, 
         flags: np.ndarray
     ) -> bytes:
-        """
-        Encodes a hive telemetry stream into a zero-copy-ready MPK envelope.
-        
-        Args:
-            timestamps_ms: Monotonic timestamps in milliseconds
-            weights_g: Hive weights in grams (will be cast to int16)
-            temps_c: Temperatures in centi-degrees Celsius (will be cast to int16)
-            flags: Status flags (will be cast to uint8)
-            
-        Returns:
-            Complete PSVC envelope with header, compressed payload, and CRC32
-        """
+        """Encodes a hive telemetry stream into a zero-copy-ready MPK envelope."""
         n = len(timestamps_ms)
-        
-        # Input validation
         if n == 0:
             return self._build_envelope(b'')
         
         if not (len(weights_g) == len(temps_c) == len(flags) == n):
             raise ValueError(f"Array length mismatch: {len(timestamps_ms)}, {len(weights_g)}, {len(temps_c)}, {len(flags)}")
 
-        # A. Quantize & Delta (Gorilla-style for timestamps)
         ts_delta = np.diff(timestamps_ms, prepend=timestamps_ms[0]).astype('<i2')
-        
-        # Ensure other arrays match dtype and are contiguous
         weights = np.asarray(weights_g, dtype='<i2')
         temps = np.asarray(temps_c, dtype='<i2')
         flags_arr = np.asarray(flags, dtype='u1')
 
-        # B. Structured Array Assembly (Zero-copy view creation)
         structured = np.rec.fromarrays(
             [ts_delta, weights, temps, flags_arr],
             dtype=HIVE_RECORD_DTYPE
         )
 
-        # C. Sort to Compress (Law #6)
         sort_idx = np.argsort(structured['ts_delta'])
         sorted_structured = structured[sort_idx]
 
-        # D. Zstd Compression (Law #3: Compress AFTER structuring)
         raw_bytes = sorted_structured.tobytes()
         compressed = self.cctx.compress(raw_bytes)
 
         return self._build_envelope(compressed)
 
-    def encode_tensor_chunk(
-        self,
-        chunk_id: int,
-        layer_idx: int,
-        precision: int,
-        data: bytes
-    ) -> bytes:
-        """
-        Encodes a CERN-compatible tensor chunk.
-        
-        Args:
-            chunk_id: Unique identifier for this chunk
-            layer_idx: Neural network layer index
-            precision: 0=float32, 1=float16, 2=int8
-            data: Raw tensor data (max 1024 bytes)
-        """
+    def encode_tensor_chunk(self, chunk_id: int, layer_idx: int, precision: int, data: bytes) -> bytes:
+        """Encodes a CERN-compatible tensor chunk."""
         if len(data) > 1024:
             raise ValueError(f"Tensor data exceeds 1024 bytes: {len(data)}")
         
-        # Pad to exactly 1024 bytes
         padded_data = data.ljust(1024, b'\x00')
-        
         record = np.array([(chunk_id, layer_idx, precision, padded_data)], dtype=TENSOR_CHUNK_DTYPE)
         raw_bytes = record.tobytes()
         compressed = self.cctx.compress(raw_bytes)
         
         return self._build_envelope(compressed)
 
-    def encode_vector_embedding(
-        self,
-        doc_bytes: bytes,
-        timestamp_ms: int,
-        embeddings: np.ndarray
-    ) -> bytes:
-        """
-        Encodes an arXiv-compatible quantized vector embedding.
-        
-        Args:
-            doc_bytes: Source document bytes (for hashing)
-            timestamp_ms: Zulu epoch milliseconds
-            embeddings: 384-dimensional vector (will be quantized to int8)
-        """
+    def encode_vector_embedding(self, doc_bytes: bytes, timestamp_ms: int, embeddings: np.ndarray) -> bytes:
+        """Encodes an arXiv-compatible quantized vector embedding."""
         if len(embeddings) != 384:
             raise ValueError(f"Embedding must be 384 dimensions, got {len(embeddings)}")
         
-        # Compute truncated SHA-256 hash
         doc_hash = int.from_bytes(compute_sha256_truncated(doc_bytes, 8), byteorder='little')
-        
-        # Quantize to int8 (simple rounding)
         quantized = np.clip(np.round(embeddings), -128, 127).astype('i1')
         
         record = np.array([(doc_hash, timestamp_ms, 384, quantized)], dtype=VECTOR_EMBEDDING_DTYPE)
@@ -206,15 +167,7 @@ class PSIVIEncoder:
         gps_alt_m: np.ndarray,
         thermal_status: np.ndarray
     ) -> bytes:
-        """
-        Encodes satellite EO/SAR telemetry into a zero-copy-ready MPK envelope.
-        
-        Args:
-            epoch_ms: Absolute Zulu timestamps in milliseconds
-            backscatter_db: SAR backscatter in centi-decibels
-            gps_alt_m: Quantized altitude tiers
-            thermal_status: Bitmask for thermal/radiation status
-        """
+        """Encodes satellite EO/SAR telemetry into a zero-copy-ready MPK envelope."""
         n = len(epoch_ms)
         if n == 0:
             return self._build_envelope(b'')
@@ -222,26 +175,35 @@ class PSIVIEncoder:
         if not (len(backscatter_db) == len(gps_alt_m) == len(thermal_status) == n):
             raise ValueError("Array length mismatch in satellite telemetry")
 
-        # Ensure correct dtypes
         epochs = np.asarray(epoch_ms, dtype='<i8')
         backscatter = np.asarray(backscatter_db, dtype='<i2')
         altitudes = np.asarray(gps_alt_m, dtype='u1')
         thermals = np.asarray(thermal_status, dtype='u1')
 
-        # Structured Array Assembly
         structured = np.rec.fromarrays(
             [epochs, backscatter, altitudes, thermals],
             dtype=SATELLITE_TELEMETRY_DTYPE
         )
 
-        # Sort by epoch for optimal compression (Law #6)
         sort_idx = np.argsort(structured['epoch_ms'])
         sorted_structured = structured[sort_idx]
 
-        # Zstd Compression (Law #3)
         raw_bytes = sorted_structured.tobytes()
         compressed = self.cctx.compress(raw_bytes)
 
+        return self._build_envelope(compressed)
+
+    def encode_uplink_command(self, cmd_id: int, target_sys: int, action_code: int, payload: bytes) -> bytes:
+        """Encodes a secure, zero-copy uplink command for satellites/drones."""
+        if len(payload) > 256:
+            raise ValueError(f"Uplink payload exceeds 256 bytes: {len(payload)}")
+        
+        padded_payload = payload.ljust(256, b'\x00')
+        record = np.array([(cmd_id, target_sys, action_code, len(payload), padded_payload)], dtype=UPLINK_COMMAND_DTYPE)
+        
+        raw_bytes = record.tobytes()
+        compressed = self.cctx.compress(raw_bytes)
+        
         return self._build_envelope(compressed)
 
     def _build_envelope(self, payload: bytes) -> bytes:
@@ -264,37 +226,24 @@ class PSIVIDecoder:
         """
         Decodes envelope and returns a zero-copy numpy view.
         
-        Args:
-            envelope: Complete PSVC envelope bytes
-            dtype: Expected structured dtype (default: HIVE_RECORD_DTYPE)
-            
-        Returns:
-            Zero-copy numpy structured array view over decompressed bytes
-            
         Raises:
             ValueError: If envelope is malformed, CRC fails, or magic/version mismatch
         """
         if len(envelope) < HEADER_SIZE + CRC32_SIZE:
             raise ValueError(f"Envelope too small: {len(envelope)} < {HEADER_SIZE + CRC32_SIZE}")
 
-        # A. Parse Header
         magic, version, flags, payload_size = struct.unpack(HEADER_FORMAT, envelope[:HEADER_SIZE])
         if magic != MAGIC:
             raise ValueError(f"Invalid magic: {magic!r} (expected {MAGIC!r})")
         if version != VERSION:
             raise ValueError(f"Unsupported version: {version} (expected {VERSION})")
 
-        # B. Extract Payload and Verify CRC
         payload = envelope[HEADER_SIZE : HEADER_SIZE + payload_size]
         expected_crc = struct.unpack('<I', envelope[-CRC32_SIZE:])[0]
         if compute_crc32(payload) != expected_crc:
             raise ValueError("CRC32 mismatch: data corruption detected")
 
-        # C. Decompress (Law #1: Single representation change per hop)
         raw_bytes = self.dctx.decompress(payload)
-
-        # D. Zero-Copy View (Law #1: frombuffer)
-        # This creates a view over the decompressed bytes without copying.
         return np.frombuffer(raw_bytes, dtype=dtype)
 
     # Alias for backward compatibility
@@ -314,7 +263,6 @@ class MeshBloomFilter:
     def __init__(self, size_bytes: int = 65536):
         self.size_bits = size_bytes * 8
         self.bitarray = np.zeros(self.size_bits, dtype=np.uint8)
-        # Use deterministic hash functions (not Python's hash() which is randomized)
         self.hashes = [
             lambda x: int.from_bytes(hashlib.md5(x).digest()[:4], 'little') % self.size_bits,
             lambda x: int.from_bytes(hashlib.sha1(x).digest()[:4], 'little') % self.size_bits,
