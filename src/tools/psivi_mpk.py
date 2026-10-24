@@ -291,3 +291,15 @@ class MeshBloomFilter:
     def clear(self):
         """Reset the Bloom filter."""
         self.bitarray.fill(0)
+        
+        # Add this to tools/psivi_mpk.py
+
+# Satellite EO/SAR Telemetry Record: 12 bytes fixed
+# Optimized for downlinking radar backscatter, GPS ephemeris, and thermal status
+SATELLITE_TELEMETRY_DTYPE = np.dtype([
+    ('epoch_ms', '<i8'),       # 8 bytes: Zulu timestamp (absolute, not delta, for orbital precision)
+    ('backscatter_db', '<i2'), # 2 bytes: SAR backscatter in centi-decibels (e.g., -2500 = -25.00 dB)
+    ('gps_alt_m', '<u1'),      # 1 byte: Altitude tier (quantized, e.g., 0-255 representing 400-800km)
+    ('thermal_status', 'u1')   # 1 byte: Bitmask for panel temp, battery health, radiation flags
+])
+
