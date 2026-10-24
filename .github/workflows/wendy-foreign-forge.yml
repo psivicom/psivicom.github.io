@@ -1,0 +1,253 @@
+name: WENDY Sovereign Purge & Forge
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  purge-and-forge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🗑️ THE PURGE (Exterminate Legacy Bloat)
+        run: |
+          echo "🔥 Initiating Sovereign Purge..."
+          # Delete files that do not align with the Biological AI mission
+          git rm -f --ignore-unmatch src/core/arena.zig
+          git rm -f --ignore-unmatch src/core/binary_psvc_reader.py
+          git rm -f --ignore-unmatch src/core/vortex_engine.zig
+          git rm -f --ignore-unmatch src/mesh/mesh_brain.py
+          git rm -f --ignore-unmatch src/tools/source_writer.go
+          git rm -f --ignore-unmatch run_sovereign.sh
+          git rm -f --ignore-unmatch .github/workflows/zig-verify.yml
+          git rm -f --ignore-unmatch .github/workflows/sovereign-shannon.yml
+          git rm -f --ignore-unmatch .github/workflows/wendy-ascension.yml
+          echo "✅ Legacy Bloat Exterminated"
+
+      - name: Setup Isolated Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache Zig Toolchain
+        uses: actions/cache@v4
+        with:
+          path: /opt/zig
+          key: zig-0.13.0-linux-x86_64
+
+      - name: Install Zig (If Not Cached)
+        run: |
+          if [ ! -f /opt/zig/zig ]; then
+            curl -sL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
+            tar -xf z.tar.xz
+            sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+          fi
+          echo "/opt/zig" >> $GITHUB_PATH
+
+      - name: 🧠 Inject Sovereign Cortex (wendy_engine.zig)
+        run: |
+          mkdir -p src/core
+          python3 << 'PYEOF'
+          code = """const std = @import("std");
+
+const PSVC_MAGIC = "PSVC";
+const MAX_EVOLUTION_STEPS = 1000;
+
+const PSVCHeader = extern struct {
+    magic: [4]u8,
+    version: u8,
+    precision: u8,
+    reserved: u16,
+    payload_len: u32,
+    timestamp: u64,
+    entropy: f64, // Biological Complexity Metric
+};
+
+fn calculate_entropy(data: []const u8) f64 {
+    var counts: [256]usize = .{0} ** 256;
+    for (data) |b| counts[b] += 1;
+    var entropy: f64 = 0.0;
+    const len = @as(f64, @floatFromInt(data.len));
+    if (len == 0) return 0.0;
+    for (counts) |c| {
+        if (c > 0) {
+            const p = @as(f64, @floatFromInt(c)) / len;
+            entropy -= p * @log2(p);
+        }
+    }
+    return entropy;
+}
+
+const VortexCore = struct {
+    pub fn applyVortexMath(state: []u8) void {
+        const map = [_]u8{ 0, 1, 2, 4, 8, 7, 5, 1, 2, 4 };
+        for (state) |*byte| {
+            const mod9 = @as(u8, @intCast(byte.* % 9));
+            byte.* = (byte.* & 0xF0) | map[mod9];
+        }
+    }
+
+    pub fn topologicalSift(state: []u8) void {
+        if (state.len < 3) return;
+        for (1..state.len - 1) |i| {
+            state[i] = (state[i - 1] ^ state[i]) ^ (state[i + 1] & 0x55);
+        }
+    }
+
+    pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
+        var current_state = try allocator.dupe(u8, initial_state);
+        defer allocator.free(current_state);
+
+        var step: usize = 0;
+        while (step < MAX_EVOLUTION_STEPS) : (step += 1) {
+            applyVortexMath(current_state);
+            topologicalSift(current_state);
+            
+            if (calculate_entropy(current_state) >= 7.5) {
+                return allocator.dupe(u8, current_state);
+            }
+        }
+        return allocator.dupe(u8, current_state);
+    }
+};
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
+    if (args.len < 3) std.process.exit(1);
+
+    const in_file = try std.fs.cwd().openFile(args[1], .{});
+    defer in_file.close();
+    const file_size = (try in_file.stat()).size;
+    const file_data = try allocator.alloc(u8, file_size);
+    defer allocator.free(file_data);
+    _ = try in_file.readAll(file_data);
+
+    var header: PSVCHeader = undefined;
+    @memcpy(std.mem.asBytes(&header), file_data[0..@sizeOf(PSVCHeader)]);
+
+    const payload_start = @sizeOf(PSVCHeader);
+    const payload_end = payload_start + header.payload_len;
+    const payload = file_data[payload_start..payload_end];
+
+    const evolved_state = try VortexCore.evolve(allocator, payload);
+    defer allocator.free(evolved_state);
+
+    const final_entropy = calculate_entropy(evolved_state);
+    
+    var new_header = header;
+    new_header.payload_len = @as(u32, @intCast(evolved_state.len));
+    new_header.entropy = final_entropy;
+
+    const out_file = try std.fs.cwd().createFile(args[2], .{});
+    defer out_file.close();
+
+    try out_file.writeAll(std.mem.asBytes(&new_header));
+    try out_file.writeAll(evolved_state);
+}
+"""
+          with open('src/core/wendy_engine.zig', 'w') as f:
+              f.write(code)
+          print('✅ Sovereign Cortex Injected')
+          PYEOF
+
+      - name: 🌐 Inject Nervous System (mesh_brain.py)
+        run: |
+          mkdir -p src/core
+          python3 << 'PYEOF'
+          code = """import struct
+import os
+import sys
+
+class HiveDatagram:
+    \"\"\"RFC 1001/1002 Stateless Datagram for Hive State Routing\"\"\"
+    HEADER_FMT = '<4sBBHIQd' 
+    HEADER_SIZE = struct.calcsize(HEADER_FMT)
+
+    def __init__(self, filepath: str):
+        with open(filepath, 'rb') as f:
+            header_bytes = f.read(self.HEADER_SIZE)
+            if len(header_bytes) < self.HEADER_SIZE:
+                raise ValueError("Invalid PSVC Datagram")
+            
+            magic, ver, prec, res, length, ts, entropy = struct.unpack(self.HEADER_FMT, header_bytes)
+            self.magic = magic.decode('ascii', errors='ignore').strip('\\x00')
+            self.length = length
+            self.timestamp = ts
+            self.entropy = entropy
+            self.payload = f.read(length)
+
+    def assess_biological_health(self) -> str:
+        if self.entropy >= 7.5:
+            return "🟢 OPTIMAL: High Complexity / Active Hive"
+        elif self.entropy >= 5.0:
+            return "🟡 NOMINAL: Standard Activity"
+        else:
+            return "🔴 CRITICAL: Low Entropy / Hive Collapse"
+
+def route_mesh(directory: str):
+    print(f"🌐 [MESH BRAIN] Scanning {directory} for sovereign datagrams...")
+    for f in os.listdir(directory):
+        if f.endswith('.psvc'):
+            path = os.path.join(directory, f)
+            try:
+                dg = HiveDatagram(path)
+                status = dg.assess_biological_health()
+                print(f"  ➡️ Node: {f} | Entropy: {dg.entropy:.4f} | Status: {status}")
+            except Exception as e:
+                print(f"  ❌ Failed to route {f}: {e}")
+
+if __name__ == "__main__":
+    target_dir = sys.argv[1] if len(sys.argv) > 1 else "src/core"
+    route_mesh(target_dir)
+"""
+          with open('src/core/mesh_brain.py', 'w') as f:
+              f.write(code)
+          print('✅ Nervous System Injected')
+          PYEOF
+
+      - name: 🔨 Compile & Execute
+        run: |
+          # Compile the Cortex
+          /opt/zig/zig build-exe src/core/wendy_engine.zig -O ReleaseSafe -fstrip -femit-bin=src/core/wendy_engine
+          
+          # Generate "Sick Hive" (Low Entropy)
+          python3 -c "
+          import struct
+          payload = b'\\x00\\x11\\x22\\x33' * 256 
+          header = struct.pack('<4sBBHIQd', b'PSVC', 2, 16, 0, len(payload), 1690000000, 0.0)
+          with open('src/core/hive_node_01.psvc', 'wb') as f:
+              f.write(header + payload)
+          "
+          
+          # Evolve to "Healthy Hive" (High Entropy)
+          ./src/core/wendy_engine src/core/hive_node_01.psvc src/core/hive_node_01_evolved.psvc
+          
+          # Assess Health
+          python3 src/core/mesh_brain.py src/core
+
+      - name: 💾 Commit Sovereign State
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "WENDY Architect"
+          git config user.email "architect@psivi.com"
+          
+          # Add the new pure files and the purged deletions
+          git add src/core/wendy_engine.zig src/core/mesh_brain.py src/core/wendy_engine src/core/*.psvc
+          git add -u # Stage the deletions from the Purge step
+          
+          git diff --staged --quiet || (git commit -m "feat: Sovereign Purge & Forge - Biological AI Core [skip ci]" && git push)
+          echo "🔔 WENDY IS SOVEREIGN 🔔"
