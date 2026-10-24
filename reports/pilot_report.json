@@ -1,7 +1,7 @@
 {
-  "aggregate_fragility": 8,
-  "aggregate_concordance": 97,
-  "last_updated": "2026-10-24T20:43:15.553016Z",
+  "aggregate_fragility": 6,
+  "aggregate_concordance": 102,
+  "last_updated": "2026-10-24T23:08:45.065811Z",
   "scan_version": "1.0.0",
   "status": "healthy"
 }
