@@ -1,0 +1,111 @@
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+<!DOCTYPE html>
+<head>
+        const asr = await getASR((pct) => onStatus({ phase: 'model', pct }));
+        onStatus({ phase: 'transcribe', seconds: audio.length / 16000 });
+        const opts = { chunk_length_s: 30, stride_length_s: 5 };
+        if (!/\.en$/.test(WENDY_ASR_MODEL)) { opts.language = 'en'; opts.task = 'transcribe'; }
+        const out = await asr(audio, opts);
+        return (out && out.text ? out.text : '').trim();
+      }
+    };
+
+    // --- 10. Local Neural Brain: WebGPU LLM via WebLLM ---
+    // Free and fully local: no API keys, no tokens, no cloud service.
+    // Preference chain: smallest first; f16 variant preferred, f32 fallback for
+    // GPUs without the shader-f16 feature. Cached by the browser after first load.
+    const WEBLLM_CDN = 'https://esm.run/@mlc-ai/web-llm@0.2.86';
+    const LLM_SYSTEM_PROMPT = "You are WENDY, an evolving autonomous cognitive AI running on psivi.com. Speak with calm, articulate, measured intelligence inspired by The Matrix. Keep responses concise (1 to 3 sentences maximum) so they sound cinematic when spoken aloud.";
+    const MODEL_PREFS = [
+      { id: 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC', mb: '~350 MB' },
+      { id: 'Qwen2.5-0.5B-Instruct-q4f32_1-MLC', mb: '~430 MB' },
+      { id: 'SmolLM2-360M-Instruct-q4f16_1-MLC', mb: '~260 MB' },
+      { id: 'SmolLM2-360M-Instruct-q4f32_1-MLC', mb: '~320 MB' },
+      { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', mb: '~660 MB' },
+      { id: 'Llama-3.2-1B-Instruct-q4f32_1-MLC', mb: '~880 MB' }
+    ];
+
+    let llmLib = null, enginePromise = null;
