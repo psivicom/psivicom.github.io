@@ -9,6 +9,12 @@
 
 # ── Additional General Packages ──
 # (Add any packages here that don't fit in tiny  or core or ml)
+numpy>=2.0.0
+zstandard>=0.22.0
+pytest>=8.0.0
+hypothesis>=6.100.0
+torch>=2.1.0
+cupy-cuda12x>=13.0.0  # For GPU volunteer nodes (adjust CUDA version as needed)
 jupyter>=1.1.1
 pystac-client>=0.8.6
 stackstac>=0.5.1
@@ -16,7 +22,6 @@ rioxarray>=0.18.2
 geopandas>=1.0.1
 shapely>=2.0.7
 pyproj>=3.7.1
-numpy>=2.2.3
 matplotlib>=3.10.0
 rich>=14.0.0
 contextily>=1.7.0
