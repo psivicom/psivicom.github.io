@@ -1,52 +1,12 @@
 {
   "status": "success",
-  "files_repaired": 9,
+  "files_repaired": 1,
   "repairs_detail": [
     {
-      "file": "src/wendy.py",
+      "file": "src/agents/voice_agent.py",
       "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.825035Z"
-    },
-    {
-      "file": "src/agents/neuroplasticity_agent.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.827125Z"
-    },
-    {
-      "file": "src/agents/metabolic_agent.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.827260Z"
-    },
-    {
-      "file": "src/agents/optimization_agent.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.827486Z"
-    },
-    {
-      "file": "src/agents/pilot_agent.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.827622Z"
-    },
-    {
-      "file": "src/agents/void_agent.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.827825Z"
-    },
-    {
-      "file": "src/agents/forage_agent.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.828215Z"
-    },
-    {
-      "file": "src/core/immune_protocol.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.829768Z"
-    },
-    {
-      "file": "src/core/ledger_validator.py",
-      "action": "removed_sys_path_hack",
-      "timestamp": "2026-10-22T02:34:50.830430Z"
+      "timestamp": "2026-10-24T08:36:42.222379Z"
     }
   ],
-  "timestamp": "2026-10-22T02:34:50.831118Z"
+  "timestamp": "2026-10-24T08:36:42.226936Z"
 }
