@@ -183,6 +183,13 @@ def main():
     worker.process_instruction_queue()
     logger.info("🏁 Volunteer Worker: Cycle completed.")
 
+from tools.psivi_mpk import PSIVIDecoder, HIVE_RECORD_DTYPE
+
+# Inside your worker:
+decoder = PSIVIDecoder()
+# When a binary payload arrives:
+records = decoder.decode_to_memmap(binary_payload, dtype=HIVE_RECORD_DTYPE)
+# 'records' is now a zero-copy numpy structured array. Compute directly on it.
 
 if __name__ == "__main__":
     main()
