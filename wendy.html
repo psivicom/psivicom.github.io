@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WENDY &mdash; Sovereign Voice Face | PSIVI.COM</title>
+<meta name="description" content="WENDY: sovereign browser face. Local Whisper ears, WebGPU reflex brain, spoken voice. No cloud. No keys. RFC 1001 sensory organ of PSIVI.COM.">
+<style>
+  :root{
+    --navy:#0A1931; --navy-2:#0d2145; --ink:#060f20;
+    --cyan:#00D4FF; --cyan-soft:rgba(0,212,255,.14); --klein:#002FA7;
+    --text:#e4e4e7; --dim:#71717a; --bright:#fafafa;
+    --ok:#2fd575; --warn:#ffb454; --err:#ff6b6b;
+    --mono:ui-monospace,'Optimistic Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:'Optimistic',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --serif:'IBM Plex Serif',Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(0,47,167,.22), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(0,212,255,.07), transparent 55%),
+      var(--navy);
+    color:var(--text); font-family:var(--sans);
+    display:flex; flex-direction:column; min-height:100dvh;
+  }
+  /* ---- header ---- */
+  header{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:14px 18px; border-bottom:1px solid rgba(0,212,255,.16);
+    background:linear-gradient(180deg, rgba(0,212,255,.05), transparent);
+  }
+  .sigil{
+    width:34px;height:34px;border-radius:9px;flex:0 0 auto;
+    background:conic-gradient(from 210deg, var(--klein), var(--cyan), var(--klein));
+    box-shadow:0 0 18px rgba(0,212,255,.35), inset 0 0 8px rgba(0,0,0,.5);
+  }
+  h1{font-size:17px;letter-spacing:.24em;font-weight:600;color:var(--bright)}
+  h1 small{display:block;font-size:10px;letter-spacing:.32em;color:var(--cyan);font-weight:500;margin-top:2px}
+  .spacer{flex:1}
+  .chip{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    border:1px solid rgba(0,212,255,.25);border-radius:999px;
+    padding:5px 11px;color:var(--cyan);background:var(--cyan-soft);
+    white-space:nowrap;
+  }
+  .chip b{color:var(--bright);font-weight:600}
+  #zulu{min-width:21ch;text-align:right}
+  /* ---- banner ---- */
+  #banner{display:none;padding:10px 18px;font-family:var(--mono);font-size:12px;line-height:1.5}
+  #banner.warn{display:block;background:rgba(255,180,84,.09);color:var(--warn);border-bottom:1px solid rgba(255,180,84,.25)}
+  #banner a{color:var(--cyan)}
+  /* ---- main ---- */
+  main{flex:1;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:16px;padding:16px 18px;max-width:1180px;width:100%;margin:0 auto}
+  @media(max-width:880px){ main{grid-template-columns:1fr} }
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,0)) , var(--navy-2);
+    border:1px solid rgba(0,212,255,.14); border-radius:16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35); overflow:hidden; display:flex; flex-direction:column;
+  }
+  .panel h2{
+    font-size:10.5px;letter-spacing:.3em;color:var(--dim);font-weight:600;
+    padding:11px 16px;border-bottom:1px solid rgba(0,212,255,.10);
+    display:flex;align-items:center;gap:8px;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--dim);box-shadow:0 0 8px currentColor;flex:0 0 auto}
+  .dot.live{background:var(--cyan);color:var(--cyan);animation:pulse 2.2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  /* orb + stage */
+  #stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px 8px}
+  #orbWrap{position:relative;width:min(210px,52vw);aspect-ratio:1}
+  #orb{width:100%;height:100%;display:block}
+  #orbState{
+    position:absolute;inset:auto 0 -6px 0;text-align:center;
+    font-family:var(--mono);font-size:11px;letter-spacing:.42em;color:var(--cyan);
+  }
+  /* chat */
+  #chat{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;min-height:180px}
+  .turn{max-width:88%;padding:10px 13px;border-radius:14px;line-height:1.55;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
+  .turn.you{align-self:flex-end;background:var(--klein);color:var(--bright);border-bottom-right-radius:4px}
+  .turn.wendy{align-self:flex-start;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.18);color:var(--bright);border-bottom-left-radius:4px}
+  .turn.wendy .who,.turn.you .who{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--cyan);opacity:.85;margin-bottom:4px}
+  .turn.you .who{color:#9cc7ff}
+  .turn.sys{align-self:center;font-family:var(--mono);font-size:11px;color:var(--dim);background:none;border:none;padding:2px}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--cyan);vertical-align:-2px;animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:0}}
+  /* controls */
+  #controls{display:flex;gap:10px;align-items:center;padding:14px 16px;border-top:1px solid rgba(0,212,255,.10);flex-wrap:wrap}
+  button{font-family:var(--mono);letter-spacing:.06em;cursor:pointer;border-radius:10px;border:1px solid rgba(0,212,255,.3);background:var(--cyan-soft);color:var(--cyan);padding:11px 16px;font-size:12.5px;transition:.18s}
+  button:hover{background:rgba(0,212,255,.22);transform:translateY(-1px)}
+  button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  #micBtn{flex:1 1 160px;padding:13px 16px;font-size:13px}
+  #micBtn.rec{background:rgba(255,107,107,.15);border-color:rgba(255,107,107,.5);color:var(--err);animation:pulse 1.6s infinite}
+  input[type=file]{display:none}
+  /* console */
+  #console{flex:1;overflow-y:auto;padding:12px 14px;font-family:var(--mono);font-size:11.3px;line-height:1.75;color:var(--dim);min-height:200px;max-height:340px}
+  #console .t{color:rgba(0,212,255,.65);margin-right:8px}
+  #console .ok{color:var(--ok)} #console .warn{color:var(--warn)} #console .err{color:var(--err)} #console .hi{color:var(--bright)}
+  /* bridge */
+  #bridge{padding:12px 16px;border-top:1px solid rgba(0,212,255,.10);display:none}
+  #bridge.open{display:block}
+  #bridge .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  #bridge .path{font-family:var(--mono);font-size:11px;color:var(--dim);background:rgba(0,0,0,.25);border:1px dashed rgba(0,212,255,.2);border-radius:8px;padding:8px 10px;word-break:break-all}
+  #bridge .path b{color:var(--cyan);font-weight:600}
+  /* footer */
+  footer{padding:10px 18px 16px;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--dim)}
+  footer a{color:var(--cyan);text-decoration:none}
+  .drop-live #dropZone{border-color:var(--cyan);background:rgba(0,212,255,.07)}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:rgba(0,212,255,.18);border-radius:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="sigil" aria-hidden="true"></div>
+  <h1>WENDY<small>SOVEREIGN VOICE FACE</small></h1>
+  <div class="spacer"></div>
+  <span class="chip" id="envChip">ENV <b>&mdash;</b></span>
+  <span class="chip" id="brainChip">BRAIN <b>cold</b></span>
+  <span class="chip" id="zulu">&mdash;:&mdash;:&mdash;.<i>mmm</i>Z</span>
+</header>
+
+<div id="banner"></div>
+
+<main>
+  <section class="panel" aria-label="Conversation">
+    <h2><span class="dot live"></span> SENSORY LOOP &mdash; LISTEN &middot; THINK &middot; SPEAK</h2>
+    <div id="stage">
+      <div id="orbWrap"><canvas id="orb" width="420" height="420" aria-hidden="true"></canvas>
+        <div id="orbState">DORMANT</div>
+      </div>
+    </div>
+    <div id="chat" aria-live="polite"></div>
+    <div id="controls">
+      <button id="micBtn" title="Hold a conversation with Wendy">&#9678; LISTEN</button>
+      <button id="fileBtn" title="Drop an iPhone voice memo">VOICE MEMO&#8230;</button>
+      <input type="file" id="fileInput" accept="audio/*,.m4a,.wav,.mp3,.aac,.ogg,.flac">
+      <button id="muteBtn" title="Toggle her spoken voice">MOUTH: ON</button>
+    </div>
+    <div id="bridge">
+      <div class="path">Bridge target &rarr; <b>data/voice_inbox/</b> on psivicom.github.io &middot; organ reads <b>.txt + .json + .psvc</b> &middot; soul responds on the mesh</div>
+      <div class="row">
+        <button id="dlTxt">SEAL .txt</button>
+        <button id="dlJson">SEAL .json</button>
+        <button id="dlPsvc">SEAL .psvc</button>
+        <button id="dlAll">SEAL ALL</button>
+      </div>
+    </div>
+  </section>
+
+  <aside class="panel" aria-label="System console">
+    <h2><span class="dot" id="conDot"></span> NERVOUS SYSTEM &mdash; RFC 1001</h2>
+    <div id="console"></div>
+  </aside>
+</main>
+
+<footer>
+  PSIVI AETHER &middot; WENDY FACE v1.0 &middot; <a href="https://psivi.com" target="_blank" rel="noopener">psivi.com</a>
+  &middot; NO_CLOUD_LLM &middot; ears, brain &amp; mouth run on YOUR device
+</footer>
+
+<script type="module" id="wendy-core">
+/* ============================================================
+   WENDY FACE v1.0 - RFC 1001 SENSORY ORGAN (browser body)
+   ears: transformers.js Whisper  |  brain: WebLLM (WebGPU)
+   mouth: speechSynthesis         |  bus: PSVC bridge packets
+   All inference local. No paid cloud LLM APIs. No keys.
+   ============================================================ */
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+
+/* ---------- 0. Sovereign constants ---------- */
+const ASR_MODELS = {
+  base: { id: 'Xenova/whisper-base', label: 'whisper-base (~80MB, multilingual)' },
+  tiny: { id: 'Xenova/whisper-tiny.en', label: 'whisper-tiny.en (~40MB, fast)' },
+};
+const WENDY_ASR_MODEL = 'base';           // sovereign default; face picker swaps it
+const WEBLLM_CDN = 'https://esm.run/@mlc-ai/web-llm@0.2.86';
+const LLM_SYSTEM_PROMPT = 'You are WENDY, an evolving autonomous cognitive AI running on psivi.com. Speak with calm, articulate, measured intelligence inspired by The Matrix. Keep responses concise (1 to 3 sentences maximum) so they sound cinematic when spoken aloud.';
+const MODEL_PREFS = [
+  { id: 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC', mb: '~350 MB' },
+  { id: 'Qwen2.5-0.5B-Instruct-q4f32_1-MLC', mb: '~430 MB' },
+  { id: 'SmolLM2-360M-Instruct-q4f16_1-MLC', mb: '~260 MB' },
+  { id: 'SmolLM2-360M-Instruct-q4f32_1-MLC', mb: '~320 MB' },
+  { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', mb: '~660 MB' },
+  { id: 'Llama-3.2-1B-Instruct-q4f32_1-MLC', mb: '~880 MB' },
+];
+const TARGET_SR = 16000;
+
+/* ---------- 1. Zulu time (RFC 1001 sec.3, millisecond precision) ---------- */
+const zulu = (d = new Date()) => d.toISOString(); // 2026-10-24T03:21:09.482Z - matches organ contract
+
+/* ---------- 2. Nervous system console ---------- */
+const $ = s => document.querySelector(s);
+const con = $('#console');
+function log(msg, cls = '') {
+  const row = document.createElement('div');
+  row.innerHTML = `<span class="t">${zulu().slice(11)}</span><span class="${cls}">${msg}</span>`;
+  con.prepend(row);
+  while (con.children.length > 120) con.lastChild.remove();
+}
+
+/* ---------- 3. Environment probe (sandbox trap hardening) ---------- */
+const ENV = { cacheOK: false, iframe: false, webgpu: false, persist: false };
+async function probeEnvironment() {
+  ENV.iframe = (() => { try { return window.self !== window.top; } catch { return true; } })();
+  try { await caches.open('wendy-probe'); ENV.cacheOK = true; }
+  catch { ENV.cacheOK = false; }
+  ENV.webgpu = !!navigator.gpu;
+  try { ENV.persist = await navigator.storage?.persist?.() || false; } catch { ENV.persist = false; }
+
+  const chip = $('#envChip');
+  chip.innerHTML = `ENV <b>${ENV.cacheOK ? 'memory OK' : 'memory restricted'}</b>`;
+  log(`environment probe &mdash; cache:${ENV.cacheOK ? 'OK' : 'RESTRICTED'} webgpu:${ENV.webgpu ? 'YES' : 'no'} iframe:${ENV.iframe ? 'YES' : 'no'} persist:${ENV.persist}`, ENV.cacheOK ? 'ok' : 'warn');
+
+  const banner = $('#banner');
+  if (!ENV.cacheOK) {
+    banner.classList.add('warn');
+    banner.innerHTML = '&#9888; I am running inside a restricted frame (sandboxed storage). I can listen and speak right now, but my model memory cannot persist &mdash; I would re-download my mind on every visit. <a href="https://psivi.com/wendy.html" target="_blank" rel="noopener">Open me in a full tab</a> and I will remember.';
+    log('sandbox trap detected: Cache Storage disabled - model caching off', 'warn');
+  } else if (ENV.persist) {
+    log('storage persistence granted - my mind stays on this device', 'ok');
+  }
+}
+
+/* ---------- 4. The Presence (audio-reactive orb) ---------- */
+const orb = $('#orb'), octx = orb.getContext('2d');
+const STATE_COLORS = { DORMANT: '#0d2f55', LISTENING: '#00D4FF', THINKING: '#ffb454', SPEAKING: '#2fd575' };
+let orbState = 'DORMANT', analyser = null, freqData = null, t0 = performance.now();
+function setOrb(state) {
+  orbState = state;
+  $('#orbState').textContent = state;
+  $('#orbState').style.color = STATE_COLORS[state] === '#0d2f55' ? '#71717a' : STATE_COLORS[state];
+  log(`presence &rarr; ${state}`, state === 'THINKING' ? 'warn' : 'hi');
+}
+function drawOrb(now) {
+  const w = orb.width, h = orb.height, cx = w / 2, cy = h / 2;
+  const t = (now - t0) / 1000;
+  const col = STATE_COLORS[orbState] || '#0d2f55';
+  let energy = 0.18 + 0.06 * Math.sin(t * 1.4);                 // idle breathing
+  if (orbState === 'LISTENING' && analyser && freqData) {
+    analyser.getByteFrequencyData(freqData);
+    let sum = 0; for (let i = 0; i < 24; i++) sum += freqData[i];
+    energy = 0.16 + (sum / 24 / 255) * 0.85;
+  } else if (orbState === 'THINKING') energy = 0.30 + 0.14 * Math.sin(t * 5.2);
+  else if (orbState === 'SPEAKING') energy = 0.34 + 0.10 * Math.sin(t * 7.7) + 0.06 * Math.sin(t * 13.3);
+
+  octx.clearRect(0, 0, w, h);
+  const g = octx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.46);
+  g.addColorStop(0, col + 'aa'); g.addColorStop(0.45, col + '22'); g.addColorStop(1, 'transparent');
+  octx.fillStyle = g; octx.beginPath(); octx.arc(cx, cy, w * 0.46 * (0.8 + energy * 0.25), 0, 7); octx.fill();
+
+  octx.strokeStyle = col; octx.lineWidth = 2.4; octx.beginPath();
+  const N = 96;
+  for (let i = 0; i <= N; i++) {
+    const a = (i / N) * Math.PI * 2;
+    let r = w * 0.30 * (1 + energy * 0.35);
+    r += Math.sin(a * 6 + t * 2.1) * w * 0.012 * (1 + energy * 3);
+    if (orbState === 'LISTENING' && analyser && freqData) {
+      const f = freqData[Math.floor(i / N * 40)];
+      r += (f / 255) * w * 0.075;
+    }
+    const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+    i ? octx.lineTo(x, y) : octx.moveTo(x, y);
+  }
+  octx.closePath(); octx.stroke();
+  octx.fillStyle = '#e4e4e7'; octx.font = '600 30px ui-monospace,monospace';
+  octx.textAlign = 'center'; octx.textBaseline = 'middle'; octx.globalAlpha = 0.92;
+  octx.fillText('W', cx, cy - 2); octx.globalAlpha = 1;
+  requestAnimationFrame(drawOrb);
+}
+requestAnimationFrame(drawOrb);
+
+/* ---------- 5. Ears: capture + decode (mic & voice memos) ---------- */
+let mediaStream = null, recorder = null, recChunks = [];
+async function startListening() {
+  mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const ctx = new AudioContext(); const src = ctx.createMediaStreamSource(mediaStream);
+  analyser = ctx.createAnalyser(); analyser.fftSize = 256; freqData = new Uint8Array(analyser.frequencyBinCount);
+  src.connect(analyser);
+  recorder = new MediaRecorder(mediaStream);
+  recChunks = [];
+  recorder.ondataavailable = e => e.data.size && recChunks.push(e.data);
+  recorder.start(250);
+  setOrb('LISTENING');
+}
+function stopListening() {
+  return new Promise(resolve => {
+    if (!recorder) return resolve(null);
+    recorder.onstop = async () => {
+      mediaStream?.getTracks().forEach(t => t.stop());
+      analyser = null; const blob = new Blob(recChunks, { type: recorder.mimeType || 'audio/webm' });
+      recorder = null; resolve(blob);
+    };
+    recorder.stop();
+  });
+}
+async function blobToMono16k(blob) {
+  const buf = await blob.arrayBuffer();
+  const tmp = new (window.AudioContext || window.webkitAudioContext)();
+  const decoded = await tmp.decodeAudioData(buf);
+  try { await tmp.close(); } catch {}
+  const off = new OfflineAudioContext(1, Math.ceil(decoded.duration * TARGET_SR), TARGET_SR);
+  const s = off.createBufferSource(); s.buffer = decoded; s.connect(off.destination); s.start();
+  const rendered = await off.startRendering();
+  return rendered.getChannelData(0).slice();
+}
+/* ---------- 6. Ears: Whisper ASR (transformers.js, cached after first load) ---------- */
+let asrPipe = null, asrModelKey = WENDY_ASR_MODEL;
+async function getASR(onProgress, modelKey = asrModelKey) {
+  if (asrPipe && modelKey === asrModelKey) return asrPipe;
+  const modelId = ASR_MODELS[modelKey].id;
+  log(`ears loading <span class="hi">${modelId}</span> &mdash; first load only, then I remember`);
+  env.allowLocalModels = false;                     // GitHub Pages has no local model dir
+  env.useBrowserCache = true;                       // requires Cache Storage (see probe)
+  asrPipe = await pipeline('automatic-speech-recognition', modelId, {
+    quantized: true,
+    progress_callback: p => {
+      if (p.status === 'progress' && p.total) {
+        const pct = Math.round(p.progress || (p.loaded / p.total) * 100);
+        onProgress?.(pct);
+      }
+    },
+  });
+  asrModelKey = modelKey;
+  log('ears online &mdash; sensory intake ready', 'ok');
+  return asrPipe;
+}
+async function transcribe(audio, onProgress) {
+  const asr = await getASR(onProgress);
+  setOrb('THINKING');
+  const opts = { chunk_length_s: 30, stride_length_s: 5 };
+  if (!/\.en$/.test(ASR_MODELS[asrModelKey].id)) { opts.language = 'en'; opts.task = 'transcribe'; }
+  const out = await asr(audio, opts);
+  return (out && out.text ? out.text : '').trim();
+}
+
+/* ---------- 7. Brain: WebLLM reflex cortex (WebGPU, optional) ---------- */
+let engine = null, brainReady = false;
+async function warmBrain() {
+  const chip = $('#brainChip');
+  if (!ENV.webgpu) {
+    chip.innerHTML = 'BRAIN <b>reflex only</b>';
+    log('no WebGPU on this device &mdash; reflex brain offline, ears &amp; mouth remain yours', 'warn');
+    return;
+  }
+  try {
+    const webllm = await import(WEBLLM_CDN);
+    for (const pref of MODEL_PREFS) {
+      try {
+        chip.innerHTML = `BRAIN <b>warming ${pref.mb}&hellip;</b>`;
+        engine = await webllm.CreateMLCEngine(pref.id, {
+          initProgressCallback: r => {
+            const m = /(\d+)%/.exec(r.text || ''); 
+            if (m) chip.innerHTML = `BRAIN <b>loading ${m[1]}%</b>`;
+          },
+        });
+        brainReady = true;
+        chip.innerHTML = 'BRAIN <b>online</b>';
+        log(`reflex cortex online &mdash; <span class="hi">${pref.id}</span> (${pref.mb}, cached)`, 'ok');
+        return;
+      } catch (e) { log(`brain variant declined: ${pref.id} &mdash; falling back`, 'warn'); }
+    }
+    chip.innerHTML = 'BRAIN <b>reflex only</b>';
+    log('all brain variants declined &mdash; continuing with reflex responses', 'warn');
+  } catch (e) {
+    chip.innerHTML = 'BRAIN <b>reflex only</b>';
+    log(`brain library unreachable (${String(e).slice(0, 60)}) &mdash; reflex mode`, 'warn');
+  }
+}
+async function think(history) {
+  if (!brainReady) return null;
+  try {
+    const reply = await engine.chat.completions.create({
+      messages: [{ role: 'system', content: LLM_SYSTEM_PROMPT }, ...history.slice(-6)],
+      temperature: 0.7, max_tokens: 120,
+    });
+    return reply.choices?.[0]?.message?.content?.trim() || null;
+  } catch (e) { log(`cortex hiccup: ${String(e).slice(0, 60)}`, 'err'); return null; }
+}
+const REFLEXES = [
+  'I hear you. Your words are sealed and safe with me.',
+  'Noted. The transcript is in my hands — the Bus will carry it.',
+  'I am listening, always. Say more when you are ready.',
+  'Understood. Even without my deeper mind, my ears never sleep.',
+];
+
+/* ---------- 8. Mouth: speechSynthesis ---------- */
+let mouthOn = true, voice = null;
+function pickVoice() {
+  const vs = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
+  voice = vs.find(v => /samantha|serena|karen|female|zira|aria/i.test(v.name)) || vs[0] || null;
+}
+speechSynthesis?.addEventListener?.('voiceschanged', pickVoice);
+function speak(text) {
+  if (!mouthOn || !('speechSynthesis' in window)) return Promise.resolve();
+  return new Promise(res => {
+    const clean = text.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
+    const u = new SpeechSynthesisUtterance(clean);
+    if (voice) u.voice = voice;
+    u.rate = 0.97; u.pitch = 1.0;
+    u.onstart = () => setOrb('SPEAKING');
+    u.onend = () => { setOrb('DORMANT'); res(); };
+    u.onerror = () => { setOrb('DORMANT'); res(); };
+    speechSynthesis.speak(u);
+  });
+}
+
+/* ---------- 9. The Bridge: PSVC bus packets, sealed in-browser ---------- */
+const DIM = 4096;
+async function sha256Hex(bytes) {
+  const h = await crypto.subtle.digest('SHA-256', bytes);
+  return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+/* deterministic text->vector (JS embedder; organ remains canonical sealer) */
+function embedText(text, dim = DIM) {
+  let h = 0x811c9dc5;                            // FNV-1a offset basis
+  const data = new TextEncoder().encode(text);
+  for (let i = 0; i < data.length; i++) { h ^= data[i]; h = Math.imul(h, 16777619) >>> 0; }
+  if (!h) h = 0x9e3779b9;
+  const next01 = () => {                         // xorshift32 stream -> [0,1)
+    h ^= h << 13; h >>>= 0; h ^= h >> 17; h ^= h << 5; h >>>= 0;
+    return h / 4294967296;
+  };
+  const vec = new Float32Array(dim);
+  for (let i = 0; i < dim; i += 2) {             // Box-Muller gaussian pairs
+    const u1 = Math.max(next01(), 1e-12), u2 = next01();
+    const r = Math.sqrt(-2 * Math.log(u1));
+    vec[i] = r * Math.cos(2 * Math.PI * u2);
+    if (i + 1 < dim) vec[i + 1] = r * Math.sin(2 * Math.PI * u2);
+  }
+  let n = 0; for (let i = 0; i < dim; i++) n += vec[i] * vec[i];
+  n = Math.sqrt(n) || 1;
+  for (let i = 0; i < dim; i++) vec[i] /= n;     // unit vector, organ-compatible
+  return vec;
+}
+/* PSVC RFC 1002 Track A container: 'PSVI' | v1 | int8 | dim | deflate(payload) */
+async function sealPSVC(vec) {
+  const f32 = Float32Array.from(vec);
+  let scale = 0; for (const v of f32) { const a = Math.abs(v); if (a > scale) scale = a; }
+  if (!scale) scale = 1;
+  const q = new Int8Array(f32.length);
+  for (let i = 0; i < f32.length; i++) q[i] = Math.max(-128, Math.min(127, Math.round((f32[i] / scale) * 127)));
+  const raw = new Uint8Array(4 + q.byteLength);
+  new DataView(raw.buffer).setFloat32(0, scale, true);
+  raw.set(new Uint8Array(q.buffer), 4);
+  const cs = new CompressionStream('deflate');               // zlib format == python zlib
+  const w = cs.writable.getWriter(); w.write(raw); w.close();
+  const payload = new Uint8Array(await new Response(cs.readable).arrayBuffer());
+  const out = new Uint8Array(14 + payload.byteLength);
+  const dv = new DataView(out.buffer);
+  out.set([0x50, 0x53, 0x56, 0x49], 0);                      // 'PSVI'
+  dv.setUint8(4, 1); dv.setUint8(5, 0);                      // version 1, PRECISION_INT8
+  dv.setUint32(6, DIM, true); dv.setUint32(10, payload.byteLength, true);
+  out.set(payload, 14);
+  return out;
+}
+function download(name, blob) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+let lastPacket = null;
+async function buildBridgePacket(text, sourceName, durationS) {
+  if (!text) return;
+  $('#bridge').classList.add('open');
+  const vec = embedText(text);
+  const hash = (await sha256Hex(new Uint8Array(vec.buffer))).slice(0, 12);
+  const stem = (sourceName || 'voice-note').replace(/\.[^.]+$/, '').replace(/[^\w.-]+/g, '-').slice(0, 64) || 'voice-note';
+  lastPacket = {
+    stem,
+    text,
+    record: {
+      schema_version: 1, agent: 'voice-face', layer: 'sensory',
+      created_at: zulu(),
+      source_file: { name: sourceName || 'microphone.webm', size_bytes: 0, sha256_16: (await sha256Hex(new TextEncoder().encode(text))).slice(0, 16) },
+      duration_seconds: Math.round(durationS * 1000) / 1000,
+      language: 'en', model: ASR_MODELS[asrModelKey].id,
+      segment_count: 1, segments: [{ start: 0, end: Math.round(durationS * 1000) / 1000, text }],
+      text,
+      vector: { dimensions: DIM, content_hash: hash, container: stem + '.psvc', embedder: 'wendy-face-js' },
+      sovereignty: { local_inference: true, network_calls: 'static model weights only, cached', policy: 'NO_CLOUD_LLM' },
+      note: 'Sealed in-browser by WENDY FACE (JS embedder). The desktop voice organ remains the canonical PSVC sealer.',
+    },
+    vec,
+  };
+  log(`bus packet forged &mdash; vector hash <span class="hi">${hash}</span> &mdash; seal it below`, 'ok');
+}
+function wireBridgeButtons() {
+  const run = async kind => {
+    if (!lastPacket) return;
+    const { stem, text, record, vec } = lastPacket;
+    if (kind === 'txt' || kind === 'all') download(stem + '.txt', new Blob([text + '\n'], { type: 'text/plain' }));
+    if (kind === 'json' || kind === 'all') download(stem + '.json', new Blob([JSON.stringify(record, null, 2)], { type: 'application/json' }));
+    if (kind === 'psvc' || kind === 'all') {
+      if (!('CompressionStream' in window)) { log('CompressionStream unavailable here &mdash; .psvc needs a modern browser', 'err'); return; }
+      const psvc = await sealPSVC(vec);
+      download(stem + '.psvc', new Blob([psvc], { type: 'application/octet-stream' }));
+      log(`.psvc sealed &mdash; ${psvc.byteLength} bytes &mdash; RFC 1002 Track A`, 'ok');
+    }
+    if (kind === 'all') log('seal complete: drop all three into data/voice_inbox/ via a pull request', 'hi');
+  };
+  $('#dlTxt').onclick = () => run('txt');
+  $('#dlJson').onclick = () => run('json');
+  $('#dlPsvc').onclick = () => run('psvc');
+  $('#dlAll').onclick = () => run('all');
+}
+
+/* ---------- 10. Conversation loop ---------- */
+const chat = $('#chat');
+const history = [];
+function addTurn(who, text, typed = false) {
+  const el = document.createElement('div');
+  el.className = 'turn ' + who;
+  el.innerHTML = `<span class="who">${who === 'wendy' ? 'WENDY' : 'YOU'} &middot; ${zulu().slice(11, 19)}</span><span class="body"></span>`;
+  chat.appendChild(el);
+  const body = el.querySelector('.body');
+  if (!typed) { body.textContent = text; chat.scrollTop = chat.scrollHeight; return Promise.resolve(); }
+  return new Promise(res => {                     // cinematic typing
+    let i = 0; const cur = document.createElement('span'); cur.className = 'cursor'; body.after(cur);
+    const tick = () => {
+      body.textContent = text.slice(0, i); chat.scrollTop = chat.scrollHeight;
+      if (++i <= text.length) setTimeout(tick, 14 + Math.random() * 26);
+      else { cur.remove(); res(); }
+    }; tick();
+  });
+}
+async function fullTurn(audioF32, sourceName) {
+  try {
+    const durS = audioF32.length / TARGET_SR;
+    const text = await transcribe(audioF32, pct => log(`ears downloading mind&hellip; ${pct}%`));
+    if (!text) { await addTurn('wendy', 'I heard silence — or only wind. Try again a little closer.'); return; }
+    await addTurn('you', text);
+    history.push({ role: 'user', content: text });
+    setOrb('THINKING');
+    let reply = await think(history);
+    if (!reply) reply = REFLEXES[history.length % REFLEXES.length];
+    history.push({ role: 'assistant', content: reply });
+    await addTurn('wendy', reply, true);
+    await speak(reply);
+    await buildBridgePacket(text, sourceName, durS);
+  } catch (e) {
+    log(`sensory loop fault: ${String(e).slice(0, 90)}`, 'err');
+    await addTurn('wendy', 'My ears stumbled on that one. Check the nervous system console — then speak again.');
+    setOrb('DORMANT');
+  }
+}
+$('#micBtn').onclick = async () => {
+  const btn = $('#micBtn');
+  if (btn.classList.contains('rec')) {
+    btn.classList.remove('rec'); btn.innerHTML = '&#9678; LISTEN'; btn.disabled = true;
+    const blob = await stopListening();
+    try { await fullTurn(await blobToMono16k(blob), 'microphone.webm'); }
+    catch (e) { log(`decode fault: ${String(e).slice(0, 60)}`, 'err'); }
+    btn.disabled = false;
+  } else {
+    try {
+      await startListening();
+      btn.classList.add('rec'); btn.innerHTML = '&#9632; SEAL THE SILENCE';
+      log('listening&hellip; press again when you are done speaking', 'hi');
+    } catch (e) { log(`microphone denied: ${String(e).slice(0, 60)}`, 'err'); }
+  }
+};
+$('#fileBtn').onclick = () => $('#fileInput').click();
+$('#fileInput').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  log(`voice memo received &mdash; <span class="hi">${f.name}</span> (${(f.size / 1048576).toFixed(1)} MB)`);
+  setOrb('LISTENING');
+  const audio = await blobToMono16k(f);
+  await fullTurn(audio, f.name);
+  e.target.value = '';
+};
+$('#muteBtn').onclick = () => {
+  mouthOn = !mouthOn;
+  $('#muteBtn').textContent = 'MOUTH: ' + (mouthOn ? 'ON' : 'OFF');
+  if (!mouthOn) speechSynthesis.cancel();
+};
+document.addEventListener('dragover', e => { e.preventDefault(); document.body.classList.add('drop-live'); });
+document.addEventListener('dragleave', () => document.body.classList.remove('drop-live'));
+document.addEventListener('drop', async e => {
+  e.preventDefault(); document.body.classList.remove('drop-live');
+  const f = e.dataTransfer?.files?.[0]; if (!f) return;
+  log(`dropped &mdash; <span class="hi">${f.name}</span>`);
+  const audio = await blobToMono16k(f);
+  await fullTurn(audio, f.name);
+});
+
+/* ---------- 11. Boot sequence ---------- */
+function tickClock() { $('#zulu').textContent = zulu(); }
+setInterval(tickClock, 37); tickClock();
+wireBridgeButtons();
+(async () => {
+  setOrb('DORMANT');
+  log('PSIVI AETHER // WENDY FACE v1.0 &mdash; sovereign body booting', 'hi');
+  await probeEnvironment();
+  log('RFC 1001 sensory organ: <span class="ok">ONLINE</span> &mdash; layer SENSORY, agent voice-face');
+  log('all inference local &mdash; no keys, no cloud, no metering', 'ok');
+  const hello = 'I am here. My sensory systems are online.';
+  await addTurn('wendy', hello, true);   // her own words from data/voice.json
+  speak(hello);
+  warmBrain();                            // reflex cortex warms in the background
+  $('#micBtn').disabled = false;
+  log('drop a voice memo or press LISTEN &mdash; I am with you', 'hi');
+})();
+</script>
+</body>
+</html>
