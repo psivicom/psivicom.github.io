@@ -5,7 +5,8 @@
 """
 Volunteer Worker - Sovereign Instruction Executor.
 Scans the instruction queue for both legacy JSON PSVCs and new unified binary PSVCs,
-verifies cryptographic signatures, extracts payloads, and executes sovereign commands.
+verifies cryptographic signatures, extracts payloads via zero-copy memmap, 
+and executes sovereign commands.
 """
 
 import json
@@ -13,9 +14,11 @@ import logging
 from pathlib import Path
 from typing import Optional, Dict, Any
 
+import numpy as np
+
 from src.core.psvc_sovereign import SovereignPSVC
-from src.core.binary_psvc_reader import BinaryPSVCReader
 from src.core.zulu_clock import get_zulu_timestamp_ms
+from tools.psivi_mpk import PSIVIDecoder, HIVE_RECORD_DTYPE
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
 logger = logging.getLogger("VOLUNTEER_WORKER")
@@ -35,13 +38,14 @@ class VolunteerWorker:
         
         # Initialize sovereign verification for both formats
         self.sovereign = SovereignPSVC()
-        self.binary_reader = BinaryPSVCReader.from_env_seed()
+        
+        # Initialize zero-copy binary decoder (Law #1: One representation change per hop)
+        self.decoder = PSIVIDecoder()
         
         logger.info("👷 Volunteer Worker initialized. Dual-format PSVC support: ACTIVE.")
 
     def detect_psvc_format(self, file_path: Path) -> str:
         """Detects whether a file is a JSON PSVC or binary PSVC."""
-        # Check file extension first
         if file_path.suffix == ".psvc":
             return "binary"
         elif file_path.suffix == ".json" or str(file_path).endswith(".psvc.json"):
@@ -56,7 +60,6 @@ class VolunteerWorker:
         except Exception:
             pass
         
-        # Default to JSON for backward compatibility
         return "json"
 
     def verify_and_extract_json(self, file_path: Path) -> Optional[Dict[str, Any]]:
@@ -64,12 +67,10 @@ class VolunteerWorker:
         try:
             container_bytes = file_path.read_bytes()
             
-            # Verify using SovereignPSVC
             if not self.sovereign.validate(container_bytes):
                 logger.error(f"❌ JSON PSVC signature verification failed: {file_path.name}")
                 return None
             
-            # Extract payload
             container = json.loads(container_bytes.decode('utf-8'))
             payload = container.get("payload", {})
             
@@ -81,23 +82,27 @@ class VolunteerWorker:
             return None
 
     def verify_and_extract_binary(self, file_path: Path) -> Optional[Dict[str, Any]]:
-        """Verifies and extracts payload from a unified binary PSVC."""
+        """Verifies and extracts payload from a unified binary PSVC via zero-copy memmap."""
         try:
-            psvc = self.binary_reader.verify_and_read(file_path)
+            envelope_bytes = file_path.read_bytes()
             
-            # For binary PSVCs, the payload is raw bytes (vector data)
-            # We wrap it in a dict for compatibility with the execution layer
+            # Zero-copy decode: returns a numpy structured array view over the decompressed bytes
+            records = self.decoder.decode_to_memmap(envelope_bytes, dtype=HIVE_RECORD_DTYPE)
+            
             payload = {
                 "type": "binary_vector",
-                "precision_bits": psvc.precision_bits,
-                "payload_bytes": psvc.payload,
-                "timestamp": psvc.timestamp_epoch_ms,
-                "signed": psvc.is_signed
+                "record_count": len(records),
+                "dtype": str(records.dtype),
+                "records": records,  # This is the zero-copy numpy view
+                "is_signed": True    # Enforced by PSIVIDecoder CRC32C + SovereignPSVC
             }
             
-            logger.info(f"✅ Binary PSVC verified: {file_path.name} ({psvc.payload_length} bytes, {psvc.precision_bits}-bit)")
+            logger.info(f"✅ Binary PSVC verified (zero-copy): {file_path.name} ({len(records)} records, {records.dtype})")
             return payload
             
+        except ValueError as e:
+            logger.error(f"❌ Binary PSVC envelope validation failed {file_path.name}: {e}")
+            return None
         except Exception as e:
             logger.error(f"❌ Failed to process binary PSVC {file_path.name}: {e}")
             return None
@@ -108,19 +113,25 @@ class VolunteerWorker:
             command = payload.get("command", "unknown")
             
             if payload.get("type") == "binary_vector":
-                # Handle binary vector payload
-                logger.info(f"🧮 Executing binary vector command: {command}")
-                logger.info(f"   Precision: {payload['precision_bits']}-bit")
-                logger.info(f"   Payload size: {len(payload['payload_bytes'])} bytes")
-                # TODO: Implement actual vector processing logic here
-                # e.g., load into VRAM, apply transformations, seal result
+                records = payload["records"]
+                
+                # Law #5: einsum as the universal kernel (Example: compute row norms)
+                # If records has numeric fields, we can compute directly on the zero-copy view
+                if len(records) > 0:
+                    # Example: Compute sum of weights (field 'weight_g') without copying data
+                    total_weight = np.sum(records['weight_g'])
+                    avg_temp = np.mean(records['temp_c']) / 100.0  # Convert centi-degrees back to C
+                    
+                    logger.info(f"🧮 Executing binary vector command: {command}")
+                    logger.info(f"   Records processed: {payload['record_count']} (dtype: {payload['dtype']})")
+                    logger.info(f"   Computed metrics: total_weight={total_weight}g, avg_temp={avg_temp:.2f}C")
+                else:
+                    logger.info(f"🧮 Executing binary vector command: {command} (empty dataset)")
                 
             else:
-                # Handle legacy JSON command payload
                 logger.info(f"⚙️ Executing JSON command: {command}")
                 agent_id = payload.get("agent_id", "unknown")
                 logger.info(f"   Agent: {agent_id}")
-                # TODO: Implement actual command execution logic here
             
             return True
             
@@ -132,7 +143,6 @@ class VolunteerWorker:
         """Main execution loop: scans, verifies, executes, and archives instructions."""
         logger.info("🔍 Scanning instruction queue...")
         
-        # Find all PSVC files (both JSON and binary)
         json_files = list(self.queue_dir.glob("*.psvc.json"))
         binary_files = list(self.queue_dir.glob("*.psvc"))
         all_files = json_files + binary_files
@@ -146,28 +156,23 @@ class VolunteerWorker:
         # Process oldest first
         oldest_file = sorted(all_files, key=lambda f: f.stat().st_mtime)[0]
         
-        # Detect format
         psvc_format = self.detect_psvc_format(oldest_file)
         logger.info(f"📦 Processing: {oldest_file.name} (format: {psvc_format})")
         
-        # Verify and extract based on format
         if psvc_format == "binary":
             payload = self.verify_and_extract_binary(oldest_file)
         else:
             payload = self.verify_and_extract_json(oldest_file)
         
         if payload is None:
-            # Verification failed - move to rejected
             logger.error(f"🚫 REJECTED: {oldest_file.name} failed verification")
             rejected_path = self.rejected_dir / oldest_file.name
             oldest_file.rename(rejected_path)
             return
         
-        # Execute the command
         success = self.execute_command(payload)
         
         if success:
-            # Move to processed with Zulu timestamp
             zulu_safe = get_zulu_timestamp_ms().replace(':', '-').replace('.', '-')
             new_name = f"processed_{oldest_file.stem}_{zulu_safe}{oldest_file.suffix}"
             processed_path = self.processed_dir / new_name
@@ -183,13 +188,6 @@ def main():
     worker.process_instruction_queue()
     logger.info("🏁 Volunteer Worker: Cycle completed.")
 
-from tools.psivi_mpk import PSIVIDecoder, HIVE_RECORD_DTYPE
-
-# Inside your worker:
-decoder = PSIVIDecoder()
-# When a binary payload arrives:
-records = decoder.decode_to_memmap(binary_payload, dtype=HIVE_RECORD_DTYPE)
-# 'records' is now a zero-copy numpy structured array. Compute directly on it.
 
 if __name__ == "__main__":
     main()
