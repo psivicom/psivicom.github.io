@@ -163,7 +163,7 @@ jobs:
               try out_file.writeAll(std.mem.asBytes(&new_header));
               try out_file.writeAll(evolved_state);
           }
-"""
+
           with open('src/core/wendy_engine.zig', 'w') as f:
               f.write(code)
           print('✅ Sovereign Cortex Injected')
@@ -218,7 +218,7 @@ jobs:
           if __name__ == "__main__":
               target_dir = sys.argv[1] if len(sys.argv) > 1 else "src/core"
               route_mesh(target_dir)
-"""
+
           with open('src/core/mesh_brain.py', 'w') as f:
               f.write(code)
           print('✅ Nervous System Injected')
