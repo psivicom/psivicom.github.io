@@ -14,7 +14,7 @@ import cupy as cp
 from typing import Optional, Dict, Any
 
 from src.core.psvc_sovereign import SovereignPSVC
-from tools.psivi_mpk import PSIVIDecoder, HIVE_RECORD_DTYPE
+from src.tools.psivi_mpk import PSIVIDecoder, HIVE_RECORD_DTYPE
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
 logger = logging.getLogger("VOLUNTEER_WORKER_GPU")
