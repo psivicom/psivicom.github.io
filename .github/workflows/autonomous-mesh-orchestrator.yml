@@ -78,7 +78,9 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
-          pip install numpy -q
+          python -m pip install --upgrade pip -q
+          # CRITICAL FIX: Install all dependencies from requirements.txt, including zstandard
+          pip install -r requirements.txt -q
           python -m src.tools.autonomous_mesh_orchestrator
 
       - name: Save WENDY Twin Continuity State
@@ -108,5 +110,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          pip install numpy -q
+          python -m pip install --upgrade pip -q
+          # CRITICAL FIX: Install all dependencies from requirements.txt, including zstandard
+          pip install -r requirements.txt -q
           python -m src.tools.cache_governor
