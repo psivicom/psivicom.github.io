@@ -48,6 +48,7 @@ try:
 except ImportError:  # pragma: no cover - direct script execution fallback
     _REPO_ROOT = Path(__file__).resolve().parents[2]
     if str(_REPO_ROOT) not in sys.path:
+        sys.path.insert(0, str(_REPO_ROOT))
     from src.base.base_agent import BaseAgent, AgentLayer
     from src.core.psvc_reference import (
         encode_text, seal, content_hash, DEFAULT_DIM, PRECISION_INT8,
