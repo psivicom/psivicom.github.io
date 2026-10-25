@@ -35,10 +35,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-core.txt
+          pip install -r requirements-core.txt numpy pyyaml requests pynacl zstandard
 
       - name: Generate OIDC Identity Token
         id: oidc
