@@ -9,7 +9,12 @@
 
 # ── Additional General Packages ──
 # (Add any packages here that don't fit in tiny  or core or ml)
+# requirements.txt
+# PSIVI Mesh Dependencies
 numpy>=2.0.0
+pyyaml>=6.0.1
+requests>=2.31.0
+pynacl>=1.5.0
 zstandard>=0.22.0
 pytest>=8.0.0
 hypothesis>=6.100.0
