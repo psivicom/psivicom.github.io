@@ -78,7 +78,6 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
-          # FIX: Pre-install numpy so __init__.py doesn't crash before the orchestrator can auto-install dependencies
           pip install numpy -q
           python -m src.tools.autonomous_mesh_orchestrator
 
@@ -109,6 +108,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          # FIX: Pre-install numpy for the cache governor as well
           pip install numpy -q
           python -m src.tools.cache_governor
