@@ -2,6 +2,11 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
+"""
+Auto Reporter - Mesh Automation Loop Orchestrator.
+Triggers instruction processing and subsequent report generation.
+"""
+
 import logging
 import sys
 from pathlib import Path
@@ -23,10 +28,8 @@ def main():
     # 1. Scan and Process Instructions
     logger.info("📥 Scanning instruction queue...")
     instruction_agent = InstructionAgent()
-    factory = AgentFactory()
     
     try:
-        # Use the correct method name 'process_queue' to read the JSON files
         inst_count = instruction_agent.process_queue()
         logger.info(f"✅ Executed {inst_count} instruction(s).")
     except Exception as e:
