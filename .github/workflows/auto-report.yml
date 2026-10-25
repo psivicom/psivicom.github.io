@@ -29,11 +29,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # CRITICAL FIX: Added pynacl to resolve the 'nacl' module import error
-          pip install numpy pyyaml requests pynacl
+          # CRITICAL FIX: Added zstandard for zero-copy binary envelope compression
+          pip install numpy pyyaml requests pynacl zstandard
 
       - name: Run Auto Reporter
         env:
