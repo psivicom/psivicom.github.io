@@ -29,11 +29,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          # CRITICAL FIX: Added zstandard for zero-copy binary envelope compression
-          pip install numpy pyyaml requests pynacl zstandard
+          # Install all required packages, including zstandard for binary envelopes
+          pip install -r requirements.txt
 
       - name: Run Auto Reporter
         env:
