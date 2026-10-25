@@ -77,7 +77,10 @@ jobs:
       - name: WENDY Autonomous Execution
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.tools.autonomous_mesh_orchestrator
+        run: |
+          # FIX: Pre-install numpy so __init__.py doesn't crash before the orchestrator can auto-install dependencies
+          pip install numpy -q
+          python -m src.tools.autonomous_mesh_orchestrator
 
       - name: Save WENDY Twin Continuity State
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
@@ -105,4 +108,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python -m src.tools.cache_governor
+        run: |
+          # FIX: Pre-install numpy for the cache governor as well
+          pip install numpy -q
+          python -m src.tools.cache_governor
