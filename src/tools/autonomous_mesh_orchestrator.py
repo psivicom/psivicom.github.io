@@ -164,8 +164,11 @@ def main():
             
             if is_ci:
                 logger.info("🌐 CI Environment detected. Forcing lightweight CPU-only ML wheels to conserve resources.")
+                # CRITICAL FIX: Filter out GPU-specific packages that cannot be installed in standard CI without CUDA toolkit
+                cpu_safe_packages = [pkg for pkg in packages_list if pkg not in ("cupy",)]
+                
                 # Use PyTorch's CPU-only index to skip the 2GB+ CUDA downloads
-                install_cmd = [sys.executable, "-m", "pip", "install"] + packages_list + [
+                install_cmd = [sys.executable, "-m", "pip", "install"] + cpu_safe_packages + [
                     "-q", "--extra-index-url", "https://download.pytorch.org/whl/cpu"
                 ]
             else:
