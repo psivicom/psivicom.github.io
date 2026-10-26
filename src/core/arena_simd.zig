@@ -5,7 +5,9 @@ pub const ArenaConfig = struct {
     alignment: usize = 64,
 };
 
-pub const SimdVector = @Vector(16, f32);
+// OPTIMAL: 8 x f32 = 256-bit (AVX on x86_64). 
+// Change to 4 (128-bit) only if targeting older ARM edge devices exclusively.
+pub const SimdVector = @Vector(8, f32);
 
 pub const ArenaSimd = struct {
     allocator: std.mem.Allocator,
@@ -107,17 +109,19 @@ pub const ArenaSimd = struct {
         const factor_vec: SimdVector = @splat(factor);
         
         var i: usize = 0;
-        const chunks = data.len / 16;
+        // Updated to match the 8-element vector size
+        const chunks = data.len / 8;
 
-        while (i < chunks * 16) : (i += 16) {
-            const in_ptr = data[i..i+16].ptr;
+        while (i < chunks * 8) : (i += 8) {
+            const in_ptr = data[i..i+8].ptr;
             const vec: SimdVector = @as(*const SimdVector, @ptrCast(@alignCast(in_ptr))).*;
             const res_vec = vec * factor_vec;
             
-            const out_ptr = result[i..i+16].ptr;
+            const out_ptr = result[i..i+8].ptr;
             @as(*SimdVector, @ptrCast(@alignCast(out_ptr))).* = res_vec;
         }
 
+        // Handle any remaining elements that don't fit into a full vector
         while (i < data.len) : (i += 1) {
             result[i] = data[i] * factor;
         }
