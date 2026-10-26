@@ -1,5 +1,4 @@
-const std = @import("@std");
-const builtin = @import("builtin");
+const std = @import("std");
 
 pub const ArenaConfig = struct {
     block_size: usize = 65536,
@@ -24,7 +23,7 @@ pub const ArenaSimd = struct {
 
         fn init(allocator: std.mem.Allocator, capacity: usize, alignment: usize) !*Block {
             const total_size = @sizeOf(Block) + capacity + alignment;
-            const raw = try allocator.alignedAlloc(u8, @alignCast(@as(usize, alignment)), total_size);
+            const raw = try allocator.alignedAlloc(u8, std.mem.Alignment.fromByteUnits(alignment), total_size);
             const block = @as(*Block, @ptrCast(@alignCast(raw.ptr)));
             block.next = null;
             block.capacity = capacity;
@@ -53,8 +52,7 @@ pub const ArenaSimd = struct {
 
     pub fn deinit(self: *ArenaSimd) void {
         var curr = self.current_block;
-        while (curr) |block|
-        {
+        while (curr) |block| {
             const next = block.next;
             block.deinit(self.allocator);
             curr = next;
@@ -74,8 +72,7 @@ pub const ArenaSimd = struct {
     pub fn rawAlloc(self: *ArenaSimd, size: usize, alignment: usize) ![*]u8 {
         const aligned_size = (size + (alignment - 1)) & ~(alignment - 1);
 
-        if (self.current_block) |block|
-        {
+        if (self.current_block) |block| {
             const current_ptr = @intFromPtr(block.data) + block.used;
             const misaligned = current_ptr % alignment;
             const adjustment = if (misaligned == 0) 0 else (alignment - misaligned);
@@ -114,9 +111,9 @@ pub const ArenaSimd = struct {
 
         while (i < chunks * 16) : (i += 16) {
             const chunk_ptr = data[i..][0..16].ptr;
-            const vec: SimdVector = chunk_ptr.*;
+            const vec: SimdVector = @as(*SimdVector, @ptrCast(@alignCast(chunk_ptr))).*;
             const res_vec = vec * factor_vec;
-            @as(*SimdVector, @ptrCast(result[i..].ptr)).* = res_vec;
+            @as(*SimdVector, @ptrCast(@alignCast(result[i..].ptr))).* = res_vec;
         }
 
         while (i < data.len) : (i += 1) {
@@ -141,4 +138,21 @@ export fn destroy_arena(arena: *ArenaSimd) void {
     const allocator = arena.allocator;
     arena.deinit();
     allocator.destroy(arena);
+}
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    var arena = ArenaSimd.init(allocator, ArenaConfig{
+        .block_size = 65536,
+        .alignment = 64,
+    });
+    defer arena.deinit();
+
+    const data = [_]f32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
+    const result = try arena.processSimdPipeline(&data, 2.0);
+
+    std.debug.print("⚡ SIMD Pipeline: Processed {} elements\n", .{result.len});
 }
