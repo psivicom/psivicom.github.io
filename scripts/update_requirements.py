@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 WENDY Goldstream Beekeeping Research - Dependency Updater
-Queries PyPI to update requirements.txt to the latest stable versions.
-Zero external dependencies (uses standard library urllib).
+Queries PyPI to update all requirements*.txt files to the latest stable versions.
+Zero external dependencies (uses standard library urllib and pathlib).
 """
 import sys
 import json
@@ -23,18 +23,17 @@ def get_latest_version(package_name: str) -> str:
         print(f"Warning: Could not fetch latest version for {package_name}: {e}")
         return None
 
-def update_requirements(file_path: str):
-    """Parses and updates requirements.txt in place."""
-    path = Path(file_path)
-    if not path.exists():
+def update_single_file(file_path: Path) -> bool:
+    """Parses and updates a single requirements file in place."""
+    if not file_path.exists():
         print(f"Error: {file_path} not found.")
-        sys.exit(1)
+        return False
 
     updated_lines = []
     # Matches standard package names (PEP 508 simplified)
     pkg_pattern = re.compile(r'^([A-Za-z0-9_.-]+)\s*(.*)$')
 
-    with path.open('r', encoding='utf-8') as f:
+    with file_path.open('r', encoding='utf-8') as f:
         lines = f.readlines()
 
     for line in lines:
@@ -68,14 +67,32 @@ def update_requirements(file_path: str):
         if latest:
             new_line = f"{pkg_name}=={latest}{inline_comment}\n"
             updated_lines.append(new_line)
-            print(f"Updated {pkg_name} to {latest}")
+            print(f"  Updated {pkg_name} to {latest}")
         else:
             updated_lines.append(line)
 
-    with path.open('w', encoding='utf-8') as f:
+    with file_path.open('w', encoding='utf-8') as f:
         f.writelines(updated_lines)
-    print(f"Successfully updated {file_path}")
+    return True
+
+def main():
+    """Main execution loop handling multiple files or auto-discovery."""
+    if len(sys.argv) > 1:
+        # Process explicitly passed file paths
+        target_files = [Path(f) for f in sys.argv[1:]]
+    else:
+        # Auto-discover all requirements*.txt files in the root directory
+        target_files = list(Path('.').glob('requirements*.txt'))
+        if not target_files:
+            print("No requirements*.txt files found in the root directory.")
+            sys.exit(0)
+
+    print(f"Discovered {len(target_files)} requirement file(s) to process.")
+    
+    for file_path in target_files:
+        print(f"\nProcessing: {file_path}")
+        if update_single_file(file_path):
+            print(f"Successfully updated {file_path}")
 
 if __name__ == "__main__":
-    req_file = sys.argv[1] if len(sys.argv) > 1 else "requirements.txt"
-    update_requirements(req_file)
+    main()
