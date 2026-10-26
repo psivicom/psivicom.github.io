@@ -1,14 +1,9 @@
-// src/core/build.zig
-// SPDX-License-Identifier: EUPL-1.2
-// SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    // Since build.zig is now in src/core/, we scan the current directory
     const core_dir_path = ".";
     
     var dir = std.fs.cwd().openDir(core_dir_path, .{ .iterate = true }) catch |err| {
