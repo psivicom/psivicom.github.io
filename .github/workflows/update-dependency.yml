@@ -1,0 +1,45 @@
+name: Auto-Update Python Dependencies
+
+on:
+  schedule:
+    # Runs automatically every Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    # Allows manual triggering from the GitHub Actions UI
+
+permissions:
+  contents: write
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Execute dependency updater script
+        run: python3 scripts/update_requirements.py requirements.txt
+
+      - name: Check for file modifications
+        id: git-check
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "modified=true" >> $GITHUB_OUTPUT
+          else
+            echo "modified=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push updates
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add requirements.txt
+          git commit -m "chore: auto-update python dependencies to latest versions"
+          git push
