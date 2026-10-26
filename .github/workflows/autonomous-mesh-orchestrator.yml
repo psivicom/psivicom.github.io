@@ -61,20 +61,12 @@ jobs:
             exit 1
           fi
 
-      - name: Compile WENDY Zig Cortex (Automated)
+      - name: Compile WENDY Zig Cortex (Sequential Sovereign Build)
         run: |
-          echo "Running automated Zig cortex compiler..."
+          echo "Running sequential Zig cortex compiler..."
           python src/tools/zig_cortex_compiler.py
-          echo "Compilation complete. Binaries:"
-          ls -la zig-out/bin/ || echo "No binaries produced"
-
-      - name: Upload Compiled Zig Binaries as Persistent Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: wendy-zig-cortex-${{ github.run_id }}
-          path: zig-out/bin/
-          retention-days: 90
-          if-no-files-found: error
+          echo "Compiled binaries saved in src/core/:"
+          ls -la src/core/*.bin 2>/dev/null || echo "No binaries produced"
 
       - name: Restore WENDY Twin Continuity State
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
@@ -98,7 +90,7 @@ jobs:
           path: data/wendy_twin_state.json
           key: wendy-twin-continuity-main
 
-      - name: Commit Generated Artifacts and Healed Source
+      - name: Commit Generated Artifacts, Binaries, and Healed Source
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -106,14 +98,13 @@ jobs:
           git config user.email "orchestrator@psivi.com"
           git add src/ reports/ data/ config/
           git reset HEAD -- .github/workflows/ 2>/dev/null || true
-          git reset HEAD -- zig-out/ 2>/dev/null || true
           if ! git diff --staged --quiet; then
-            git commit -m "auto: autonomous orchestrator sealed artifacts, healed source, and compiled ZIG binaries [skip ci]"
+            git commit -m "auto: sovereign binaries compiled, artifacts sealed, source healed [skip ci]"
             for i in 1 2 3; do
               git pull --rebase origin main && git push origin main && break || sleep 2
             done
           else
-            echo "No new artifacts or healed source code to commit."
+            echo "No new artifacts or binaries to commit."
           fi
 
       - name: WENDY Autonomous Memory Governance
