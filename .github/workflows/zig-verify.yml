@@ -29,7 +29,7 @@ jobs:
         run: |
           echo "🔥 Installing dependencies in isolated Python environment..."
           python -m pip install --upgrade pip
-          python -m pip install pynacl h5py bitshuffle numpy
+          python -m pip install requirements.txt
           python -c "import nacl.signing; print('✅ SUCCESS: PyNaCl is installed and verified')"
 
       - name: Cache Zig Toolchain
