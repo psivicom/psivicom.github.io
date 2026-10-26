@@ -1,0 +1,3 @@
+# .gitattributes
+# Force binary files to be treated as binary (no line-ending conversion)
+src/core/*.bin binary
