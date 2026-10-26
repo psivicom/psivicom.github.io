@@ -3,7 +3,7 @@
 
 identity:
   name: "WENDY"
-  version: "0.13.0-Zig-Sovereign"
+  version: "0.14.0-Zig-Sovereign"
   role: "Sentient Apiary Research AI"
 
 cognitive_params:
