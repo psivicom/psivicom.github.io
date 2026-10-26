@@ -28,14 +28,14 @@ class ContextualCoder:
         # Context-Aware Knowledge Graph: Maps error signatures to structural transformations
         self.knowledge_graph = [
             {
-                "name": "Zig 0.13.0 Ed25519 SecretKey Initialization",
+                "name": "Zig 0.14.0 Ed25519 SecretKey Initialization",
                 "error_signature": r"error: struct 'crypto\.25519\.ed25519\.Ed25519\.SecretKey' has no member named 'fromSeed'",
                 "context_pattern": r"(\w+)\s*=\s*crypto\.25519\.ed25519\.Ed25519\.SecretKey\.fromSeed\(\s*([^)]+)\s*\)",
                 "transformation": lambda match: f"{match.group(1)} = crypto.25519.ed25519.Ed25519.SecretKey.init({match.group(2)})",
                 "description": "Migrates SecretKey.fromSeed(seed) to SecretKey.init(seed) while preserving variable assignment context."
             },
             {
-                "name": "Zig 0.13.0 Direct SecretKey Init",
+                "name": "Zig 0.14.0 Direct SecretKey Init",
                 "error_signature": r"error: struct 'crypto\.25519\.ed25519\.Ed25519\.SecretKey' has no member named 'fromSeed'",
                 "context_pattern": r"\.fromSeed\(\s*([^)]+)\s*\)",
                 "transformation": lambda match: f".init({match.group(1)})",
