@@ -38,12 +38,12 @@ pub fn main() !void {
     defer std.process.argsFree(allocator, args);
 
     if (args.len < 2) {
-        std.debug.print("Usage: vector_engine <csv_data>\\n", .{});
+        std.debug.print("Usage: vector_engine <csv_data>\n", .{});
         return;
     }
 
     var state = try VectorState.fromCsv(args[1]);
     state.normalize();
     
-    std.debug.print("👁️ Sensory Input Normalized\\n", .{});
+    std.debug.print("👁️ Sensory Input Normalized\n", .{});
 }
