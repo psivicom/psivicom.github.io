@@ -23,8 +23,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Execute dependency updater script
-        run: python3 scripts/update_requirements.py requirements.txt
+      - name: Execute dependency updater script (Auto-discover all requirement files)
+        run: python3 scripts/update_requirements.py
 
       - name: Check for file modifications
         id: git-check
@@ -40,6 +40,6 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add requirements.txt
-          git commit -m "chore: auto-update python dependencies to latest versions"
+          git add requirements*.txt
+          git commit -m "chore: auto-update all python requirement files to latest versions"
           git push
