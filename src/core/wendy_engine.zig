@@ -1,7 +1,3 @@
-// src/core/wendy_engine.zig
-// SPDX-License-Identifier: EUPL-1.2
-// SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
-
 const std = @import("std");
 
 const PSVC_MAGIC = "PSVC";
@@ -42,15 +38,14 @@ const CognitiveCore = struct {
 
     pub fn introspect(state: []u8) bool {
         var hash: [32]u8 = undefined;
-        // FIXED: Zig 0.11+ uses std.crypto.hash.Sha256 directly
+
         std.crypto.hash.Sha256.hash(state, &hash, .{});
         const zero: [32]u8 = .{0} ** 32;
         return std.mem.eql(u8, &hash, &zero);
     }
 
     pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
-        // FIXED: Changed 'var' to 'const' because the slice header is never reassigned,
-        // even though its underlying elements are mutated by the translate/sift/mutate functions.
+ 
         const current_state = try allocator.dupe(u8, initial_state);
         defer allocator.free(current_state);
 
@@ -102,7 +97,6 @@ pub fn main() !void {
     defer allocator.free(evolved_state);
 
     var new_hash: [32]u8 = undefined;
-    // FIXED: Zig 0.11+ uses std.crypto.hash.Sha256 directly
     std.crypto.hash.Sha256.hash(evolved_state, &new_hash, .{});
     
     var new_header = header;
