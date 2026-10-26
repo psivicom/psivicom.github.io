@@ -44,7 +44,7 @@ const CognitiveCore = struct {
     }
 
     pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
-        var current_state = try allocator.dupe(u8, initial_state);
+        const current_state = try allocator.dupe(u8, initial_state);
         defer allocator.free(current_state);
 
         var step: usize = 0;
