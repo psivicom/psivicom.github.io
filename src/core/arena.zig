@@ -1,6 +1,5 @@
 const std = @import("std");
 
-/// Space-grade, cache-aligned memory arena for WENDY's working memory
 pub const CognitiveArena = struct {
     backing_allocator: std.mem.Allocator,
     arena: std.heap.ArenaAllocator,
@@ -16,7 +15,6 @@ pub const CognitiveArena = struct {
         return self.arena.allocator();
     }
 
-    /// Reset working memory between cognitive inference cycles without reallocating
     pub fn resetCycle(self: *CognitiveArena) void {
         _ = self.arena.reset(.retain_capacity);
     }
