@@ -24,14 +24,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /opt/zig
-          key: zig-0.13.0-linux-x86_64
+          key: zig-0.14.0-linux-x86_64
 
       - name: Install Zig (If Not Cached)
         run: |
           if [ ! -f /opt/zig/zig ]; then
-            curl -sL https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o z.tar.xz
+            curl -sL https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz -o z.tar.xz
             tar -xf z.tar.xz
-            sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+            sudo mv zig-linux-x86_64-0.14.0 /opt/zig
           fi
           echo "/opt/zig" >> $GITHUB_PATH
 
