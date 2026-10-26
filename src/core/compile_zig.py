@@ -2,18 +2,34 @@
 import os
 import subprocess
 
-def compile_zig_project():
-    source_dir = "src/core"
-    root_dir = os.path.dirname(os.path.abspath(__file__))
-    full_source_path = os.path.join(root_dir, source_dir)
+#!/usr/bin/env python3
+import os
+import subprocess
 
+def compile_zig_project():
+    # --- PATH LOGIC START ---
+    # Get the directory where the script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # If the script is in src/core, the project root is two levels up
+    # This ensures it works both on GitHub and locally
+    root_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
+    os.chdir(root_dir)
+    
+    source_dir = "src/core"
+    full_source_path = os.path.join(root_dir, source_dir)
+    # --- PATH LOGIC END ---
+
+    # Check if the directory actually exists now
     if not os.path.exists(full_source_path):
-        print(f"Error: Directory {source_dir} not found!")
+        print(f"Error: Directory {full_source_path} not found!")
+        print(f"Current Working Directory: {os.getcwd()}")
         return
 
-    # Get list of all .zig files
+    # Rest of your code...
     zig_files = [f for f in os.listdir(full_source_path) if f.endswith('.zig')]
-    
+    # ... (the rest of your loop and subprocess calls)
+
     if not zig_files:
         print(f"No Zig files found in {source_dir}!")
         return
