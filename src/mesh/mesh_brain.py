@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
+import hashlib
 import json
 import logging
 import numpy as np
@@ -47,10 +48,54 @@ class MeshBrain:
             governor=self.governor
         )
         
-        # CRITICAL: Initialize Zig bridge for bare-metal cognitive execution
+        self.core_dir = Path("src/core")
+        self.manifest_path = Path("config/zig_cortex_hashes.json")
+        
+        self._verify_zig_binaries()
+        
         self.zig_bridge = ZigBridge()
         
         logger.info(f"🧠 MeshBrain initialized. VRAM: {total_vram_gb}GB. Zig Bridge: ACTIVE. Sovereign PSVCs: ENABLED.")
+
+    def _verify_zig_binaries(self):
+        """
+        Sovereign verification of compiled Zig binaries.
+        Ensures every binary in src/core/ matches the cryptographic hash in the manifest.
+        """
+        logger.info("🛡️ Initiating Sovereign ZIG Binary Verification Protocol...")
+        
+        if not self.manifest_path.exists():
+            logger.error(f"❌ CRITICAL: Hash manifest not found at {self.manifest_path}")
+            raise FileNotFoundError("Sovereign hash manifest missing. Run zig_cortex_compiler.py first.")
+        
+        with open(self.manifest_path, 'r') as f:
+            manifest = json.load(f)
+        
+        verification_passed = True
+        
+        for module_name, expected_hash in manifest.items():
+            binary_path = self.core_dir / f"{module_name}.bin"
+            
+            if not binary_path.exists():
+                logger.error(f"❌ CRITICAL: Verified binary missing: {module_name}.bin")
+                verification_passed = False
+                continue
+            
+            actual_hash = hashlib.sha256(binary_path.read_bytes()).hexdigest()
+            
+            if actual_hash != expected_hash:
+                logger.error(f"❌ CRITICAL: SHA-256 MISMATCH for {module_name}!")
+                logger.error(f"   Expected: {expected_hash}")
+                logger.error(f"   Actual:   {actual_hash}")
+                verification_passed = False
+            else:
+                logger.info(f"✅ Verified: {module_name}.bin")
+        
+        if not verification_passed:
+            logger.error("🚨 SOVEREIGNTY BREACH: Binary verification failed. Halting initialization.")
+            raise RuntimeError("Sovereign binary verification failed. System halted.")
+        
+        logger.info("✅ Sovereign ZIG Binary Verification Protocol: PASSED.")
 
     def calculate_shannon_entropy(self, data: np.ndarray) -> float:
         """Calculates the theoretical Shannon entropy of the sparse data array."""
@@ -123,7 +168,6 @@ class MeshBrain:
             logger.error(f"❌ VectorPixelizer failed to prepare {agent_id}")
             return
         
-        # CRITICAL: Seal the processed patch as a sovereign binary PSVC
         patch_bytes = processed_patch.tobytes()
         sealed_psvc = self.seal_sovereign_state(
             state_bytes=patch_bytes,
