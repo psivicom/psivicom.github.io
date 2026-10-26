@@ -12,4 +12,4 @@
 # For fully air-gapped nodes, download the model once and point
 # WENDY_VOICE_MODEL at the local directory.
 
-faster-whisper>=1.2.1
+faster-whisper==1.2.1
