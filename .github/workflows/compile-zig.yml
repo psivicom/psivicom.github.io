@@ -1,45 +1,68 @@
-name: COMPILE ZIG
+name: zig-compile-no-mlugg
 
 on:
   push:
-    branches:
-      - main
-      - master
-  pull_request:
-    branches:
-      - main
-      
   workflow_dispatch:
 
 jobs:
-  verify:
-    name: Zig Verification
+  compile:
     runs-on: ubuntu-latest
+
+    env:
+      # Change this if you need a different Zig version.
+      # If unsure, you can try "master".
+      ZIG_VERSION: "0.14.1"
+
     steps:
-      - name: Checkout Code
+      - name: Get code
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+      - name: Install Zig from official download
+        run: |
+          set -euo pipefail
 
-      - name: Setup Zig
-        uses: mlugg/setup-zig@v1
-        with:
-          version: 0.14.0
+          sudo apt-get update -y
+          sudo apt-get install -y jq xz-utils curl
 
-      - name: Make Script Executable
-        run: chmod +x src/core/compile_zig.py
+          json=$(curl -sL https://ziglang.org/download/index.json)
 
-      - name: Run Compilation Script
-        run: python3 src/core/compile_zig.py
+          url=$(echo "$json" | jq -r --arg v "$ZIG_VERSION" '.[$v]["x86_64-linux"].tarball // empty')
 
-      - name: Upload Compiled Binaries
+          if [ -z "$url" ]; then
+            url=$(echo "$json" | jq -r --arg v "$ZIG_VERSION" '.[$v]["x86_64-linux-musl"].tarball // empty')
+          fi
+
+          if [ -z "$url" ]; then
+            echo "Could not find Zig version $ZIG_VERSION for Linux x86_64."
+            echo "Try changing ZIG_VERSION to another version, or use master."
+            exit 1
+          fi
+
+          echo "Downloading Zig from: $url"
+          curl -L -o zig.tar.xz "$url"
+
+          tar -xf zig.tar.xz
+
+          zigbin=$(find . -maxdepth 3 -type f -name zig | head -n 1)
+
+          if [ -z "$zigbin" ]; then
+            echo "Could not find the zig executable after extracting the download."
+            exit 1
+          fi
+
+          chmod +x "$zigbin" || true
+
+          zigdir=$(dirname "$zigbin")
+          echo "$PWD/${zigdir#./}" >> "$GITHUB_PATH"
+
+      - name: Show Zig version
+        run: zig version
+
+      - name: Compile main.zig
+        run: zig build-exe main.zig -femit-bin=app
+
+      - name: Upload compiled program
         uses: actions/upload-artifact@v4
         with:
-          name: zig-binaries
-          path: src/core/
-          if-no-files-found: warn
-          compression-level: 6
-          overwrite: false
+          name: zig-app
+          path: app
