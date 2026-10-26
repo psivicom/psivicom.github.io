@@ -5,8 +5,6 @@ pub const ArenaConfig = struct {
     alignment: usize = 64,
 };
 
-// OPTIMAL: 8 x f32 = 256-bit (AVX on x86_64). 
-// Change to 4 (128-bit) only if targeting older ARM edge devices exclusively.
 pub const SimdVector = @Vector(8, f32);
 
 pub const ArenaSimd = struct {
