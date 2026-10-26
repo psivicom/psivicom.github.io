@@ -29,7 +29,22 @@ test "cognitive arena cycle retention" {
     var arena = CognitiveArena.init(testing.allocator);
     defer arena.deinit();
 
-    const mem = try arena.allocator().alloc(u8, 1024);
+    const mem = arena.allocator().alloc(u8, 1024) catch unreachable;
     testing.expect(mem.len == 1024) catch unreachable;
     arena.resetCycle();
+}
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    
+    var arena = CognitiveArena.init(gpa.allocator());
+    defer arena.deinit();
+
+    const mem = try arena.allocator().alloc(u8, 1024);
+    _ = mem;
+    
+    arena.resetCycle();
+    
+    std.debug.print("🧠 Cognitive Arena: Cycle complete\n", .{});
 }
