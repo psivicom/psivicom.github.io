@@ -102,9 +102,9 @@ class WorkflowSHAEnforcer:
                         native_zig_step = f"""{indent}# NATIVE INSTALL: Bypasses third-party action restrictions
 {indent}- name: Install Zig Toolchain
 {indent}  run: |
-{indent}    curl -L https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz -o zig.tar.xz
+{indent}    curl -L https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz -o zig.tar.xz
 {indent}    tar -xf zig.tar.xz
-{indent}    sudo mv zig-linux-x86_64-0.13.0 /opt/zig
+{indent}    sudo mv zig-linux-x86_64-0.14.0 /opt/zig
 {indent}    echo "/opt/zig" >> $GITHUB_PATH
 {indent}    zig version"""
                         # Replace the entire 'uses' line and its following 'with' block (simplified replacement)
