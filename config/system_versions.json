@@ -1,12 +1,9 @@
 {
   "python": {
-    "version": "3.12",
-    "upgrade_threshold": "3.13"
+    "version": "3.12"
   },
   "zig": {
-    "version": "0.13.0",
-    "os": "linux-x86_64",
-    "upgrade_threshold": "0.14.0"
-  },
-  "last_audit_timestamp": "2026-10-15T00:00:00.000Z"
+    "version": "0.14.0",
+    "os": "linux-x86_64"
+  }
 }
