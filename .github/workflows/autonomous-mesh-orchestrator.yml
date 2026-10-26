@@ -67,14 +67,16 @@ jobs:
             exit 1
           fi
 
-      - name: Compile WENDY Zig Cortex
+      - name: Compile WENDY Zig Cortex (Automated)
         run: |
-          echo "⚡ Compiling all src/core/ Zig modules with ReleaseSafe optimization..."
-          # Tell Zig to use the build.zig file inside src/core/
-          zig build --build-file src/core/build.zig -Doptimize=ReleaseSafe
+          echo "⚡ Compiling all src/core/ Zig modules with automated API fixes and hash generation..."
+          python src/tools/zig_cortex_compiler.py
           
           echo "✅ Compilation successful. Binaries located in zig-out/bin/"
           ls -la zig-out/bin/
+          
+          echo "✅ Hash manifest generated:"
+          cat config/zig_cortex_hashes.json
 
       - name: Restore WENDY Twin Continuity State
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
@@ -107,7 +109,7 @@ jobs:
           git config user.email "orchestrator@psivi.com"
           git add src/ reports/ data/ config/ zig-out/
           if ! git diff --staged --quiet; then
-            git commit -m "auto: autonomous orchestrator sealed artifacts, healed source, and compiled ZIG binaries [skip ci]"
+            git commit -m "auto: autonomous orchestrator sealed artifacts, healed source, compiled ZIG binaries, and updated hash manifest [skip ci]"
             for i in 1 2 3; do
               git pull --rebase origin main && git push origin main && break || sleep 2
             done
