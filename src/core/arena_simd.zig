@@ -110,10 +110,12 @@ pub const ArenaSimd = struct {
         const chunks = data.len / 16;
 
         while (i < chunks * 16) : (i += 16) {
-            const slice = data[i..][0..16];
-            const vec: SimdVector = @as(*const SimdVector, @ptrCast(@alignCast(slice.ptr))).*;
+            const in_ptr = data[i..i+16].ptr;
+            const vec: SimdVector = @as(*const SimdVector, @ptrCast(@alignCast(in_ptr))).*;
             const res_vec = vec * factor_vec;
-            @as(*SimdVector, @ptrCast(@alignCast(result[i..][0..16].ptr))).* = res_vec;
+            
+            const out_ptr = result[i..i+16].ptr;
+            @as(*SimdVector, @ptrCast(@alignCast(out_ptr))).* = res_vec;
         }
 
         while (i < data.len) : (i += 1) {
