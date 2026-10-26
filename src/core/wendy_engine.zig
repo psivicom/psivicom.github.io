@@ -1,3 +1,7 @@
+// src/core/wendy_engine.zig
+// SPDX-License-Identifier: EUPL-1.2
+// SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
+
 const std = @import("std");
 
 const PSVC_MAGIC = "PSVC";
@@ -45,7 +49,9 @@ const CognitiveCore = struct {
     }
 
     pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
-        var current_state = try allocator.dupe(u8, initial_state);
+        // FIXED: Changed 'var' to 'const' because the slice header is never reassigned,
+        // even though its underlying elements are mutated by the translate/sift/mutate functions.
+        const current_state = try allocator.dupe(u8, initial_state);
         defer allocator.free(current_state);
 
         var step: usize = 0;
