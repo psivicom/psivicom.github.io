@@ -110,10 +110,10 @@ pub const ArenaSimd = struct {
         const chunks = data.len / 16;
 
         while (i < chunks * 16) : (i += 16) {
-            const chunk_ptr = data[i..][0..16].ptr;
-            const vec: SimdVector = @as(*SimdVector, @ptrCast(@alignCast(chunk_ptr))).*;
+            const slice = data[i..][0..16];
+            const vec: SimdVector = @as(*const SimdVector, @ptrCast(@alignCast(slice.ptr))).*;
             const res_vec = vec * factor_vec;
-            @as(*SimdVector, @ptrCast(@alignCast(result[i..].ptr))).* = res_vec;
+            @as(*SimdVector, @ptrCast(@alignCast(result[i..][0..16].ptr))).* = res_vec;
         }
 
         while (i < data.len) : (i += 1) {
@@ -125,7 +125,7 @@ pub const ArenaSimd = struct {
 };
 
 export fn create_arena(block_size: usize, alignment: usize) *ArenaSimd {
-    const allocator = std.heap.c_allocator;
+    const allocator = std.heap.page_allocator;
     const arena = allocator.create(ArenaSimd) catch @panic("OOM");
     arena.* = ArenaSimd.init(allocator, ArenaConfig{
         .block_size = block_size,
@@ -154,5 +154,5 @@ pub fn main() !void {
     const data = [_]f32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
     const result = try arena.processSimdPipeline(&data, 2.0);
 
-    std.debug.print("⚡ SIMD Pipeline: Processed {} elements\n", .{result.len});
+    std.debug.print("SIMD Pipeline: Processed {} elements\n", .{result.len});
 }
