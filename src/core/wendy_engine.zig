@@ -37,16 +37,14 @@ const CognitiveCore = struct {
     }
 
     pub fn introspect(state: []u8) bool {
-        const hash: [32]u8 = undefined;
-
+        var hash: [32]u8 = undefined;
         std.crypto.hash.sha2.Sha256.hash(state, &hash, .{});
         const zero: [32]u8 = .{0} ** 32;
         return std.mem.eql(u8, &hash, &zero);
     }
 
     pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
- 
-        const current_state = try allocator.dupe(u8, initial_state);
+        var current_state = try allocator.dupe(u8, initial_state);
         defer allocator.free(current_state);
 
         var step: usize = 0;
@@ -96,7 +94,7 @@ pub fn main() !void {
     const evolved_state = try CognitiveCore.evolve(allocator, payload);
     defer allocator.free(evolved_state);
 
-    const new_hash: [32]u8 = undefined;
+    var new_hash: [32]u8 = undefined;
     std.crypto.hash.sha2.Sha256.hash(evolved_state, &new_hash, .{});
     
     var new_header = header;
