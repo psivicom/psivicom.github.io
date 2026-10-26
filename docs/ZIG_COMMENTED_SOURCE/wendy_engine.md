@@ -49,8 +49,8 @@ const CognitiveCore = struct {
     }
 
     pub fn evolve(allocator: std.mem.Allocator, initial_state: []u8) ![]u8 {
-        // FIXED: Changed 'var' to 'const' because the slice header is never reassigned,
-        // even though its underlying elements are mutated by the translate/sift/mutate functions.
+        // FIXED: Changed 'var' to 'const'. The slice header is never reassigned, 
+        // even though the underlying elements are mutated by the translation functions.
         const current_state = try allocator.dupe(u8, initial_state);
         defer allocator.free(current_state);
 
