@@ -2,10 +2,6 @@
 import os
 import subprocess
 
-#!/usr/bin/env python3
-import os
-import subprocess
-
 def compile_zig_project():
     # --- PATH LOGIC START ---
     # Get the directory where the script is located
@@ -26,9 +22,8 @@ def compile_zig_project():
         print(f"Current Working Directory: {os.getcwd()}")
         return
 
-    # Rest of your code...
-    zig_files = [f for f in os.listdir(full_source_path) if f.endswith('.zig')]
-    # ... (the rest of your loop and subprocess calls)
+    # Exclude build.zig as it is a build script, not a standalone executable
+    zig_files = [f for f in os.listdir(full_source_path) if f.endswith('.zig') and f != 'build.zig']
 
     if not zig_files:
         print(f"No Zig files found in {source_dir}!")
@@ -45,8 +40,8 @@ def compile_zig_project():
 
         print(f"--- Processing: {filename} ---")
         
-        # Command to compile ONLY this one file
-        command = ["zig", "build-exe", input_path, "-o", output_path]
+        # Command to compile ONLY this one file using -femit-bin (modern Zig syntax replacing deprecated -o)
+        command = ["zig", "build-exe", input_path, f"-femit-bin={output_path}"]
 
         try:
             # We use capture_output=True so the error doesn't flood the screen 
