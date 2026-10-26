@@ -111,7 +111,7 @@ pub const ArenaSimd = struct {
 
         while (i < chunks * 8) : (i += 8) {
             var temp: [8]f32 = undefined;
-            @memcpy(&temp, data[i..i+8]);
+            std.mem.copyForwards(f32, temp[0..], data[i..i+8]);
             const vec: SimdVector = temp;
             
             const res_vec = vec * factor_vec;
