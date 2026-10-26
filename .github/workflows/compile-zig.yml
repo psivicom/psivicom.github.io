@@ -20,10 +20,17 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Zig
-        uses: zigvm/setup-zig@v0.5.0
-        with:
-          zig-version: '0.14.0' # Change this to your specific Zig version
+      - name: Install Zig Manually
+        run: |
+          # Download the Zig tarball for Linux x86_64
+          # Replace 0.14.0 with your required version
+          wget https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz
+          
+          # Extract the archive
+          tar -xf zig-linux-x86_64-0.14.0.tar.xz
+          
+          # Add Zig to the system PATH so the Python script can find the 'zig' command
+          echo "$(pwd)/zig-linux-x86_64-0.14.0" >> $GITHUB_PATH
 
       - name: Make script executable
         run: chmod +x src/core/compile_zig.py
