@@ -27,7 +27,7 @@ SAVE_VERIFY_RETRIES = 5
 SAVE_VERIFY_DELAY = 0.5
 
 def apply_known_fixes(zig_file: Path) -> bool:
-    """Apply only the verified Zig 0.13.0 API fixes."""
+    """Apply only the verified Zig 0.14.0 API fixes."""
     try:
         original = zig_file.read_text()
         modified = original
