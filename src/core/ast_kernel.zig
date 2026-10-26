@@ -38,19 +38,16 @@ pub const AstKernel = struct {
     pub fn parseIntrospection(self: *AstKernel, source: []const u8) !AstNode {
         var root = AstNode.init(self.allocator, .Root, "root");
         var it = std.mem.tokenizeAny(u8, source, " \n\t{}");
-        while (it.next()) |token|
-        {
+        while (it.next()) |token| {
             if (std.mem.eql(u8, token, "fn")) {
                 if (it.next()) |fname| {
-                    var fn_node = AstNode.init(self.allocator, .Function, fname);
+                    const fn_node = AstNode.init(self.allocator, .Function, fname);
                     try root.children.append(fn_node);
                 }
             } else if (std.mem.eql(u8, token, "var")) {
-                if (std.mem.eql(u8, token, "var")) {
-                    if (it.next()) |vname| {
-                        var var_node = AstNode.init(self.allocator, .Variable, vname);
-                        try root.children.append(var_node);
-                    }
+                if (it.next()) |vname| {
+                    const var_node = AstNode.init(self.allocator, .Variable, vname);
+                    try root.children.append(var_node);
                 }
             }
         }
@@ -65,4 +62,14 @@ export fn wendy_ast_kernel_verify() bool {
     var node = kernel.parseIntrospection("fn optimize() { var x = 1; }") catch return false;
     defer node.deinit();
     return node.children.items.len == 2;
+}
+
+pub fn main() !void {
+    var arena = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = arena.deinit();
+    var kernel = AstKernel.init(arena.allocator());
+    var node = try kernel.parseIntrospection("fn optimize() { var x = 1; }");
+    defer node.deinit();
+    
+    std.debug.print("🌳 AST Kernel: Parsed {} nodes\n", .{node.children.items.len});
 }
