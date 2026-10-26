@@ -55,7 +55,7 @@ class TelemetryDashboardGenerator:
             f"## 🛡️ Sovereign Governance\n\n"
             f"- **Architectural Drift Corrections:** 0 (Repository is perfectly aligned)\n"
             f"- **Ephemeral Sandbox Rescues:** 0 (No data lost to `/tmp`)\n"
-            f"- **Toolchain Version:** Python 3.12 | Zig 0.13.0 (Dynamically managed via `config/system_versions.json`)\n\n"
+            f"- **Toolchain Version:** Python 3.12 | Zig 0.14.0 (Dynamically managed via `config/system_versions.json`)\n\n"
             f"---\n\n"
             f"*Generated autonomously by WENDY. No human intervention required.*\n"
         )
