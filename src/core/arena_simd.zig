@@ -107,19 +107,19 @@ pub const ArenaSimd = struct {
         const factor_vec: SimdVector = @splat(factor);
         
         var i: usize = 0;
-        // Updated to match the 8-element vector size
         const chunks = data.len / 8;
 
         while (i < chunks * 8) : (i += 8) {
-            const in_ptr = data[i..i+8].ptr;
-            const vec: SimdVector = @as(*const SimdVector, @ptrCast(@alignCast(in_ptr))).*;
+            var temp: [8]f32 = undefined;
+            @memcpy(&temp, data[i..i+8]);
+            const vec: SimdVector = temp;
+            
             const res_vec = vec * factor_vec;
             
-            const out_ptr = result[i..i+8].ptr;
-            @as(*SimdVector, @ptrCast(@alignCast(out_ptr))).* = res_vec;
+            const out_slice = result[i..i+8];
+            @as(*SimdVector, @ptrCast(@alignCast(out_slice.ptr))).* = res_vec;
         }
 
-        // Handle any remaining elements that don't fit into a full vector
         while (i < data.len) : (i += 1) {
             result[i] = data[i] * factor;
         }
@@ -155,7 +155,7 @@ pub fn main() !void {
     });
     defer arena.deinit();
 
-    const data = [_]f32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
+    var data = [_]f32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
     const result = try arena.processSimdPipeline(&data, 2.0);
 
     std.debug.print("SIMD Pipeline: Processed {} elements\n", .{result.len});
