@@ -1,72 +1,68 @@
-name: Space-Grade Zig Self-Healing Compiler
+name: space-zig-compile
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'src/core/*.zig'
-      - 'src/core/*.py'
-      - 'src/mesh/*.py'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  build-and-heal:
+  compile:
     runs-on: ubuntu-latest
+
+    env:
+      # Change this if you need a different Zig version.
+      # If unsure, you can try "master".
+      ZIG_VERSION: "0.14.1"
+
     steps:
-      - name: Checkout Repository
+      - name: Get code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.12 (Industry Standard)
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install Python Dependencies
+      - name: Install Zig from official download
         run: |
-          echo "🔥 Installing dependencies in isolated Python environment..."
-          python -m pip install --upgrade pip
-          python -m pip install requirements.txt
-          python -c "import nacl.signing; print('✅ SUCCESS: PyNaCl is installed and verified')"
+          set -euo pipefail
 
-      - name: Cache Zig Toolchain
-        uses: actions/cache@v4
-        with:
-          path: /opt/zig
-          key: zig-0.14.0-linux-x86_64
+          sudo apt-get update -y
+          sudo apt-get install -y jq xz-utils curl
 
-      - name: Install Zig Toolchain
-        run: |
-          if [ ! -f /opt/zig/zig ]; then
-            curl -L https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz -o z.tar.xz
-            tar -xf z.tar.xz
-            sudo mv zig-linux-x86_64-0.14.0 /opt/zig
+          json=$(curl -sL https://ziglang.org/download/index.json)
+
+          url=$(echo "$json" | jq -r --arg v "$ZIG_VERSION" '.[$v]["x86_64-linux"].tarball // empty')
+
+          if [ -z "$url" ]; then
+            url=$(echo "$json" | jq -r --arg v "$ZIG_VERSION" '.[$v]["x86_64-linux-musl"].tarball // empty')
           fi
-          echo "/opt/zig" >> $GITHUB_PATH
 
-      - name: Autonomous Compilation
-        run: |
-          for file in src/core/wendy_engine.zig src/core/psvc_sealer.zig src/core/vector_engine.zig src/core/actuation_engine.zig src/core/zulu_clock.zig; do
-            if [ -f "$file" ]; then
-              echo "Compiling $file..."
-              /opt/zig/zig build-exe "$file" -O ReleaseSafe -fstrip -femit-bin="${file%.zig}"
-            fi
-          done
+          if [ -z "$url" ]; then
+            echo "Could not find Zig version $ZIG_VERSION for Linux x86_64."
+            echo "Try changing ZIG_VERSION to another version, or use master."
+            exit 1
+          fi
 
-      - name: Execute Mesh Brain
-        run: |
-          echo "🔥 Executing Mesh Brain with verified environment..."
-          python -m src.mesh.mesh_brain
+          echo "Downloading Zig from: $url"
+          curl -L -o zig.tar.xz "$url"
 
-      - name: Commit Artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "WENDY Architect"
-          git config user.email "architect@psivi.com"
-          git add src/core/*.zig src/core/*.py src/core/*
-          git diff --staged --quiet || (git commit -m "feat: architectural redesign with lazy imports and setup-python [skip ci]" && git push origin HEAD:refs/heads/main)
-          echo "🔔 PRODUCTION SEAL APPLIED 🔔"
+          tar -xf zig.tar.xz
+
+          zigbin=$(find . -maxdepth 3 -type f -name zig | head -n 1)
+
+          if [ -z "$zigbin" ]; then
+            echo "Could not find the zig executable after extracting the download."
+            exit 1
+          fi
+
+          chmod +x "$zigbin" || true
+
+          zigdir=$(dirname "$zigbin")
+          echo "$PWD/${zigdir#./}" >> "$GITHUB_PATH"
+
+      - name: Show Zig version
+        run: zig version
+
+      - name: Compile main.zig
+        run: zig build-exe main.zig -femit-bin=app
+
+      - name: Upload compiled program
+        uses: actions/upload-artifact@v4
+        with:
+          name: zig-app
+          path: app
