@@ -1,0 +1,112 @@
+# ==============================================================================
+# PSIVI.COM Open Science Core Compliance & Telemetry Engine
+# Target: Automated Verification of FAIR Gaps and AETHER Log Re-Generation
+# Compliance: NASA SPD-41a, NIST SP 800-218 (SSDF)
+# ==============================================================================
+
+name: "Open Science Compliance & Telemetry Pipeline"
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit-and-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Repository Codebase"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ------------------------------------------------------------------------
+      # 1. Structural Validation (Strict JSON, YAML, & FAIR Mapping Rules)
+      # ------------------------------------------------------------------------
+      - name: "Audit Metadata File Formats & Paths"
+        run: |
+          echo "=== Executing Structural Machine-Readability Verification ==="
+          
+          # Check critical file presence
+          for file in codemeta.json CITATION.cff .gitattributes index.html; do
+            if [ ! -f "$file" ]; then
+              echo "CRITICAL GAP: Missing structural node anchor [$file]"
+              exit 1
+            fi
+          done
+          
+          # Verify CodeMeta JSON structure
+          python3 -m json.tool codemeta.json > /dev/null
+          echo "✔ codemeta.json parsed successfully by structural validator."
+          
+          # Detect abandoned or dead space agency placeholders
+          if grep -q "zenodo.0000000" CITATION.cff; then
+            echo "WARNING: Production trace gap flagged. CITATION.cff is using a sandbox/concept placeholder DOI."
+          fi
+
+      # ------------------------------------------------------------------------
+      # 2. Dynamic AETHER Vanguard Telemetry Engine
+      # ------------------------------------------------------------------------
+      - name: "Rebuild and Synthesize Telemetry Log"
+        run: |
+          echo "=== Parsing Repo Analytics to Update AETHER Telemetry ==="
+          
+          # Extract current metadata variables
+          CURRENT_DATE=$(date -u +"%Y-%m-%d")
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          
+          # Parse soil moisture from data folder if available, else default safely
+          SOIL_MOISTURE="N/A"
+          if [ -f "data/soil_moisture.json" ]; then
+            # Attempt extraction of the most recent reading via python parsing
+            SOIL_MOISTURE=$(python3 -c "import json; d=json.load(open('data/soil_moisture.json')); print(d[-1].get('moisture', 'N/A'))" 2>/dev/null || echo "N/A")
+          fi
+
+          echo "Extracted Date: $CURRENT_DATE"
+          echo "Active Commit Pointer: $COMMIT_HASH"
+          echo "Soil Moisture Status: $SOIL_MOISTURE"
+
+          # Use python block replacement to safely inject new state into index.html
+          python3 - <<EOF
+          import re
+
+          with open('index.html', 'r', encoding='utf-8') as f:
+              content = f.read()
+
+          # Target the static placeholder string block inside the telemetric block
+          target_pattern = r'(AETHER VANGUARD · TELEMETRY LOG\s*\n\s*)awaiting telemetry\.\.\.'
+          replacement_text = f"\\\\1ACTIVE COMMIT NODE: {COMMIT_HASH} | PIPELINE VERIFIED: {CURRENT_DATE} | SOIL MOISTURE STATE: {SOIL_MOISTURE} m³/m³"
+
+          # Perform absolute regex modification without disrupting layout structures
+          updated_content = re.sub(target_pattern, replacement_text, content)
+
+          with open('index.html', 'w', encoding='utf-8') as f:
+              f.write(updated_content)
+          EOF
+
+          echo "✔ index.html layout tracking arrays updated seamlessly."
+
+      # ------------------------------------------------------------------------
+      # 3. Secure Direct Repository Sync
+      # ------------------------------------------------------------------------
+      - name: "Commit and Push Verified Structural Array Changes"
+        run: |
+          git config --local user.email "louis@psivi.com"
+          git config --local user.name "PSIVI AI Automation Engine"
+          
+          # Stage structural alterations while avoiding data directory lockouts
+          git add index.html
+          
+          # Only proceed with tree execution if actual state modifications exist
+          if ! git diff --cached --quiet; then
+            git commit -m "automation: resolved trace gaps & updated AETHER telemetry [commit $GITHUB_SHA]"
+            git push origin HEAD:${{ github.ref }}
+            echo "✔ Clean state changes synced to repository upstream."
+          else
+            echo "No structural state divergence detected. Skipping sync pipeline."
+          fi
