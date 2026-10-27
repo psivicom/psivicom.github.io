@@ -15,16 +15,6 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
-      # --- ADD THIS DEBUG STEP ---
-      - name: Debug - Show files in repository
-        run: |
-          pwd
-          echo "--- Root directory ---"
-          ls -la
-          echo "--- src directory (if exists) ---"
-          ls -la src || echo "No src directory"
-      # ---------------------------
-
       - name: Install Zig from official download
         run: |
           set -euo pipefail
@@ -58,12 +48,29 @@ jobs:
       - name: Show Zig version
         run: zig version
 
-      # CHANGE THIS PATH if your file is in src/ or named differently
-      - name: Compile main.zig
-        run: zig build-exe main.zig -femit-bin=app
+      # --- UPDATED COMPILE STEP ---
+      - name: Compile each .zig file in src/core
+        run: |
+          # 1. Ensure the directory actually exists
+          if [ ! -d "src/core" ]; then
+            echo "Error: Directory 'src/core' does not exist!"
+            exit 1
+          fi
 
-      - name: Upload compiled program
+          # 2. Loop through every .zig file in the folder
+          for file in src/core/*.zig; do
+            # Check if file exists (prevents errors if the folder is empty)
+            [ -e "$file" ] || continue
+            
+            # Extract just the filename without the .zig extension
+            bin_name=$(basename "$file" .zig)
+            
+            echo "Compiling $file -> src/core/$bin_name"
+            zig build-exe "$file" -femit-bin="src/core/$bin_name"
+          done
+
+      - name: Upload compiled programs
         uses: actions/upload-artifact@v4
         with:
-          name: zig-app
-          path: app
+          name: zig-apps
+          path: src/core/
