@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WENDY">
 <title>WENDY — Sovereign Voice Face | PSIVI.COM</title>
-<meta name="description" content="WENDY v2.1 — the honeybee face. Sovereign round table, hardened boot: local ears/brain/recall, live ruOS bridge, opt-in QWEN/GLM lanes, Open Room. Every line badged.">
+<meta name="description" content="WENDY — sovereign round table, hardened boot. Local ears/brain/recall via guarded dynamic imports; live ruOS bridge; opt-in QWEN/GLM cloud lanes, every line badged. No silent cloud calls.">
 <style>
 :root{--navy:#0A1931;--navy2:#0d2145;--ink:#060f20;--cyan:#00D4FF;--cysoft:rgba(0,212,255,.14);--klein:#002FA7;--amber:#ffb454;--violet:#b07cff;--green:#2fd575;--magenta:#ff5fb0;--red:#ff6b6b;--text:#e4e4e7;--dim:#71717a;--bright:#fafafa;--mono:ui-monospace,Menlo,Consolas,monospace;--sans:'Optimistic',system-ui,-apple-system,sans-serif;--wendy:#00D4FF;--ruos:#ffb454;--qwen:#b07cff;--glm:#2fd575;--you:#fafafa}
 *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
@@ -32,7 +32,6 @@ main{flex:1 1 auto;display:grid;grid-template-columns:248px 1fr;min-height:0}
 .face-glow{position:absolute;inset:-10%;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.25),transparent 60%);filter:blur(8px);opacity:.55;transition:.3s}
 .face-wrap.talk .face-glow{opacity:1;animation:breath 1.2s ease-in-out infinite}@keyframes breath{50%{transform:scale(1.06);opacity:.85}}
 svg.face{position:relative;width:100%;height:100%;display:block}
-/* ===== bee life ===== */
 #bee{transform-box:fill-box;transform-origin:50% 70%;animation:hover 5.2s ease-in-out infinite}
 @keyframes hover{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-1.4deg)}}
 .wings{transform-box:fill-box;transform-origin:50% 92%}
@@ -104,7 +103,7 @@ footer .warn .dot{background:var(--amber)}footer .err .dot{background:var(--red)
 <body>
 <header>
   <div class="sigil" aria-hidden="true"></div>
-  <h1>WENDY<small>SOVEREIGN VOICE FACE · HONEYBEE · v2.1</small></h1>
+  <h1>WENDY<small>SOVEREIGN VOICE FACE · HONEYBEE · <span class="ver-tag"></span></small></h1>
   <div class="spacer"></div>
   <span class="chip on" id="chip-cap">L0:—</span>
   <span class="chip on" id="chip-cloud">CLOUD:OFF</span>
@@ -133,7 +132,6 @@ footer .warn .dot{background:var(--amber)}footer .err .dot{background:var(--red)
         </defs>
         <circle cx="100" cy="100" r="86" fill="url(#ff)" stroke="url(#fs)" stroke-width="1.5"/>
         <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(0,212,255,.2)" stroke-width="0.5" stroke-dasharray="2 4"/>
-        <!-- flower -->
         <g id="flower">
           <g fill="url(#pt)" stroke="rgba(0,212,255,.28)" stroke-width="0.8">
             <ellipse cx="100" cy="98" rx="13" ry="24" transform="rotate(0 100 124)"/>
@@ -146,7 +144,6 @@ footer .warn .dot{background:var(--amber)}footer .err .dot{background:var(--red)
           <circle cx="100" cy="124" r="15" fill="url(#cn)" stroke="rgba(60,40,5,.4)" stroke-width="1"/>
           <g fill="#8a5a12"><circle cx="96" cy="120" r="1.4"/><circle cx="103" cy="121" r="1.4"/><circle cx="99" cy="126" r="1.4"/><circle cx="105" cy="127" r="1.4"/><circle cx="93" cy="126" r="1.2"/><circle cx="101" cy="116" r="1.2"/></g>
         </g>
-        <!-- bee (top-down, head in flower) -->
         <g id="bee">
           <g class="wings" fill="url(#wg)" stroke="rgba(0,212,255,.6)" stroke-width="1">
             <ellipse cx="74" cy="84" rx="27" ry="12" transform="rotate(-34 100 94)"/>
@@ -187,7 +184,7 @@ footer .warn .dot{background:var(--amber)}footer .err .dot{background:var(--red)
   <span class="seg" id="foot-bridge"><span class="dot"></span>RUOS:<b>OFF</b></span>
   <span class="seg" id="foot-active"><span class="dot"></span>ACTIVE:<b>WENDY</b></span>
   <span class="seg" id="foot-last"><span class="dot"></span>LAST:<b>—</b></span>
-  <span class="ver">WENDY v2.1 · honeybee · hardened boot · badged tiers · MIT</span>
+  <span class="ver"><span class="ver-tag"></span> · honeybee · local ears/brain/recall · badged bridge+cloud · MIT</span>
 </footer>
 <form id="composer">
   <textarea id="input" rows="1" placeholder="Speak to the table… (mic = local whisper · peers always talk, badged by provenance)" aria-label="Your message"></textarea>
@@ -197,13 +194,13 @@ footer .warn .dot{background:var(--amber)}footer .err .dot{background:var(--red)
 <aside class="deck" id="deck" aria-label="Desktop + wire">
   <div class="deck-head"><button class="tab active" data-tab="desktop">DESKTOP</button><button class="tab" data-tab="wire">WIRE</button><div class="deck-spacer"></div><button class="chip" id="deck-close" style="font-size:9px;padding:3px 7px">CLOSE</button></div>
   <div class="tab-pane active" data-pane="desktop"><div class="iframe-wrap"><iframe id="ruosFrame" title="ruOS Agentic Desktop" allow="microphone;camera;clipboard-read;clipboard-write;fullscreen" src="about:blank"></iframe></div>
-    <div class="deck-status"><span id="ruosLinkStatus">BRIDGE OFF</span><span>ruOS · iframe + fallback</span></div></div>
+    <div class="deck-status"><span id="ruosLinkStatus">BRIDGE OFF</span><span>ruOS · iframe + badged local fallback</span></div></div>
   <div class="tab-pane" data-pane="wire"><div id="wireLog"></div><div class="wctrl"><button id="copyWire">COPY</button><button id="clearWire">CLEAR</button></div>
     <div class="deck-status"><span>TX/RX · TOOL · PREFILL · ERR</span><span>audit</span></div></div>
 </aside><div class="scrim" id="deckScrim"></div>
 <aside class="drawer" id="drawer" aria-label="Settings">
-  <h2>Sovereignty</h2><div class="row"><div class="note">This build <b>cannot die from a blocked CDN</b>. Transformers/WebLLM load via guarded dynamic imports; on failure the face animates, the table talks (L1 SIM, badged). <b>NO_CLOUD_LLM</b>: ears/brain/recall stay local; cloud lanes opt-in + badged. No silent cloud STT, ever.</div></div>
-  <h2>Capability ladder</h2><div class="row"><div class="note"><b>L0</b> real local WebLLM. <b>L1</b> SIMULATION — scripted peers, banner warns. <b>L2</b> z.ai/relay GPU (the rung GitHub Pages can never provide on its own).</div></div>
+  <h2>Sovereignty</h2><div class="row"><div class="note">Boot is <b>CDN-failure proof</b>: Transformers/WebLLM load via guarded dynamic imports inside try/catch; on failure the face still animates, the Open Room still talks (badged SIMULATION). <b>NO_CLOUD_LLM</b>: ears/brain/recall stay local; cloud lanes opt-in + badged. No silent cloud STT exists — there is no cloud STT code path at all.</div></div>
+  <h2>Capability ladder</h2><div class="row"><div class="note"><b>L0</b> real local WebLLM. <b>L1</b> SIMULATION — scripted peers, banner warns. <b>L2</b> z.ai/relay GPU (the rung GitHub Pages cannot provide on its own).</div></div>
   <h2>Relay proxy</h2><div class="row"><label>Proxy base URL</label><input type="text" id="cfg-proxy" placeholder="https://you.proxy.dev"><div class="note">Cloud lanes hit <code>{proxy}/qwen|glm/chat/completions</code>. Keys live server-side.</div></div>
   <h2>Local brain</h2>
   <div class="row"><label>Model</label><select id="cfg-wendy-model"><option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2-360M (~250MB, fast)</option><option value="Llama-3.2-1B-Instruct-q4f32_1-MLC">Llama-3.2-1B (~1GB)</option><option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Qwen2.5-0.5B (~350MB)</option><option value="shadow-only">Shadow only (no webllm)</option></select>
@@ -225,31 +222,31 @@ footer .warn .dot{background:var(--amber)}footer .err .dot{background:var(--red)
   <div class="row"><label>GLM prompt</label><textarea id="cfg-glm-persona" rows="3"></textarea></div>
   <h2>Memory + Prune</h2>
   <div class="toggle-row"><div class="lbl">Semantic recall (MiniLM + IndexedDB)</div><label class="switch"><input type="checkbox" id="cfg-mem-on" checked><span class="slider"></span></label></div>
-  <div class="toggle-row"><div class="lbl">Entropy-prune cloud prefill<small>Port of test/entropy_check.c: repeat/ws/low-entropy dropped; markers + &lt;&lt;TENSION&gt;&gt; kept.</small></div><label class="switch"><input type="checkbox" id="cfg-prune" checked><span class="slider"></span></label></div>
+  <div class="toggle-row"><div class="lbl">Entropy-prune cloud prefill<small>JS prune() mirrors entropy_check.c constants (819/64/2/24); markers + &lt;&lt;TENSION&gt;&gt; kept.</small></div><label class="switch"><input type="checkbox" id="cfg-prune" checked><span class="slider"></span></label></div>
   <div class="row"><div class="note" id="cfg-mem-status">store: idle</div></div>
   <div class="row" style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn" id="btn-export">EXPORT JSON</button><button class="btn danger" id="btn-clear-mem">CLEAR RECALL</button><button class="btn danger" id="btn-clear-buf">CLEAR BUFFER</button></div>
   <h2>Behavior</h2>
   <div class="toggle-row"><div class="lbl">Voice output</div><label class="switch"><input type="checkbox" id="cfg-voice" checked><span class="slider"></span></label></div>
-  <div class="row"><label>Ears (local whisper)</label><select id="cfg-asr-model"><option value="base">Whisper-base (~80MB)</option><option value="tiny">Whisper-tiny.en (~40MB)</option></select><div class="note">If Whisper load fails, MIC emits a visible ERR line — no cloud STT fallback exists.</div></div>
+  <div class="row"><label>Ears (local whisper)</label><select id="cfg-asr-model"><option value="base">Whisper-base (~80MB)</option><option value="tiny">Whisper-tiny.en (~40MB)</option></select><div class="note">If Whisper load fails, MIC emits a visible ERR line — no cloud STT fallback exists by design.</div></div>
   <div class="toggle-row"><div class="lbl">Auto-scroll table</div><label class="switch"><input type="checkbox" id="cfg-autoscroll" checked><span class="slider"></span></label></div>
   <div class="toggle-row"><div class="lbl">Summon GLM on tension<small>Structural stance-overlap wins; the model's tag is a tie-breaker.</small></div><label class="switch"><input type="checkbox" id="cfg-summon-tension" checked><span class="slider"></span></label></div>
   <div class="toggle-row"><div class="lbl">Open Room (auto-debate)</div><label class="switch"><input type="checkbox" id="cfg-openroom" checked><span class="slider"></span></label></div>
-  <h2>About</h2><div class="row"><div class="note"><b>Provenance:</b> LOCAL · L0 · SIMULATION · SHADOW · RELAY · L2 · IFRAME · TOOL · ERR. Sim/shadow lines render dim-italic. We never evade controls — pruning + bounded turns make every cloud call smaller. Seed: ruOS(bridge) · Qwen(conditional seat+honesty) · GLM(cloud-set+proxy+demotion) · v1.7(ears/bridge/recall) · v2.0(hardened boot) · v2.1(honeybee).</div></div>
+  <h2>About · authorship</h2><div class="row"><div class="note"><b>Author &amp; integrator:</b> the human owner — set the sovereignty contract, chose each contribution, wrote the synthesis. <b>Named agent contributions:</b> ruOS (Cognitum One) defined the postMessage bridge contract; Qwen the conditional-seat + honesty diff; GLM/Z.ai the cloud-set, relay proxy, shadow-demotion. <b>Versioned hardening:</b> v1.7 ears+bridge+recall · v1.8 syntax-fix claim (did not cover the CDN cliff) · v2.0 guarded-import boot · v2.1 honeybee. <b>Provenance:</b> LOCAL · L0 · SIMULATION · SHADOW · RELAY · L2 · IFRAME · TOOL · ERR; sim/shadow lines render dim-italic. <b>No silent cloud.</b></div></div>
+  <div class="row"><div class="note"><b>Verify (not asserted):</b> the prune proof lives in <code>test/entropy_check.c</code> — run <code>gcc test/entropy_check.c -lm &amp;&amp; ./a.out</code> in CI; it must print <code>failures = 0</code>. This file does not claim that result until you see it. <code>node --check</code> on this file checks syntax only — it cannot catch a runtime CDN import failure, which is precisely what the guarded-import design makes survivable.</div></div>
 </aside><div class="scrim" id="scrim"></div>
 <script>
 'use strict';
 /* =============================================================
-   WENDY v2.1 — honeybee face. Same engine as v2.0:
-   NO top-level static imports (guarded dynamic), scripted brain
-   guarantees lines, L0/L1/L2 ladder, badged provenance.
-   Face hooks remapped: blink→compound eyes, talk→proboscis,
-   .talk→wings+antennae+glow, idle→hover drift.
+   WENDY — sovereign round table. No top-level static imports.
+   Authored/synthesized by the human owner; agent contributions
+   named in the About. Every emitted line badged for provenance.
    ============================================================= */
 const VERSION='2.1', LS_KEY='wendy.v2.state', LS_MEM='wendy.v2.buf', IDB_NAME='WENDY_MEM', IDB_STORE='epi';
 const MAX_BUF=20, MAX_EP=800, MAX_WIRE=420, TARGET_SR=16000;
 const RUOS_ORIGIN='https://ruos.cognitum.one';
 const ASR_MODELS={base:{id:'Xenova/whisper-base'},tiny:{id:'Xenova/whisper-tiny.en'}};
 const EMBED_MODEL='Xenova/all-MiniLM-L6-v2';
+document.querySelectorAll('.ver-tag').forEach(e=>e.textContent='v'+VERSION);
 
 const ENTROPY_KEEP_X256=819, CHUNK=64, MAX_REPEATS=2, MIN_REPEAT_LINE=24;
 function fnv1a(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i)&255;h=Math.imul(h,16777619)>>>0;}return h>>>0;}
@@ -515,8 +512,7 @@ let voices=[];function pickV(){try{voices=speechSynthesis.getVoices()||[];}catch
 function speak(t){if(!cfg.voice||!('speechSynthesis'in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(stripTags(t));const v=voices.find(x=>/Samantha|Google US|Microsoft Aria|Karen|Serena|Zira|Aria/i.test(x.name))||voices.find(x=>/^en/i.test(x.lang));if(v)u.voice=v;u.onstart=()=>{speaking=true;talkPulse();anim(true);};u.onend=()=>{speaking=false;anim(false);};u.onerror=()=>{speaking=false;anim(false);};speechSynthesis.speak(u);}catch(e){talkPulse();}}
 function stripTags(t){return String(t).replace(/<<TENSION:[^>]+>>/gi,'').replace(/\(.*?\)\s*$/,'').trim();}
 let mt=null;
-function anim(on){ // proboscis wiggle into the pollen center
-  if(on){let o=4,tx=0;mt=setInterval(()=>{o=Math.max(2,Math.min(12,o+(Math.random()*6-3)));tx=Math.max(-4,Math.min(4,tx+(Math.random()-0.5)*2));mouthEl.setAttribute('d',`M100 122 q ${tx.toFixed(1)} ${(o+2).toFixed(1)} ${(tx*0.4).toFixed(1)} ${(o+7).toFixed(1)}`);},90);}
+function anim(on){ if(on){let o=4,tx=0;mt=setInterval(()=>{o=Math.max(2,Math.min(12,o+(Math.random()*6-3)));tx=Math.max(-4,Math.min(4,tx+(Math.random()-0.5)*2));mouthEl.setAttribute('d',`M100 122 q ${tx.toFixed(1)} ${(o+2).toFixed(1)} ${(tx*0.4).toFixed(1)} ${(o+7).toFixed(1)}`);},90);}
   else{clearInterval(mt);mouthEl.setAttribute('d','M100 122 q0 5 0 8');}}
 function blinkLoop(){const es=eyesG.querySelectorAll('.eye');es.forEach(e=>e.setAttribute('ry','1'));setTimeout(()=>es.forEach(e=>e.setAttribute('ry','4')),150);blinkTimer=setTimeout(blinkLoop,2400+Math.random()*4200);}
 blinkLoop();
@@ -597,7 +593,7 @@ async function boot(){
   }catch(e){emit('WENDY',`boot fault captured: ${e.message} — L1 active, type anything and I'll still answer.`,{source:'err',badge:'ERR'});}}
 Promise.resolve().then(boot);
 
-window.__WENDY__={version:VERSION,prune,entX256,laneActive,anyCloud,convene:(q)=>convene(q,'answer'),recall,emit,extractJSON,runTool,loadBrain,loadTransformers,tfLoad,webllmLoad,brainState,startRoom,stopRoom};
+window.__WENDY__={version:VERSION,prune,entX256,laneActive,anyCloud,selfCheck:()=>({version:VERSION,tf:tfLoad,webllm:webllmLoad,brain:brainState,cloudLanes:Object.entries(cloudLanes()).filter(([k,v])=>laneActive(k)).map(([k])=>k),ruosBridge:ruosLive?'live':cfg.ruosOn?'armed':'off',recall:cfg.memOn?'on':'off',prune:cfg.prune?'on':'off'}),convene:(q)=>convene(q,'answer'),recall,emit,extractJSON,runTool,loadBrain,loadTransformers};
 </script>
 </body>
 </html>
