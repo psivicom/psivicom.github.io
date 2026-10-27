@@ -48,29 +48,12 @@ jobs:
       - name: Show Zig version
         run: zig version
 
-      # --- UPDATED COMPILE STEP ---
-      - name: Compile each .zig file in src/core
-        run: |
-          # 1. Ensure the directory actually exists
-          if [ ! -d "src/core" ]; then
-            echo "Error: Directory 'src/core' does not exist!"
-            exit 1
-          fi
-
-          # 2. Loop through every .zig file in the folder
-          for file in src/core/*.zig; do
-            # Check if file exists (prevents errors if the folder is empty)
-            [ -e "$file" ] || continue
-            
-            # Extract just the filename without the .zig extension
-            bin_name=$(basename "$file" .zig)
-            
-            echo "Compiling $file -> src/core/$bin_name"
-            zig build-exe "$file" -femit-bin="src/core/$bin_name"
-          done
+      # Use zig build instead of manual build-exe loop
+      - name: Build all modules
+        run: zig build
 
       - name: Upload compiled programs
         uses: actions/upload-artifact@v4
         with:
           name: zig-apps
-          path: src/core/
+          path: zig-out/bin/
