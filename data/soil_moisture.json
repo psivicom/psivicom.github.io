@@ -1,0 +1,10 @@
+[
+  {
+    "timestamp": "2026-10-26T21:20:00Z",
+    "location": "Goldstream Watershed",
+    "sensor_id": "GS-POLY-01",
+    "moisture": 0.345,
+    "phenology_stage": "late-bloom",
+    "verification": "RADARSAT-2 Cross-Check"
+  }
+]
