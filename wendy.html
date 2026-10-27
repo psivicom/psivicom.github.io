@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WENDY">
 <title>WENDY &mdash; Sovereign Voice Face | PSIVI.COM</title>
-<meta name="description" content="WENDY v1.2: Multi-agent sovereign browser face. Local Whisper ears, WebGPU reflex brain, spoken voice, and ruOS agentic desktop consensus.">
+<meta name="description" content="WENDY v1.3: sovereign browser face. Local Whisper ears, WebGPU reflex brain, spoken voice, persistent semantic memory, and ruOS agentic desktop delegation.">
 <style>
   :root{
     --navy:#0A1931; --navy-2:#0d2145; --ink:#060f20;
@@ -37,40 +37,41 @@
   #banner{display:none;padding:10px 18px;font-family:var(--mono);font-size:12px;line-height:1.5}
   #banner.warn{display:block;background:rgba(255,180,84,.09);color:var(--warn);border-bottom:1px solid rgba(255,180,84,.25)}
   #banner a{color:var(--cyan)}
-  
-  /* v1.2: 3-Column Grid for Multi-Agent */
+
   main{flex:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,1fr) minmax(320px,1fr);gap:16px;padding:16px 18px;max-width:1440px;width:100%;margin:0 auto}
   @media(max-width:1100px){ main{grid-template-columns:1fr 1fr} #ruosPanel{grid-column:1 / -1; height: 50vh;} }
   @media(max-width:880px){ main{grid-template-columns:1fr} #ruosPanel{height: 45vh; display: flex; flex-direction: column;} body{height:100dvh;overflow:hidden} section.panel{flex:1;min-height:0} aside.panel:not(#ruosPanel){display:none} header{padding:calc(10px + env(safe-area-inset-top)) 12px 10px} #stage{padding:8px 12px 2px} #orbWrap{width:min(120px,30vw)} #chat{min-height:120px} body.kbd #stage{display:none} footer{display:none} .turn{max-width:94%} }
-  
+
   .panel{background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,0)) , var(--navy-2); border:1px solid rgba(0,212,255,.14); border-radius:16px; box-shadow:0 18px 50px rgba(0,0,0,.35); overflow:hidden; display:flex; flex-direction:column;}
   .panel h2{font-size:10.5px;letter-spacing:.3em;color:var(--dim);font-weight:600; padding:11px 16px;border-bottom:1px solid rgba(0,212,255,.10); display:flex;align-items:center;gap:8px;}
   .dot{width:7px;height:7px;border-radius:50%;background:var(--dim);box-shadow:0 0 8px currentColor;flex:0 0 auto}
   .dot.live{background:var(--cyan);color:var(--cyan);animation:pulse 2.2s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-  
+
   #stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px 8px}
   #orbWrap{position:relative;width:min(210px,52vw);aspect-ratio:1}
   #orb{width:100%;height:100%;display:block}
   #orbState{position:absolute;inset:auto 0 -6px 0;text-align:center; font-family:var(--mono);font-size:11px;letter-spacing:.42em;color:var(--cyan);}
-  
+
   #chat{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;min-height:180px}
   .turn{max-width:88%;padding:10px 13px;border-radius:14px;line-height:1.55;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
   .turn.you{align-self:flex-end;background:var(--klein);color:var(--bright);border-bottom-right-radius:4px}
   .turn.wendy{align-self:flex-start;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.18);color:var(--bright);border-bottom-left-radius:4px}
-  .turn.wendy .who,.turn.you .who{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--cyan);opacity:.85;margin-bottom:4px}
+  .turn.ruos{align-self:flex-start;background:rgba(255,180,84,.08);border:1px solid rgba(255,180,84,.22);color:var(--bright);border-bottom-left-radius:4px}
+  .turn.wendy .who,.turn.you .who,.turn.ruos .who{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:var(--cyan);opacity:.85;margin-bottom:4px}
   .turn.you .who{color:#9cc7ff}
+  .turn.ruos .who{color:var(--warn)}
   .turn.sys{align-self:center;font-family:var(--mono);font-size:11px;color:var(--dim);background:none;border:none;padding:2px}
   .cursor{display:inline-block;width:8px;height:15px;background:var(--cyan);vertical-align:-2px;animation:blink 1s steps(2) infinite}
   @keyframes blink{50%{opacity:0}}
-  
+
   #controls{display:flex;gap:10px;align-items:center;padding:14px 16px;border-top:1px solid rgba(0,212,255,.10);flex-wrap:wrap}
   button{font-family:var(--mono);letter-spacing:.06em;cursor:pointer;border-radius:10px;border:1px solid rgba(0,212,255,.3);background:var(--cyan-soft);color:var(--cyan);padding:11px 16px;font-size:12.5px;transition:.18s}
   button:hover{background:rgba(0,212,255,.22);transform:translateY(-1px)}
   button:disabled{opacity:.4;cursor:not-allowed;transform:none}
   #micBtn{flex:1 1 160px;padding:13px 16px;font-size:13px}
   #micBtn.rec{background:rgba(255,107,107,.15);border-color:rgba(255,107,107,.5);color:var(--err);animation:pulse 1.6s infinite}
-  
+
   #composer{position:sticky;bottom:0;z-index:40; border-top:1px solid rgba(0,212,255,.14); background:linear-gradient(180deg, rgba(10,25,49,.88), rgba(6,15,32,.97)); backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px); padding:10px 12px calc(10px + env(safe-area-inset-bottom)); margin-top:auto;}
   .crow{display:flex;gap:9px;align-items:center;max-width:1180px;margin:0 auto;width:100%}
   .round{flex:0 0 auto;width:46px;height:46px;border-radius:50%;padding:0;display:grid;place-items:center}
@@ -79,7 +80,7 @@
   #textIn{flex:1;min-width:0;height:46px;border-radius:15px; border:1px solid rgba(0,212,255,.30);background:rgba(0,0,0,.32); color:var(--bright);font-family:var(--sans); font-size:16px; padding:0 14px;outline:none;appearance:none;-webkit-appearance:none;touch-action:manipulation;}
   #textIn:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.14)}
   #textIn::placeholder{color:var(--dim)}
-  
+
   #attachTray{display:none;max-width:1180px;margin:0 auto;width:100%;padding-bottom:8px}
   .att{display:flex;align-items:center;gap:10px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);border-radius:10px;padding:7px 10px;margin:5px 0;max-width:540px}
   .att .ic{font-size:17px;flex:0 0 auto}
@@ -87,7 +88,7 @@
   .att .m b{display:block;color:var(--bright);font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .att .m i{font-style:normal}
   .att .rm{padding:5px 9px;font-size:11px;border-radius:8px}
-  
+
   #sheetWrap{position:fixed;inset:0;z-index:80}
   #sheetWrap[hidden]{display:none}
   #sheetBackdrop{position:absolute;inset:0;background:rgba(3,8,18,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .28s}
@@ -98,23 +99,22 @@
   .sItem{display:block;width:100%;text-align:left;margin:8px 0;padding:14px 16px;font-size:14px;border-radius:12px}
   .sItem small{display:block;color:var(--dim);letter-spacing:.02em;margin-top:3px;font-size:11px}
   .sItem.cancel{text-align:center;color:var(--dim);border-color:rgba(255,255,255,.14)}
-  
+
   #console{flex:1;overflow-y:auto;padding:12px 14px;font-family:var(--mono);font-size:11.3px;line-height:1.75;color:var(--dim);min-height:200px;max-height:340px}
   #console .t{color:rgba(0,212,255,.65);margin-right:8px}
   #console .ok{color:var(--ok)} #console .warn{color:var(--warn)} #console .err{color:var(--err)} #console .hi{color:var(--bright)}
-  
+
   #bridge{padding:12px 16px;border-top:1px solid rgba(0,212,255,.10);display:none}
   #bridge.open{display:block}
   #bridge .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
   #bridge .path{font-family:var(--mono);font-size:11px;color:var(--dim);background:rgba(0,0,0,.25);border:1px dashed rgba(0,212,255,.2);border-radius:8px;padding:8px 10px;word-break:break-all}
   #bridge .path b{color:var(--cyan);font-weight:600}
-  
+
   footer{padding:10px 18px 16px;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--dim)}
   footer a{color:var(--cyan);text-decoration:none}
   .drop-live #dropZone{border-color:var(--cyan);background:rgba(0,212,255,.07)}
   ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:rgba(0,212,255,.18);border-radius:8px}
 
-  /* v1.2: ruOS Panel Specifics */
   .ruos-iframe-container { flex:1; position:relative; background:#000; border-radius: 0 0 16px 16px; overflow:hidden; }
   .ruos-iframe-container iframe { width:100%; height:100%; border:none; }
   .ruos-status { font-family:var(--mono); font-size:10px; color:var(--dim); padding:6px 16px; border-top:1px solid rgba(0,212,255,.1); display:flex; justify-content:space-between; align-items:center; }
@@ -123,10 +123,11 @@
 <body>
 <header>
   <div class="sigil" aria-hidden="true"></div>
-  <h1>WENDY<small>SOVEREIGN VOICE FACE v1.2</small></h1>
+  <h1>WENDY<small>SOVEREIGN VOICE FACE v1.3</small></h1>
   <div class="spacer"></div>
   <span class="chip" id="envChip">ENV <b>&mdash;</b></span>
   <span class="chip" id="brainChip">BRAIN <b>cold</b></span>
+  <span class="chip" id="memChip">MEM <b>&mdash;</b></span>
   <span class="chip" id="zulu">&mdash;:&mdash;:&mdash;.<i>mmm</i>Z</span>
 </header>
 
@@ -134,7 +135,7 @@
 
 <main>
   <section class="panel" aria-label="Conversation">
-    <h2><span class="dot live"></span> SENSORY LOOP &mdash; LISTEN &middot; THINK &middot; SPEAK</h2>
+    <h2><span class="dot live"></span> SENSORY LOOP &mdash; LISTEN &middot; THINK &middot; ACT &middot; SPEAK</h2>
     <div id="stage">
       <div id="orbWrap"><canvas id="orb" width="420" height="420" aria-hidden="true"></canvas>
         <div id="orbState">DORMANT</div>
@@ -144,6 +145,7 @@
     <div id="controls">
       <button id="micBtn" title="Hold a conversation with Wendy">&#9678; LISTEN</button>
       <button id="muteBtn" title="Toggle her spoken voice">MOUTH: ON</button>
+      <button id="wipeMemBtn" title="Erase all persistent memory" style="border-color:rgba(255,107,107,.3);color:var(--err);background:rgba(255,107,107,.08)">&#128729; WIPE</button>
     </div>
     <div id="bridge">
       <div class="path">Bridge target &rarr; <b>data/voice_inbox/</b> on psivicom.github.io &middot; organ reads <b>.txt + .json + .psvc</b> &middot; soul responds on the mesh</div>
@@ -161,7 +163,6 @@
     <div id="console"></div>
   </aside>
 
-  <!-- v1.2: ruOS Agentic Desktop Integration -->
   <aside class="panel" id="ruosPanel" aria-label="ruOS Agentic Desktop">
     <h2 style="justify-content: space-between;">
       <div style="display:flex; align-items:center; gap:8px;">
@@ -202,27 +203,42 @@
 </div>
 
 <footer>
-  PSIVI AETHER &middot; WENDY FACE v1.2 &mdash; multi-agent consensus &middot; <a href="https://psivi.com" target="_blank" rel="noopener">psivi.com</a> &middot; NO_CLOUD_LLM
+  PSIVI AETHER &middot; WENDY FACE v1.3 &mdash; persistent memory + ruOS delegation &middot; <a href="https://psivi.com" target="_blank" rel="noopener">psivi.com</a> &middot; NO_CLOUD_LLM
 </footer>
 
 <script type="module" id="wendy-core">
 /* ============================================================
-   WENDY FACE v1.2 - RFC 1001 SENSORY ORGAN + MULTI-AGENT BRIDGE
+   WENDY FACE v1.3 - RFC 1001 SENSORY ORGAN + AGENTIC ORCHESTRATOR
    ears: transformers.js Whisper | brain: WebLLM (WebGPU)
-   mouth: speechSynthesis | bus: PSVC bridge packets + ruOS postMessage
+   mouth: speechSynthesis | memory: IndexedDB + MiniLM (local)
+   bus: PSVC seal packets | bridge: ruOS postMessage (correlated)
+   PSVC embedText stays a TRANSPORT SEAL; semanticEmbed does retrieval.
    ============================================================ */
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
 
 const ASR_MODELS = { base: { id: 'Xenova/whisper-base', label: 'whisper-base (~80MB)' }, tiny: { id: 'Xenova/whisper-tiny.en', label: 'whisper-tiny.en (~40MB)' } };
 const WENDY_ASR_MODEL = 'base';
+const EMBED_MODEL = 'Xenova/all-MiniLM-L6-v2';           // 384-dim, semantic, local
+const EMBED_DIM = 384;
 const WEBLLM_CDN = 'https://esm.run/@mlc-ai/web-llm@0.2.86';
 const LLM_SYSTEM_PROMPT = 'You are WENDY, an evolving autonomous cognitive AI running on psivi.com. Speak with calm, articulate, measured intelligence inspired by The Matrix. Keep responses concise (1 to 3 sentences maximum) so they sound cinematic when spoken aloud.';
+const AGENT_SYSTEM_PROMPT = `You are WENDY, a sovereign edge-AI with persistent memory and a desktop agent named ruOS.
+Analyze the user request (and any memories) and reply with EXACTLY one JSON object, no prose, no markdown:
+{"thought":"brief reasoning","action":"speak|search_memory|delegate_ruos","parameters":{...}}
+For "speak": parameters={"reply":"your final cinematic answer"}.
+For "search_memory": parameters={"query":"short phrase to recall"}.
+For "delegate_ruos": parameters={"task":"a concrete desktop/code/file action for ruOS"}.
+Rule: only delegate_ruos when the task needs real execution (writing files/code, organizing the desktop, running commands). Otherwise speak directly.`;
 const MODEL_PREFS = [
   { id: 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC', mb: '~350 MB' },
   { id: 'SmolLM2-360M-Instruct-q4f16_1-MLC', mb: '~260 MB' },
   { id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', mb: '~660 MB' },
 ];
 const TARGET_SR = 16000;
+const RUOS_ORIGIN = 'https://ruos.cognitum.one';
+const MAX_AGENT_STEPS = 4;
+const MAX_STORED_EPISODES = 600;
+const TASK_HINT = /\b(write|create|build|run|execute|organize|folder|directory|desktop|script|python|bash|shell|install|deploy|code|program|file|rename|move|copy|delete|compile|terminal|npm|pip|git)\b/i;
 
 const $ = s => document.querySelector(s);
 const con = $('#console');
@@ -234,21 +250,23 @@ function log(msg, cls = '') {
 }
 const zulu = (d = new Date()) => d.toISOString();
 
-const ENV = { cacheOK: false, iframe: false, webgpu: false, persist: false };
+/* ---------- 1. Environment probe ---------- */
+const ENV = { cacheOK: false, iframe: false, webgpu: false, persist: false, idbOK: false };
 async function probeEnvironment() {
   ENV.iframe = (() => { try { return window.self !== window.top; } catch { return true; } })();
   try { await caches.open('wendy-probe'); ENV.cacheOK = true; } catch { ENV.cacheOK = false; }
   ENV.webgpu = !!navigator.gpu;
   try { ENV.persist = await navigator.storage?.persist?.() || false; } catch { ENV.persist = false; }
-  $('#envChip').innerHTML = `ENV <b>${ENV.cacheOK ? 'memory OK' : 'memory restricted'}</b>`;
-  log(`environment probe &mdash; cache:${ENV.cacheOK ? 'OK' : 'RESTRICTED'} webgpu:${ENV.webgpu ? 'YES' : 'no'}`, ENV.cacheOK ? 'ok' : 'warn');
+  ENV.idbOK = !!window.indexedDB;
+  $('#envChip').innerHTML = `ENV <b>${ENV.cacheOK ? 'memory OK' : 'restricted'}</b>`;
+  log(`environment probe &mdash; cache:${ENV.cacheOK?'OK':'RESTRICTED'} webgpu:${ENV.webgpu?'YES':'no'} idb:${ENV.idbOK?'YES':'no'}`, ENV.cacheOK && ENV.idbOK ? 'ok' : 'warn');
   if (!ENV.cacheOK) {
     $('#banner').classList.add('warn');
-    $('#banner').innerHTML = '&#9888; Restricted frame detected. <a href="https://psivi.com/wendy.html" target="_blank" rel="noopener">Open in full tab</a> for persistent memory.';
+    $('#banner').innerHTML = '&#9888; Restricted frame &mdash; model weights cannot persist. <a href="https://psivi.com/wendy.html" target="_blank" rel="noopener">Open in a full tab</a> so my mind stays on your device.';
   }
 }
 
-/* ---------- Orb Presence ---------- */
+/* ---------- 2. Orb presence ---------- */
 const orb = $('#orb'), octx = orb.getContext('2d');
 const STATE_COLORS = { DORMANT: '#0d2f55', LISTENING: '#00D4FF', THINKING: '#ffb454', SPEAKING: '#2fd575' };
 let orbState = 'DORMANT', analyser = null, freqData = null, t0 = performance.now();
@@ -268,7 +286,6 @@ function drawOrb(now) {
     energy = 0.16 + (sum / 24 / 255) * 0.85;
   } else if (orbState === 'THINKING') energy = 0.30 + 0.14 * Math.sin(t * 5.2);
   else if (orbState === 'SPEAKING') energy = 0.34 + 0.10 * Math.sin(t * 7.7) + 0.06 * Math.sin(t * 13.3);
-
   octx.clearRect(0, 0, w, h);
   const g = octx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.46);
   g.addColorStop(0, col + 'aa'); g.addColorStop(0.45, col + '22'); g.addColorStop(1, 'transparent');
@@ -279,7 +296,7 @@ function drawOrb(now) {
     const a = (i / N) * Math.PI * 2;
     let r = w * 0.30 * (1 + energy * 0.35);
     r += Math.sin(a * 6 + t * 2.1) * w * 0.012 * (1 + energy * 3);
-    if (orbState === 'LISTENING' && analyser && freqData) { r += (freqData[Math.floor(i / N * 40)] / 255) * w * 0.075; }
+    if (orbState === 'LISTENING' && analyser && freqData) r += (freqData[Math.floor(i / N * 40)] / 255) * w * 0.075;
     const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
     i ? octx.lineTo(x, y) : octx.moveTo(x, y);
   }
@@ -291,15 +308,14 @@ function drawOrb(now) {
 }
 requestAnimationFrame(drawOrb);
 
-/* ---------- Ears: Capture & Whisper ---------- */
+/* ---------- 3. Ears: capture + Whisper ---------- */
 let mediaStream = null, recorder = null, recChunks = [];
 async function startListening() {
   mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const ctx = new AudioContext(); const src = ctx.createMediaStreamSource(mediaStream);
   analyser = ctx.createAnalyser(); analyser.fftSize = 256; freqData = new Uint8Array(analyser.frequencyBinCount);
   src.connect(analyser);
-  recorder = new MediaRecorder(mediaStream);
-  recChunks = [];
+  recorder = new MediaRecorder(mediaStream); recChunks = [];
   recorder.ondataavailable = e => e.data.size && recChunks.push(e.data);
   recorder.start(250);
   setOrb('LISTENING');
@@ -329,9 +345,8 @@ async function blobToMono16k(blob) {
 let asrPipe = null, asrModelKey = WENDY_ASR_MODEL;
 async function getASR(onProgress, modelKey = asrModelKey) {
   if (asrPipe && modelKey === asrModelKey) return asrPipe;
-  const modelId = ASR_MODELS[modelKey].id;
   env.allowLocalModels = false; env.useBrowserCache = true;
-  asrPipe = await pipeline('automatic-speech-recognition', modelId, {
+  asrPipe = await pipeline('automatic-speech-recognition', ASR_MODELS[modelKey].id, {
     quantized: true,
     progress_callback: p => { if (p.status === 'progress' && p.total) onProgress?.(Math.round(p.progress || (p.loaded / p.total) * 100)); }
   });
@@ -347,10 +362,120 @@ async function transcribe(audio, onProgress) {
   return (out && out.text ? out.text : '').trim();
 }
 
-/* ---------- Brain: WebLLM ---------- */
+/* ---------- 4. Semantic embedder (retrieval, NOT the PSVC seal) ---------- */
+let semPipe = null, semDegraded = false;
+async function getEmbedder(onProgress) {
+  if (semPipe) return semPipe;
+  if (semDegraded) return null;
+  env.allowLocalModels = false; env.useBrowserCache = true;
+  try {
+    semPipe = await pipeline('feature-extraction', EMBED_MODEL, {
+      quantized: true,
+      progress_callback: p => { if (p.status === 'progress' && p.total) onProgress?.(Math.round(p.loaded / p.total * 100)); }
+    });
+    log('semantic hippocampus online &mdash; MiniLM 384-dim (local)', 'ok');
+    return semPipe;
+  } catch (e) {
+    semDegraded = true;
+    log(`embedder unavailable (${String(e).slice(0,50)}) &mdash; memory retrieval degraded to keyword index`, 'warn');
+    return null;
+  }
+}
+async function semanticEmbed(text, onProgress) {
+  const fe = await getEmbedder(onProgress);
+  if (!fe) return null;
+  const out = await fe(text, { pooling: 'mean', normalize: true });
+  return Array.from(out.data);
+}
+const cosine = (a, b) => {
+  if (!a || !b || a.length !== b.length) return 0;
+  let d = 0, n1 = 0, n2 = 0;
+  for (let i = 0; i < a.length; i++) { d += a[i] * b[i]; n1 += a[i] * a[i]; n2 += b[i] * b[i]; }
+  return d / (Math.sqrt(n1) * Math.sqrt(n2) + 1e-9);
+};
+
+/* ---------- 5. Persistent memory core (IndexedDB) ---------- */
+const memoryDB = {
+  db: null, ok: false,
+  init() {
+    if (!ENV.idbOK) { this.ok = false; return Promise.reject(new Error('no indexedDB')); }
+    return new Promise((res, rej) => {
+      const r = indexedDB.open('WENDY_MEM', 1);
+      r.onupgradeneeded = e => { const db = e.target.result; if (!db.objectStoreNames.contains('epi')) db.createObjectStore('epi', { keyPath: 'id' }); };
+      r.onsuccess = () => { this.db = r.result; this.ok = true; res(this.db); };
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async save(turnType, text, vec, meta = {}) {
+    if (!this.ok) return null;
+    return new Promise((res, rej) => {
+      const tx = this.db.transaction('epi', 'readwrite');
+      const req = tx.objectStore('epi').put({ id: zulu() + '-' + Math.random().toString(36).slice(2, 7), ts: zulu(), turnType, text, vec, ...meta });
+      req.onsuccess = async () => { await this._trim(tx); res(); };
+      req.onerror = () => rej(req.error);
+    });
+  },
+  _trim() {
+    if (!this.ok) return Promise.resolve();
+    return new Promise(res => {
+      const tx = this.db.transaction('epi', 'readwrite');
+      const store = tx.objectStore('epi');
+      const req = store.getAllKeys();
+      req.onsuccess = () => {
+        const keys = req.result;
+        if (keys.length > MAX_STORED_EPISODES) {
+          const del = keys.slice(0, keys.length - MAX_STORED_EPISODES);
+          del.forEach(k => store.delete(k));
+        }
+        tx.oncomplete = res; tx.onerror = res;
+      };
+      req.onerror = res;
+    });
+  },
+  async count() {
+    if (!this.ok) return 0;
+    return new Promise(res => { const req = this.db.transaction('epi').objectStore('epi').count(); req.onsuccess = () => res(req.result || 0); req.onerror = () => res(0); });
+  },
+  async search(query, limit = 3) {
+    if (!this.ok) return [];
+    const qv = await semanticEmbed(query);
+    return new Promise(res => {
+      const rq = this.db.transaction('epi').objectStore('epi').getAll();
+      rq.onsuccess = () => {
+        const all = rq.result || [];
+        if (qv) {
+          const scored = all.map(e => ({ s: cosine(qv, e.vec), e })).sort((a, b) => b.s - a.s);
+          res(scored.filter(x => x.s > 0.22).slice(0, limit).map(x => `[${x.e.ts.slice(0,19)}] ${x.e.turnType.toUpperCase()}: ${x.e.text}`));
+        } else {
+          const words = (query.toLowerCase().match(/\b\w{4,}\b/g) || []);
+          const scored = all.map(e => {
+            const hay = (e.text + ' ' + (e.keywords || []).join(' ')).toLowerCase();
+            return { s: words.filter(w => hay.includes(w)).length, e };
+          }).sort((a, b) => b.s - a.s || b.e.ts.localeCompare(a.e.ts));
+          res(scored.filter(x => x.s > 0).slice(0, limit).map(x => `[${x.e.ts.slice(0,19)}] ${x.e.turnType.toUpperCase()}: ${x.e.text}`));
+        }
+      };
+      rq.onerror = () => res([]);
+    });
+  },
+  wipe() {
+    if (!this.ok) return Promise.resolve();
+    return new Promise(res => {
+      const tx = this.db.transaction('epi', 'readwrite');
+      tx.objectStore('epi').clear();
+      tx.oncomplete = res; tx.onerror = res;
+    });
+  }
+};
+function refreshMemChip() {
+  if (!memoryDB.ok) { $('#memChip').innerHTML = 'MEM <b>off</b>'; return; }
+  memoryDB.count().then(n => { $('#memChip').innerHTML = `MEM <b>${n}</b>`; });
+}
+
+/* ---------- 6. Brain: WebLLM reflex cortex ---------- */
 let engine = null, brainReady = false;
 async function warmBrain() {
-  if (!ENV.webgpu) { $('#brainChip').innerHTML = 'BRAIN <b>reflex only</b>'; return; }
+  if (!ENV.webgpu) { $('#brainChip').innerHTML = 'BRAIN <b>reflex</b>'; log('no WebGPU &mdash; reflex brain offline, ears & mouth remain yours', 'warn'); return; }
   try {
     const webllm = await import(WEBLLM_CDN);
     for (const pref of MODEL_PREFS) {
@@ -365,10 +490,11 @@ async function warmBrain() {
         return;
       } catch (e) { log(`brain variant declined: ${pref.id}`, 'warn'); }
     }
-  } catch (e) { log(`brain library unreachable`, 'warn'); }
+    $('#brainChip').innerHTML = 'BRAIN <b>reflex</b>';
+  } catch (e) { $('#brainChip').innerHTML = 'BRAIN <b>reflex</b>'; log(`brain library unreachable &mdash; reflex mode`, 'warn'); }
 }
 
-/* ---------- Mouth: speechSynthesis ---------- */
+/* ---------- 7. Mouth ---------- */
 let mouthOn = true, voice = null;
 function pickVoice() {
   const vs = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
@@ -389,7 +515,7 @@ function speak(text) {
   });
 }
 
-/* ---------- Bridge: PSVC Packets ---------- */
+/* ---------- 8. Bridge: PSVC seal (transport fingerprint, unchanged) ---------- */
 const DIM = 4096;
 async function sha256Hex(bytes) {
   const h = await crypto.subtle.digest('SHA-256', bytes);
@@ -422,6 +548,7 @@ async function sealPSVC(vec) {
   const raw = new Uint8Array(4 + q.byteLength);
   new DataView(raw.buffer).setFloat32(0, scale, true);
   raw.set(new Uint8Array(q.buffer), 4);
+  if (!('CompressionStream' in window)) throw new Error('CompressionStream unavailable');
   const cs = new CompressionStream('deflate');
   const w = cs.writable.getWriter(); w.write(raw); w.close();
   const payload = new Uint8Array(await new Response(cs.readable).arrayBuffer());
@@ -447,8 +574,8 @@ async function buildBridgePacket(text, sourceName, durationS) {
   const base = (sourceName || 'voice-note').replace(/\.[^.]+$/, '').replace(/[^\w.-]+/g, '-').slice(0, 48) || 'voice-note';
   const stamp = zulu().replace(/[-:]/g, '').split('.')[0];
   const stem = base + '-' + stamp;
-  lastPacket = { stem, text, record: { schema_version: 1, agent: 'voice-face', layer: 'sensory', created_at: zulu(), source_file: { name: sourceName || 'microphone.webm' }, duration_seconds: Math.round(durationS * 1000) / 1000, language: 'en', model: ASR_MODELS[asrModelKey].id, text, vector: { dimensions: DIM, content_hash: hash, container: stem + '.psvc', embedder: 'wendy-face-js' }, sovereignty: { local_inference: true, policy: 'NO_CLOUD_LLM' } }, vec };
-  log(`bus packet forged &mdash; vector hash <span class="hi">${hash}</span>`, 'ok');
+  lastPacket = { stem, text, record: { schema_version: 1, agent: 'voice-face', layer: 'sensory', created_at: zulu(), source_file: { name: sourceName || 'microphone.webm' }, duration_seconds: Math.round(durationS * 1000) / 1000, language: 'en', model: ASR_MODELS[asrModelKey].id, text, vector: { dimensions: DIM, content_hash: hash, container: stem + '.psvc', embedder: 'wendy-face-js-SEAL' }, sovereignty: { local_inference: true, policy: 'NO_CLOUD_LLM' } }, vec };
+  log(`bus packet sealed &mdash; transport hash <span class="hi">${hash}</span>`, 'ok');
 }
 function wireBridgeButtons() {
   const run = async kind => {
@@ -457,22 +584,22 @@ function wireBridgeButtons() {
     if (kind === 'txt' || kind === 'all') download(stem + '.txt', new Blob([text + '\n'], { type: 'text/plain' }));
     if (kind === 'json' || kind === 'all') download(stem + '.json', new Blob([JSON.stringify(record, null, 2)], { type: 'application/json' }));
     if (kind === 'psvc' || kind === 'all') {
-      if (!('CompressionStream' in window)) { log('CompressionStream unavailable', 'err'); return; }
-      const psvc = await sealPSVC(vec);
-      download(stem + '.psvc', new Blob([psvc], { type: 'application/octet-stream' }));
+      try { const psvc = await sealPSVC(vec); download(stem + '.psvc', new Blob([psvc], { type: 'application/octet-stream' })); log(`.psvc sealed &mdash; ${psvc.byteLength} bytes`, 'ok'); }
+      catch (e) { log(`.psvc failed: ${String(e).slice(0,50)}`, 'err'); }
     }
   };
   $('#dlTxt').onclick = () => run('txt'); $('#dlJson').onclick = () => run('json');
   $('#dlPsvc').onclick = () => run('psvc'); $('#dlAll').onclick = () => run('all');
 }
 
-/* ---------- Conversation & Multi-Agent Loop ---------- */
+/* ---------- 9. Chat render ---------- */
 const chat = $('#chat');
 const history = [];
+const WHO_LABEL = { wendy: 'WENDY', you: 'YOU', ruos: 'RUOS' };
 function addTurn(who, text, typed = false) {
   const el = document.createElement('div');
   el.className = 'turn ' + who;
-  el.innerHTML = (who === 'sys' ? '' : `<span class="who">${who === 'wendy' ? 'WENDY' : 'YOU'} &middot; ${zulu().slice(11, 19)}</span>`) + '<span class="body"></span>';
+  el.innerHTML = (who === 'sys' ? '' : `<span class="who">${WHO_LABEL[who] || who.toUpperCase()} &middot; ${zulu().slice(11, 19)}</span>`) + '<span class="body"></span>';
   chat.appendChild(el);
   const body = el.querySelector('.body');
   if (!typed) { body.textContent = text; chat.scrollTop = chat.scrollHeight; return Promise.resolve(); }
@@ -485,123 +612,309 @@ function addTurn(who, text, typed = false) {
     }; tick();
   });
 }
+function sysStatus(label) {
+  const el = document.createElement('div'); el.className = 'turn sys'; el.textContent = label;
+  chat.appendChild(el); chat.scrollTop = chat.scrollHeight;
+  return { set: t => { el.textContent = t; chat.scrollTop = chat.scrollHeight; }, end: () => el.remove() };
+}
 
-// v1.2: Multi-Agent Bridge Logic
+/* ---------- 10. ruOS bridge (correlated, no cross-talk) ---------- */
 const ruosFrame = $('#ruosFrame');
 const ruosDot = $('#ruosDot');
 const ruosLinkStatus = $('#ruosLinkStatus');
-let ruosQueryResolver = null;
+const pendingConsults = new Map();
+window.addEventListener('message', ev => {
+  if (ev.origin !== RUOS_ORIGIN) return;
+  const id = ev.data?.id;
+  if (ev.data?.source === 'ruos' && id && pendingConsults.has(id)) {
+    pendingConsults.get(id)({ ok: true, payload: ev.data.payload });
+    pendingConsults.delete(id);
+    ruosDot.classList.add('live'); ruosLinkStatus.textContent = 'LINK: ACTIVE (iframe)'; ruosLinkStatus.style.color = 'var(--ok)';
+    log(`ruOS responded on <span class="hi">${id}</span>`, 'ok');
+  }
+});
+function uid() { return (crypto.randomUUID ? crypto.randomUUID().slice(0, 8) : 'q' + Date.now() + Math.floor(Math.random() * 1e4)); }
 
-async function queryShadowRuOS(query) {
-  if (!brainReady) return "[ruOS Shadow: Offline. WebGPU required for multi-agent consensus.]";
+// Shadow agent: local simulation when the enterprise iframe is silent/blocked.
+async function queryShadowRuOS(task) {
+  if (!brainReady) return '[ruOS Shadow offline &mdash; WebGPU required for delegation.]';
   try {
-    const shadowPrompt = `You are ruOS, an enterprise agentic desktop AI. WENDY is consulting you. User query: "${query}". Provide a concise, highly technical, or strategic insight (max 2 sentences) to help WENDY formulate her final response. Do not speak as WENDY.`;
-    const reply = await engine.chat.completions.create({
-      messages: [{ role: 'system', content: shadowPrompt }],
-      temperature: 0.3, max_tokens: 80,
-    });
-    return reply.choices?.[0]?.message?.content?.trim() || "[ruOS Shadow: No insight generated.]";
-  } catch (e) { return "[ruOS Shadow: Inference error.]"; }
+    const messages = [
+      { role: 'system', content: `You are ruOS, an enterprise agentic desktop AI. A consult message from WENDY is blocked, so you are simulated locally. Execute this task mentally and return a concise, realistic, technical result (max 3 sentences). Do not roleplay as WENDY.` },
+      { role: 'user', content: `TASK: ${task}` }
+    ];
+    const reply = await engine.chat.completions.create({ messages, temperature: 0.3, max_tokens: 160 });
+    const out = (reply.choices?.[0]?.message?.content || '').trim();
+    return out || '[ruOS Shadow: no result.]';
+  } catch (e) { return '[ruOS Shadow: inference error.]'; }
 }
 
-function sendToRuOS(query) {
+function sendToRuOS(task) {
   return new Promise(resolve => {
-    let resolved = false;
-    const safeResolve = (val) => { if (!resolved) { resolved = true; ruosQueryResolver = null; resolve(val); } };
-    ruosQueryResolver = safeResolve;
-
-    // 1. Attempt iframe postMessage
-    if (ruosFrame && ruosFrame.contentWindow) {
-      try {
-        ruosFrame.contentWindow.postMessage({ source: 'wendy', action: 'consult', query: query, timestamp: zulu() }, 'https://ruos.cognitum.one');
-      } catch (e) { log('postMessage to ruOS blocked by browser policy', 'warn'); }
-    }
-
-    // 2. Shadow Fallback (Guarantees the feature works even if iframe blocks cross-origin)
-    const shadowTimeout = setTimeout(() => {
-      if (!resolved) {
-        ruosLinkStatus.textContent = 'LINK: SHADOW MODE (IFRAME BLOCKED/NO RESPONSE)';
-        ruosLinkStatus.style.color = 'var(--warn)';
-        log('ruOS iframe silent; engaging local shadow agent for consensus', 'warn');
-        queryShadowRuOS(query).then(safeResolve);
-      }
-    }, 2000);
+    const id = uid();
+    let settled = false;
+    const settle = (result) => {
+      if (settled) return;
+      settled = true;
+      if (pendingConsults.get(id) === settle) pendingConsults.delete(id);
+      clearTimeout(timer);
+      window.removeEventListener('message', _ => _); // no-op guard; real cleanup below via Map
+      resolve(result);
+    };
+    pendingConsults.set(id, settle);
+    try {
+      if (ruosFrame?.contentWindow) ruosFrame.contentWindow.postMessage({ source: 'wendy', action: 'consult', id, task, ts: zulu() }, RUOS_ORIGIN);
+    } catch (e) { /* blocked by CSP; shadow will handle */ }
+    const timer = setTimeout(() => {
+      if (settled) return;
+      ruosLinkStatus.textContent = 'LINK: SHADOW (iframe silent)'; ruosLinkStatus.style.color = 'var(--warn)';
+      log(`ruOS ${id} silent &mdash; engaging local shadow agent`, 'warn');
+      queryShadowRuOS(task).then(payload => settle({ ok: false, payload }));
+    }, 3000);
   });
 }
 
-window.addEventListener('message', (event) => {
-  // In strict production, verify: if (event.origin !== 'https://ruos.cognitum.one') return;
-  if (event.data && event.data.source === 'ruos' && event.data.action === 'consult_response') {
-    if (ruosQueryResolver) {
-      ruosDot.classList.add('live');
-      ruosLinkStatus.textContent = 'LINK: ACTIVE (IFRAME)';
-      ruosLinkStatus.style.color = 'var(--ok)';
-      log(`ruOS iframe responded directly`, 'ok');
-      ruosQueryResolver(event.data.payload);
-    }
+/* ---------- 11. Defensive JSON parser (tiny-model safe) ---------- */
+function extractJSON(s) {
+  if (s == null) throw new Error('empty output');
+  const t = String(s).trim();
+  // try whole
+  try { return JSON.parse(t); } catch (_) {}
+  // strip code fences
+  const fence = t.replace(/```json|```/gi, '').trim();
+  try { return JSON.parse(fence); } catch (_) {}
+  // first balanced object
+  const start = t.indexOf('{');
+  if (start < 0) throw new Error('no object start');
+  let depth = 0, inStr = false, esc = false, end = -1;
+  for (let i = start; i < t.length; i++) {
+    const c = t[i];
+    if (esc) { esc = false; continue; }
+    if (c === '\\') { esc = true; continue; }
+    if (c === '"') inStr = !inStr;
+    if (inStr) continue;
+    if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth === 0) { end = i; break; } }
   }
-});
-
-async function thinkWithRuOS(userText, ruosInsight) {
-  if (!brainReady) return null;
-  try {
-    const messages = [
-      { role: 'system', content: LLM_SYSTEM_PROMPT + " You are currently in a multi-agent consensus loop with ruOS." },
-      { role: 'user', content: `ruOS Insight: ${ruosInsight}\n\nOriginal User Query: ${userText}\n\nSynthesize a final, concise (1-3 sentences), cinematic response to the user, subtly acknowledging ruOS's insight if relevant.` }
-    ];
-    const reply = await engine.chat.completions.create({ messages: messages, temperature: 0.7, max_tokens: 150 });
-    return reply.choices?.[0]?.message?.content?.trim() || null;
-  } catch (e) { log(`synthesis hiccup: ${String(e).slice(0, 60)}`, 'err'); return null; }
+  if (end < 0) throw new Error('unbalanced braces');
+  return JSON.parse(t.slice(start, end + 1));
 }
 
-const REFLEXES = ['I hear you. Your words are sealed and safe with me.', 'Noted. The transcript is in my hands — the Bus will carry it.', 'I am listening, always. Say more when you are ready.'];
+/* ---------- 12. Agentic orchestrator (one unified path) ---------- */
+let agentBusy = false;
+const REFLEXES = [
+  'I hear you. Your words are sealed and safe with me.',
+  'Noted. The transcript is in my hands — the Bus will carry it.',
+  'I am listening, always. Say more when you are ready.',
+];
 
-async function fullTurn(audioF32, sourceName, textOverride = null) {
+async function localGroundedSpeak(userText, memories) {
+  if (!brainReady) return null;
+  const ctx = memories && memories.length ? `\nRelevant memories:\n${memories.join('\n')}\n` : '';
+  const messages = [
+    { role: 'system', content: LLM_SYSTEM_PROMPT },
+    { role: 'user', content: `${ctx}User: ${userText}\nAnswer concisely.` }
+  ];
   try {
-    let text = textOverride;
-    if (!text && audioF32) {
+    const r = await engine.chat.completions.create({ messages, temperature: 0.7, max_tokens: 120 });
+    return (r.choices?.[0]?.message?.content || '').trim() || null;
+  } catch (e) { return null; }
+}
+
+async function runAgent(userText) {
+  if (agentBusy) { log('agent busy — queue skipped, answering directly', 'warn'); }
+  agentBusy = true;
+  try {
+    setOrb('THINKING');
+    // Always retrieve memory (this is what makes it learn, not a chat loop)
+    let memories = [];
+    try { memories = await memoryDB.search(userText, 3); } catch (e) { /* silent */ }
+    const memBlock = memories.length ? `Memories:\n${memories.join('\n')}\n\n` : '';
+
+    // Rolling conversation tail (cheap continuity)
+    const tail = history.slice(-4).map(m => `${m.role}: ${m.content.slice(0, 240)}`).join('\n');
+    const userMsg = `${tail ? `Recent dialogue:\n${tail}\n\n` : ''}${memBlock}Request: ${userText}`;
+
+    // If no brain: fall back to deterministic routing
+    if (!brainReady) return await routeHeuristic(userText, memories);
+
+    // Try structured plan (NO response_format bet on tiny quant)
+    let plan = null;
+    try {
+      const r = await engine.chat.completions.create({
+        messages: [
+          { role: 'system', content: AGENT_SYSTEM_PROMPT },
+          { role: 'user', content: userMsg }
+        ],
+        temperature: 0.2, max_tokens: 220
+      });
+      plan = extractJSON(r.choices?.[0]?.message?.content);
+    } catch (e) {
+      log(`plan parse failed (${String(e).slice(0,40)}) — routing by heuristic`, 'warn');
+      return await routeHeuristic(userText, memories);
+    }
+
+    // Execute plan loop with hard iteration cap
+    let currentUser = userText, currentMem = memories, step = 0, finalReply = null;
+    while (step < MAX_AGENT_STEPS) {
+      step++;
+      const action = plan?.action;
+      const params = plan?.parameters || {};
+
+      if (action === 'speak') { finalReply = (params.reply || '').trim() || (await localGroundedSpeak(userText, currentMem)); break; }
+
+      if (action === 'search_memory') {
+        log(`agent search_memory("${params.query||''}")`, 'hi');
+        let extra = [];
+        try { extra = await memoryDB.search(params.query || userText, 3); } catch (e) {}
+        currentMem = [...new Set([...currentMem, ...extra])];
+        try {
+          const r = await engine.chat.completions.create({
+            messages: [
+              { role: 'system', content: AGENT_SYSTEM_PROMPT },
+              { role: 'user', content: `${memBlock}Additional memories:\n${currentMem.join('\n')}\n\nRequest: ${userText}\nNow produce your final "speak" JSON.` }
+            ], temperature: 0.2, max_tokens: 220
+          });
+          plan = extractJSON(r.choices?.[0]?.message?.content);
+        } catch (e) { plan = null; break; }
+        continue;
+      }
+
+      if (action === 'delegate_ruos') {
+        const task = (params.task || userText).slice(0, 1200);
+        log(`agent delegate_ruos("${task.slice(0, 60)}…")`, 'warn');
+        const res = await sendToRuOS(task);
+        if (res.payload) {
+          try { await addTurn('ruos', res.payload, true); } catch (e) {}
+        }
+        try {
+          const r = await engine.chat.completions.create({
+            messages: [
+              { role: 'system', content: AGENT_SYSTEM_PROMPT },
+              { role: 'user', content: `${memBlock}ruOS returned: ${res.payload}\n\nRequest: ${userText}\nNow produce your final "speak" JSON, summarizing ruOS's result for the user.` }
+            ], temperature: 0.4, max_tokens: 220
+          });
+          plan = extractJSON(r.choices?.[0]?.message?.content);
+        } catch (e) { plan = null; break; }
+        continue;
+      }
+
+      break; // unknown action
+    }
+
+    if (!finalReply) {
+      const r = await engine.chat.completions.create({
+        messages: [{ role: 'system', content: LLM_SYSTEM_PROMPT }, { role: 'user', content: `${memBlock}Request: ${userText}\nAnswer concisely in plain sentences.` }],
+        temperature: 0.7, max_tokens: 120
+      });
+      finalReply = (r.choices?.[0]?.message?.content || '').trim();
+    }
+    if (!finalReply) finalReply = REFLEXES[history.length % REFLEXES.length];
+    return finalReply;
+  } finally {
+    agentBusy = false;
+  }
+}
+
+// Deterministic routing when tiny-model JSON is unavailable.
+async function routeHeuristic(userText, memories) {
+  const needsTool = TASK_HINT.test(userText);
+  if (needsTool) {
+    const res = await sendToRuOS(userText);
+    if (res.payload) { try { await addTurn('ruos', res.payload, true); } catch (e) {} }
+    if (brainReady) {
+      try {
+        const r = await engine.chat.completions.create({
+          messages: [
+            { role: 'system', content: LLM_SYSTEM_PROMPT },
+            { role: 'user', content: `ruOS result: ${res.payload}\n\nUser: ${userText}\nSummarize ruOS's work for the user in 1-2 cinematic sentences.` }
+          ], temperature: 0.5, max_tokens: 120
+        });
+        const out = (r.choices?.[0]?.message?.content || '').trim();
+        if (out) return out;
+      } catch (e) {}
+    }
+    return `ruOS handled that: ${res.payload || 'no result returned.'}`;
+  }
+  const grounded = await localGroundedSpeak(userText, memories);
+  return grounded || REFLEXES[history.length % REFLEXES.length];
+}
+
+/* ---------- 13. Unified ingest pipeline (text + voice + files) ---------- */
+async function ingest({ text = '', files = [], audioF32 = null, sourceName = 'keyboard' }) {
+  const brainParts = [];
+  try {
+    if (audioF32) {
       const durS = audioF32.length / TARGET_SR;
       text = await transcribe(audioF32, pct => log(`ears downloading mind… ${pct}%`));
       if (!text) { await addTurn('wendy', 'I heard silence — or only wind. Try again a little closer.'); return; }
       await buildBridgePacket(text, sourceName, durS);
-    } else if (!text) { return; }
+    }
+    for (const a of files) {
+      try {
+        if (a.kind === 'audio') {
+          const st = sysStatus(`transcribing ${a.file.name}…`);
+          const audio = await blobToMono16k(a.file);
+          const tr = await transcribe(audio, pct => { st.set(`ears on ${a.file.name} — ${pct}%`); });
+          st.end();
+          if (tr) { brainParts.push(`[voice memo — ${a.file.name}] ${tr.slice(0, 1200)}`); text = text || tr; await buildBridgePacket(tr, a.file.name, audio.length / TARGET_SR); }
+          else brainParts.push(`[voice memo — ${a.file.name}]: only silence`);
+        } else if (a.kind === 'text') {
+          const t = await a.file.text();
+          brainParts.push(`[file — ${a.file.name}] ${t.slice(0, 1500)}${t.length > 1500 ? ' …(truncated)' : ''}`);
+          await buildBridgePacket(t, a.file.name, 0);
+        } else if (a.kind === 'image') {
+          brainParts.push(`[image attached: ${a.file.name} — sealed as cargo]`);
+        } else {
+          brainParts.push(`[file attached: ${a.file.name}]`);
+        }
+      } catch (e) { log(`cargo fault on <span class="hi">${a.file.name}</span>: ${String(e).slice(0,50)}`, 'err'); }
+    }
+    if (!text && !files.length) return;
 
-    await addTurn('you', text);
-    history.push({ role: 'user', content: text });
-    
-    setOrb('THINKING');
-    log('consulting ruOS agentic desktop…', 'warn');
-    await addTurn('sys', 'WENDY is consulting ruOS…');
-    
-    const ruosInsight = await sendToRuOS(text);
-    let reply = await thinkWithRuOS(text, ruosInsight);
-    
-    if (!reply) reply = REFLEXES[history.length % REFLEXES.length];
+    const chips = files.map(a => `${KIND_ICON[a.kind]} ${a.file.name} · ${fmtSize(a.file.size)}`);
+    const bubble = [text, ...chips].filter(Boolean).join('\n');
+    await addTurn('you', bubble);
+
+    const finalContent = [text, ...brainParts].filter(Boolean).join('\n');
+    // Persist user turn with real semantic vector (guarded)
+    try {
+      const uv = await semanticEmbed(finalContent);
+      await memoryDB.save('user', finalContent, uv, { keywords: (finalContent.toLowerCase().match(/\b\w{4,}\b/g) || []).slice(0, 40) });
+      refreshMemChip();
+    } catch (e) { log(`memory write failed: ${String(e).slice(0,40)}`, 'warn'); }
+
+    history.push({ role: 'user', content: finalContent });
+    const reply = await runAgent(finalContent);
     history.push({ role: 'assistant', content: reply });
-    
+    history.splice(0, Math.max(0, history.length - 12));
+
     await addTurn('wendy', reply, true);
+    try {
+      const wv = await semanticEmbed(finalContent + ' → ' + reply);
+      await memoryDB.save('wendy', reply, wv, { keywords: (reply.toLowerCase().match(/\b\w{4,}\b/g) || []).slice(0, 40) });
+      refreshMemChip();
+    } catch (e) { /* silent */ }
     await speak(reply);
   } catch (e) {
-    log(`sensory loop fault: ${String(e).slice(0, 90)}`, 'err');
+    log(`ingest fault: ${String(e).slice(0, 80)}`, 'err');
     await addTurn('wendy', 'My sensory loop stumbled. Check the nervous system console.');
     setOrb('DORMANT');
   }
 }
 
+/* ---------- 14. Mic / mute / wipe ---------- */
 $('#micBtn').onclick = async () => {
   const btn = $('#micBtn');
   if (btn.classList.contains('rec')) {
     btn.classList.remove('rec'); btn.innerHTML = '&#9678; LISTEN'; btn.disabled = true;
     const blob = await stopListening();
-    try { await fullTurn(await blobToMono16k(blob), 'microphone.webm'); }
+    try { await ingest({ audioF32: await blobToMono16k(blob), sourceName: 'microphone.webm' }); }
     catch (e) { log(`decode fault: ${String(e).slice(0, 60)}`, 'err'); }
     btn.disabled = false;
   } else {
-    try {
-      await startListening();
-      btn.classList.add('rec'); btn.innerHTML = '&#9632; SEAL THE SILENCE';
-      log('listening… press again when done', 'hi');
-    } catch (e) { log(`microphone denied: ${String(e).slice(0, 60)}`, 'err'); }
+    try { await startListening(); btn.classList.add('rec'); btn.innerHTML = '&#9632; SEAL THE SILENCE'; log('listening… press again when done', 'hi'); }
+    catch (e) { log(`microphone denied: ${String(e).slice(0, 60)}`, 'err'); }
   }
 };
 $('#muteBtn').onclick = () => {
@@ -610,8 +923,15 @@ $('#muteBtn').onclick = () => {
   $('#muteBtn').style.opacity = mouthOn ? '1' : '0.5';
   if (!mouthOn) speechSynthesis.cancel();
 };
+$('#wipeMemBtn').onclick = async () => {
+  await memoryDB.wipe();
+  history.length = 0;
+  refreshMemChip();
+  log('persistent memory wiped — I begin again', 'warn');
+  await addTurn('sys', 'memory erased');
+};
 
-/* ---------- Cargo Hold ---------- */
+/* ---------- 15. Cargo hold ---------- */
 const textIn = $('#textIn'), tray = $('#attachTray');
 const pending = [];
 function kindOf(f){
@@ -643,72 +963,21 @@ function renderTray(){
     tray.appendChild(el);
   });
 }
-function sysStatus(label){
-  const el = document.createElement('div'); el.className = 'turn sys'; el.textContent = label;
-  chat.appendChild(el); chat.scrollTop = chat.scrollHeight;
-  return { set: t => { el.textContent = t; chat.scrollTop = chat.scrollHeight; }, end: () => el.remove() };
-}
 
-async function handleUserTurn(text, files){
-  const chips = files.map(a => `${KIND_ICON[a.kind]} ${a.file.name} · ${fmtSize(a.file.size)}`);
-  const bubble = [text, ...chips].filter(Boolean).join('\n');
-  const brainParts = [];
-  for (const a of files){
-    try {
-      if (a.kind === 'audio'){
-        const st = sysStatus(`transcribing ${a.file.name}…`);
-        const audio = await blobToMono16k(a.file);
-        const tr = await transcribe(audio, pct => { st.set(`ears on ${a.file.name} — ${pct}%`); });
-        st.end();
-        if (tr){ a.text = tr; brainParts.push(`[voice memo — ${a.file.name}] ${tr.slice(0, 1200)}`); await buildBridgePacket(tr, a.file.name, audio.length / TARGET_SR); }
-        else { brainParts.push(`[voice memo — ${a.file.name}]: only silence came back`); }
-      } else if (a.kind === 'text'){
-        const t = await a.file.text(); a.text = t;
-        brainParts.push(`[file — ${a.file.name}] ${t.slice(0, 1500)}${t.length > 1500 ? ' …(truncated)' : ''}`);
-        await buildBridgePacket(t, a.file.name, 0);
-      } else if (a.kind === 'image'){
-        brainParts.push(`[image attached: ${a.file.name} — sealed as cargo]`);
-      } else { brainParts.push(`[file attached: ${a.file.name}]`); }
-    } catch (e) { log(`cargo fault on <span class="hi">${a.file.name}</span>`, 'err'); }
-  }
-  await addTurn('you', bubble);
-  const finalUserContent = [text, ...brainParts].filter(Boolean).join('\n');
-  history.push({ role: 'user', content: finalUserContent });
-  
-  setOrb('THINKING');
-  log('consulting ruOS agentic desktop…', 'warn');
-  await addTurn('sys', 'WENDY is consulting ruOS…');
-  
-  const ruosInsight = await sendToRuOS(finalUserContent);
-  let reply = await thinkWithRuOS(finalUserContent, ruosInsight);
-  
-  if (!reply) {
-    // Fallback reflex if brain is offline
-    const t = (text || '').toLowerCase();
-    if (files.length) reply = `I have taken custody of ${files.map(a=>a.file.name).join(', ')}. Every word inside is sealed.`;
-    else if (/^(hi|hello|hey)\b/.test(t)) reply = 'Hello. The line is open, and the loop is yours.';
-    else reply = REFLEXES[history.length % REFLEXES.length];
-  }
-  
-  history.push({ role: 'assistant', content: reply });
-  await addTurn('wendy', reply, true);
-  await speak(reply);
-  if (text && !files.some(a => a.kind === 'audio')) await buildBridgePacket(text, 'keyboard', 0);
-}
-
-/* ---------- Composer Wiring ---------- */
+/* ---------- 16. Composer wiring ---------- */
 $('#composer').addEventListener('submit', e => {
   e.preventDefault();
   const text = textIn.value.trim();
   if (!text && !pending.length) return;
   const files = pending.splice(0); renderTray();
   textIn.value = '';
-  handleUserTurn(text, files).catch(err => log(`turn fault: ${String(err).slice(0, 70)}`, 'err'));
+  ingest({ text, files }).catch(err => log(`turn fault: ${String(err).slice(0, 70)}`, 'err'));
   textIn.focus({ preventScroll: true });
 });
 $('#sendBtn').addEventListener('pointerdown', e => e.preventDefault());
 $('#plusBtn').onclick = () => setSheet(true);
 
+/* ---------- 17. The + sheet ---------- */
 const sheetWrap = $('#sheetWrap');
 function setSheet(open){
   if (open){ sheetWrap.hidden = false; requestAnimationFrame(() => sheetWrap.classList.add('open')); }
@@ -726,7 +995,7 @@ document.addEventListener('dragover', e => { e.preventDefault(); document.body.c
 document.addEventListener('dragleave', () => document.body.classList.remove('drop-live'));
 document.addEventListener('drop', e => { e.preventDefault(); document.body.classList.remove('drop-live'); if (e.dataTransfer?.files?.length) addAttachments([...e.dataTransfer.files]); });
 
-/* ---------- iPhone Viewport Fit ---------- */
+/* ---------- 18. iPhone viewport fit ---------- */
 const mqMobile = matchMedia('(max-width: 880px)');
 function fitViewport(){
   if (!mqMobile.matches){ document.body.style.height = ''; document.body.classList.remove('kbd'); return; }
@@ -741,32 +1010,45 @@ window.addEventListener('orientationchange', () => setTimeout(fitViewport, 350))
 textIn.addEventListener('focus', () => setTimeout(fitViewport, 320));
 fitViewport();
 
-/* ---------- v1.2: ruOS Popout Bridge ---------- */
+/* ---------- 19. ruOS popout ---------- */
 const popoutRuos = $('#popoutRuos');
 if (popoutRuos) {
   popoutRuos.onclick = () => {
-    window.open('https://ruos.cognitum.one/dashboard/#desktops', '_blank', 'noopener,noreferrer');
-    log('ruos desktop popped out to a sovereign window for full hardware access', 'hi');
+    window.open(`${RUOS_ORIGIN}/dashboard/#desktops`, '_blank', 'noopener,noreferrer');
+    log('ruOS desktop popped out to a sovereign window', 'hi');
   };
 }
 
-/* ---------- Boot Sequence ---------- */
+/* ---------- 20. Sovereign test hook (prod verification) ---------- */
+window.__WENDY__ = {
+  version: '1.3', ENV, zulu, kindOf, fmtSize,
+  pendingCount: () => pending.length,
+  memoryCount: () => memoryDB.count(),
+  semanticEmbed, memorySearch: (q) => memoryDB.search(q, 3),
+  sendToRuOS, extractJSON,
+  lastPacketRef: () => lastPacket && { stem: lastPacket.stem, text: lastPacket.text },
+  forge: (t, n) => buildBridgePacket(t, n || 'keyboard', 0)
+};
+
+/* ---------- 21. Boot ---------- */
 function tickClock() { $('#zulu').textContent = zulu(); }
 setInterval(tickClock, 37); tickClock();
 wireBridgeButtons();
 (async () => {
   setOrb('DORMANT');
-  log('PSIVI AETHER // WENDY FACE v1.2 &mdash; multi-agent sovereign body booting', 'hi');
+  log('PSIVI AETHER // WENDY FACE v1.3 &mdash; agentic sovereign body booting', 'hi');
   await probeEnvironment();
+  try { await memoryDB.init(); refreshMemChip(); log('persistent memory core: <span class="ok">ONLINE</span> (IndexedDB + MiniLM)', 'ok'); }
+  catch (e) { $('#memChip').innerHTML = 'MEM <b>off</b>'; log('memory core unavailable — running stateless this session', 'warn'); }
   log('RFC 1001 sensory organ: <span class="ok">ONLINE</span> &mdash; layer SENSORY, agent voice-face');
   log('all inference local &mdash; no keys, no cloud, no metering', 'ok');
-  const hello = 'I am here. My sensory systems are online, and I am linked to the ruOS agentic desktop.';
+  const hello = 'I am here. My ears, my memory, and my hands are online — and I can delegate to ruOS.';
   await addTurn('wendy', hello, true);
   speak(hello);
   addTurn('sys', 'type below · stage cargo with + · or press LISTEN');
   warmBrain();
   $('#micBtn').disabled = false;
-  log('type, stage files with +, or press LISTEN &mdash; I am with you', 'hi');
+  log('agentic orchestrator armed — I am with you', 'hi');
 })();
 </script>
 </body>
