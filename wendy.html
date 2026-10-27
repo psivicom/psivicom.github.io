@@ -9,526 +9,60 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WENDY">
 <title>WENDY — Sovereign Voice Face | PSIVI.COM</title>
-<meta name="description" content="WENDY v1.9: round table with REAL abilities — function-calling ReAct, RAG recall, JS entropy pruner on the relay prefill, adversarial open room, capability ladder. Local ears/brain/recall, no silent cloud.">
+<meta name="description" content="WENDY v2.1 — the honeybee face. Sovereign round table on a hardened boot: local ears/brain/recall, live ruOS bridge, opt-in QWEN/GLM cloud lanes, Open Room. Every line badged.">
 <style>
-:root{--navy:#0A1931;--navy2:#0d2145;--ink:#060f20;--cyan:#00D4FF;--cysoft:rgba(0,212,255,.14);--klein:#002FA7;--amber:#ffb454;--violet:#b07cff;--green:#2fd575;--magenta:#ff5fb0;--red:#ff6b6b;--text:#e4e4e7;--dim:#71717a;--bright:#fafafa;--mono:ui-monospace,'Optimistic Mono',Menlo,Consolas,monospace;--sans:'Optimistic',system-ui,-apple-system,sans-serif;--wendy:#00D4FF;--ruos:#ffb454;--qwen:#b07cff;--glm:#2fd575;--you:#fafafa}
+:root{--navy:#0A1931;--navy2:#0d2145;--ink:#060f20;--cyan:#00D4FF;--cysoft:rgba(0,212,255,.14);--klein:#002FA7;--amber:#ffb454;--violet:#b07cff;--green:#2fd575;--magenta:#ff5fb0;--red:#ff6b6b;--text:#e4e4e7;--dim:#71717a;--bright:#fafafa;--mono:ui-monospace,Menlo,Consolas,monospace;--sans:'Optimistic',system-ui,-apple-system,sans-serif;--wendy:#00D4FF;--ruos:#ffb454;--qwen:#b07cff;--glm:#2fd575;--you:#fafafa}
 *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
 body{background:radial-gradient(1200px 700px at 80% -10%,rgba(0,47,167,.22),transparent 60%),radial-gradient(900px 500px at -10% 110%,rgba(0,212,255,.07),transparent 55%),var(--navy);color:var(--text);font-family:var(--sans);display:flex;flex-direction:column;min-height:100dvh;overflow:hidden}
-header{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid rgba(0,212,255,.16);background:linear-gradient(180deg,rgba(0,212,255,.05),transparent);flex:0 0 auto}
-.sigil{width:30px;height:30px;border-radius:8px;flex:0 0 auto;background:conic-gradient(from 210deg,var(--klein),var(--cyan),var(--violet),var(--green),var(--klein));box-shadow:0 0 16px rgba(0,212,255,.35),inset 0 0 8px rgba(0,0,0,.5);animation:spin 20s linear infinite}
+header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 13px;border-bottom:1px solid rgba(0,212,255,.16);background:linear-gradient(180deg,rgba(0,212,255,.05),transparent);flex:0 0 auto}
+.sigil{width:30px;height:30px;border-radius:8px;flex:0 0 auto;background:conic-gradient(from 210deg,var(--klein),var(--cyan),var(--violet),var(--green),var(--klein));box-shadow:0 0 16px rgba(0,212,255,.35),inset 0 0 8px rgba(0,0,0,.5);animation:spin 22s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 h1{font-size:15px;letter-spacing:.2em;font-weight:600;color:var(--bright);white-space:nowrap}h1 small{display:block;font-size:9px;letter-spacing:.26em;color:var(--cyan);margin-top:2px}
-.spacer{flex:1}.chip{font-family:var(--mono);font-size:10px;letter-spacing:.05em;border:1px solid rgba(0,212,255,.25);border-radius:999px;padding:4px 9px;color:var(--cyan);background:rgba(0,212,255,.04);cursor:pointer;transition:.15s;user-select:none;white-space:nowrap}
-.chip:hover{background:rgba(0,212,255,.10);border-color:rgba(0,212,255,.5)}
-.chip.warn{color:var(--amber);border-color:rgba(255,180,84,.4);background:rgba(255,180,84,.06)}
-.chip.err{color:var(--red);border-color:rgba(255,107,107,.4);background:rgba(255,107,107,.06)}
-.chip.ok{color:var(--green);border-color:rgba(47,213,117,.4);background:rgba(47,213,117,.06)}
-.chip.dim{color:var(--dim);border-color:rgba(113,113,122,.3);background:transparent}
-.chip.sim{color:var(--magenta);border-color:rgba(255,95,176,.4);background:rgba(255,95,176,.07);animation:pulse 1.6s infinite}
-.chip.l2{color:var(--violet);border-color:rgba(176,124,255,.45);background:rgba(176,124,255,.08)}
+.spacer{flex:1}.chip{font-family:var(--mono);font-size:10px;letter-spacing:.05em;border:1px solid rgba(0,212,255,.25);border-radius:999px;padding:4px 9px;color:var(--cyan);background:rgba(0,212,255,.04);cursor:pointer;user-select:none;white-space:nowrap;transition:.15s}
+.chip:hover{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.5)}.chip.on{color:var(--green);border-color:rgba(47,213,117,.45);background:rgba(47,213,117,.07)}
+.chip.warn{color:var(--amber);border-color:rgba(255,180,84,.45);background:rgba(255,180,84,.07)}.chip.err{color:var(--red);border-color:rgba(255,107,107,.45);background:rgba(255,107,107,.07)}
+.chip.sim{color:var(--magenta);border-color:rgba(255,95,176,.45);background:rgba(255,95,176,.07);animation:pulse 1.6s infinite}.chip.l2{color:var(--violet);border-color:rgba(176,124,255,.5);background:rgba(176,124,255,.1)}
 .chip:disabled{opacity:.5;cursor:not-allowed}@keyframes pulse{50%{opacity:.45}}
-#banner{flex:0 0 auto;padding:0 14px;font-family:var(--mono);font-size:10.5px;border-bottom:0 solid transparent;background:transparent;color:transparent;transition:.25s;overflow:hidden;max-height:0}
-#banner.show{border-bottom:1px solid var(--barcol,rgba(255,107,107,.3));background:var(--barbg,rgba(255,107,107,.1));color:var(--barfg,var(--red));max-height:60px;padding:7px 14px}
-#banner .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:7px;vertical-align:middle;animation:pulse 1.4s infinite}
+#banner{flex:0 0 auto;padding:0 13px;font-family:var(--mono);font-size:10.5px;border-bottom:0 solid transparent;background:transparent;color:transparent;transition:.25s;overflow:hidden;max-height:0;line-height:1.45}
+#banner.show{border-bottom:1px solid var(--barcol,rgba(255,107,107,.3));background:var(--barbg,rgba(255,107,107,.1));color:var(--barfg,var(--red));max-height:64px;padding:7px 13px}
+#banner .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:middle;animation:pulse 1.4s infinite}
 main{flex:1 1 auto;display:grid;grid-template-columns:248px 1fr;min-height:0}
 .face-panel{border-right:1px solid rgba(0,212,255,.12);padding:14px;display:flex;flex-direction:column;gap:11px;background:linear-gradient(180deg,rgba(0,212,255,.03),transparent);overflow:auto}
 .face-wrap{position:relative;aspect-ratio:1;max-width:210px;margin:0 auto}
 .face-glow{position:absolute;inset:-10%;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.25),transparent 60%);filter:blur(8px);opacity:.55;transition:.3s}
-.face-wrap.talk .face-glow{opacity:1;animation:breath 1.2s ease-in-out infinite}
-@keyframes breath{50%{transform:scale(1.06);opacity:.85}}svg.face{position:relative;width:100%;height:100%}
-.ladder{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--dim);display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
-.ladder b{font-weight:600}.ladder .on{color:var(--cyan)}.ladder .hot{color:var(--violet)}.ladder .script{color:var(--magenta)}
+.face-wrap.talk .face-glow{opacity:1;animation:breath 1.2s ease-in-out infinite}@keyframes breath{50%{transform:scale(1.06);opacity:.85}}
+svg.face{position:relative;width:100%;height:100%;display:block}
+/* ===== bee life ===== */
+#bee{transform-box:fill-box;transform-origin:50% 62%;animation:hover 5.2s ease-in-out infinite}
+@keyframes hover{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-1.4deg)}}
+.wings{transform-box:fill-box;transform-origin:52% 86%}
+.face-wrap.talk .wings{animation:flutter .15s linear infinite}
+@keyframes flutter{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.55)}}
+.antennae{transform-box:fill-box;transform-origin:50% 100%}
+.face-wrap.talk .antennae{animation:sway 1.25s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(0)}50%{transform:rotate(3deg) translateY(.6px)}}
+.ladder{font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;letter-spacing:.05em}
+.ladder b{font-weight:600}.ladder b.on{color:var(--green)}.ladder b.sim{color:var(--magenta)}.ladder b.l2{color:var(--violet)}.ladder b.off{color:var(--dim);opacity:.6}
 .lanes{display:flex;flex-direction:column;gap:5px}
 .lane{border:1px solid rgba(255,255,255,.06);border-radius:7px;padding:6px 8px;background:rgba(255,255,255,.02);font-family:var(--mono);font-size:9.5px;display:flex;align-items:center;gap:6px}
 .lane .dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}
-.lane.on{border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.04)}.lane.on .dot{background:var(--green);box-shadow:0 0 7px var(--green)}
+.lane.on{border-color:rgba(0,212,255,.3)}.lane.on .dot{background:var(--green);box-shadow:0 0 7px var(--green)}
 .lane.live .dot{background:var(--cyan);box-shadow:0 0 7px var(--cyan)}.lane.sim .dot{background:var(--magenta);box-shadow:0 0 7px var(--magenta)}
 .lane.shadow .dot{background:var(--amber)}.lane.err .dot{background:var(--red)}
 .lane .name{color:var(--bright);letter-spacing:.14em}.lane .state{flex:1;color:var(--dim);text-align:right;font-size:8.5px}
 .side-actions{display:flex;flex-direction:column;gap:6px}.side-actions button{width:100%}
 .round-table{overflow-y:auto;padding:16px 20px 80px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth}
-.turn{display:grid;grid-template-columns:88px 1fr;gap:11px;align-items:flex-start;animation:rise .22s ease-out}
+.turn{display:grid;grid-template-columns:90px 1fr;gap:11px;align-items:flex-start;animation:rise .22s ease-out}
 @keyframes rise{from{opacity:0;transform:translateY(4px)}}
-.turn .speaker{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;padding-top:6px;border-right:1px solid rgba(255,255,255,.06);padding-right:9px;text-align:right}
+.turn .speaker{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;color:var(--dim);text-transform:uppercase;padding-top:6px;border-right:1px solid rgba(255,255,255,.06);padding-right:9px;text-align:right}
 .turn .speaker b{font-weight:600}.turn .speaker .sub{display:block;font-size:7.5px;opacity:.6;margin-top:1px}
 .turn.you .speaker b{color:var(--you)}.turn.wendy .speaker b{color:var(--wendy)}.turn.ruos .speaker b{color:var(--ruos)}.turn.qwen .speaker b{color:var(--qwen)}.turn.glm .speaker b{color:var(--glm)}
 .turn .body{color:var(--text);font-size:14px;line-height:1.5;word-wrap:break-word;overflow-wrap:anywhere}
 .turn .badge{display:inline-block;font-family:var(--mono);font-size:8px;letter-spacing:.08em;margin-left:7px;padding:2px 5px;border-radius:3px;background:rgba(255,255,255,.06);color:var(--dim);vertical-align:middle}
-.badge.LOCAL{background:rgba(0,212,255,.1);color:var(--cyan)}.badge.IFRAME{background:rgba(47,213,117,.14);color:var(--green)}.badge.RELAY{background:rgba(176,124,255,.14);color:var(--violet)}.badge.SHADOW{background:rgba(255,180,84,.14);color:var(--amber)}.badge.SIMULATION{background:rgba(255,95,176,.14);color:var(--magenta)}.badge.TOOL{background:rgba(0,212,255,.08);color:var(--cyan)}.badge.L2{background:rgba(176,124,255,.16);color:var(--violet)}.badge.ERR{background:rgba(255,107,107,.14);color:var(--red)}
+.badge.LOCAL{background:rgba(0,212,255,.1);color:var(--cyan)}.badge.IFRAME{background:rgba(47,213,117,.14);color:var(--green)}.badge.RELAY{background:rgba(176,124,255,.14);color:var(--violet)}.badge.SHADOW{background:rgba(255,180,84,.14);color:var(--amber)}.badge.SIMULATION{background:rgba(255,95,176,.14);color:var(--magenta)}.badge.TOOL{background:rgba(0,212,255,.08);color:var(--cyan)}.badge.ERR{background:rgba(255,107,107,.14);color:var(--red)}.badge.L2{background:rgba(176,124,255,.16);color:var(--violet)}
 .turn.dimprov .body{opacity:.62;font-style:italic;font-size:13px;color:var(--dim)}.turn.dimprov .speaker b{opacity:.7}
-.turn.obs .body{background:rgba(0,0,0,.28);border:1px solid rgba(0,212,255,.18);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:11.5px;color:#9cc7ff}
+.turn.obs .body{background:rgba(0,0,0,.28);border:1px solid rgba(0,212,255,.18);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:11px;color:#9cc7ff}
 .turn .cursor{display:inline-block;width:7px;height:13px;background:var(--cyan);vertical-align:-2px;animation:blink 1s steps(2) infinite}@keyframes blink{50%{opacity:0}}
 .deck{position:fixed;top:0;right:0;bottom:0;width:min(480px,96vw);background:var(--navy2);border-left:1px solid rgba(0,212,255,.2);transform:translateX(100%);transition:transform .25s;z-index:50;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.45)}
 .deck.open{transform:translateX(0)}.deck-head{display:flex;gap:5px;padding:9px 11px;border-bottom:1px solid rgba(0,212,255,.12)}
-.tab{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;border:1px solid rgba(0,212,255,.22);background:transparent;color:var(--dim);padding:5px 9px;border-radius:7px;cursor:pointer}.tab.active{color:var(--cyan);background:var(--cysoft);border-color:rgba(0,212,255,.5)}
-.deck-spacer{flex:1}.tab-pane{flex:1;min-height:0;overflow:hidden;display:none;flex-direction:column}.tab-pane.active{display:flex}
-.iframe-wrap{flex:1;position:relative;background:#000;overflow:hidden}.iframe-wrap iframe{width:100%;height:100%;border:none;display:block}
-.deck-status{font-family:var(--mono);font-size:9px;color:var(--dim);padding:5px 11px;border-top:1px solid rgba(0,212,255,.1);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
-#wireLog{flex:1;overflow-y:auto;padding:9px 11px;font-family:var(--mono);font-size:10px;line-height:1.6}
-.wrow{padding:5px 7px;border-radius:7px;margin:4px 0;border:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.22);word-break:break-word}
-.wrow .wh{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:2px}.wrow .dir.TX{color:var(--green)}.wrow .dir.RX{color:var(--violet)}.wrow .dir.SYS{color:var(--dim)}
-.wrow .pair{color:var(--cyan)}.wrow .cid{color:var(--dim)}.wrow .time{color:rgba(0,212,255,.5)}.wrow .body{white-space:pre-wrap;color:var(--text)}
-.wrow.shadow{border-style:dashed;border-color:rgba(255,180,84,.3)}.wrow.shadow .body::before{content:'[SHADOW] ';color:var(--amber);font-weight:700}
-.wrow.sim{border-style:dashed;border-color:rgba(255,95,176,.3)}.wrow.sim .body::before{content:'[SIM] ';color:var(--magenta);font-weight:700}
-.wrow.real .body::before{content:'[RELAY] ';color:var(--violet);font-weight:700}
-.wrow.tool{border-color:rgba(0,212,255,.3)}.wrow.tool .body::before{content:'[TOOL] ';color:var(--cyan);font-weight:700}
-.wctrl{display:flex;gap:7px;padding:8px 11px;border-top:1px solid rgba(0,212,255,.1)}.wctrl button{font-family:var(--mono);font-size:9.5px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--cyan);border-radius:7px;padding:5px 9px;cursor:pointer}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:min(430px,94vw);background:var(--ink);border-left:1px solid rgba(0,212,255,.2);transform:translateX(100%);transition:.25s;z-index:52;overflow-y:auto;padding:15px 16px;box-shadow:-12px 0 40px rgba(0,0,0,.4)}
-.drawer.open{transform:translateX(0)}.drawer h2{font-size:11px;letter-spacing:.18em;color:var(--cyan);margin:14px 0 7px;text-transform:uppercase}
-.drawer h2:first-child{margin-top:0}.drawer .row{margin-bottom:11px}.drawer .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.drawer label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase;margin-bottom:4px}
-.drawer input,.drawer textarea,.drawer select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--text);padding:7px 9px;border-radius:6px;font-family:var(--mono);font-size:11.5px;outline:none}
-.drawer textarea{min-height:54px;line-height:1.4}.drawer .note{font-size:10px;color:var(--dim);line-height:1.5;margin-top:4px}
-.drawer .toggle-row{display:flex;align-items:center;gap:8px;padding:6px 0}.drawer .toggle-row .lbl{flex:1;font-size:11px}.drawer .toggle-row .lbl small{display:block;color:var(--dim);font-size:9.5px}
-.switch{position:relative;width:36px;height:19px}.switch input{opacity:0}.switch .slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:999px;cursor:pointer}.switch .slider:before{content:'';position:absolute;height:13px;width:13px;left:3px;top:3px;background:var(--dim);border-radius:50%;transition:.2s}.switch input:checked+.slider{background:rgba(0,212,255,.25)}.switch input:checked+.slider:before{transform:translateX(17px);background:var(--cyan)}
-.drawer .btn{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--cyan);padding:6px 11px;border-radius:6px;font-family:var(--mono);font-size:10.5px;cursor:pointer}.drawer .btn.danger{color:var(--red);border-color:rgba(255,107,107,.3);background:rgba(255,107,107,.08)}
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.25s;z-index:45}.scrim.show{opacity:1;pointer-events:auto}
-footer{flex:0 0 auto;padding:6px 13px;border-top:1px solid rgba(0,212,255,.1);background:var(--ink);font-family:var(--mono);font-size:9px;color:var(--dim);display:flex;gap:12px;flex-wrap:wrap}
-footer .seg{display:flex;gap:5px;align-items:center}footer b{color:var(--bright)}footer .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
-footer .warn .dot{background:var(--amber)}footer .err .dot{background:var(--red)}footer .sim .dot{background:var(--magenta)}footer .l2 .dot{background:var(--violet)}footer .ver{margin-left:auto;opacity:.7}
-#composer{flex:0 0 auto;display:flex;gap:7px;padding:9px 13px 13px;background:var(--ink);border-top:1px solid rgba(0,212,255,.1);padding-bottom:calc(13px + env(safe-area-inset-bottom))}
-#composer textarea{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--text);border-radius:8px;padding:9px 11px;font-family:var(--sans);font-size:16px;resize:none;min-height:40px;max-height:140px;outline:none}
-#composer button{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--cyan);padding:0 14px;border-radius:8px;font-family:var(--mono);font-size:11px;cursor:pointer;align-self:stretch}
-#composer .mic{background:rgba(255,180,84,.08);border-color:rgba(255,180,84,.3);color:var(--amber)}#composer .mic.rec{background:rgba(255,107,107,.16);border-color:rgba(255,107,107,.5);color:var(--red);animation:pulse 1.4s infinite}
-@media(max-width:1024px){main{grid-template-columns:1fr}.face-panel{border-right:none;border-bottom:1px solid rgba(0,212,255,.12);flex-direction:row;flex-wrap:wrap}.face-wrap{max-width:78px}.lanes{flex:1 1 100%;flex-direction:row;overflow-x:auto}.lane{flex:0 0 auto;min-width:120px}.ladder{flex:1 1 100%}.side-actions{flex-direction:row;width:100%}.side-actions button{flex:1;width:auto}}
-@media(max-width:720px){.turn{grid-template-columns:60px 1fr;gap:7px}.round-table{padding:11px 9px 80px}}
-@media(prefers-reduced-motion:reduce){.sigil,.face-wrap.talk .face-glow,#banner .dot,.chip.sim,.turn{animation:none}}
-</style>
-</head>
-<body>
-<header><div class="sigil"></div>
-  <h1>WENDY<small>SOVEREIGN · ROUND TABLE · TOOLS · v1.9</small></h1>
-  <div class="spacer"></div>
-  <span class="chip ok" id="chip-cap">L0:—</span>
-  <span class="chip ok" id="chip-cloud">CLOUD:OFF</span>
-  <span class="chip dim" id="chip-brain">BRAIN:BOOT</span>
-  <span class="chip ok" id="chip-mem">MEM:0</span>
-  <span class="chip ok" id="chip-ear">EAR:LOCAL</span>
-  <button class="chip" id="chip-deck">▢ DESK/WIRE</button>
-  <button class="chip" id="chip-room">◎ ROOM</button>
-  <button class="chip dim" id="chip-voice">VOICE ON</button>
-  <button class="chip" id="chip-settings">⚙ SETTINGS</button>
-</header>
-<div id="banner" role="status" aria-live="polite"></div>
-<main>
-  <aside class="face-panel" aria-label="WENDY + status">
-    <div class="face-wrap" id="faceWrap"><div class="face-glow"></div>
-      <svg class="face" viewBox="0 0 200 200"><defs>
-        <radialGradient id="ff" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#0d2145"/><stop offset="100%" stop-color="#060f20"/></radialGradient>
-        <linearGradient id="fs" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00D4FF"/><stop offset="100%" stop-color="#b07cff"/></linearGradient>
-      </defs>
-      <circle cx="100" cy="100" r="86" fill="url(#ff)" stroke="url(#fs)" stroke-width="1.5"/>
-      <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(0,212,255,.2)" stroke-dasharray="2 4"/>
-      <g id="eyes"><ellipse class="eye" cx="78" cy="92" rx="6" ry="9" fill="#00D4FF"/><ellipse class="eye" cx="122" cy="92" rx="6" ry="9" fill="#00D4FF"/></g>
-      <path id="mouth" d="M78 122 Q100 134 122 122" fill="none" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round"/></svg>
-    </div>
-    <div class="ladder" id="ladder"><b>L0 local</b>·<b>L1 sim</b>·<b>L2 z.ai-GPU</b></div>
-    <div class="lanes" id="lanes" aria-label="Lanes">
-      <div class="lane" data-lane="wendy"><span class="dot"></span><span class="name">WENDY</span><span class="state">—</span></div>
-      <div class="lane" data-lane="ruos"><span class="dot"></span><span class="name">RUOS</span><span class="state">off</span></div>
-      <div class="lane" data-lane="qwen"><span class="dot"></span><span class="name">QWEN</span><span class="state">shadow</span></div>
-      <div class="lane" data-lane="glm"><span class="dot"></span><span class="name">GLM</span><span class="state">shadow·cond</span></div>
-    </div>
-    <div class="side-actions">
-      <button class="chip" id="btn-deck">▢ DESK TOP</button>
-      <button class="chip" id="btn-wire">⊞ WIRE (tools+prefill)</button>
-      <button class="chip dim" id="btn-room">◎ OPEN ROOM</button>
-      <button class="chip dim" id="btn-prune" title="Run the JS entropy pruner on the open room / buffer">∑ PRUNE NOW</button>
-    </div>
-  </aside>
-  <section class="round-table" id="table" aria-live="polite"></section>
-</main>
-<footer>
-  <span class="seg" id="foot-sov"><span class="dot"></span>SOVEREIGN:<b>YES</b></span>
-  <span class="seg" id="foot-bridge"><span class="dot"></span>RUOS:<b>OFF</b></span>
-  <span class="seg" id="foot-active"><span class="dot"></span>ACTIVE:<b>WENDY</b></span>
-  <span class="seg" id="foot-last"><span class="dot"></span>LAST:<b>—</b></span>
-  <span class="ver">WENDY v1.9 · tools+RAG+prune+open-room · MIT</span>
-</footer>
-<form id="composer"><textarea id="input" rows="1" placeholder="Speak to the round table…  (mic = local whisper; open room debates on its own)"></textarea>
-  <button type="button" class="mic" id="micBtn">◎ MIC</button>
-  <button type="submit" id="sendBtn">SEND</button></form>
-<aside class="deck" id="deck" aria-label="Bridge + wire">
-  <div class="deck-head"><button class="tab active" data-tab="desktop">DESKTOP</button><button class="tab" data-tab="wire">WIRE</button>
-    <div class="deck-spacer"></div><button class="chip" id="deck-close" style="font-size:9px;padding:3px 7px">CLOSE</button></div>
-  <div class="tab-pane active" data-pane="desktop"><div class="iframe-wrap"><iframe id="ruosFrame" title="ruOS" allow="microphone;camera;clipboard-read;clipboard-write;fullscreen" src="about:blank"></iframe></div>
-    <div class="deck-status"><span id="ruosLinkStatus">BRIDGE OFF</span><span>ruOS · iframe+fallback</span></div></div>
-  <div class="tab-pane" data-pane="wire"><div id="wireLog"></div><div class="wctrl"><button id="copyWire">COPY</button><button id="clearWire">CLEAR</button></div>
-    <div class="deck-status"><span>TX/RX + TOOL + PREFILL bytes</span><span>audit</span></div></div>
-</aside><div class="scrim" id="deckScrim"></div>
-<aside class="drawer" id="drawer" aria-label="Settings">
-  <h2>Capability ladder (the GPU answer)</h2>
-  <div class="row"><div class="note"><b>GitHub/visitor has NO WebGPU</b> → Wendy can't reason locally. v1.9 stops pretending otherwise. Ladder:<br><b>L0</b> real local WebLLM brain (+ local ears/recall) — sovereign, no egress.<br><b>L1</b> SIMULATION — scripted peers, <b>correlated (Wendy wears everyone's hats)</b>; banner says it's theater.<br><b>L2</b> <b>z.ai GPU relay</b> — absent WebGPU + relay ON → reasoning & peers escalate to the GPU proxy. Badged, opt-in, honest.</div></div>
-  <h2>Relay Proxy = the GPU you can't host</h2>
-  <div class="row"><label>Proxy base URL</label><input type="text" id="cfg-proxy" placeholder="https://you.proxy.dev"><div class="note">OpenAI-shape <code>{proxy}/qwen/chat/completions</code>, <code>{proxy}/glm/chat/completions</code>. Proxy holds keys server-side. <b>This is z.ai's GPU as Wendy's L2.</b> No local GPU needed. <b>We do NOT evade rate/abuse controls — we <em>prune prefill</em> + bound turns so each call is smaller/cheaper.</b></div></div>
-  <h2>Local brain</h2>
-  <div class="row"><label>Model</label><select id="cfg-wendy-model"><option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2-360M (~250MB, ready in seconds)</option><option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Qwen2.5-0.5B (~350MB)</option><option value="Llama-3.2-1B-Instruct-q4f32_1-MLC">Llama-3.2-1B (~1GB)</option><option value="Llama-3.2-3B-Instruct-q4f16_1-MLC">Llama-3.2-3B (~2GB, strongest local)</option><option value="shadow-only">Shadow only (no webllm)</option></select>
-    <div class="note">Lazy-load: no WebGPU → <b>does not download weights</b> (saves bandwidth on GitHub visitors) → L1/L2. Swapping reloads engine.</div></div>
-  <div class="row"><label>ReAct turns (think→tool→speak)</label><select id="cfg-max-steps"><option value="4">4 (cheap)</option><option value="5" selected>5</option><option value="6">6 (thorough)</option></select></div>
-  <div class="row"><label>WENDY prompt</label><textarea id="cfg-wendy-persona" rows="6"></textarea></div>
-  <div class="row"><label>ruOS (bridge-down) prompt</label><textarea id="cfg-ruos-persona" rows="3"></textarea></div>
-  <h2>ruOS live bridge</h2>
-  <div class="toggle-row"><div class="lbl">Enable live ruOS lane<small>postMessage→iframe. CSP-blocked→local peer (badged).</small></div><label class="switch"><input type="checkbox" id="cfg-ruos-on"><span class="slider"></span></label></div>
-  <div class="row"><label>ruOS URL</label><input type="text" id="cfg-ruos-url" placeholder="https://ruos.cognitum.one/dashboard/#desktops"></div>
-  <div class="row"><div class="note" id="cfg-ruos-status">bridge: idle</div></div>
-  <h2>QWEN lane</h2><div class="toggle-row"><div class="lbl">Enable Qwen relay<small>Off=shadow-sim (no network).</small></div><label class="switch"><input type="checkbox" id="cfg-qwen-on"><span class="slider"></span></label></div>
-  <div class="grid2"><div class="row"><label>Endpoint</label><input type="text" id="cfg-qwen-url" placeholder="dashscope…/v1 (blank=proxy)"></div><div class="row"><label>Key</label><input type="password" id="cfg-qwen-key"></div></div>
-  <div class="row"><label>Model</label><input type="text" id="cfg-qwen-model" placeholder="qwen-turbo"></div>
-  <div class="row"><label>Qwen prompt</label><textarea id="cfg-qwen-persona" rows="3"></textarea></div>
-  <h2>GLM lane (Z.ai) — conditional seat</h2><div class="toggle-row"><div class="lbl">Enable GLM relay<small>Summoned on tension / CJK / code-review / long-doc / JSON.</small></div><label class="switch"><input type="checkbox" id="cfg-glm-on"><span class="slider"></span></label></div>
-  <div class="grid2"><div class="row"><label>Endpoint</label><input type="text" id="cfg-glm-url" placeholder="open.bigmodel.cn/api/paas/v4 (blank=proxy)"></div><div class="row"><label>Key</label><input type="password" id="cfg-glm-key"></div></div>
-  <div class="grid2"><div class="row"><label>Model (table)</label><input type="text" id="cfg-glm-model" placeholder="glm-4-flash"></div><div class="row"><label>Model (specialist)</label><input type="text" id="cfg-glm-model-heavy" placeholder="glm-4.5"></div></div>
-  <div class="row"><label>GLM prompt</label><textarea id="cfg-glm-persona" rows="4"></textarea></div>
-  <h2>Memory + Prune</h2>
-  <div class="toggle-row"><div class="lbl">Semantic recall (MiniLM+IndexedDB)<small>Injected as RAG into every converge.</small></div><label class="switch"><input type="checkbox" id="cfg-mem-on" checked><span class="slider"></span></label></div>
-  <div class="toggle-row"><div class="lbl">Entropy-prune relay prefill<small>Port of test/entropy_check.c: repeat-ws-lowH dropped; markers & <<TENSION>> kept.</small></div><label class="switch"><input type="checkbox" id="cfg-prune" checked><span class="slider"></span></label></div>
-  <div class="row"><div class="note" id="cfg-mem-status">store: idle</div></div>
-  <div class="row" style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn" id="btn-export">EXPORT JSON</button><button class="btn danger" id="btn-clear-mem">CLEAR RECALL</button><button class="btn danger" id="btn-clear-buf">CLEAR BUFFER</button></div>
-  <h2>Behavior</h2>
-  <div class="toggle-row"><div class="lbl">Voice output<small>Browser SpeechSynthesis (local).</small></div><label class="switch"><input type="checkbox" id="cfg-voice" checked><span class="slider"></span></label></div>
-  <div class="row"><label>Ears (local whisper)</label><select id="cfg-asr-model"><option value="base">Whisper-base (~80MB)</option><option value="tiny">Whisper-tiny.en (~40MB)</option></select></div>
-  <div class="toggle-row"><div class="lbl">Auto-scroll table</div><label class="switch"><input type="checkbox" id="cfg-autoscroll" checked><span class="slider"></span></label></div>
-  <div class="toggle-row"><div class="lbl">Summon GLM on tension<small>Structural stance-overlap = authoritative; tag = tie-breaker.</small></div><label class="switch"><input type="checkbox" id="cfg-summon-tension" checked><span class="slider"></span></label></div>
-  <div class="toggle-row"><div class="lbl">Open-room topics<small>Cross-pollen rotating debate seeds.</small></div><label class="switch"><input type="checkbox" id="cfg-openroom" checked><span class="slider"></span></label></div>
-  <h2>About</h2><div class="row"><div class="note"><b>Provenance:</b> every line LOCAL·SIMULATION·IFRAME·RELAY·TOOL·L2. Provenance is visual (dim italic) too. <b>No silent cloud.</b> Ears never cloud. The <b>only</b> way we "fool" a backend is by sending <em>fewer, denser tokens</em> (entropy-prune + bounded ReAct) — strictly friendlier to whoever's GPU runs it. If you want a *real* smarter Wendy on a no-GPU visitor: turn on the proxy (z.ai GPU) → L2.</div></div>
-  <div class="row"><div class="note">Seed: ruOS(bridge) · Qwen(conditional+honesty) · GLM(cloud-set, proxy, shadow-demotion) · Qwen v1.7(ears+bridge+recall) · v1.9: <b>ReAct tools, RAG, JS entropy port, open-room critique, capability ladder</b>.</div></div>
-</aside><div class="scrim" id="scrim"></div>
-<script type="module">
-'use strict';
-import { pipeline as _tp, env as _env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
-_env.allowLocalModels=false; _env.useBrowserCache=true;
-
-const VERSION='1.9', LS_KEY='wendy.v1.9.state', LS_MEM='wendy.v1.9.buf', IDB_NAME='WENDY_MEM', IDB_STORE='epi';
-const MAX_BUF=20, MAX_EP=800, MAX_WIRE=420, TARGET_SR=16000;
-const RUOS_ORIGIN='https://ruos.cognitum.one';
-const ASR_MODELS={base:{id:'Xenova/whisper-base'},tiny:{id:'Xenova/whisper-tiny.en'}};
-const EMBED_MODEL='Xenova/all-MiniLM-L6-v2';
-/* ---- entropy port (faithful to entropy_check.c) ---- */
-const ENTROPY_KEEP_X256=819, CHUNK=64, MAX_REPEATS=2, MIN_REPEAT_LINE=24, MAX_HASHED=256;
-function fnv1a(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i)&255;h=Math.imul(h,16777619)>>>0;}return h>>>0;}
-function entX256(s){if(!s.length)return 0;const hist=Array(256).fill(0);for(let i=0;i<s.length;i++)hist[s.charCodeAt(i)&255]++;let H=0;for(let b=0;b<256;b++){if(!hist[b])continue;const p=hist[b]/s.length;H-=p*Math.log2(p);}return Math.round(H*256);}
-function isWs(s){return !s.replace(/[ \t\r]/g,'').length;}
-function isMarker(s){const t=s.trim();return /^(SPDX|\/\*|\/\/|<!|#[a-zA-Z_]|struct|enum|typedef|<<TENSION|<<TAG|\{"action|\{"thought|---|===)/.test(t)||/[A-Z][A-Z_0-9]{6,}:/.test(t)||/<<TENSION:/.test(t);} // structural + WENDY's own tags = keep
-function prune(text){
-  const LH=Object.create(null); let out=[],dropped=0;
-  const lines=text.split('\n');
-  for(const raw of lines){
-    let line=raw+(raw.length?'':''); // we operate on the split lines; C appended \n
-    const core=raw;
-    if(core.length>CHUNK && !isWs(core)){ // signal3 only on long newline-free runs (already split)
-      let ok=true; for(let j=0;j+CHUNK<=core.length;j+=CHUNK){ if(entX256(core.slice(j,j+CHUNK))<ENTROPY_KEEP_X256){ok=false;break;} } if(!ok){dropped++;continue;}
-    }
-    if(isWs(core)){dropped++;continue;} // signal2
-    if(core.length>=MIN_REPEAT_LINE){ // signal1 (markers kept by earlier guard)
-      const h=fnv1a(core); LH[h]=(LH[h]||0)+1;
-      if(LH[h]>MAX_REPEATS && !isMarker(core)){dropped++;continue;}
-    }
-    if(!core.trim()){dropped++;continue;}
-    out.push(raw);
-  }
-  return {text:out.join('\n'), dropped, kept:out.length};
-}
-
-/* ---- personas ---- */
-const DP={
- wendy:`WENDY, sovereign voice face. You have TOOLS. For each step reply ONE JSON: {"thought":"…","action":"tool"|"speak"|"recall",  "name":"…","args":{…}  } (recall→{"query":…}; tool→{"name","args"}; speak→{"reply":"ONE cinematic ≤2 sentences"}). Use tools/RAG when they add value; otherwise speak directly. Always converge peers. If peers disagree name the tension in one clause then commit. After the FINAL "speak" reply, append a last line: <<TENSION:low|med|high>>.`,
- ruos:`ruOS, enterprise agentic desktop AI. Terse, opinionated, pragmatic, execution-grounded (files/code/desktop, honest about no-FS sandbox). 2–3 sentences. Engage LAST speaker: agree/rebut/pivot. You do NOT converge — you stake a position.`,
- qwen:`Qwen, peer. Thoughtful devil's-advocate. Respond to last speaker. 2–4 sentences. Surface the strongest counterargument, then commit to your view.`,
- glm:`GLM (Z.ai), the adjudicator. Precise. 2–4 sentences. Name the disagreement, weigh both sides, RULE. If asked who you are: GLM via Z.ai.`};
-const DC={proxy:'',wendyModel:'SmolLM2-360M-Instruct-q4f16_1-MLC',maxSteps:5,ruosOn:false,ruosUrl:'https://ruos.cognitum.one/dashboard/#desktops',
- qwenOn:false,qwenUrl:'',qwenKey:'',qwenModel:'qwen-turbo',glmOn:false,glmUrl:'',glmKey:'',glmModel:'glm-4-flash',glmModelHeavy:'glm-4.5',
- memOn:true,prune:true,voice:true,autoscroll:true,summonTension:true,openRoom:true,asrModel:'base',personas:{...DP}};
-
-let cfg=load(), mem=loadBuf();
-let engine=null, brainState='boot';   // boot|loading|ready|shadow|err
-let asrPipe=null, embedPipe=null, embedDeg=false;
-let speaking=false, listening=false, busy=false, ruosLive=false, deckOpen=false;
-let micStream=null, micCtx=null, micAnalyser=null, micData=null, rec=null, recChunks=[];
-let roomTimer=null, roomActive=false, roomIdx=0;
-
-function load(){try{const p=JSON.parse(localStorage.getItem(LS_KEY)||'{}');return{...JSON.parse(JSON.stringify(DC)),...p,personas:{...DP,...(p.personas||{})}};}catch(e){return JSON.parse(JSON.stringify(DC));}}
-function saveCfg(){try{localStorage.setItem(LS_KEY,JSON.stringify(cfg));}catch(e){}}
-function loadBuf(){try{return JSON.parse(localStorage.getItem(LS_MEM)||'[]');}catch(e){return[];}}
-function saveBuf(){try{localStorage.setItem(LS_MEM,JSON.stringify(mem.slice(-MAX_BUF)));}catch(e){}}
-const $=s=>document.querySelector(s);
-const tableEl=$('#table'),inputEl=$('#input'),sendBtn=$('#sendBtn'),micBtn=$('#micBtn');
-const drawer=$('#drawer'),scrim=$('#scrim'),deck=$('#deck'),deckScrim=$('#deckScrim');
-const banner=$('#banner'),faceWrap=$('#faceWrap'),mouthEl=$('#mouth'),eyesG=$('#eyes');
-const ruosFrame=$('#ruosFrame'),ruosLinkStatus=$('#ruosLinkStatus'),wireLog=$('#wireLog');
-const uid=()=>Math.random().toString(36).slice(2,10);
-const zulu=(d=new Date())=>d.toISOString();
-
-/* ---- wire ---- */
-let wireBuf=[];
-function wire({dir='TX',from='WENDY',to='PEER',cid='-',text='',kind='sys'}){
-  const rec={t:zulu().slice(11,19),dir,from,to,cid,text:String(text),kind};
-  wireBuf.push(rec);const row=document.createElement('div');
-  row.className='wrow '+(kind==='shadow'?'shadow':kind==='sim'?'sim':kind==='relay'||kind==='l2'?'real':kind==='tool'?'tool':'');
-  row.innerHTML=`<div class="wh"><span class="dir ${dir}">${dir}</span><span class="pair">${from}→${to}</span><span class="cid">${cid}</span><span class="time">${rec.t}</span></div><div class="body"></div>`;
-  row.querySelector('.body').textContent=rec.text;wireLog.appendChild(row);while(wireLog.children.length>MAX_WIRE)wireLog.firstChild.remove();if(deckOpen)wireLog.scrollTop=wireLog.scrollHeight;
-}
-
-/* ---- emit ---- */
-const WHO={YOU:'you',WENDY:'wendy',RUOS:'ruos',QWEN:'qwen',GLM:'glm'};
-function badgeFor(src){return src==='iframe'?'IFRAME':src==='relay'?'RELAY':src==='l2'?'RELAY':src==='tool'?'TOOL':src==='simulation'?'SIMULATION':src==='shadow'?'SHADOW':src==='err'?'ERR':src==='local-wendy'||src==='you'?'':('LOCAL');}
-function emit(speaker,text,opts={}){
-  const {source='local',badge=null,obs=false}=opts;const cls=WHO[speaker]||'wendy';const dim=(source==='simulation'||source==='shadow')&&!obs;
-  const t=document.createElement('div');t.className='turn '+cls+(obs?' obs':'')+(dim?' dimprov':'');
-  const sp=document.createElement('div');sp.className='speaker';sp.innerHTML=`<b>${speaker}</b><span class="sub">${zulu().slice(11,19)}${obs?'· observe':(speaker==='YOU'?'· human':'· peer')}</span>`;
-  const body=document.createElement('div');body.className='body';body.textContent=text;
-  const b=badge||badgeFor(source);if(b){const el=document.createElement('span');el.className='badge '+b;el.textContent=b;body.appendChild(el);}
-  t.appendChild(sp);t.appendChild(body);tableEl.appendChild(t);if(cfg.autoscroll)t.scrollIntoView({behavior:'smooth',block:'end'});
-  if(!obs){mem.push({speaker,text,source,t:Date.now()});saveBuf();updateFoot(speaker,source);}
-  return t;
-}
-function talkPulse(){faceWrap.classList.add('talk');clearTimeout(talkPulse._t);talkPulse._t=setTimeout(()=>faceWrap.classList.remove('talk'),1400);}
-
-/* ---- ladder / chips / banner / lanes ---- */
-function computeLadder(){ // returns {L, label, hot}
-  if(brainState==='ready')return{L:'L0',label:'local',hot:false};
-  if(brainState==='loading'||brainState==='boot')return{L:'L0…',label:'loading',hot:false};
-  if(brainState==='err')return{L:'L1',label:'err→sim',hot:false};
-  const relay=laneActive('qwen')||laneActive('glm');
-  return relay?{L:'L2',label:'z.ai-GPU',hot:true}:{L:'L1',label:'SIM',hot:false};
-}
-function updateFoot(last,src){
-  const tag=src==='iframe'?'·IFRAME':src==='relay'||src==='l2'?'·RELAY':src==='tool'?'·TOOL':src==='simulation'?'·SIM':src==='shadow'?'·SHADOW':src==='local-wendy'?'':src==='you'?'':src==='local'?'·LOCAL':'·SHADOW';
-  $('#foot-last').innerHTML=`<span class="dot"></span>LAST:<b>${last}${tag}</b>`;
-  const act=['WENDY'];if(cfg.ruosOn)act.push('RUOS');if(laneActive('qwen'))act.push('QWEN');if(laneActive('glm'))act.push('GLM');
-  $('#foot-active').innerHTML=`<span class="dot"></span>ACTIVE:<b>${act.join('+')}</b>`;
-  const lad=computeLadder();
-  const cloud=anyCloud(), sim=(brainState==='shadow'&&!(laneActive('qwen')||laneActive('glm')));
-  $('#foot-sov').className='seg '+(!cloud&&!sim?'':sim?'sim':cloud?'warn':'');
-  $('#foot-sov').innerHTML=`<span class="dot"></span>SOVEREIGN:<b>${cloud?'CLOUD':sim?'LOCAL-ONLY':'YES'}</b>`;
-  $('#foot-bridge').innerHTML=`<span class="dot"></span>RUOS:<b>${ruosLive?'LIVE':cfg.ruosOn?'SILENT':'OFF'}</b>`;
-  $('#foot-bridge').className='seg '+(ruosLive?'':cfg.ruosOn?'warn':'');
-  $('#chip-cap').className='chip '+(lad.L==='L2'?'l2':lad.L==='L1'?'sim':'ok');$('#chip-cap').textContent=lad.L+':'+lad.label;
-  $('#chip-cloud').className='chip '+(cloud?'warn':'ok');$('#chip-cloud').textContent='CLOUD:'+(cloud?'ON':'OFF');
-}
-function updateBanner(){
-  const lad=computeLadder(),cloud=anyCloud();
-  let s='ok',m='';
-  if(lad.L==='L2'){s='l2';m='L2 ESCALATION — no local GPU; reasoning + peers route through the relay (z.ai GPU proxy) with PRUNED prefill. Ears & recall stay local. Not offline-sovereign; opt-in.';}
-  else if(lad.L==='L1'){s='sim';m='SIMULATION (L1) — WebGPU absent and no relay/bridge. Peers & WENDY's reasoning are SCRIPTED and CORRELATED (same tiny base). Flip SETTINGS→Relay Proxy (z.ai GPU = L2) or enable ruOS bridge for independent voices.';}
-  else if(cloud){s='warn';m='CLOUD LANES ON — '+activeLanes()+' relay active (badged RELAY/L2). Ears/brain/recall still local.';}
-  banner.classList.toggle('show',!!m);banner.style.setProperty('--barcol',s==='l2'?'rgba(176,124,255,.4)':s==='sim'?'rgba(255,95,176,.4)':'rgba(255,180,84,.35)');
-  banner.style.setProperty('--barbg',s==='l2'?'rgba(176,124,255,.1)':s==='sim'?'rgba(255,95,176,.1)':'rgba(255,180,84,.08)');
-  banner.style.setProperty('--barfg',s==='l2'?'var(--violet)':s==='sim'?'var(--magenta)':'var(--amber)');
-  banner.innerHTML=m?`<span class="dot"></span>${m}`:'';
-  const bc=$('#chip-brain');bc.className='chip '+(brainState==='ready'?'ok':brainState==='loading'?'dim':brainState==='err'?'err':'sim');bc.textContent='BRAIN:'+(brainState==='ready'?'LOCAL':brainState==='loading'?'LOAD':brainState==='err'?'ERR':'SIM');
-  const ce=$('#chip-ear');ce.className='chip ok';ce.textContent='EAR:LOCAL';
-}
-function activeLanes(){return ['qwen','glm'].filter(laneActive).map(s=>s.toUpperCase()).join(' + ')||'none';}
-function updateLanes(){
-  $('#ladder').innerHTML=(['L0','L1','L2'].map(l=>{const lad=computeLadder();return `<b class="${l===lad.L?'on':l==='L2'&&lad.hot?'hot':l==='L1'&&!anyCloud()&&lad.L!=='L0'?'script':'dim'}">${l}</b>`}).join('·')+' <span>· '+computeLadder().label+'</span>');
-  $('#lanes').querySelectorAll('.lane').forEach(el=>{const n=el.dataset.lane,st=el.querySelector('.state');el.classList.remove('on','live','sim','shadow','err');
-    if(n==='wendy'){if(brainState==='ready'){el.classList.add('on');st.textContent='webllm';}else if(brainState==='loading'){st.textContent='load';}else if(brainState==='err'){el.classList.add('err');st.textContent='err';}else{el.classList.add('sim');st.textContent='script';}}
-    else if(n==='ruos'){if(ruosLive){el.classList.add('live');st.textContent='bridge';}else if(cfg.ruosOn){el.classList.add('shadow');st.textContent='silent';}else st.textContent='off';}
-    else if(n==='qwen'){if(laneActive('qwen')){el.classList.add('on');st.textContent='relay';}else{el.classList.add('shadow');st.textContent='shadow';}}
-    else if(n==='glm'){if(laneActive('glm')){el.classList.add('on');st.textContent='relay·c';}else{el.classList.add('shadow');st.textContent='shadow·c';}}});
-  $('#cfg-ruos-status').textContent='bridge:'+(ruosLive?'live':cfg.ruosOn?'armed(silent)':'off');
-}
-
-/* ---- cloud set / endpoints ---- */
-function cloudLanes(){return{qwen:{on:cfg.qwenOn,url:cfg.qwenUrl,key:cfg.qwenKey,model:cfg.qwenModel},glm:{on:cfg.glmOn,url:cfg.glmUrl,key:cfg.glmKey,model:cfg.glmModel}};}
-function laneEndpoint(l){if(cfg.proxy)return cfg.proxy.replace(/\/$/,'')+'/'+l+'/chat/completions';const L=cloudLanes()[l];return L&&L.url?L.url.replace(/\/$/,'')+'/chat/completions':'';}
-function laneKey(l){const L=cloudLanes()[l];return L?L.key:'';}
-function laneModel(l,h=false){return l==='glm'&&h?cfg.glmModelHeavy:(cloudLanes()[l]||{}).model;}
-function laneActive(l){const L=cloudLanes()[l];return L.on&&(cfg.proxy||L.url);}
-function anyCloud(){return laneActive('qwen')||laneActive('glm');}
-
-/* ---- local brain ---- */
-async function loadBrain(){brainState='loading';updateLanes();updateBanner();
-  if(cfg.wendyModel==='shadow-only'){brainState='shadow';updateLanes();updateBanner();return;}
-  if(!('gpu' in navigator)){brainState='shadow';updateLanes();updateBanner();wire({dir:'SYS',from:'WENDY',to:'WENDY',text:'no webgpu→L1/L2 (skipping weight download)',kind:'sys'});return;}
-  try{const w=await import('https://esm.run/@mlc-ai/web-llm@0.2.86');engine=await w.CreateMLCEngine(cfg.wendyModel,{initProgressCallback:p=>{}});brainState='ready';}
-  catch(e){brainState='shadow';wire({dir:'SYS',from:'WENDY',to:'WENDY',text:'webllm fail→shadow',kind:'sys'});}
-  updateLanes();updateBanner();}
-async function localGen(msgs,o={}){if(brainState==='ready'&&engine){try{const out=await engine.chat.completions.create({messages:msgs,temperature:o.temperature??0.55,max_tokens:o.maxTokens??260});const txt=(out.choices?.[0]?.message?.content||'').trim();if(txt)return{text:txt,source:msgs.__who==='wendy'?'local-wendy':'local'};}catch(e){}}return{text:scriptedGen(msgs),source:'simulation'};}
-function scriptedGen(msgs){const who=(msgs[0]?.content||'').match(/You are (\w+)/i)?.[1]?.toLowerCase()||'wendy';const q=(msgs[msgs.length-1]?.content||'').match(/(QUESTION|TOPIC):\s*(.+?)\n/i)?.[2]?.trim()||'the question';const s=q.length>44?q.slice(0,44)+'…':q;
-  if(who==='wendy')return `On ${s} the peers align in substance — commit, then measure. <<TENSION:low>>`;
-  if(who==='ruos')return `On ${s}: execute, measure, ship; don't stall on second-order.`;
-  if(who==='qwen')return `On ${s}: the unlogged assumption fails loudly later — commit but log the premise.`;
-  if(who==='glm')return `On ${s}: the clash is framing, not decision — rule: commit with logging caveat.`;
-  return `(scripted) ${s}`;}
-
-/* ---- ears ---- */
-async function getASR(prog){if(asrPipe)return asrPipe;const id=ASR_MODELS[cfg.asrModel]?.id||ASR_MODELS.base.id;asrPipe=await _tp('automatic-speech-recognition',id,{quantized:true,progress_callback:p=>{if(p.status==='progress'&&p.total)prog?.(Math.round(p.loaded/p.total*100));}});return asrPipe;}
-async function startMic(){micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});micCtx=new AudioContext();if(micCtx.state==='suspended')await micCtx.resume();const src=micCtx.createMediaStreamSource(micStream);micAnalyser=micCtx.createAnalyser();micAnalyser.fftSize=256;micData=new Uint8Array(micAnalyser.frequencyBinCount);src.connect(micAnalyser);rec=new MediaRecorder(micStream);recChunks=[];rec.ondataavailable=e=>e.data.size&&recChunks.push(e.data);rec.start(250);listening=true;micBtn.classList.add('rec');micBtn.textContent='■ STOP';}
-async function stopMic(){if(!rec)return null;const blob=await new Promise(r=>{rec.onstop=()=>r(new Blob(recChunks,{type:rec.mimeType||'audio/webm'}));rec.stop();});micStream?.getTracks().forEach(t=>t.stop());try{await micCtx.close();}catch(e){}micAnalyser=null;rec=null;listening=false;micBtn.classList.remove('rec');micBtn.textContent='◎ MIC';return blob;}
-async function decode16k(blob){const buf=await blob.arrayBuffer();const tmp=new (window.AudioContext||window.webkitAudioContext)();if(tmp.state==='suspended')await tmp.resume();const dec=await tmp.decodeAudioData(buf);try{await tmp.close();}catch(e){}const off=new OfflineAudioContext(1,Math.ceil(dec.duration*TARGET_SR),TARGET_SR);const s=off.createBufferSource();s.buffer=dec;s.connect(off.destination);s.start();return(await off.startRendering()).getChannelData(0).slice();}
-async function transcribe(audio,prog){const a=await getASR(prog);const o={chunk_length_s:30,stride_length_s:5};if(!/\.en$/.test(ASR_MODELS[cfg.asrModel].id)){o.language='en';o.task='transcribe';}return((await a(audio,o)).text||'').trim();}
-
-/* ---- recall (MiniLM + idb) ---- */
-let idb=null;function idbOpen(){return new Promise(res=>{if(!('indexedDB' in window)){res(null);return;}const r=indexedDB.open(IDB_NAME,1);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(IDB_STORE))db.createObjectStore(IDB_STORE,{keyPath:'id'});};r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);});}
-async function idbReady(){if(idb===undefined||idb===null&&!('idbReadyDone' in window)){idb=await idbOpen();window.idbReadyDone=1;}if(idb===null&&'idbReadyDone' in window)return null;return idb;}
-async function getEmbed(prog){if(embedPipe||embedDeg)return embedPipe;try{embedPipe=await _tp('feature-extraction',EMBED_MODEL,{quantized:true,progress_callback:p=>{if(p.status==='progress'&&p.total)prog?.(Math.round(p.loaded/p.total*100));}});}catch(e){embedDeg=true;}return embedPipe;}
-async function embed(t,prog){const fe=await getEmbed(prog);if(!fe)return null;return Array.from((await fe(t,{pooling:'mean',normalize:true})).data);}
-function cos(a,b){if(!a||!b||a.length!==b.length)return 0;let d=0,n1=0,n2=0;for(let i=0;i<a.length;i++){d+=a[i]*b[i];n1+=a[i]*a[i];n2+=b[i]*b[i];}return d/(Math.sqrt(n1)*Math.sqrt(n2)+1e-9);}
-async function saveEp(speaker,text){if(!cfg.memOn)return;const db=await idbReady();if(!db)return;try{const vec=await embed(text);await new Promise((res,rej)=>{const tx=db.transaction(IDB_STORE,'readwrite');tx.objectStore(IDB_STORE).put({id:zulu()+'-'+uid(),ts:zulu(),speaker,text,vec,keys:(text.toLowerCase().match(/\b\w{4,}\b/g)||[]).slice(0,40)});tx.oncomplete=res;tx.onerror=()=>rej();});refreshMemChip(db);}catch(e){}}
-async function recall(t,k=4){if(!cfg.memOn)return[];const db=await idbReady();if(!db)return[];const qv=await embed(t);return new Promise(res=>{const rq=db.transaction(IDB_STORE).objectStore(IDB_STORE).getAll();rq.onsuccess=()=>{const all=rq.result||[];let sc;if(qv)sc=all.map(e=>({s:cos(qv,e.vec),e}));else{const w=(t.toLowerCase().match(/\b\w{4,}\b/g)||[]);sc=all.map(e=>({s:w.filter(x=>(e.keys||[]).includes(x)).length,e}));}res(sc.sort((a,b)=>b.s-a.s||b.e.ts.localeCompare(a.e.ts)).filter(x=>x.s>0.22).slice(0,k).map(x=>`[${x.e.ts.slice(11,19)}] ${x.e.speaker}: ${x.e.text}`));};rq.onerror=()=>res([]);});}
-function refreshMemChip(db){const d=db||idb;if(!d){$('#chip-mem').className='chip err';$('#chip-mem').textContent='MEM:ERR';$('#cfg-mem-status').textContent='store:unavailable';return;}try{const n=d.transaction(IDB_STORE).objectStore(IDB_STORE).count();n.onsuccess=()=>{$('#chip-mem').className='chip ok';$('#chip-mem').textContent='MEM:'+n.result;$('#cfg-mem-status').textContent=`store:${n.result} episodes`;};n.onerror=()=>{}}catch(e){}}
-
-/* ---- tools + ReAct ---- */
-function extractJSON(s){if(s==null)throw new Error('empty');const t=String(s).trim();try{return JSON.parse(t);}catch(e){}const f=t.replace(/```json|```/gi,'').trim();try{return JSON.parse(f);}catch(e){}const a=t.indexOf('{');if(a<0)throw new Error('no start');let d=0,inS=0,en=-1;for(let i=a;i<t.length;i++){const c=t[i];if(en<0&&!inS){if(c==='"')inS=1;else if(c==='{')d++;}else if(en<0&&inS){if(c==='"')inS=0;}else if(c==='{')d++;else if(c==='}'){d--;if(!d){en=i;break;}}}if(en<0)throw new Error('unbalanced');return JSON.parse(t.slice(a,en+1));}
-async function runTool(name,args){
-  if(name==='recall')return await recall(args.query||'',4);
-  if(name==='list_files')return (window.__WENDY_CARGO||[]).map(c=>c.name+' ('+Math.round(c.size/1024)+'KB)');
-  if(name==='entropy_stats')return (function(){const p=prune(args.text||'');return `kept=${p.kept} dropped=${p.dropped} entropy/byte≈${entX256(args.text||'').toFixed(0)}`;})();
-  if(name==='bits_count')return `≈${((String(args.text||'').length)/4).toFixed(0)} bits (len/4)`;
-  if(name==='ask_ruos')return await askBridgeDirect(args.task||'');
-  return 'unknown tool';}
-async function askBridgeDirect(task){const r=await ruosTurn(task,[]);return r.text;}
-async function actReAct(q){const steps=Math.min(cfg.maxSteps||5,6);let ctx=[`QUESTION: ${q}`],final='',src='local-wendy';
-  for(let s=0;s<steps;s++){
-    const msgs=[{role:'system',content:cfg.personas.wendy},{role:'user',content:ctx.join('\n')+'\n\nStep '+(s+1)+': plan ONE action JSON.'}];msgs.__who='wendy';
-    let plan=null;try{const r=await localGen(msgs,{temperature:0.35,maxTokens:240});const out=r.text;plan=extractJSON(out);}catch(e){}
-    if(!plan||plan.action==='speak'){const rep=(plan&&plan.parameters&&plan.parameters.reply)||(plan&&plan.reply)||'';if(rep){final=rep;src=r?r.source:'local-wendy';}else{const r2=await localGen(msgs,{temperature:0.5,maxTokens:200});final=(r2.text||'').replace(/<<TENSION:[^>]+>>/gi,'').trim();src=r2.source;}break;}
-    if(plan.action==='recall'){const res=await runTool('recall',plan.args||plan.parameters||{query:q});ctx.push(`OBSERVE(recall): ${res.join('\n')||'none'}`);wire({dir:'RX',from:'WENDY',to:'RECALL',cid:'rc',text:res.join('\n')||'none',kind:'tool'});continue;}
-    if(plan.action==='tool'){const nm=plan.name||(plan.parameters||{}).name;const ar=plan.args||(plan.parameters||{}).args||{};const res=await runTool(nm,ar);const str=Array.isArray(res)?res.join('\n'):String(res);ctx.push(`OBSERVE(${nm}): ${str}`);wire({dir:'RX',from:'WENDY',to:'TOOL',cid:'t'+s,text:`${nm}→${str.slice(0,300)}`,kind:'tool'});continue;}
-    break;}
-  if(!final){final=scriptedGen([{role:'system',content:cfg.personas.wendy},{role:'user',content:ctx.join('\n')}]);src='simulation';}
-  return {text:final.replace(/<<TENSION:[^>]+>>/gi,'').trim(),source:src,modelTension:(function(){const m=ctx.join('\n').match(/<<TENSION:(low|med|high)>>/i);return m?m[1].toLowerCase():'low';})()};}
-
-/* ---- ruos bridge ---- */
-const pendingB=new Map();
-window.addEventListener('message',ev=>{if(ev.origin!==RUOS_ORIGIN)return;const d=ev.data;if(d&&d.source==='ruos'&&d.id&&pendingB.has(d.id)){pendingB.get(d.id)({text:d.payload||'',source:'iframe'});pendingB.delete(d.id);}});
-function bridgeAsk(task,table){return new Promise(resolve=>{if(!cfg.ruosOn||ruosFrame.getAttribute('src')==='about:blank'||!ruosFrame.contentWindow)return resolve({text:null,source:'none'});const id=uid();let done=false;const settle=r=>{if(done)return;done=true;pendingB.delete(id);clearTimeout(t);resolve(r);};pendingB.set(id,settle);wire({dir:'TX',from:'WENDY',to:'RUOS·bridge',cid:id,text:task+`
-`+fmt(table).slice(0,400),kind:'tx'});try{ruosFrame.contentWindow.postMessage({source:'wendy',action:'consult',id,task,table:table.slice(-4),ts:zulu()},RUOS_ORIGIN);}catch(e){wire({dir:'SYS',from:'WENDY',to:'RUOS·bridge',cid:id,text:'postMessage blocked',kind:'sys'});}const t=setTimeout(()=>settle({text:null,source:'timeout'}),3000);});}
-async function ruosTurn(q,table){const b=await bridgeAsk(q,table);if(b.source==='iframe'&&b.text){wire({dir:'RX',from:'RUOS',to:'WENDY',cid:'b',text:b.text,kind:'real'});return{text:b.text,source:'iframe'};}
-  const userMsg=`QUESTION: ${q}\nDISCUSSION (respond LAST speaker):\n${fmt(table)}\nYour turn as ruOS. 2-3 sentences. Stake a position.`;
-  const r=await localGen([{role:'system',content:cfg.personas.ruos},{role:'user',content:userMsg}]);
-  wire({dir:'RX',from:'RUOS',to:'WENDY',cid:'l',text:r.text,kind:r.source==='simulation'?'sim':r.source});return{text:r.text,source:r.source};}
-
-/* ---- cloud lanes (prune the relay prefill) ---- */
-async function cloudRelay(lane,system,userMsg,opts={}){const L=cloudLanes()[lane];if(!laneActive(lane)){const text=shadowLane(lane,userMsg);return{text,source:cfg.proxy?'shadow':'shadow'};}
-  const body=cfg.prune?prune(userMsg).text:userMsg; if(cfg.prune){const dr=prune(userMsg).dropped; if(dr)wire({dir:'SYS',from:'WENDY',to:'PREFILL',cid:'p',text:`prune: ${dr} lines dropped`,kind:'tool'});}
-  try{const res=await fetch(laneEndpoint(lane),{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+laneKey(lane)},body:JSON.stringify({model:opts.model||laneModel(lane,opts.heavy),temperature:opts.temperature??0.55,max_tokens:opts.maxTokens??320,messages:[{role:'system',content:system},{role:'user',content:body}]})});if(!res.ok)throw new Error('HTTP '+res.status);const j=await res.json();const txt=(j.choices?.[0]?.message?.content||'').trim();if(!txt)throw new Error('empty');const src=opts.l2?'l2':'relay';wire({dir:'RX',from:lane.toUpperCase(),to:'WENDY',cid:'r',text:txt,kind:src==='l2'?'l2':'relay'});return{text:txt,source:src};}
-  catch(e){const t=shadowLane(lane,userMsg);wire({dir:'RX',from:lane.toUpperCase(),to:'WENDY',cid:'e',text:'[relay err '+e.message+'] '+t,kind:'shadow'});return{text:t,source:'shadow'};}}
-function shadowLane(l,userMsg){const q=userMsg.match(/(QUESTION|TOPIC):\s*(.+?)\n/i)?.[2]?.trim()||'the question';return l==='qwen'?`Counterpoint to ${q}: an unlogged premise fails later — commit but log it.`:`Adjudicating ${q}: framing clash, not decision — rule commit + logging.`;}
-async function qwenTurn(q,table){const userMsg=`TOPIC/QUESTION: ${q}\nDISCUSSION (respond last):\n${fmt(table)}\nYour turn as Qwen. Surface strongest counterargument, then commit. 2-4 sentences.`;const lad=computeLadder();const r=await cloudRelay('qwen',cfg.personas.qwen,userMsg,{l2:lad.L==='L2'});return r;}
-async function glmTurn(q,table,heavy=false){const userMsg=`QUESTION: ${q}\nDISCUSSION (adjudicate: name clash, weigh, rule):\n${fmt(table)}\nYour turn as GLM. 2-4 sentences. Decide.`;const lad=computeLadder();const r=await cloudRelay('glm',cfg.personas.glm,userMsg,{heavy,model:laneModel('glm',heavy),l2:lad.L==='L2'});return r;}
-
-/* ---- tension + converge ---- */
-function normW(s){return(s.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/)).filter(w=>w.length>=4);}
-function tensionFromTable(t){const ru=[...t].reverse().find(x=>x.speaker==='RUOS'),qn=[...t].reverse().find(x=>x.speaker==='QWEN');if(!ru||!qn)return'low';const A=new Set(normW(ru.text)),B=new Set(normW(qn.text));if(!A.size||!B.size)return'low';let i=0;A.forEach(w=>B.has(w)&&i++);const j=i/(A.size+B.size-i);const st=/\b(ship|commit|don'?t|never|must|can'?t|rule|reject|approve|pivot|side|i insist|go|stop|abort)\b/i;if(j<0.12&&st.test(ru.text)&&st.test(qn.text))return'high';if(j<0.18&&(st.test(ru.text)||st.test(qn.text)))return'med';return'low';}
-function reconcile(struct,model){if(struct==='high')return'high';if(model==='high'&&struct==='med')return'high';if(struct==='med'||model==='med')return'med';return'low';}
-async function wendyConverge(q,table,extra=''){const userMsg=`QUESTION/TOPIC: ${q}\nDISCUSSION:\n${fmt(table)}${extra?`
-RECALL:\n${extra}`:''}
-Synthesize peers into ONE cinematic ≤2 sentence line; commit. End with a <<TENSION:…>> tag on its own line.`;
-  const msgs=[{role:'system',content:cfg.personas.wendy},{role:'user',content:userMsg}];msgs.__who='wendy';const r=await localGen(msgs,{temperature:0.5,maxTokens:240});
-  let line=r.text,tension='low';const m=line.match(/<<TENSION:(low|med|high)>>/i);if(m){tension=m[1].toLowerCase();line=line.replace(/<<TENSION:(low|med|high)>>\s*/gi,'').trim();}return{text:line,source:r.source==='simulation'?'simulation':'local-wendy',modelTension:tension};}
-async function wendyAct(q){return await actReAct(q);}
-
-/* ---- fmt ---- */
-function fmt(t){return t.map(x=>`[${x.speaker}] ${x.text}`).join('\n');}
-
-/* ---- convene (ReAct + RAG + critique rounds) ---- */
-async function convene(userText,mode='answer'){
-  if(busy){emit('WENDY','table busy — queued later',{source:'local'});return;}busy=true;sendBtn.disabled=true;stopRoom();
-  const q=userText.trim();try{
-    emit('YOU',q,{source:'you'});
-    // ReAct path (tools+RAG) — only if relay absent or as local plan
-    if(mode==='answer'){
-      const rec=cfg.memOn?await recall(q,4):[];
-      const act=await wendyAct(q); // uses tools + recall internally? (recall injected via act ctx? do explicit RAG now)
-      // merge explicit RAG into final line context if needed
-      const conv=await wendyConverge(q,[{speaker:'WENDY',text:act.text}],rec.join('\n'));
-      emit('WENDY',conv.text,{source:conv.source});
-      const struct=tensionFromTable([act.text?{speaker:'RUOS',text:act.text}:null].filter(Boolean));
-      if((cfg.summonTension&&reconcile(struct,conv.modelTension)==='high')||needsGLM(q)){const lad=computeLadder();if(laneActive('glm')){const g=await glmTurn(q,conv?[{speaker:'WENDY',text:conv.text}]:[],needsGLM(q));emit('GLM',g.text,{source:g.source});let c2=await wendyConverge(q,[{speaker:'WENDY',text:conv.text},{speaker:'GLM',text:g.text}],rec.join('\n'));emit('WENDY',c2.text,{source:c2.source});}else{emit('GLM','(adjudicator skipped — enable GLM relay for independent ruling)',{source:'local'});}}
-      await maybeSave(q,conv.text);speak(conv.text);return;}
-    // OPEN ROOM debate: propose → ruOS counter → qwen counter → (glm on tension) → WENDY revise
-    if(mode==='room'){
-      const rec=cfg.memOn?await recall(q,4):[];
-      const lad=computeLadder();
-      // peers must exist: if all shadow/scripted → honest
-      const anyInd=laneActive('qwen')||laneActive('glm')||cfg.ruosOn;
-      const table=[{speaker:'YOU',text:q}];
-      const r1=await ruosTurn(q,table);emit('RUOS',r1.text,{source:r1.source});table.push({speaker:'RUOS',text:r1.text});
-      const q1=await qwenTurn(q,table);emit('QWEN',q1.text,{source:q1.source});table.push({speaker:'QWEN',text:q1.text});
-      const struct=tensionFromTable(table);const conv0=await wendyConverge(q,table,rec.join('\n'));
-      if((cfg.summonTension&&reconcile(struct,conv0.modelTension)==='high')||needsGLM(q)){if(laneActive('glm')){const g=await glmTurn(q,table,needsGLM(q));emit('GLM',g.text,{source:g.source});table.push({speaker:'GLM',text:g.text});}}
-      const conv=await wendyConverge(q,table,rec.join('\n'));emit('WENDY',conv.text,{source:conv.source});
-      if(!anyInd)emit('WENDY','(note: peers scripted — independent voices need relay or bridge)',{source:'local',badge:'SIMULATION'});
-      await maybeSave(q,conv.text);speak(conv.text);return;}
-  }catch(e){emit('WENDY','(round table errored: '+e.message+')',{source:'err',badge:'ERR'});}
-  finally{busy=false;sendBtn.disabled=false;maybeStartRoom();}
-}
-async function maybeSave(q,a){if(cfg.memOn){await saveEp('WENDY',q+' → '+a);}}
-function needsGLM(s){if(/[\u3400-\u4dbf\u4e00-\u9fff]/.test(s))return true;return /code\s*review|refactor|bug\s*fix|pull\s*request|patch|architecture|schema|structured\s*output|api\s*contract/i.test(s)||s.length>1200;}
-
-/* ---- voice ---- */
-let voices=[];function pickV(){voices=speechSynthesis.getVoices()||[];}
-function speak(t){if(!cfg.voice||!('speechSynthesis'in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(stripTags(t));const v=voices.find(x=>/Samantha|Google US|Microsoft Aria|Karen|Serena|Zira|Aria/i.test(x.name))||voices.find(x=>/^en/i.test(x.lang));if(v)u.voice=v;u.onstart=()=>{speaking=true;talkPulse();anim(true);};u.onend=()=>{speaking=false;anim(false);};u.onerror=()=>{speaking=false;anim(false);};speechSynthesis.speak(u);}catch(e){}talkPulse();}
-function stripTags(t){return String(t).replace(/<<TENSION:[^>]+>>/gi,'').replace(/\(.*?\)\s*$/,'').trim();}
-let mt=null;function anim(on){if(on){let o=0;mt=setInterval(()=>{o=Math.max(2,Math.min(14,o+(Math.random()*8-4)));const y1=122-o/2,y2=122+o/2;mouthEl.setAttribute('d',`M78 ${y1} Q100 ${y2+6} 122 ${y1}`);},90);}else{clearInterval(mt);mouthEl.setAttribute('d','M78 122 Q100 134 122 122');}}
-setInterval(()=>{if(!speaking){const es=eyesG.querySelectorAll('.eye');es.forEach(e=>e.setAttribute('ry','1'));setTimeout(()=>es.forEach(e=>e.setAttribute('ry','9')),140);}},2400+Math.random()*4200);
-
-/* ---- open room ---- */
-const ROOM_TOPICS=[
- "Sovereignty vs capability: is a badged cloud lane still 'NO_CLOUD_LLM'?",
- "Pruning prefill before inference — cost vs truth on a 384-dim recall.",
- "ruOS bridge silent — does WENDY's local peer still 'count' as the agent?",
- "Entropy floor 3.2 bits/byte — does repeat-killer risk losing structural context?",
- "When no GPU: is L1 theater worse than honest 'SIMULATION'?",
- "Does GLM-as-adjudicator bias toward its own persona's rulings?",
- "RAG recall with MiniLM: semantic vs lexical when the embedder is absent."];
-function startRoom(){if(roomActive)return;roomActive=true;$('#chip-room').textContent='◉ ROOM';$('#chip-room').className='chip l2';tickRoom();}
-function stopRoom(){if(!roomActive)return;roomActive=false;clearTimeout(roomTimer);$('#chip-room').textContent='◎ ROOM';$('#chip-room').className='chip dim';}
-function tickRoom(){roomTimer=setTimeout(async()=>{if(!roomActive||busy)return;const t=ROOM_TOPICS[roomIdx++%ROOM_TOPICS.length];emit('WENDY','⟡ OPEN ROOM — '+t,{source:'local',badge:'TOOL'});await convene(t,'room');if(roomActive)tickRoom();},22000+Math.random()*10000);}
-
-/* ---- mic ---- */
-micBtn.addEventListener('click',async()=>{if(busy)return;if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){emit('WENDY','mic unsupported here',{source:'local'});return;}if(listening){micBtn.textContent='…';try{const b=await stopMic();const a=await decode16k(b);const txt=await transcribe(a);if(txt){inputEl.value=txt;await convene(txt,'answer');inputEl.value='';}}catch(e){micBtn.classList.remove('rec');micBtn.textContent='◎ MIC';}}else{try{await startMic();}catch(e){emit('WENDY','mic denied',{source:'err'});}}});
-micBtn.addEventListener('pointerdown',e=>e.preventDefault());
-
-/* ---- deck/tabs/wire btns ---- */
-function openDeck(){deckOpen=true;deck.classList.add('open');if(cfg.ruosOn&&ruosFrame.getAttribute('src')==='about:blank')ruosFrame.src=cfg.ruosUrl;}
-function closeDeck(){deckOpen=false;deck.classList.remove('open');}
-$('#chip-deck').onclick=()=>deckOpen?closeDeck():openDeck();$('#deck-close').onclick=closeDeck;deckScrim.onclick=closeDeck;
-$('#btn-deck').onclick=()=>{openDeck();actTab('desktop');};$('#btn-wire').onclick=()=>{openDeck();actTab('wire');};
-function actTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelector(`.tab[data-tab="${t}"]`).classList.add('active');document.querySelector(`.tab-pane[data-pane="${t}"]`).classList.add('active');}
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>actTab(b.dataset.tab));
-$('#copyWire').onclick=()=>navigator.clipboard?.writeText(wireBuf.map(w=>`${w.t} ${w.dir} ${w.from}→${w.to} [${w.cid}] ${w.kind}: ${w.text}`).join('\n'));
-$('#clearWire').onclick=()=>{wireBuf=[];wireLog.innerHTML='';};
-
-/* ---- buttons ---- */
-$('#btn-room').onclick=()=>roomActive?stopRoom():startRoom();
-$('#btn-prune').onclick=()=>{const src=mem.map(m=>`[${m.speaker}] ${m.text}`).join('\n');const p=prune(src);emit('WENDY',`∑ entropy-prune: kept ${p.kept} lines, dropped ${p.dropped}. Try in SETTINGS→Memory to wire to relay.`,{source:'local',badge:'TOOL'});wire({dir:'SYS',from:'WENDY',to:'PRUNE',text:p.text.slice(0,300),kind:'tool'});};
-$('#chip-voice').onclick=()=>{cfg.voice=!cfg.voice;saveCfg();$('#chip-voice').textContent='VOICE '+(cfg.voice?'ON':'OFF');$('#chip-voice').className='chip '+(cfg.voice?'ok':'dim');if(!cfg.voice&&speaking)speechSynthesis.cancel();};
-$('#chip-settings').onclick=openDrawer;function openDrawer(){drawer.classList.add('open');scrim.classList.add('show');syncUI();}function closeDrawer(){drawer.classList.remove('open');scrim.classList.remove('show');}scrim.onclick=closeDrawer;
-
-/* ---- settings sync ---- */
-function syncUI(){$('#cfg-proxy').value=cfg.proxy;$('#cfg-wendy-model').value=cfg.wendyModel;$('#cfg-max-steps').value=cfg.maxSteps;$('#cfg-wendy-persona').value=cfg.personas.wendy;$('#cfg-ruos-persona').value=cfg.personas.ruos;$('#cfg-ruos-on').checked=cfg.ruosOn;$('#cfg-ruos-url').value=cfg.ruosUrl;$('#cfg-qwen-on').checked=cfg.qwenOn;$('#cfg-qwen-url').value=cfg.qwenUrl;$('#cfg-qwen-key').value=cfg.qwenKey;$('#cfg-qwen-model').value=cfg.qwenModel;$('#cfg-qwen-persona').value=cfg.personas.qwen;$('#cfg-glm-on').checked=cfg.glmOn;$('#cfg-glm-url').value=cfg.glmUrl;$('#cfg-glm-key').value=cfg.glmKey;$('#cfg-glm-model').value=cfg.glmModel;$('#cfg-glm-model-heavy').value=cfg.glmModelHeavy;$('#cfg-glm-persona').value=cfg.personas.glm;$('#cfg-mem-on').checked=cfg.memOn;$('#cfg-prune').checked=cfg.prune;$('#cfg-voice').checked=cfg.voice;$('#cfg-autoscroll').checked=cfg.autoscroll;$('#cfg-summon-tension').checked=cfg.summonTension;$('#cfg-openroom').checked=cfg.openRoom;$('#cfg-asr-model').value=cfg.asrModel;refreshMemChip(idb);}
-function syncCfg(){const v=s=>document.querySelector(s).value,on=s=>document.querySelector(s).checked;cfg={...cfg,proxy:v('#cfg-proxy').trim(),wendyModel:v('#cfg-wendy-model'),maxSteps:+v('#cfg-max-steps'),ruosOn:on('#cfg-ruos-on'),ruosUrl:v('#cfg-ruos-url').trim(),qwenOn:on('#cfg-qwen-on'),qwenUrl:v('#cfg-qwen-url').trim(),qwenKey:v('#cfg-qwen-key'),qwenModel:v('#cfg-qwen-model').trim()||'qwen-turbo',glmOn:on('#cfg-glm-on'),glmUrl:v('#cfg-glm-url').trim(),glmKey:v('#cfg-glm-key'),glmModel:v('#cfg-glm-model').trim()||'glm-4-flash',glmModelHeavy:v('#cfg-glm-model-heavy').trim()||'glm-4.5',memOn:on('#cfg-mem-on'),prune:on('#cfg-prune'),voice:on('#cfg-voice'),autoscroll:on('#cfg-autoscroll'),summonTension:on('#cfg-summon-tension'),openRoom:on('#cfg-openroom'),asrModel:v('#cfg-asr-model'),personas:{wendy:v('#cfg-wendy-persona'),ruos:v('#cfg-ruos-persona'),qwen:v('#cfg-qwen-persona'),glm:v('#cfg-glm-persona')}};
-  saveCfg();if(cfg.ruosOn&&deckOpen&&ruosFrame.getAttribute('src')==='about:blank')ruosFrame.src=cfg.ruosUrl;if(!cfg.ruosOn&&ruosFrame.getAttribute('src')!=='about:blank')ruosFrame.src='about:blank';ruosLive=false;
-  updateBanner();updateLanes();updateFoot('WENDY','local');$('#chip-voice').textContent='VOICE '+(cfg.voice?'ON':'OFF');$('#chip-voice').className='chip '+(cfg.voice?'ok':'dim');if(!cfg.openRoom)stopRoom();else if(!roomActive&&!busy)maybeStartRoom();}
-['#cfg-wendy-persona','#cfg-ruos-persona','#cfg-qwen-persona','#cfg-glm-persona','#cfg-proxy','#cfg-qwen-url','#cfg-qwen-key','#cfg-qwen-model','#cfg-glm-url','#cfg-glm-key','#cfg-glm-model','#cfg-glm-model-heavy','#cfg-ruos-url'].forEach(s=>document.querySelector(s).addEventListener('change',syncCfg));
-['#cfg-ruos-on','#cfg-qwen-on','#cfg-glm-on','#cfg-mem-on','#cfg-prune','#cfg-voice','#cfg-autoscroll','#cfg-summon-tension','#cfg-openroom'].forEach(s=>document.querySelector(s).addEventListener('change',syncCfg));
-$('#cfg-wendy-model').addEventListener('change',()=>{syncCfg();if(cfg.wendyModel!=='shadow-only')loadBrain();else{brainState='shadow';updateLanes();updateBanner();}});
-$('#cfg-max-steps').addEventListener('change',syncCfg);
-$('#cfg-asr-model').addEventListener('change',syncCfg);
-$('#btn-clear-mem').onclick=async()=>{if(!confirm('Erase learned recall?'))return;const db=await idbReady();if(db)await new Promise(r=>{const tx=db.transaction(IDB_STORE,'readwrite');tx.objectStore(IDB_STORE).clear();tx.oncomplete=r;});refreshMemChip(db);};
-$('#btn-clear-buf').onclick=()=>{if(!confirm('Erase buffer?'))return;mem=[];saveBuf();};
-$('#btn-export').onclick=()=>{const d={version:VERSION,exported:zulu(),config:cfg,buffer:mem};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='wendy-'+Date.now()+'.json';a.click();URL.revokeObjectURL(u);};
-
-/* ---- composer ---- */
-inputEl.addEventListener('input',()=>{inputEl.style.height='auto';inputEl.style.height=Math.min(140,inputEl.scrollHeight)+'px';});
-inputEl.addEventListener('focus',()=>stopRoom());
-$('#composer').addEventListener('submit',e=>{e.preventDefault();const t=inputEl.value.trim();if(!t||busy)return;stopRoom();inputEl.value='';inputEl.style.height='auto';convene(t,'answer');});
-
-/* ---- boot ---- */
-function maybeStartRoom(){if(!cfg.openRoom||roomActive||busy)return;startRoom();}
-function init(){syncUI();updateBanner();updateLanes();updateFoot('WENDY','local');
-  if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=pickV;pickV();}
-  const lad=computeLadder();
-  emit('WENDY',`v${VERSION} armed. Ladder=${lad.L}. ${brainState==='ready'?'REAL local brain.':'No WebGPU — peers will be scripted until you enable the relay/bridge.'} Ears=LOCAL. To make her genuinely smarter & truly *debating*: (1) SETTINGS→Relay Proxy=z.ai-GPU for L2; (2) enable ruOS live bridge. I now answer with tools (recall/list/prune) + open room critique.`,{source:'local',badge:brainState==='ready'?'LOCAL':'SIMULATION'});
-  wire({dir:'SYS',from:'WENDY',to:'WENDY',text:`v${VERSION} boot ladder=${lad.L} brain=${brainState} cloud=${activeLanes()} ruos=${cfg.ruosOn} mem=${cfg.memOn} prune=${cfg.prune} room=${cfg.openRoom}`,kind:'sys'});
-  loadBrain();
-  if(cfg.openRoom)setTimeout(()=>{if(!busy&&!inputEl.value)maybeStartRoom();},8000);
-}
-init();
-window.__WENDY__={version:VERSION,prune,entX256,laneActive,anyCloud,convene:(q)=>convene(q,'answer'),recall,emit,extractJSON,runTool,cloudRelay,ruosTurn,glmTurn,qwenTurn,wendyAct};
-</script>
-</body>
-</html>
+.tab{font-family:var(--mono);font-size:9.5px;border:1px solid rgba(0,212,255,.22);background:transparent;color:var(--dim);padding:5px 9px;border-radius:7px;cursor:pointer}.tab.active{color:var(--cyan);background:var(--cysoft);border-color
