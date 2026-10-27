@@ -1,4 +1,3 @@
------PASTE FROM HERE DOWN, STOP AT THE END LINE-----
 /* SPDX-License-Identifier: EUPL-1.2
  * entropy_check.c - three-signal filter proof for wendy_prune()
  * Run: gcc tests/entropy_check.c -lm && ./a.out  -> failures = 0
