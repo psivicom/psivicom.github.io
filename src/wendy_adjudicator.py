@@ -6,7 +6,7 @@ against non-LLM ground truth (Zig/Go system state).
 
 import json
 import hashlib
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from dataclasses import dataclass
 
 @dataclass
@@ -74,26 +74,25 @@ class WendyAdjudicator:
             "adjudicator_note": "Autoregressive bias detected and neutralized."
         }
 
-# --- Example Usage / Integration Test ---
+
 if __name__ == "__main__":
+    # Integration test
     adjudicator = WendyAdjudicator()
 
-    # Scenario: GLM claims a tool executed successfully and produced a specific hash,
-    # but the Go sandbox actually failed (exit code 1).
     flawed_glm_ruling = {
         "action": "execute_tool",
         "payload": {
             "tool": "varroa_counter",
             "success": True,
-            "output_hash": "a1b2c3d4e5f6" # GLM hallucinated this
+            "output_hash": "a1b2c3d4e5f6"
         },
         "confidence": 0.95
     }
 
     actual_system_state = SystemState(
         zig_checksum_valid=True,
-        go_sandbox_exit_code=1, # Hard failure
-        go_sandbox_stdout_hash="9f8e7d6c5b4a", # Actual hash
+        go_sandbox_exit_code=1,
+        go_sandbox_stdout_hash="9f8e7d6c5b4a",
         sensor_data_present=True
     )
 
