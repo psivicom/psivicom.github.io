@@ -1,7 +1,7 @@
 <!--
   Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | CC BY-SA 4.0
 -->
-# Authors —  INDEPENDENT RESEARCHER: Louis-Philippe Audette
+# Author —  INDEPENDENT RESEARCHER: Louis-Philippe Audette
 
 - **Louis-Philippe Audette** — Open Science Steward, FAIR Data Steward — Langford, BC, Canada
   - Website: https://psivi.com
