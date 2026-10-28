@@ -1,10 +1,23 @@
 {
-  "updated_at": "2026-10-27T21:00:03.976500+00:00",
+  "updated_at": "2026-10-28T00:26:27.720750+00:00",
   "node_count": 2,
   "nodes": [
     {
+      "node_id": "psivicom-primary",
+      "timestamp": "2026-10-28T00:26:27.694Z",
+      "status": "ALIVE",
+      "signature": "aa90d9f169ec39b9c85bfc43da1c1405",
+      "velocity": 1.0,
+      "role": "VOLUNTEER",
+      "coords": {
+        "x": 0.54,
+        "y": -0.46,
+        "z": -0.9
+      }
+    },
+    {
       "node_id": "mirror-node-local",
-      "timestamp": "2026-10-27T21:00:03.355Z",
+      "timestamp": "2026-10-28T00:26:26.994Z",
       "status": "ALIVE",
       "role": "MIRROR",
       "coords": {
@@ -13,19 +26,6 @@
         "z": 0.0
       },
       "latency_ms": 2
-    },
-    {
-      "node_id": "psivicom-primary",
-      "timestamp": "2026-10-27T21:00:03.926Z",
-      "status": "ALIVE",
-      "signature": "f5b0bd4480082149cfd93b8d4a43d780",
-      "velocity": 1.0,
-      "role": "VOLUNTEER",
-      "coords": {
-        "x": 0.54,
-        "y": -0.46,
-        "z": -0.9
-      }
     }
   ]
 }
