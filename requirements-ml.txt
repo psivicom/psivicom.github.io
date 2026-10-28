@@ -3,7 +3,7 @@
 
 # 1. Data & State Management (Lightweight)
 numpy==2.5.4  # The engine for all dense vector math and PSVC operations
-pandas==3.1.0  # For structured data analysis
+pandas=>3.1.0  # For structured data analysis
 orjson==3.13.0  # Ultra-fast JSON parsing for mesh status
 msgpack==1.2.3  # Binary serialization for wendy_twin.psvec
 
