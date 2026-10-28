@@ -11,7 +11,7 @@ python-dotenv==1.2.4
 pynacl==1.6.2
 
 # 1. Data & State Management (Lightweight)
-pandas==3.1.0  # For structured data analysis
+pandas=>3.1.0  # For structured data analysis
 orjson==3.13.0  # Ultra-fast JSON parsing for mesh status
 
 # 2. Mesh Communication & Networking
