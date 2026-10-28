@@ -15,10 +15,10 @@ jobs:
     name: Aggressive Token Eradication
     runs-on: ubuntu-latest
     steps:
-       - uses: actions/checkout@v4
-         with:
-           token: ${{ github.token }}
-           fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
@@ -36,21 +36,21 @@ jobs:
               # CRITICAL: Do not modify this file
               if wf.name == 'final-token-nuke.yml':
                   continue
-                  
+
               content = wf.read_text()
-              
+
               # 1. Nuke ANY fine-grained PAT (github_pat_...) to the end of the word
               content = re.sub(r'github_pat_\S+', '${{ secrets.WENDY_AUDITOR_PAT }}', content)
-              
+
               # 2. Nuke ANY classic PAT (ghp_, gho_, ghu_, ghs_, ghr_) to the end of the word
               content = re.sub(r'\bgh[pousr]_\S+', '${{ secrets.WENDY_AUDITOR_PAT }}', content)
-              
+
               # 3. NUCLEAR FALLBACK: If 'token:' or 'GITHUB_TOKEN:' is followed by a 40+ char alphanumeric string, obliterate it
               content = re.sub(r'(token:\s*)["\']?[a-zA-Z0-9_\-]{40,}["\']?', r'\1${{ secrets.WENDY_AUDITOR_PAT }}', content)
               content = re.sub(r'(GITHUB_TOKEN:\s*)["\']?[a-zA-Z0-9_\-]{40,}["\']?', r'\1${{ secrets.WENDY_AUDITOR_PAT }}', content)
-              
+
               wf.write_text(content)
-              
+
           print("🏁 Python Nuke Complete.")
           PYTHON_SCRIPT
 
@@ -60,13 +60,13 @@ jobs:
         run: |
           git config user.name "WENDY Token Nuke"
           git config user.email "nuke@psivi.com"
-          
+
           git add .github/workflows/
-          
+
           # GUARANTEE this file is not in the commit, preventing any self-conflict
           git reset HEAD .github/workflows/final-token-nuke.yml 2>/dev/null || true
           git checkout HEAD -- .github/workflows/final-token-nuke.yml 2>/dev/null || true
-          
+
           if ! git diff --staged --quiet; then
             git commit -m "chore: final python-based token nuke [skip ci]"
             git pull --rebase origin main
