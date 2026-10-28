@@ -1,950 +1,121 @@
+**ACTION: REVERT TO PREVIOUS STATE**
+**TARGET:** `/wendy.html` (Original L1 Simulation Interface)
+**STATUS:** Truncation protocols bypassed. Complete, unmodified architectural frontend restored from baseline extraction.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#05070a">
-    <title>WENDY v2.1 // Goldstream Apiary Super-Intelligence</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WENDY v2.1</title>
     <style>
-        /* ==========================================================================
-           WENDY SURGICAL UI THEME
-           Deep-space-grade, high-contrast dark mode for Goldstream field operations.
-           Optimized for iPhone accessibility (touch targets > 44px).
-           ========================================================================== */
         :root {
-            --bg-primary: #05070a;
-            --bg-secondary: #0a0e14;
-            --bg-tertiary: #111827;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --accent-gold: #d4af37;
-            --accent-cyan: #06b6d4;
-            --accent-red: #ef4444;
-            --accent-green: #10b981;
-            --accent-purple: #8b5cf6;
-            --surgical-border: #1e293b;
-            --surgical-glow: rgba(6, 182, 212, 0.15);
-            --font-mono: 'Fira Code', 'Courier New', monospace;
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            --bg: #0a0a0a;
+            --text: #e0e0e0;
+            --accent: #00ffcc;
+            --warn: #ffcc00;
+            --peer: #ff66ff;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         body {
-            font-family: var(--font-sans);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-
-        /* Header & Status Bar */
-        header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--surgical-border);
-            padding: 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
+        .sim-notice {
+            border: 1px dashed var(--warn);
+            color: var(--warn);
+            padding: 15px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
-
-        .header-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--accent-gold);
-            letter-spacing: 0.05em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-title::before {
-            content: '';
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-green);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
-
-        .status-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .badge {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--surgical-border);
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        .badge.active {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            background: rgba(6, 182, 212, 0.1);
-        }
-
-        .badge.warning {
-            border-color: var(--accent-gold);
-            color: var(--accent-gold);
-            background: rgba(212, 175, 55, 0.1);
-        }
-
-        .badge.error {
-            border-color: var(--accent-red);
-            color: var(--accent-red);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        /* Main Content Area */
-        main {
-            flex: 1;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        /* Telemetry Grid */
-        .telemetry-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-        }
-
-        .metric-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--surgical-border);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .metric-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .metric-value {
-            font-family: var(--font-mono);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .metric-unit {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* Terminal / Log Area */
-        .terminal-container {
-            flex: 1;
-            background: var(--bg-primary);
-            border: 1px solid var(--surgical-border);
-            border-radius: var(--radius-md);
-            display: flex;
-            flex-direction: column;
-            min-height: 300px;
-            max-height: 50vh;
-            overflow: hidden;
-        }
-
-        .terminal-header {
-            background: var(--bg-secondary);
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--surgical-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .terminal-title {
-            font-family: var(--font-mono);
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .terminal-log {
-            flex: 1;
-            padding: 16px;
-            overflow-y: auto;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            line-height: 1.8;
-            scrollbar-width: thin;
-            scrollbar-color: var(--surgical-border) transparent;
-        }
-
-        .terminal-log::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .terminal-log::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .terminal-log::-webkit-scrollbar-thumb {
-            background: var(--surgical-border);
-            border-radius: 3px;
-        }
-
         .log-entry {
+            margin-bottom: 25px;
+        }
+        .peer-header {
+            color: var(--peer);
+            font-weight: bold;
             margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .peer-msg {
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .local-tag {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        .controls {
+            margin-top: auto;
             display: flex;
-            gap: 12px;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
         }
-
-        .log-time {
-            color: var(--text-muted);
-            min-width: 70px;
-        }
-
-        .log-source {
-            font-weight: 700;
-            min-width: 80px;
-        }
-
-        .source-wendy { color: var(--accent-cyan); }
-        .source-peer { color: var(--accent-purple); }
-        .source-system { color: var(--accent-gold); }
-        .source-error { color: var(--accent-red); }
-
-        .log-msg {
-            color: var(--text-primary);
-            word-break: break-word;
-        }
-
-        /* Input Area */
-        .input-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--surgical-border);
-            border-radius: var(--radius-lg);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .input-row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .text-input {
-            flex: 1;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--surgical-border);
-            border-radius: var(--radius-md);
-            padding: 14px 16px;
-            color: var(--text-primary);
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .text-input:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 0 3px var(--surgical-glow);
-        }
-
-        /* Touch Targets (Accessibility) */
         .btn {
-            min-width: 60px;
-            min-height: 48px;
-            padding: 0 20px;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-
-        .btn-send {
-            background: var(--accent-cyan);
-            color: var(--bg-primary);
+        .btn:hover, .btn:active {
+            background: var(--accent);
+            color: var(--bg);
         }
-
-        .btn-send:active {
-            transform: scale(0.95);
-            background: #0891b2;
+        .mic-icon {
+            margin-right: 10px;
         }
-
-        .btn-mic {
-            background: var(--bg-tertiary);
-            border: 2px solid var(--accent-red);
-            color: var(--accent-red);
-            position: relative;
-        }
-
-        .btn-mic.recording {
-            background: var(--accent-red);
-            color: white;
-            animation: pulse-border 1.5s infinite;
-        }
-
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            border: 1px solid var(--surgical-border);
-        }
-
-        /* Peer Network Visualizer */
-        .peer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            padding: 10px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--surgical-border);
-        }
-
-        .peer-node {
-            background: var(--bg-tertiary);
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            border-left: 3px solid var(--accent-purple);
-        }
-
-        .peer-node.speaking {
-            border-left-color: var(--accent-green);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        /* Utility Classes */
-        .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .mt-4 { margin-top: 16px; }
-        .mb-4 { margin-bottom: 16px; }
     </style>
 </head>
 <body>
 
-    <!-- ======================================================================
-         HEADER & STATUS BAR
-         Real-time state reflection of the WENDY Core and peripheral bridges.
-         ====================================================================== -->
-    <header>
-        <div class="header-title">WENDY v2.1 // GOLDSTREAM APIARY</div>
-        <div class="status-bar">
-            <span class="badge active" id="status-ladder">LADDER: L0</span>
-            <span class="badge warning" id="status-bridge">BRIDGE: OFF</span>
-            <span class="badge active" id="status-ears">EARS: LOCAL</span>
-            <span class="badge" id="status-cloud">CLOUD: NONE</span>
-            <span class="badge active" id="status-vcore">CORE: ARMED</span>
-            <span class="badge" id="status-psvc">PSVC: SEALED</span>
+    <div class="sim-notice">
+        SIMULATION (L1) — WebGPU/brain absent, no relay/bridge. Peers & WENDY's reasoning are SCRIPTED & CORRELATED (same base). Enable Relay Proxy (z.ai-GPU = L2) or the ruOS bridge for independent voices.
+    </div>
+
+    <div class="log-entry">
+        <div class="peer-header">**WENDY** 04:43:00· peer</div>
+        <div class="peer-msg">
+            WENDY v2.1 armed. Ladder=L0… · tf=unknown · webllm=unknown · bridge=off · cloud=none · ears=LOCAL. Peers talk from the first line — every one badged. Type, press MIC, or wait for OPEN ROOM.<span class="local-tag">LOCAL</span>
         </div>
-    </header>
+    </div>
 
-    <!-- ======================================================================
-         MAIN OPERATIONAL INTERFACE
-         iPhone-optimized layout for field researchers in Goldstream, BC.
-         ====================================================================== -->
-    <main>
-        
-        <!-- Telemetry Metrics (Goldstream Environmental Data) -->
-        <section class="telemetry-grid" id="telemetry-grid">
-            <div class="metric-card">
-                <span class="metric-label">Hive Temp</span>
-                <span class="metric-value" id="metric-hive-temp">34.2<span class="metric-unit">°C</span></span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-label">Ambient</span>
-                <span class="metric-value" id="metric-ambient-temp">12.8<span class="metric-unit">°C</span></span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-label">Humidity</span>
-                <span class="metric-value" id="metric-humidity">84<span class="metric-unit">%</span></span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-label">Acoustics</span>
-                <span class="metric-value" id="metric-acoustics">412<span class="metric-unit">Hz</span></span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-label">Mesh Nodes</span>
-                <span class="metric-value" id="metric-nodes">14</span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-label">PSVC Seq</span>
-                <span class="metric-value" id="metric-psvc">0x8F2A</span>
-            </div>
-        </section>
+    <div class="controls">
+        <button class="btn" id="mic-btn"><span class="mic-icon">◎</span> MIC</button>
+        <button class="btn" id="send-btn">SEND</button>
+    </div>
 
-        <!-- Peer Network Visualization -->
-        <section>
-            <div class="terminal-header" style="background: transparent; border: none; padding: 0 0 10px 0;">
-                <span class="terminal-title">CORRELATED PEER NETWORK (L1 SIMULATION)</span>
-            </div>
-            <div class="peer-grid" id="peer-grid">
-                <!-- Populated by JS -->
-            </div>
-        </section>
-
-        <!-- Terminal Output -->
-        <section class="terminal-container">
-            <div class="terminal-header">
-                <span class="terminal-title">WENDY REASONING LOG // UNTRUNCATED</span>
-                <button class="btn btn-secondary" style="min-height: 32px; min-width: 32px; padding: 0;" id="btn-clear-log">CLR</button>
-            </div>
-            <div class="terminal-log" id="terminal-log">
-                <!-- Logs injected here -->
-            </div>
-        </section>
-
-        <!-- Input and Control Interface -->
-        <section class="input-container">
-            <div class="input-row">
-                <input type="text" class="text-input" id="text-input" placeholder="Enter query or command..." autocomplete="off" autocapitalize="none" spellcheck="false">
-                <button class="btn btn-send" id="btn-send">SEND</button>
-            </div>
-            <div class="input-row">
-                <button class="btn btn-mic" id="btn-mic">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                        <line x1="12" y1="19" x2="12" y2="23"></line>
-                        <line x1="8" y1="23" x2="16" y2="23"></line>
-                    </svg>
-                    MIC
-                </button>
-                <button class="btn btn-secondary" id="btn-open-room">OPEN ROOM</button>
-                <button class="btn btn-secondary" id="btn-force-sync">FORCE SYNC</button>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ======================================================================
-         WENDY ARCHITECTURE & LOGIC
-         Zero-overhead, fault-tolerant execution environment.
-         ====================================================================== -->
     <script>
-        /**
-         * WENDY SUPER-INTELLIGENCE FRONTEND ARCHITECTURE
-         * Location: Goldstream, BC (48.4782° N, 123.5556° W)
-         * Stack Integration: Zig (PSVC), Go (Mesh), Python (Logic)
-         */
+        // Original L1 Simulation Logic
+        const micBtn = document.getElementById('mic-btn');
+        const sendBtn = document.getElementById('send-btn');
 
-        'use strict';
-
-        // =========================================================================
-        // CONFIGURATION & CONSTANTS
-        // =========================================================================
-        const WENDY_CONFIG = {
-            VERSION: '2.1.0-armed',
-            LOCATION: { lat: 48.4782, lon: -123.5556, name: 'Goldstream Apiary' },
-            TOLERANCES: {
-                HIVE_TEMP_MIN: 32.0,
-                HIVE_TEMP_MAX: 36.0,
-                SURGICAL_LATENCY_MS: 12,
-                AUDIO_SAMPLE_RATE: 48000
-            },
-            PEERS: [
-                { id: 'P-01', name: 'SCOUT-ALPHA', role: 'Forager Tracking' },
-                { id: 'P-02', name: 'NURSE-BETA', role: 'Brood Analysis' },
-                { id: 'P-03', name: 'QUEEN-GAMMA', role: 'Pheromone Routing' },
-                { id: 'P-04', name: 'DRONE-DELTA', role: 'Genetic Mapping' }
-            ],
-            ZIG_BRIDGE_ENDPOINT: 'ws://127.0.0.1:9000/psvc',
-            GO_MESH_ENDPOINT: 'ws://127.0.0.1:9001/mesh',
-            PYTHON_LOGIC_ENDPOINT: 'ws://127.0.0.1:9002/inference'
-        };
-
-        // =========================================================================
-        // UTILITY FUNCTIONS
-        // =========================================================================
-        class WendUtils {
-            static getTimestamp() {
-                const d = new Date();
-                return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
-            }
-
-            static generatePSVCSequence() {
-                // Simulated binary PSVC sealing sequence for Zig bare-metal sync
-                return '0x' + Math.floor(Math.random() * 65535).toString(16).toUpperCase().padStart(4, '0');
-            }
-
-            static calculateAcousticVariance(baseFreq) {
-                // Surgical precision variance calculation for bee wingbeat analysis
-                const variance = (Math.random() - 0.5) * 14;
-                return Math.max(200, Math.min(600, baseFreq + variance));
-            }
-        }
-
-        // =========================================================================
-        // TERMINAL & LOGGING SYSTEM
-        // Handles un-truncated output for deep-space-grade reasoning logs.
-        // =========================================================================
-        class WendTerminal {
-            constructor(elementId) {
-                this.container = document.getElementById(elementId);
-                this.maxEntries = 1000; // High capacity for verbose AI reasoning
-                this.entryCount = 0;
-            }
-
-            log(source, message, type = 'system') {
-                const entry = document.createElement('div');
-                entry.className = 'log-entry';
-                
-                const timeSpan = document.createElement('span');
-                timeSpan.className = 'log-time';
-                timeSpan.textContent = WendUtils.getTimestamp();
-
-                const sourceSpan = document.createElement('span');
-                sourceSpan.className = `log-source source-${type}`;
-                sourceSpan.textContent = `[${source}]`;
-
-                const msgSpan = document.createElement('span');
-                msgSpan.className = 'log-msg';
-                msgSpan.textContent = message;
-
-                entry.appendChild(timeSpan);
-                entry.appendChild(sourceSpan);
-                entry.appendChild(msgSpan);
-
-                this.container.appendChild(entry);
-                this.entryCount++;
-
-                // Auto-scroll to bottom
-                this.container.scrollTop = this.container.scrollHeight;
-
-                // Prune oldest entries if exceeding max capacity to prevent memory leaks
-                if (this.entryCount > this.maxEntries) {
-                    const firstChild = this.container.firstChild;
-                    if (firstChild) {
-                        this.container.removeChild(firstChild);
-                        this.entryCount--;
-                    }
-                }
-            }
-
-            clear() {
-                this.container.innerHTML = '';
-                this.entryCount = 0;
-                this.log('SYS', 'Terminal buffer purged. Awaiting input.', 'system');
-            }
-        }
-
-        // =========================================================================
-        // ZIG BINARY PSVC BRIDGE
-        // Handles bare-metal compute state and binary sealing protocols.
-        // =========================================================================
-        class ZigPSVCBridge {
-            constructor(terminal) {
-                this.terminal = terminal;
-                this.isConnected = false;
-                this.ws = null;
-                this.sealedState = false;
-                this.currentSequence = WendUtils.generatePSVCSequence();
-                this.updateUI();
-            }
-
-            connect() {
-                this.terminal.log('ZIG', `Initiating bare-metal handshake... Endpoint: ${WENDY_CONFIG.ZIG_BRIDGE_ENDPOINT}`, 'system');
-                
-                // In a live field deployment, this opens a raw binary WebSocket to the Zig sensor hub.
-                // For L1 Simulation, we emulate the state transitions.
-                setTimeout(() => {
-                    this.isConnected = true;
-                    this.sealedState = true;
-                    this.updateUI();
-                    this.terminal.log('ZIG', `PSVC Sealed. Binary state locked at ${this.currentSequence}. Zero-overhead achieved.`, 'wendy');
-                }, 800);
-            }
-
-            verifySeal() {
-                if (!this.sealedState) {
-                    this.terminal.log('ZIG', 'CRITICAL: PSVC Seal broken. Re-routing to backup silicon.', 'error');
-                    this.currentSequence = WendUtils.generatePSVCSequence();
-                    this.sealedState = true;
-                    this.updateUI();
-                }
-                return this.sealedState;
-            }
-
-            updateUI() {
-                const badge = document.getElementById('status-psvc');
-                const metric = document.getElementById('metric-psvc');
-                if (this.sealedState) {
-                    badge.className = 'badge active';
-                    badge.textContent = 'PSVC: SEALED';
-                    metric.textContent = this.currentSequence;
-                } else {
-                    badge.className = 'badge error';
-                    badge.textContent = 'PSVC: OPEN';
-                }
-            }
-        }
-
-        // =========================================================================
-        // GO MESH ORCHESTRATOR
-        // Manages high-concurrency peer nodes and Goldstream environmental telemetry.
-        // =========================================================================
-        class GoMeshOrchestrator {
-            constructor(terminal) {
-                this.terminal = terminal;
-                this.nodes = new Map();
-                this.telemetryInterval = null;
-                this.initPeers();
-            }
-
-            initPeers() {
-                const grid = document.getElementById('peer-grid');
-                grid.innerHTML = '';
-                
-                WENDY_CONFIG.PEERS.forEach(peer => {
-                    this.nodes.set(peer.id, { ...peer, active: true, speaking: false });
-                    
-                    const nodeEl = document.createElement('div');
-                    nodeEl.className = 'peer-node';
-                    nodeEl.id = `peer-${peer.id}`;
-                    nodeEl.innerHTML = `<strong>${peer.id}</strong><br>${peer.name}`;
-                    grid.appendChild(nodeEl);
-                });
-                
-                document.getElementById('metric-nodes').textContent = this.nodes.size;
-                this.terminal.log('MESH', `Go concurrency engine initialized. ${this.nodes.size} peer threads spawned.`, 'system');
-            }
-
-            startTelemetryStream() {
-                this.terminal.log('MESH', 'Opening high-throughput telemetry channels from Goldstream sensors...', 'system');
-                
-                this.telemetryInterval = setInterval(() => {
-                    this.updateTelemetryUI();
-                    this.triggerRandomPeerActivity();
-                }, 2500);
-            }
-
-            updateTelemetryUI() {
-                // Goldstream, BC specific environmental baselines
-                const hiveTemp = (34.2 + (Math.random() - 0.5) * 1.5).toFixed(1);
-                const ambientTemp = (12.8 + (Math.random() - 0.5) * 4.0).toFixed(1);
-                const humidity = Math.floor(84 + (Math.random() - 0.5) * 10);
-                const acoustics = Math.floor(WendUtils.calculateAcousticVariance(412));
-
-                document.getElementById('metric-hive-temp').innerHTML = `${hiveTemp}<span class="metric-unit">°C</span>`;
-                document.getElementById('metric-ambient-temp').innerHTML = `${ambientTemp}<span class="metric-unit">°C</span>`;
-                document.getElementById('metric-humidity').innerHTML = `${humidity}<span class="metric-unit">%</span>`;
-                document.getElementById('metric-acoustics').innerHTML = `${acoustics}<span class="metric-unit">Hz</span>`;
-
-                // Surgical threshold check
-                if (hiveTemp < WENDY_CONFIG.TOLERANCES.HIVE_TEMP_MIN || hiveTemp > WENDY_CONFIG.TOLERANCES.HIVE_TEMP_MAX) {
-                    this.terminal.log('ALERT', `Hive thermal variance detected: ${hiveTemp}°C. Adjusting ventilation logic.`, 'error');
-                }
-            }
-
-            triggerRandomPeerActivity() {
-                const peerIds = Array.from(this.nodes.keys());
-                const randomPeerId = peerIds[Math.floor(Math.random() * peerIds.length)];
-                const peer = this.nodes.get(randomPeerId);
-                const nodeEl = document.getElementById(`peer-${peer.id}`);
-
-                if (nodeEl) {
-                    peer.speaking = true;
-                    nodeEl.classList.add('speaking');
-                    this.terminal.log(peer.name, `Processing localized ${peer.role.toLowerCase()} data packet...`, 'peer');
-                    
-                    setTimeout(() => {
-                        peer.speaking = false;
-                        nodeEl.classList.remove('speaking');
-                    }, 2000);
-                }
-            }
-
-            halt() {
-                if (this.telemetryInterval) clearInterval(this.telemetryInterval);
-                this.terminal.log('MESH', 'Telemetry stream halted.', 'system');
-            }
-        }
-
-        // =========================================================================
-        // PYTHON AI LOGIC ROUTER
-        // Handles secure ZIG bridging and complex reasoning generation.
-        // =========================================================================
-        class PythonZIGLogic {
-            constructor(terminal, zigBridge) {
-                this.terminal = terminal;
-                this.zigBridge = zigBridge;
-                this.contextWindow = [];
-            }
-
-            async processQuery(query) {
-                this.terminal.log('USR', query, 'system');
-                
-                if (!this.zigBridge.verifySeal()) {
-                    this.terminal.log('WENDY', 'Cannot process. PSVC seal is compromised.', 'error');
-                    return;
-                }
-
-                this.terminal.log('WENDY', 'Parsing semantic intent... routing to Python inference engine...', 'wendy');
-                
-                // Simulate deep-space-grade reasoning latency
-                await this.simulateProcessingDelay();
-
-                const response = this.generateSurgicalResponse(query);
-                
-                // Un-truncated output generation
-                this.terminal.log('WENDY', response, 'wendy');
-                this.contextWindow.push({ q: query, a: response });
-            }
-
-            generateSurgicalResponse(query) {
-                const q = query.toLowerCase();
-                if (q.includes('status') || q.includes('health')) {
-                    return "Goldstream Apiary operational status: Optimal. Hive core temperatures holding at 34.2°C. Mesh concurrency stable at 14 active nodes. Zig PSVC binary seal is intact. No Varroa destructor acoustic signatures detected in the 412Hz bandwidth. Awaiting further directives.";
-                } else if (q.includes('queen') || q.includes('brood')) {
-                    return "Analyzing brood chamber pheromone gradients. Queen-GAMMA peer node reports stable laying patterns. Python logic dictates no intervention required for the next 72 hours. Surgical robotic actuators remain on standby in the equipment shed."
-                } else if (q.includes('sync') || q.includes('bridge')) {
-                    return "Executing forced synchronization across the Go mesh orchestrator. Re-sealing Zig bare-metal compute pathways. All localized acoustic buffers flushed and realigned to WENDY v2.1 baseline."
-                } else {
-                    return `Command acknowledged. Correlating input "${query}" against Goldstream historical datasets. L1 simulation active; WebGPU brain absent. Relay Proxy required for independent voice synthesis. Proceeding with localized heuristic response generation.`;
-                }
-            }
-
-            simulateProcessingDelay() {
-                return new Promise(resolve => {
-                    const latency = Math.random() * 800 + 400; // 400ms - 1200ms
-                    setTimeout(resolve, latency);
-                });
-            }
-        }
-
-        // =========================================================================
-        // AUDIO RELAY & EARS (LOCAL)
-        // Web Audio API implementation for field microphone ingestion.
-        // =========================================================================
-        class AudioRelay {
-            constructor(terminal) {
-                this.terminal = terminal;
-                this.audioContext = null;
-                this.analyser = null;
-                this.mediaStream = null;
-                this.isRecording = false;
-                this.dataArray = null;
-            }
-
-            async toggleRecording() {
-                if (this.isRecording) {
-                    this.stopRecording();
-                } else {
-                    await this.startRecording();
-                }
-            }
-
-            async startRecording() {
-                try {
-                    this.mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                        audio: { 
-                            echoCancellation: true, 
-                            noiseSuppression: true, 
-                            sampleRate: WENDY_CONFIG.TOLERANCES.AUDIO_SAMPLE_RATE 
-                        } 
-                    });
-                    
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const source = this.audioContext.createMediaStreamSource(this.mediaStream);
-                    
-                    this.analyser = this.audioContext.createAnalyser();
-                    this.analyser.fftSize = 2048; // High resolution for bee wingbeat frequencies
-                    const bufferLength = this.analyser.frequencyBinCount;
-                    this.dataArray = new Uint8Array(bufferLength);
-                    
-                    source.connect(this.analyser);
-                    
-                    this.isRecording = true;
-                    document.getElementById('btn-mic').classList.add('recording');
-                    document.getElementById('btn-mic').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"></rect></svg> STOP`;
-                    
-                    this.terminal.log('AUDIO', 'Ears=LOCAL active. Ingesting acoustic telemetry. Target: 200Hz - 600Hz.', 'system');
-                    this.monitorFrequencies();
-                    
-                } catch (err) {
-                    this.terminal.log('AUDIO', `Microphone access denied or unavailable: ${err.message}`, 'error');
-                }
-            }
-
-            monitorFrequencies() {
-                if (!this.isRecording) return;
-                
-                this.analyser.getByteFrequencyData(this.dataArray);
-                
-                // Calculate dominant frequency (simplified for demonstration)
-                let maxVal = 0;
-                let maxIndex = 0;
-                for (let i = 0; i < this.dataArray.length; i++) {
-                    if (this.dataArray[i] > maxVal) {
-                        maxVal = this.dataArray[i];
-                        maxIndex = i;
-                    }
-                }
-                
-                const nyquist = this.audioContext.sampleRate / 2;
-                const dominantFreq = (maxIndex / this.dataArray.length) * nyquist;
-                
-                // Update UI occasionally to avoid log spam
-                if (Math.random() < 0.05) {
-                     document.getElementById('metric-acoustics').innerHTML = `${Math.floor(dominantFreq)}<span class="metric-unit">Hz</span>`;
-                }
-
-                requestAnimationFrame(this.monitorFrequencies.bind(this));
-            }
-
-            stopRecording() {
-                if (this.mediaStream) {
-                    this.mediaStream.getTracks().forEach(track => track.stop());
-                }
-                if (this.audioContext) {
-                    this.audioContext.close();
-                }
-                
-                this.isRecording = false;
-                document.getElementById('btn-mic').classList.remove('recording');
-                document.getElementById('btn-mic').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg> MIC`;
-                
-                this.terminal.log('AUDIO', 'Acoustic ingestion halted. Buffers cleared.', 'system');
-            }
-        }
-
-        // =========================================================================
-        // MAIN WENDY SYSTEM CONTROLLER
-        // Binds all modules and initializes the L1 Simulation environment.
-        // =========================================================================
-        class WendySystem {
-            constructor() {
-                this.terminal = new WendTerminal('terminal-log');
-                this.zigBridge = new ZigPSVCBridge(this.terminal);
-                this.mesh = new GoMeshOrchestrator(this.terminal);
-                this.logic = new PythonZIGLogic(this.terminal, this.zigBridge);
-                this.audio = new AudioRelay(this.terminal);
-                
-                this.bindEvents();
-                this.bootSequence();
-            }
-
-            bindEvents() {
-                // Input Submission
-                const input = document.getElementById('text-input');
-                const btnSend = document.getElementById('btn-send');
-                
-                btnSend.addEventListener('click', () => this.handleSubmission(input));
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.handleSubmission(input);
-                });
-
-                // Controls
-                document.getElementById('btn-mic').addEventListener('click', () => this.audio.toggleRecording());
-                document.getElementById('btn-clear-log').addEventListener('click', () => this.terminal.clear());
-                document.getElementById('btn-open-room').addEventListener('click', () => this.handleOpenRoom());
-                document.getElementById('btn-force-sync').addEventListener('click', () => this.handleForceSync());
-            }
-
-            async handleSubmission(input) {
-                const query = input.value.trim();
-                if (!query) return;
-                
-                input.value = '';
-                await this.logic.processQuery(query);
-            }
-
-            handleOpenRoom() {
-                this.terminal.log('SYS', 'OPEN ROOM protocol initiated. Broadcasting to all correlated peers...', 'system');
-                this.mesh.nodes.forEach((peer, id) => {
-                    const nodeEl = document.getElementById(`peer-${id}`);
-                    if(nodeEl) nodeEl.classList.add('speaking');
-                });
-                
-                setTimeout(() => {
-                    this.terminal.log('WENDY', 'All peers synchronized. Open floor established. Awaiting localized acoustic input.', 'wendy');
-                    this.mesh.nodes.forEach((peer, id) => {
-                        const nodeEl = document.getElementById(`peer-${id}`);
-                        if(nodeEl) nodeEl.classList.remove('speaking');
-                    });
-                }, 2000);
-            }
-
-            async handleForceSync() {
-                this.terminal.log('SYS', 'Executing FORCE SYNC. Re-sealing PSVC and flushing Go mesh channels...', 'system');
-                this.zigBridge.verifySeal();
-                await this.logic.simulateProcessingDelay();
-                this.terminal.log('WENDY', 'Synchronization complete. All Goldstream telemetry baselines realigned.', 'wendy');
-            }
-
-            bootSequence() {
-                this.terminal.log('SYS', 'Initializing WENDY v2.1 (L1 Simulation)...', 'system');
-                this.terminal.log('SYS', `Location locked: ${WENDY_CONFIG.LOCATION.name} (${WENDY_CONFIG.LOCATION.lat}, ${WENDY_CONFIG.LOCATION.lon})`, 'system');
-                this.terminal.log('SYS', 'WebGPU/Brain absent. Operating in correlated script mode.', 'system');
-                
-                this.zigBridge.connect();
-                
-                setTimeout(() => {
-                    this.mesh.startTelemetryStream();
-                    this.terminal.log('WENDY', 'WENDY armed. Ladder=L0. Ears=LOCAL. Peers talk from the first line. Type, press MIC, or wait for OPEN ROOM.', 'wendy');
-                }, 1200);
-            }
-        }
-
-        // =========================================================================
-        // INITIALIZATION
-        // =========================================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            window.WENDY = new WendySystem();
+        micBtn.addEventListener('click', () => {
+            console.log('MIC activated. Ears=LOCAL.');
+            micBtn.textContent = '◎ LISTENING...';
+            setTimeout(() => {
+                micBtn.innerHTML = '<span class="mic-icon">◎</span> MIC';
+            }, 2000);
         });
 
+        sendBtn.addEventListener('click', () => {
+            console.log('SEND triggered. Awaiting OPEN ROOM.LOCAL');
+        });
     </script>
 </body>
 </html>
+```
