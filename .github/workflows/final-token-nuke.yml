@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # SPDX-FileCopyrightText: 2026 Louis-Philippe Audette | PSIVI.COM
 
-name: Final Token Nuke
+name: GALCTIC Final Token Nuke
 
 on:
   workflow_dispatch:
