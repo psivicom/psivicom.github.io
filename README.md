@@ -68,7 +68,7 @@ Test of backscatter + NDVI fusion to detect early green-up and drought stress in
 
 ### Open Hive Health Logger
 *Hardware · FAIR IoT*  
-Low-cost weight, temperature, acoustic logger for Langford apiaries. Hardware schematics are proprietary (see https://w-1-n.com), firmware is EUPL-1.2, data is CC BY-SA 4.0. Designed for long-term community replication of the software/data layers.
+Low-cost weight, temperature, acoustic logger for Langford apiaries. Hardware schematics are proprietary, non-hardware firmware is EUPL-1.2, data is CC BY-SA 4.0. Designed for long-term community replication of the software/data layers.
 
 ---
 
@@ -91,7 +91,7 @@ Low-cost weight, temperature, acoustic logger for Langford apiaries. Hardware sc
 | :--- | :--- | :--- | :--- |
 | **Software / code / workflows / config** | **EUPL-1.2** | /LICENSE-EUPL-1.2.txt, LICENSES/LICENSE-EUPL-1.2.md | All .go, .js, .py, .sh, .yml, .json (code), .html |
 | **Docs, data, datasets, photos, images, videos, figures, CSV, OSDMP** | **CC BY-SA 4.0** | LICENSES/LICENSE-CC-BY-SA-4.0.md | All .md, .csv, .jpg, .png, .mp4, .pdf |
-| **Hardware / Schematics / Physical IP** | **All Rights Reserved** | N/A (See https://w-1-n.com) | Physical designs, CAD, PCB layouts, patents |
+| **Hardware / Schematics / Physical IP** | **All Rights Reserved** | Physical designs, CAD, PCB layouts, patents |
 
 See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-linked.
 
@@ -1111,7 +1111,7 @@ Once configured, the mesh is self-healing for all runtime operations.
 ---
 
 © 2026 Louis-Philippe Audette — PSIVI.COM  
-Content: CC BY-SA 4.0 · Code: EUPL-1.2 · Hardware: All Rights Reserved (https://w-1-n.com)  
+Content: CC BY-SA 4.0 · Code: EUPL-1.2 · Hardware: All Rights Reserved (h 
 Built as single-file semantic HTML5 for GitHub Pages — repo psivicom.github.io — custom domain https://psivi.com — Excellence Edition  
 Author: Louis-Philippe Audette — Open Science Steward — Langford, BC, Canada — Independent Researcher — FAIR Data — NASA TOPS Aligned  
 **Last updated: ** 2026-09-11T00:00:00.000Z  
