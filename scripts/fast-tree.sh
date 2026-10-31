@@ -30,33 +30,38 @@ find . \
   -not -name 'fast-tree.sh' \
   -print | sort | awk -f /tmp/draw_tree.awk > /tmp/raw_tree.txt
 
-# Add colors and generate HTML snippet
+# Prepare files
 > "$OUTPUT_FILE"
 > tree_snippet.html
+> tree.md
+
+printf '```text\n' >> tree.md
 
 while IFS= read -r line; do
   path=$(echo "$line" | sed 's/^[^a-zA-Z0-9_./-]*//')
   
-  # Determine color class
+  # 1. For HTML (Colors)
   if [ -d "$path" ]; then
-    styled_line="<span style=\"color:#569cd6\">${line}</span>" # Blue for dirs
+    echo "<span style=\"color:#569cd6\">${line}</span>" >> tree_snippet.html # Blue
   elif [ -x "$path" ]; then
-    styled_line="<span style=\"color:#6a9955\">${line}</span>" # Green for executables
+    echo "<span style=\"color:#6a9955\">${line}</span>" >> tree_snippet.html # Green
   else
-    styled_line="<span style=\"color:#d4d4d4\">${line}</span>" # White/Grey for files
+    echo "<span style=\"color:#d4d4d4\">${line}</span>" >> tree_snippet.html # White
   fi
   
-  echo "$styled_line" >> tree_snippet.html
+  # 2. For Markdown (Bold for folders)
+  if [ -d "$path" ]; then
+    echo "**${line}**" >> tree.md
+  else
+    echo "${line}" >> tree.md
+  fi
+
+  # 3. For Plain/JSON
   echo "$line" >> "$OUTPUT_FILE"
+  
 done < /tmp/raw_tree.txt
 
-# Markdown (using ANSI codes for terminal viewers)
-printf '```text\n' > tree.md
-cat "$OUTPUT_FILE" >> tree.md
 printf '```\n' >> tree.md
-
-# Plain
-cp "$OUTPUT_FILE" TREE
 
 # JSON
 printf '[\n' > tree.json
