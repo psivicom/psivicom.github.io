@@ -1,0 +1,37 @@
+# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
+name: Update Repository Tree
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-tree:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Generate and Inject Tree
+        run: go run ./scripts/update-tree/main.go
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Only commit the root files that were updated
+          git add README.md index.html
+          
+          # [skip ci] prevents infinite loops
+          git diff --cached --quiet || git commit -m "chore: auto-update tree in README and index.html [skip ci]"
+          git push
