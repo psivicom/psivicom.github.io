@@ -122,6 +122,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
 <!-- Last updated: 2026-10-31T12:11:49.000Z -->
 ```text
+[psivicom.github.io]
 ├── .
 ├── .git
 ├── .github
