@@ -14,13 +14,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate tree files (Ultra-Fast)
+      - name: Generate colored tree files
         run: |
           chmod +x scripts/fast-tree.sh
           ./scripts/fast-tree.sh
-          echo "--- Verification ---"
-          cat tree_clean.txt
-          echo "--- End Verification ---"
 
       - name: Inject tree.md into README.md
         run: |
@@ -30,14 +27,23 @@ jobs:
             !skip                   { print }
           ' README.md > README.tmp && mv README.tmp README.md
 
-      - name: Inject tree into index.html
+      - name: Inject colored tree into index.html
         run: |
           awk '
             /<!-- BRENT START -->/ { 
               print; 
-              print "<pre id=\"brent-tree\" style=\"font-family: monospace;\">"; 
-              while ((getline line < "tree_clean.txt") > 0) print line; 
-              print "</pre>"; 
+              print "<pre id=\"brent-tree\" style=\"font-family: monospace; background: #1e1e1e; color: #ccc; padding: 10px;\"></pre>";
+              print "<script>";
+              print "fetch('tree_clean.txt').then(r=>r.text()).then(t=>{";
+              print "  let html = t.replace(/\\033\\[([0-9;]*)m/g, (m, c) => {";
+              print "    if(c.includes('34')) return \'<span style=\'color:#569cd6\'>\';"; 
+              print "    if(c.includes('32')) return \'<span style=\'color:#6a9955\'>\';"; 
+              print "    if(c.includes('37')) return \'<span style=\'color:#d4d4d4\'>\';"; 
+              print "    return \'</span>\';";
+              print "  }).replace(/\\n/g, \'<br>\');";
+              print "  document.getElementById(\'brent-tree\').innerHTML = html;";
+              print "});";
+              print "</script>";
               skip=1; 
               next 
             }
