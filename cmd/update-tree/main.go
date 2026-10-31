@@ -1,43 +1,41 @@
 package main
 
 import (
-	"bufio"
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 )
 
-func runTree(args ...string) (string, error) {
+func main() {
+	// -a: all files, -I: ignore patterns, --noreport: skip footer
+	// -N: Turn off colorization and quoting (ensures clean pipes)
+	args := []string{"-a", "-N", "--noreport", "-I", ".git|.github|update-tree|TREE|tree.json|tree.md|tree_clean.txt"}
+	
 	cmd := exec.Command("tree", args...)
 	out, err := cmd.Output()
 	if err != nil {
-		return "", err
+		fmt.Fprintf(os.Stderr, "Error running tree: %v\n", err)
+		os.Exit(1)
 	}
-	return string(out), nil
-}
 
-func main() {
-	// 1. Visual Tree (Markdown)
-	// -a: all files, -I: ignore, --noreport: no footer, -p: permissions (optional)
-	visual, _ := runTree("-a", "-I", ".git|.github|update-tree|TREE|tree.json|tree.md|tree_clean.txt", "--noreport")
-	
-	f1, _ := os.Create("tree.md")
-	defer f1.Close()
-	fmt.Fprintln(f1, "```text")
-	f1.WriteString(visual)
-	fmt.Fprintln(f1, "```")
+	treeContent := string(out)
 
-	// 2. JSON Tree (for programmatic use)
-	jsonOut, _ := runTree("-J", "-a", "-I", ".git|.github|update-tree|TREE|tree.json|tree.md|tree_clean.txt", "--noreport")
-	os.WriteFile("tree.json", []byte(jsonOut), 0644)
+	// 1. Write Markdown version
+	mdContent := "```text\n" + treeContent + "```\n"
+	os.WriteFile("tree.md", []byte(mdContent), 0644)
 
-	// 3. Plain Tree (for simple lists)
-	plain, _ := runTree("-i", "-a", "-I", ".git|.github|update-tree|TREE|tree.json|tree.md|tree_clean.txt", "--noreport")
-	os.WriteFile("TREE", []byte(plain), 0644)
-	
-	// 4. Clean Text for HTML (no backticks)
-	os.WriteFile("tree_clean.txt", []byte(visual), 0644)
+	// 2. Write Clean Text for HTML (no backticks)
+	os.WriteFile("tree_clean.txt", []byte(treeContent), 0644)
 
-	fmt.Println("Tree generated with pipes.")
+	// 3. Write JSON version
+	jsonCmd := exec.Command("tree", append(args, "-J")...)
+	jsonOut, _ := jsonCmd.Output()
+	os.WriteFile("tree.json", jsonOut, 0644)
+
+	// 4. Write Plain version
+	plainCmd := exec.Command("tree", append(args, "-i")...)
+	plainOut, _ := plainCmd.Output()
+	os.WriteFile("TREE", plainOut, 0644)
+
+	fmt.Println("Tree with pipes generated.")
 }
