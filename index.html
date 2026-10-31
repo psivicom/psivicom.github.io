@@ -376,44 +376,20 @@ footer {
 <section id="structure" class="section">
 <div class="section-head"><h2 class="mono">06 — Repository Structure — Interconnected</h2><div class="line"></div></div>
 <!-- BRENT START -->
-<pre id="brent-tree"></pre><script>document.getElementById("brent-tree").textContent=
-[
-  "AUTHOR.md",
-  "CITATION.cff",
-  "CNAME",
-  "CODEOWNERS",
-  "CODE_OF_CONDUCT.md",
-  "CONTRIBUTING.md",
-  "DISCLAIMER.md",
-  "LICENSE",
-  "LICENSES/COPYRIGHT.md",
-  "LICENSES/LICENSE-CC-BY-SA-4.0.md",
-  "LICENSES/LICENSE-EUPL-1.2.md",
-  "LICENSES/README.md",
-  "NOTICE.md",
-  "OPEN_SCIENCE_POLICY.md",
-  "POLICY.md",
-  "README.md",
-  "REUSE.toml",
-  "SECURITY.md",
-  "SECURITY_PLAN.md",
-  "TRUST_AND_PROVENANCE.md",
-  "archive/README.md",
-  "cmd/render-readme/README.md",
-  "cmd/render-readme/main.go",
-  "cmd/update-tree/README.md",
-  "cmd/update-tree/go.mod",
-  "cmd/update-tree/main.go",
-  "codemeta.json",
-  "index.html",
-  "openscience.html",
-  "robots.txt",
-  "scripts/update-tree/README.md",
-  "scripts/update-tree/main.go",
-  "sitemap.xml"
-]
+<pre id="brent-tree"></pre>
+<script>
+  fetch('tree.md')
+    .then(r => r.text())
+    .then(text => {
+      // Simple regex to colorize pipes and directories
+      let html = text.replace(/```/g, '')
+                     .replace(/([├└│])/g, '<span style="color:#888">$1</span>')
+                     .replace(/(\/)$/gm, '<span style="color:#569cd6">$1</span>');
+      document.getElementById('brent-tree').innerHTML = html;
+    });
 </script>
 <!-- BRENT END -->
+
 
 </section>
 
