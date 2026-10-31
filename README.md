@@ -120,39 +120,40 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-10-31T19:55:45.000Z -->
-<div style="font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;">
-  <span style="color:#ffffff">.</span><br>
-  <span style="color:#ffffff">├── LICENSES</span><br>
-  <span style="color:#ffffff">│   ├── COPYRIGHT.md</span><br>
-  <span style="color:#ffffff">│   ├── LICENSE-CC-BY-SA-4.0.md</span><br>
-  <span style="color:#ffffff">│   ├── LICENSE-EUPL-1.2.md</span><br>
-  <span style="color:#ffffff">│   └── README.md</span><br>
-  <span style="color:#ffffff">├── scripts</span><br>
-  <span style="color:#80FF80">│   └── fast-tree.sh</span><br>
-  <span style="color:#ffffff">├── AUTHOR.md</span><br>
-  <span style="color:#ffffff">├── CITATION.cff</span><br>
-  <span style="color:#ffffff">├── CNAME</span><br>
-  <span style="color:#ffffff">├── CODEOWNERS</span><br>
-  <span style="color:#ffffff">├── CODE_OF_CONDUCT.md</span><br>
-  <span style="color:#ffffff">├── CONTRIBUTING.md</span><br>
-  <span style="color:#ffffff">├── DISCLAIMER.md</span><br>
-  <span style="color:#ffffff">├── LICENSE</span><br>
-  <span style="color:#ffffff">├── NOTICE.md</span><br>
-  <span style="color:#ffffff">├── OPEN_SCIENCE_POLICY.md</span><br>
-  <span style="color:#ffffff">├── POLICY.md</span><br>
-  <span style="color:#ffffff">├── README.md</span><br>
-  <span style="color:#ffffff">├── REUSE.toml</span><br>
-  <span style="color:#ffffff">├── SECURITY.md</span><br>
-  <span style="color:#ffffff">├── SECURITY_PLAN.md</span><br>
-  <span style="color:#ffffff">├── TRUST_AND_PROVENANCE.md</span><br>
-  <span style="color:#ffffff">├── codemeta.json</span><br>
-  <span style="color:#ffffff">├── index.html</span><br>
-  <span style="color:#ffffff">├── openscience.html</span><br>
-  <span style="color:#ffffff">├── robots.txt</span><br>
-  <span style="color:#ffffff">├── sitemap.xml</span><br>
-  <span style="color:#ffffff">├── tree.md</span><br>
-  <span style="color:#ffffff">└── tree_snippet.html</span><br>
-  <span style="color:#ffffff"></span><br>
-</div>
+<!-- Last updated: 2026-10-31T20:03:44.000Z -->
+```text
+.
+├── LICENSES
+│   ├── COPYRIGHT.md
+│   ├── LICENSE-CC-BY-SA-4.0.md
+│   ├── LICENSE-EUPL-1.2.md
+│   └── README.md
+├── scripts
+│   └── fast-tree.sh
+├── AUTHOR.md
+├── CITATION.cff
+├── CNAME
+├── CODEOWNERS
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── DISCLAIMER.md
+├── LICENSE
+├── NOTICE.md
+├── OPEN_SCIENCE_POLICY.md
+├── POLICY.md
+├── README.md
+├── REUSE.toml
+├── SECURITY.md
+├── SECURITY_PLAN.md
+├── TRUST_AND_PROVENANCE.md
+├── codemeta.json
+├── index.html
+├── openscience.html
+├── robots.txt
+├── sitemap.xml
+├── tree.md
+└── tree_snippet.html
+
+3 directories, 28 files
+```
 <!-- AUTO_TREE_END -->
