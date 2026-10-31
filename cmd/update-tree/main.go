@@ -6,84 +6,68 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"sort"
 	"strings"
 )
 
-func getTree() ([]string, error) {
-	cmd := exec.Command("git", "ls-tree", "-r", "--name-only", "HEAD")
+func runTreeCommand(args ...string) (string, error) {
+	cmd := exec.Command("tree", args...)
 	out, err := cmd.Output()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	var paths []string
-	scanner := bufio.NewScanner(strings.NewReader(string(out)))
-	for scanner.Scan() {
-		p := scanner.Text()
-		if !strings.HasPrefix(p, ".git") && p != "TREE" && p != "tree.json" && p != "tree.md" {
-			paths = append(paths, p)
-		}
-	}
-	sort.Strings(paths)
-	return paths, nil
+	return string(out), nil
 }
 
-func writePlain(paths []string) error {
-	f, err := os.Create("TREE")
+func writeVisualTree() error {
+	// -a: all files, -I: ignore patterns, --noreport: skip footer
+	output, err := runTreeCommand("-a", "-I", ".git|.github|update-tree|TREE|tree.json|tree.md", "--noreport")
 	if err != nil {
 		return err
 	}
-	defer f.Close()
-	w := bufio.NewWriter(f)
-	for _, p := range paths {
-		fmt.Fprintln(w, p)
-	}
-	return w.Flush()
-}
 
-func writeJSON(paths []string) error {
-	f, err := os.Create("tree.json")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	enc := json.NewEncoder(f)
-	enc.SetIndent("", "  ")
-	return enc.Encode(paths)
-}
-
-func writeMarkdown(paths []string) error {
 	f, err := os.Create("tree.md")
 	if err != nil {
 		return err
 	}
 	defer f.Close()
+	
 	w := bufio.NewWriter(f)
-	fmt.Fprintln(w, "```")
-	for _, p := range paths {
-		fmt.Fprintln(w, p)
-	}
+	fmt.Fprintln(w, "```text")
+	w.WriteString(output)
 	fmt.Fprintln(w, "```")
 	return w.Flush()
 }
 
-func main() {
-	paths, err := getTree()
+func writeJSON() error {
+	// Keep JSON for programmatic use (fastest to parse)
+	output, err := runTreeCommand("-J", "-a", "-I", ".git|.github|update-tree|TREE|tree.json|tree.md", "--noreport")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed: %v\n", err)
+		return err
+	}
+	return os.WriteFile("tree.json", []byte(output), 0644)
+}
+
+func writePlain() error {
+	// Keep plain text for simple lists
+	output, err := runTreeCommand("-i", "-a", "-I", ".git|.github|update-tree|TREE|tree.json|tree.md", "--noreport")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile("TREE", []byte(output), 0644)
+}
+
+func main() {
+	if err := writeVisualTree(); err != nil {
+		fmt.Fprintf(os.Stderr, "visual tree failed: %v\n", err)
 		os.Exit(1)
 	}
-	if err := writePlain(paths); err != nil {
-		fmt.Fprintf(os.Stderr, "TREE: %v\n", err)
+	if err := writeJSON(); err != nil {
+		fmt.Fprintf(os.Stderr, "json tree failed: %v\n", err)
 		os.Exit(1)
 	}
-	if err := writeJSON(paths); err != nil {
-		fmt.Fprintf(os.Stderr, "tree.json: %v\n", err)
+	if err := writePlain(); err != nil {
+		fmt.Fprintf(os.Stderr, "plain tree failed: %v\n", err)
 		os.Exit(1)
 	}
-	if err := writeMarkdown(paths); err != nil {
-		fmt.Fprintf(os.Stderr, "tree.md: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("wrote %d paths to TREE, tree.json, tree.md\n", len(paths))
+	fmt.Println("Tree generated successfully.")
 }
