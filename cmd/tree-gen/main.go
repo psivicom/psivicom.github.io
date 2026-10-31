@@ -40,29 +40,40 @@ func buildTree(root string, exclude map[string]bool) (*Node, error) {
 	return node, nil
 }
 
-func translateToMarkdownTable(node *Node, prefix string, isLast bool, sb *strings.Builder) {
+// ANSI Color Codes
+const (
+	ColorReset  = "\033[0m"
+	ColorBlue   = "\033[34m" // Folders
+	ColorGreen  = "\033[32m" // Scripts
+	ColorGrey   = "\033[37m" // Files
+	ColorPipe   = "\033[90m" // Pipes (Dark Grey)
+)
+
+func translateToMarkdown(node *Node, prefix string, isLast bool, sb *strings.Builder) {
 	connector := "├── "
 	if isLast {
 		connector = "└── "
 	}
 
-	color := "#d4d4d4" // Grey for files
+	// Determine Name Color
+	var nameColor string
 	if node.IsDir {
-		color = "#569cd6" // Blue for folders
+		nameColor = ColorBlue
 	} else if strings.HasSuffix(node.Name, ".sh") || strings.HasSuffix(node.Name, ".go") {
-		color = "#6a9955" // Green for scripts
+		nameColor = ColorGreen
+	} else {
+		nameColor = ColorGrey
 	}
 
-	// Use <font> for color and <pre> for monospace alignment within the table cell
-	fmt.Fprintf(sb, "<tr><td style=\"padding:2px 8px; font-family:monospace; color:#888;\">%s%s</td><td style=\"padding:2px 8px; font-family:monospace;\"><font color=\"%s\">%s</font></td></tr>\n",
-		prefix, connector, color, node.Name)
+	// Write line: Pipes in Dark Grey, Name in its specific color
+	fmt.Fprintf(sb, "%s%s%s%s%s\n", ColorPipe, prefix, connector, nameColor, node.Name)
 
 	ext := "│   "
 	if isLast {
 		ext = "    "
 	}
 	for i, child := range node.Children {
-		translateToMarkdownTable(child, prefix+ext, i == len(node.Children)-1, sb)
+		translateToMarkdown(child, prefix+ext, i == len(node.Children)-1, sb)
 	}
 }
 
@@ -99,15 +110,16 @@ func main() {
 
 	var mdBuilder, htmlBuilder strings.Builder
 
-	// Create a dark-themed table for Markdown
-	mdBuilder.WriteString("<details open>\n<summary><b>Repository Structure</b></summary>\n\n")
-	mdBuilder.WriteString("<table style=\"border:none; background:#1e1e1e; border-radius:8px; padding:10px; width:100%%\">\n")
+	// Markdown: Use 'ansi' label for GitHub to render colors
+	mdBuilder.WriteString("```ansi\n")
+	// Add Reset at the end to ensure no color bleeding
+	mdBuilder.WriteString(ColorReset) 
 	for i, child := range tree.Children {
-		translateToMarkdownTable(child, "", i == len(tree.Children)-1, &mdBuilder)
+		translateToMarkdown(child, "", i == len(tree.Children)-1, &mdBuilder)
 	}
-	mdBuilder.WriteString("</table>\n</details>")
+	mdBuilder.WriteString("\n```")
 
-	// Create a styled list for index.html
+	// HTML: Use spans
 	htmlBuilder.WriteString("<div style=\"font-family:monospace; line-height:1.5;\">")
 	for i, child := range tree.Children {
 		translateToWebList(child, "", i == len(tree.Children)-1, &htmlBuilder)
