@@ -40,14 +40,12 @@ func buildTree(root string, exclude map[string]bool) (*Node, error) {
 	return node, nil
 }
 
-// translateToMarkdownTable creates an HTML table that GitHub will render with colors
 func translateToMarkdownTable(node *Node, prefix string, isLast bool, sb *strings.Builder) {
 	connector := "├── "
 	if isLast {
 		connector = "└── "
 	}
 
-	// Use <font> tags which are still supported by GitHub for color
 	color := "#d4d4d4" // Grey for files
 	if node.IsDir {
 		color = "#569cd6" // Blue for folders
@@ -55,8 +53,8 @@ func translateToMarkdownTable(node *Node, prefix string, isLast bool, sb *string
 		color = "#6a9955" // Green for scripts
 	}
 
-	// Write a table row. The first cell has the pipes (grey), the second has the name (colored)
-	fmt.Fprintf(sb, "<tr><td style=\"font-family:monospace; color:#888;\">%s%s</td><td style=\"font-family:monospace;\"><font color=\"%s\">%s</font></td></tr>\n",
+	// Use <font> for color and <pre> for monospace alignment within the table cell
+	fmt.Fprintf(sb, "<tr><td style=\"padding:2px 8px; font-family:monospace; color:#888;\">%s%s</td><td style=\"padding:2px 8px; font-family:monospace;\"><font color=\"%s\">%s</font></td></tr>\n",
 		prefix, connector, color, node.Name)
 
 	ext := "│   "
@@ -68,7 +66,6 @@ func translateToMarkdownTable(node *Node, prefix string, isLast bool, sb *string
 	}
 }
 
-// translateToWebList creates a simple styled list for your index.html
 func translateToWebList(node *Node, prefix string, isLast bool, sb *strings.Builder) {
 	connector := "├── "
 	if isLast {
@@ -80,9 +77,8 @@ func translateToWebList(node *Node, prefix string, isLast bool, sb *strings.Buil
 	} else if strings.HasSuffix(node.Name, ".sh") || strings.HasSuffix(node.Name, ".go") {
 		color = "#6a9955"
 	}
-
 	fmt.Fprintf(sb, "<span style=\"color:%s\">%s%s%s</span><br>\n", color, prefix, connector, node.Name)
-
+	
 	ext := "│   "
 	if isLast {
 		ext = "    "
@@ -103,14 +99,15 @@ func main() {
 
 	var mdBuilder, htmlBuilder strings.Builder
 
-	// Start Markdown Table (GitHub renders this with colors)
-	mdBuilder.WriteString("<table style=\"border:none; background:#1e1e1e; border-radius:8px; padding:10px;\">\n")
+	// Create a dark-themed table for Markdown
+	mdBuilder.WriteString("<details open>\n<summary><b>Repository Structure</b></summary>\n\n")
+	mdBuilder.WriteString("<table style=\"border:none; background:#1e1e1e; border-radius:8px; padding:10px; width:100%%\">\n")
 	for i, child := range tree.Children {
 		translateToMarkdownTable(child, "", i == len(tree.Children)-1, &mdBuilder)
 	}
-	mdBuilder.WriteString("</table>")
+	mdBuilder.WriteString("</table>\n</details>")
 
-	// Start Web List (For index.html)
+	// Create a styled list for index.html
 	htmlBuilder.WriteString("<div style=\"font-family:monospace; line-height:1.5;\">")
 	for i, child := range tree.Children {
 		translateToWebList(child, "", i == len(tree.Children)-1, &htmlBuilder)
