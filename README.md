@@ -117,6 +117,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
       — Interconnected
 
 <!-- TREE START -->
+'''ascii
 ├── .
 ├── .git
 ├── .github
@@ -151,7 +152,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── openscience.html
 ├── robots.txt
 ├── scripts
-├── sitemap.xml
+├── sitemap.xm
+'''
 <!-- TREE END -->
 
 
