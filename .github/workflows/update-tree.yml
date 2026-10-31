@@ -1,35 +1,48 @@
-# Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM | EUPL 1.2
-name: Update TREE
+name: Update tree
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  update-tree:
+  update:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          go-version: "1.23"
+          fetch-depth: 0
 
-      - name: Generate TREE.md
-        run: go run ./cmd/update-tree
+      - name: Build tree binary
+        run: |
+          cd cmd/update-tree
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../../update-tree .
 
-      - name: Render README.md
-        run: go run ./cmd/render-readme
+      - name: Generate tree files
+        run: ./update-tree
 
-      - name: Commit changes
+      - name: Inject tree.md into README.md
+        run: |
+          awk '
+            /^<!-- TREE START -->$/ { print; system("cat tree.md"); skip=1; next }
+            /^<!-- TREE END -->$/   { skip=0 }
+            !skip                   { print }
+          ' README.md > README.tmp && mv README.tmp README.md
+
+      - name: Inject tree.json into index.html
+        run: |
+          awk '
+            /<!-- BRENT START -->/ { print; print "<pre id=\"brent-tree\"></pre><script>document.getElementById(\"brent-tree\").textContent="; system("cat tree.json"); print "</script>"; skip=1; next }
+            /<!-- BRENT END -->/   { skip=0 }
+            !skip                  { print }
+          ' index.html > index.tmp && mv index.tmp index.html
+
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add TREE.md README.md .tree.hash
-          git diff --cached --quiet || git commit -m "Update TREE.md and README.md"
-          git push
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add TREE tree.json tree.md README.md index.html update-tree
+          git diff --staged --quiet || git commit -m "Update tree" && git push
