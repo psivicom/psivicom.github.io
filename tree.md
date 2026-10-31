@@ -25,9 +25,6 @@
 ├── TRUST_AND_PROVENANCE.md
 **├── archive**
 ├── README.md
-**├── cmd**
-├── tree-gen
-│   ├── main.go
 ├── codemeta.json
 ├── index.html
 ├── openscience.html
