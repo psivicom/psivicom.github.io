@@ -18,9 +18,9 @@ jobs:
         run: |
           chmod +x scripts/fast-tree.sh
           ./scripts/fast-tree.sh
-          echo "--- Contents of tree_clean.txt ---"
+          echo "--- Verification ---"
           cat tree_clean.txt
-          echo "--- End of file ---"
+          echo "--- End Verification ---"
 
       - name: Inject tree.md into README.md
         run: |
