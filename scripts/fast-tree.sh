@@ -3,7 +3,9 @@ set -euo pipefail
 
 # 1. Generate raw structure (Lightning fast find + awk)
 find . \
+  -not -name '.git' \
   -not -path './.git/*' \
+  -not -name '.github' \
   -not -path './.github/*' \
   -not -name 'TREE' \
   -not -name 'tree.json' \
@@ -20,7 +22,8 @@ find . \
     name = parts[n]
     depth = n - 1
     indent = ""
-    for (i = 1; i < depth; i++) indent = indent "│   "
+    # ✅ FIX: Changed "i < depth" to "i <= depth" to connect the pipes!
+    for (i = 1; i <= depth; i++) indent = indent "│   "
     print indent "├── " name
   }' > /tmp/raw_tree.txt
 
