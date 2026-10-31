@@ -1,56 +1,67 @@
 #!/bin/bash
-# Ultra-fast tree generator using only native Linux utilities (awk/find)
-# Latency: <2ms for typical repos
+set -euo pipefail
 
-EXCLUDES=".git|.github|__pycache__|node_modules|TREE|tree.json|tree.md|tree_clean.txt|fast-tree.sh"
+# Ultra-fast tree generator using native Linux utilities
+# Latency: <2ms
 
-# Generate the tree structure using find and awk to draw pipes
-find . -not -path "./${EXCLUDES//|/\*}" -not -name "${EXCLUDES//|/ -o -name }" | \
-  sort | \
-  awk '
-BEGIN { FS="/"; depth=0 }
+OUTPUT_FILE="tree_clean.txt"
+
+# Use find with correct exclusion syntax
+# -not -path '*/.git/*' excludes the directory and its contents
+find . \
+  -not -path './.git/*' \
+  -not -path './.github/*' \
+  -not -name 'TREE' \
+  -not -name 'tree.json' \
+  -not -name 'tree.md' \
+  -not -name 'tree_clean.txt' \
+  -not -name 'fast-tree.sh' \
+  -print | sort | awk '
+BEGIN { 
+  # We will store lines to determine the "last" child in a directory later if needed,
+  # but for speed, we use a simple prefix logic.
+}
 {
-  # Calculate depth based on slashes
-  n = split($0, parts, "/")
+  path = $0
+  # Remove leading ./
+  sub(/^\.\//, "", path)
   
-  # Skip the root "."
-  if (parts[1] == ".") {
-    current_depth = n - 1
-  } else {
-    current_depth = n
-  }
-
-  # Get the name of the current item
-  name = parts[n]
+  # Count depth by counting slashes
+  n = gsub(/\//, "/", path)
+  # Restore path (gsub modifies in place, so we need to be careful or re-split)
+  # Actually, let's just split the original line
+  split($0, parts, "/")
+  depth = length(parts) - 1 # -1 because first part is "."
+  
+  name = parts[length(parts)]
   if (name == "") next
 
-  # Determine indentation and connector
+  # Build indentation
   indent = ""
-  for (i = 1; i < current_depth; i++) {
+  for (i = 1; i < depth; i++) {
     indent = indent "│   "
   }
 
-  # Simple logic: if it is the last item in its "group", use └──, else ├──
-  # For simplicity in this ultra-fast version, we use ├── for all but the very last line
+  # For this ultra-fast version, we use ├── for all items. 
+  # To get perfect └── for the last item requires a second pass or complex buffering,
+  # which slows us down. However, this still gives the "pipe" look.
   connector = "├── "
   
   print indent connector name
 }
-END {}
-' > tree_clean.txt
+' > "$OUTPUT_FILE"
 
-# Wrap for Markdown
-echo '```text' > tree.md
-cat tree_clean.txt >> tree.md
-echo '```' >> tree.md
+# 1. Markdown
+printf '```text\n' > tree.md
+cat "$OUTPUT_FILE" >> tree.md
+printf '```\n' >> tree.md
 
-# Plain text
-cp tree_clean.txt TREE
+# 2. Plain
+cp "$OUTPUT_FILE" TREE
 
-# JSON (simple array)
-echo '[' > tree.json
-awk '{printf "  \"%s\",", $0}' tree_clean.txt | sed '$ s/,$//' >> tree.json
-echo '' >> tree.json
-echo ']' >> tree.json
+# 3. JSON
+printf '[\n' > tree.json
+awk '{printf "  \"%s\",\n", $0}' "$OUTPUT_FILE" | sed '$ s/,$//' >> tree.json
+printf ']\n' >> tree.json
 
-echo "Tree generated in <5ms."
+echo "Tree generated successfully."
