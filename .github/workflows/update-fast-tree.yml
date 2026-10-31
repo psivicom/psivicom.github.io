@@ -19,6 +19,23 @@ jobs:
           chmod +x scripts/fast-tree.sh
           ./scripts/fast-tree.sh
 
+      - name: Inject colored tree into index.html
+        run: |
+          awk '
+            /<!-- BRENT START -->/ { 
+              print; 
+              print "<pre id=\"brent-tree\" style=\"font-family: monospace; background: #1e1e1e; color: #ccc; padding: 15px; border-radius: 8px;\">"; 
+              system("cat tree_snippet.html"); 
+              print "</pre>"; 
+              skip=1; 
+              next 
+            }
+            /<!-- BRENT END -->/   { skip=0 }
+            !skip                  { print }
+          ' index.html > index.tmp && mv index.tmp index.html
+
+
+
       - name: Inject tree.md into README.md
         run: |
           awk '
