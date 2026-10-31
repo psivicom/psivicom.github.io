@@ -120,11 +120,9 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-10-31T12:28:09.000Z -->
+<!-- Last updated: 2026-10-31T19:12:27.000Z -->
 ```text
 ├── .
-├── .git
-├── .github
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -134,10 +132,10 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── DISCLAIMER.md
 ├── LICENSE
 ├── LICENSES
-├── COPYRIGHT.md
-├── LICENSE-CC-BY-SA-4.0.md
-├── LICENSE-EUPL-1.2.md
-├── README.md
+│   ├── COPYRIGHT.md
+│   ├── LICENSE-CC-BY-SA-4.0.md
+│   ├── LICENSE-EUPL-1.2.md
+│   ├── README.md
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
@@ -147,7 +145,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── SECURITY_PLAN.md
 ├── TRUST_AND_PROVENANCE.md
 ├── archive
-├── README.md
+│   ├── README.md
 ├── codemeta.json
 ├── index.html
 ├── openscience.html

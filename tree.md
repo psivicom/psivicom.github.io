@@ -1,7 +1,5 @@
 ```text
 ├── .
-├── .git
-├── .github
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -11,10 +9,10 @@
 ├── DISCLAIMER.md
 ├── LICENSE
 ├── LICENSES
-├── COPYRIGHT.md
-├── LICENSE-CC-BY-SA-4.0.md
-├── LICENSE-EUPL-1.2.md
-├── README.md
+│   ├── COPYRIGHT.md
+│   ├── LICENSE-CC-BY-SA-4.0.md
+│   ├── LICENSE-EUPL-1.2.md
+│   ├── README.md
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
@@ -24,7 +22,7 @@
 ├── SECURITY_PLAN.md
 ├── TRUST_AND_PROVENANCE.md
 ├── archive
-├── README.md
+│   ├── README.md
 ├── codemeta.json
 ├── index.html
 ├── openscience.html
