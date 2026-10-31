@@ -32,4 +32,5 @@ robots.txt
 scripts/update-tree/README.md
 scripts/update-tree/main.go
 sitemap.xml
+update-tree
 ```

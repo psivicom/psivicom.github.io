@@ -31,5 +31,6 @@
   "robots.txt",
   "scripts/update-tree/README.md",
   "scripts/update-tree/main.go",
-  "sitemap.xml"
+  "sitemap.xml",
+  "update-tree"
 ]
