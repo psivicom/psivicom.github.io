@@ -1,7 +1,7 @@
 ```text
-**├── .**
-**├── .git**
-**├── .github**
+├── .
+├── .git
+├── .github
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -10,7 +10,7 @@
 ├── CONTRIBUTING.md
 ├── DISCLAIMER.md
 ├── LICENSE
-**├── LICENSES**
+├── LICENSES
 ├── COPYRIGHT.md
 ├── LICENSE-CC-BY-SA-4.0.md
 ├── LICENSE-EUPL-1.2.md
@@ -23,12 +23,12 @@
 ├── SECURITY.md
 ├── SECURITY_PLAN.md
 ├── TRUST_AND_PROVENANCE.md
-**├── archive**
+├── archive
 ├── README.md
 ├── codemeta.json
 ├── index.html
 ├── openscience.html
 ├── robots.txt
-**├── scripts**
+├── scripts
 ├── sitemap.xml
 ```
