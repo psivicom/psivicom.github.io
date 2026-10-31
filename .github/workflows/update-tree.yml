@@ -18,9 +18,9 @@ jobs:
       - name: Generate and Inject Tree (C-Level Speed)
         run: |
           # 1. Generate perfect tree structure in C (< 5ms). 
-          # --dirsfirst ensures directories are ALWAYS listed before files.
-          # -I excludes noisy/internal directories to keep the public tree clean.
-          tree --dirsfirst --charset utf-8 -I '.git|.github|archive|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules' > /tmp/raw_tree.txt
+          # CRITICAL FIX: Added '-F' to append '/' to directories and '*' to executables.
+          # Added 'tree.md|tree_snippet.html' to exclusions so they don't list themselves.
+          tree --dirsfirst -F --charset utf-8 -I '.git|.github|archive|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
 
           # 2. Build Markdown (Plain text, no bold, no ANSI)
           {
@@ -39,10 +39,10 @@ jobs:
             # Skip the summary line at the bottom (e.g., "3 directories, 25 files")
             if (line ~ /^[0-9]+ directories?, [0-9]+ files?$/) next
             
-            # Determine type and assign exact hex color
+            # Determine type and assign exact hex color (Relies on -F flag adding / or *)
             if (line ~ /\/$/) {
               color = "#80BFFF" # Directory (Light Blue)
-            } else if (line ~ /\.(sh|go|py)[*]?$/) {
+            } else if (line ~ /\.(sh|go|py)\*?$/) {
               color = "#80FF80" # Script (Light Green)
             } else {
               color = "#ffffff" # File (White)
@@ -63,21 +63,18 @@ jobs:
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
           
           for file in README.md index.html; do
-            # Determine which generated tree file to inject
             if [ "$file" = "README.md" ]; then
               TREE_FILE="tree.md"
             else
               TREE_FILE="tree_snippet.html"
             fi
             
-            # Use awk getline to read the file directly, preventing newline mangling
             awk -v ts="$TIMESTAMP" -v tree_file="$TREE_FILE" '
               /<!-- AUTO_TREE_START -->/ {
                 print "<!-- AUTO_TREE_START -->"
                 print "<!-- Auto-updated by .github/workflows/update-tree.yml -->"
                 print "<!-- Last updated: " ts " -->"
                 
-                # Read and print the tree file line by line
                 while ((getline line < tree_file) > 0) {
                   print line
                 }
@@ -93,12 +90,12 @@ jobs:
           done
 
           rm -f /tmp/raw_tree.txt
-          echo "✅ Tree generated and injected in < 10ms with perfect hierarchy."
+          echo "✅ Tree generated and injected with correct Klein Blue coloring."
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tree.md tree_snippet.html README.md index.html
-          git diff --cached --quiet || git commit -m "chore: auto-update tree with C-level speed and perfect hierarchy [skip ci]"
+          git diff --cached --quiet || git commit -m "chore: auto-update tree with correct directory coloring [skip ci]"
           git push
