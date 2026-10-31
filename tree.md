@@ -1,6 +1,6 @@
 ```text
-.
-├── LICENSES
+./
+├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
 │   ├── LICENSE-EUPL-1.2.md
@@ -25,9 +25,7 @@
 ├── index.html
 ├── openscience.html
 ├── robots.txt
-├── sitemap.xml
-├── tree.md
-└── tree_snippet.html
+└── sitemap.xml
 
-2 directories, 27 files
+2 directories, 25 files
 ```
