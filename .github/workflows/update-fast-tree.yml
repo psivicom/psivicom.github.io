@@ -1,53 +1,14 @@
-name: Update tree
+      - name: Generate TREE.md
+        run: go run ./scripts/update-tree/main.go
 
-on:
-  workflow_dispatch:
+      # 👇 ADD THIS LINE 👇
+      - name: Strip color codes from README.md
+        run: sed -i 's/\x1b\[[0-9;]*m//g' README.md
 
-permissions:
-  contents: write
-
-jobs:
-  update:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Build Translator
-        run: |
-          cd cmd/tree-gen
-          go mod init tree-gen
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ../../tree-gen .
-
-      - name: Run Translator
-        run: ./tree-gen
-
-      - name: Inject into README.md
-        run: |
-          awk '
-            /^<!-- TREE START -->$/ { print; system("cat tree.md"); skip=1; next }
-            /^<!-- TREE END -->$/   { skip=0 }
-            !skip                   { print }
-          ' README.md > README.tmp && mv README.tmp README.md
-
-      - name: Inject into index.html
-        run: |
-          awk '
-            /<!-- BRENT START -->/ { 
-              print; 
-              print "<div id=\"brent-tree\" style=\"background:#1e1e1e; padding:15px; border-radius:8px;\">"; 
-              system("cat tree_snippet.html"); 
-              print "</div>"; 
-              skip=1; next 
-            }
-            /<!-- BRENT END -->/ { skip=0 }
-            !skip { print }
-          ' index.html > index.tmp && mv index.tmp index.html
-
-      - name: Commit and push
+      - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tree.md tree_snippet.html README.md index.html cmd/tree-gen/main.go
-          git diff --staged --quiet || git commit -m "Update tree translation" && git push
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add TREE.md README.md .tree.hash
+          git diff --cached --quiet || git commit -m "chore: auto-update tree [skip ci]"
+          git push
