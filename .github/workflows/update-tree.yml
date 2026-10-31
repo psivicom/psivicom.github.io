@@ -30,19 +30,30 @@ jobs:
 
       - name: Inject tree into index.html
         run: |
-          # Use a Python script for robust HTML injection to avoid shell quoting issues
-          python3 -c "
+          python3 << 'EOF'
           import re
-          with open('index.html', 'r') as f: content = f.read()
-          with open('tree_clean.txt', 'r') as f: tree_content = f.read()
+
+          # Read the tree content
+          with open('tree_clean.txt', 'r') as f:
+              tree_content = f.read()
+
+          # Read the HTML file
+          with open('index.html', 'r') as f:
+              html_content = f.read()
+
+          # Define the replacement block
+          replacement = f'<!-- BRENT START -->\n<pre id="brent-tree">\n{tree_content}</pre>\n<!-- BRENT END -->'
+
+          # Use regex to replace everything between the markers
+          pattern = r'<!-- BRENT START -->.*?<!-- BRENT END -->'
+          new_html = re.sub(pattern, replacement, html_content, flags=re.DOTALL)
+
+          # Write back
+          with open('index.html', 'w') as f:
+              f.write(new_html)
           
-          # Replace content between markers
-          pattern = r'(<!-- BRENT START -->).*?(<!-- BRENT END -->)'
-          replacement = r'\1\n<pre id=\"brent-tree\">\n' + tree_content + '</pre>\n\2'
-          new_content = re.sub(pattern, replacement, content, flags=re.DOTALL)
-          
-          with open('index.html', 'w') as f: f.write(new_content)
-          "
+          print("HTML updated with pipe tree.")
+          EOF
 
       - name: Commit and push
         run: |
