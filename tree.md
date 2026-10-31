@@ -1,5 +1,11 @@
-```text
-├── .
+```
+./
+├── LICENSES/
+│   ├── COPYRIGHT.md
+│   ├── LICENSE-CC-BY-SA-4.0.md
+│   ├── LICENSE-EUPL-1.2.md
+│   └── README.md
+├── scripts/
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -8,11 +14,6 @@
 ├── CONTRIBUTING.md
 ├── DISCLAIMER.md
 ├── LICENSE
-├── LICENSES
-│   ├── COPYRIGHT.md
-│   ├── LICENSE-CC-BY-SA-4.0.md
-│   ├── LICENSE-EUPL-1.2.md
-│   ├── README.md
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
@@ -21,12 +22,11 @@
 ├── SECURITY.md
 ├── SECURITY_PLAN.md
 ├── TRUST_AND_PROVENANCE.md
-├── archive
-│   ├── README.md
 ├── codemeta.json
 ├── index.html
 ├── openscience.html
 ├── robots.txt
-├── scripts
-├── sitemap.xml
+└── sitemap.xml
+
+3 directories, 25 files
 ```

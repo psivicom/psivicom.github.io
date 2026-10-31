@@ -119,10 +119,15 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure
 
 <!-- AUTO_TREE_START -->
-<!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-10-31T19:12:27.000Z -->
-```text
-├── .
+<!-- Last updated: 2026-10-31T19:35:52.000Z -->
+```
+./
+├── LICENSES/
+│   ├── COPYRIGHT.md
+│   ├── LICENSE-CC-BY-SA-4.0.md
+│   ├── LICENSE-EUPL-1.2.md
+│   └── README.md
+├── scripts/
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -131,11 +136,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── CONTRIBUTING.md
 ├── DISCLAIMER.md
 ├── LICENSE
-├── LICENSES
-│   ├── COPYRIGHT.md
-│   ├── LICENSE-CC-BY-SA-4.0.md
-│   ├── LICENSE-EUPL-1.2.md
-│   ├── README.md
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
@@ -144,13 +144,12 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── SECURITY.md
 ├── SECURITY_PLAN.md
 ├── TRUST_AND_PROVENANCE.md
-├── archive
-│   ├── README.md
 ├── codemeta.json
 ├── index.html
 ├── openscience.html
 ├── robots.txt
-├── scripts
-├── sitemap.xml
+└── sitemap.xml
+
+3 directories, 25 files
 ```
 <!-- AUTO_TREE_END -->
