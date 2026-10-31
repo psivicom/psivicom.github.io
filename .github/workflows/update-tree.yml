@@ -18,9 +18,8 @@ jobs:
       - name: Generate and Inject Tree (C-Level Speed)
         run: |
           # 1. Generate perfect tree structure in C (< 5ms). 
-          # CRITICAL FIX: Added '-F' to append '/' to directories and '*' to executables.
-          # Added 'tree.md|tree_snippet.html' to exclusions so they don't list themselves.
-          tree --dirsfirst -F --charset utf-8 -I '.git|.github|archive|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
+          # FIX: Removed '.github' and 'archive' from the ignore list so they are visible.
+          tree --dirsfirst -F --charset utf-8 -I '.git|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
 
           # 2. Build Markdown (Plain text, no bold, no ANSI)
           {
@@ -90,12 +89,12 @@ jobs:
           done
 
           rm -f /tmp/raw_tree.txt
-          echo "✅ Tree generated and injected with correct Klein Blue coloring."
+          echo "✅ Tree generated with .github and archive visible."
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tree.md tree_snippet.html README.md index.html
-          git diff --cached --quiet || git commit -m "chore: auto-update tree with correct directory coloring [skip ci]"
+          git diff --cached --quiet || git commit -m "chore: auto-update tree, restoring .github and archive visibility [skip ci]"
           git push
