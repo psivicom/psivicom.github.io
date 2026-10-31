@@ -59,22 +59,29 @@ jobs:
             print "</div>"
           }' /tmp/raw_tree.txt > tree_snippet.html
 
-          # 4. Inject into README.md and index.html (< 2ms via awk)
+          # 4. Inject into README.md and index.html (< 2ms via robust awk getline)
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
           
           for file in README.md index.html; do
-            awk -v content="$(cat $file | grep -A 10000 "AUTO_TREE_START" | grep -B 10000 "AUTO_TREE_END" | sed '1d;$d')" -v ts="$TIMESTAMP" '
+            # Determine which generated tree file to inject
+            if [ "$file" = "README.md" ]; then
+              TREE_FILE="tree.md"
+            else
+              TREE_FILE="tree_snippet.html"
+            fi
+            
+            # Use awk getline to read the file directly, preventing newline mangling
+            awk -v ts="$TIMESTAMP" -v tree_file="$TREE_FILE" '
               /<!-- AUTO_TREE_START -->/ {
                 print "<!-- AUTO_TREE_START -->"
                 print "<!-- Auto-updated by .github/workflows/update-tree.yml -->"
                 print "<!-- Last updated: " ts " -->"
                 
-                # Read and print the generated content
-                if (ENVIRON["FILE"] == "README.md") {
-                  system("cat tree.md")
-                } else {
-                  system("cat tree_snippet.html")
+                # Read and print the tree file line by line
+                while ((getline line < tree_file) > 0) {
+                  print line
                 }
+                close(tree_file)
                 
                 print "<!-- AUTO_TREE_END -->"
                 skip = 1
@@ -82,7 +89,7 @@ jobs:
               }
               /<!-- AUTO_TREE_END -->/ { skip = 0; next }
               !skip { print }
-            ' FILE="$file" "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+            ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
           done
 
           rm -f /tmp/raw_tree.txt
