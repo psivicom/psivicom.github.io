@@ -26,7 +26,7 @@
 ├── openscience.html
 ├── robots.txt
 ├── sitemap.xml
-└── tree_snippet.html
+└── tree.md
 
 2 directories, 26 files
 ```

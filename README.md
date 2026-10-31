@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-10-31T20:05:34.000Z -->
+<!-- Last updated: 2026-10-31T20:06:21.000Z -->
 ```text
 .
 ├── LICENSES
@@ -149,7 +149,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── openscience.html
 ├── robots.txt
 ├── sitemap.xml
-└── tree_snippet.html
+└── tree.md
 
 2 directories, 26 files
 ```
