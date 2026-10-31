@@ -19,6 +19,14 @@ jobs:
           chmod +x scripts/fast-tree.sh
           ./scripts/fast-tree.sh
 
+      - name: Inject tree.md into README.md
+        run: |
+          awk '
+            /^<!-- TREE START -->$/ { print; system("cat tree.md"); skip=1; next }
+            /^<!-- TREE END -->$/   { skip=0 }
+            !skip                   { print }
+          ' README.md > README.tmp && mv README.tmp README.md
+
       - name: Inject colored tree into index.html
         run: |
           awk '
@@ -34,34 +42,9 @@ jobs:
             !skip                  { print }
           ' index.html > index.tmp && mv index.tmp index.html
 
-
-
-      - name: Inject tree.md into README.md
-        run: |
-          awk '
-            /^<!-- TREE START -->$/ { print; system("cat tree.md"); skip=1; next }
-            /^<!-- TREE END -->$/   { skip=0 }
-            !skip                   { print }
-          ' README.md > README.tmp && mv README.tmp README.md
-
-      - name: Inject colored tree into index.html
-        run: |
-          awk '
-            /<!-- BRENT START -->/ { 
-              print; 
-              print "<pre id=\"brent-tree\" style=\"font-family: monospace; background: #1e1e1e; color: #ccc; padding: 10px;\">"; 
-              system("cat tree.html"); 
-              print "</pre>"; 
-              skip=1; 
-              next 
-            }
-            /<!-- BRENT END -->/   { skip=0 }
-            !skip                  { print }
-          ' index.html > index.tmp && mv index.tmp index.html
-
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add TREE tree.json tree.md tree_clean.txt tree.html README.md index.html scripts/fast-tree.sh
+          git add TREE tree.json tree.md tree_clean.txt tree_snippet.html README.md index.html scripts/fast-tree.sh
           git diff --staged --quiet || git commit -m "Update tree" && git push
