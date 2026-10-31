@@ -3,7 +3,7 @@ name: Update Repository Tree
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # You can also click "Run workflow" manually in the Actions tab
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,16 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate and Inject Tree (C-Level Speed + Debug)
+      - name: Generate and Inject Tree (C-Level Speed)
         run: |
-          echo "🔍 Generating tree with -F (classify) and --dirsfirst..."
+          echo "🔍 Generating tree with -a (show hidden), -F (classify), and --dirsfirst..."
           
-          # 1. Generate perfect tree structure. 
-          # -F appends '/' to directories and '*' to executables.
-          # .github and archive are intentionally NOT in this ignore list.
-          tree --dirsfirst -F --charset utf-8 -I '.git|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
+          # CRITICAL FIX: Added '-a' to show hidden directories like .github
+          # -F appends '/' to directories and '*' to executables for perfect awk matching.
+          # -I still blocks .git and other heavy folders to keep the tree clean.
+          tree -a --dirsfirst -F --charset utf-8 -I '.git|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
           
-          # DEBUG: Print the first 30 lines to the Actions log so you can verify it's working
           echo "✅ Raw tree output sample (first 30 lines):"
           head -n 30 /tmp/raw_tree.txt
 
@@ -52,9 +51,9 @@ jobs:
             
             # Determine type and assign exact hex color
             if (clean_line ~ /\/$/) {
-              color = "#80BFFF" # Directory (Light Blue) - matches trailing /
+              color = "#80BFFF" # Directory (Light Blue)
             } else if (clean_line ~ /\.(sh|go|py)\*?$/) {
-              color = "#80FF80" # Script (Light Green) - matches .sh/.go/.py with optional *
+              color = "#80FF80" # Script (Light Green)
             } else {
               color = "#ffffff" # File (White)
             }
@@ -101,12 +100,12 @@ jobs:
           done
 
           rm -f /tmp/raw_tree.txt
-          echo "🎉 Tree generation and injection complete."
+          echo "🎉 Tree generation complete. .github and archive are now visible."
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tree.md tree_snippet.html README.md index.html
-          git diff --cached --quiet || git commit -m "chore: auto-update tree with bulletproof directory coloring [skip ci]"
+          git diff --cached --quiet || git commit -m "chore: auto-update tree, revealing .github with -a flag [skip ci]"
           git push
