@@ -64,18 +64,18 @@ func translateToMarkdown(node *Node, prefix string, isLast bool, sb *strings.Bui
 	}
 }
 
-// 2. Generates Colored HTML (Exactly as you requested)
+// 2. Generates Colored HTML (Klein Blue Background)
 func translateToWebList(node *Node, prefix string, isLast bool, sb *strings.Builder) {
 	connector := "├── "
 	if isLast {
 		connector = "└── "
 	}
 	
-	color := "#d4d4d4" // Default file color (grey)
+	color := "#ffffff" // White text for contrast against Klein Blue
 	if node.IsDir {
-		color = "#569cd6" // Blue for folders
+		color = "#80BFFF" // Lighter blue for folders on dark background
 	} else if strings.HasSuffix(node.Name, ".sh") || strings.HasSuffix(node.Name, ".go") || strings.HasSuffix(node.Name, ".py") {
-		color = "#6a9955" // Green for scripts
+		color = "#80FF80" // Light green for scripts on dark background
 	}
 	
 	// Escape HTML to prevent breaking the page
@@ -137,8 +137,8 @@ func main() {
 	}
 	mdBuilder.WriteString("```")
 
-	// Build HTML
-	htmlBuilder.WriteString("<div style=\"font-family:monospace; line-height:1.5;\">\n")
+	// Build HTML (KLEIN BLUE BACKGROUND)
+	htmlBuilder.WriteString("<div style=\"font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;\">\n")
 	for i, child := range tree.Children {
 		translateToWebList(child, "", i == len(tree.Children)-1, &htmlBuilder)
 	}
@@ -155,7 +155,7 @@ func main() {
 	if err := injectIntoFile("index.html", htmlBuilder.String()); err != nil {
 		fmt.Printf("⚠️ Warning: %v\n", err)
 	} else {
-		fmt.Println("✅ Successfully updated index.html (Colored HTML)")
+		fmt.Println("✅ Successfully updated index.html (Klein Blue HTML)")
 	}
 
 	fmt.Println("🎉 Tree generation and injection complete.")
