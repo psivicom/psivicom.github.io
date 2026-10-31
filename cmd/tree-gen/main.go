@@ -40,21 +40,23 @@ func buildTree(root string, exclude map[string]bool) (*Node, error) {
 	return node, nil
 }
 
-func translateToHTMLTable(node *Node, prefix string, isLast bool, sb *strings.Builder) {
+// translateToMarkdownTable creates an HTML table that GitHub will render with colors
+func translateToMarkdownTable(node *Node, prefix string, isLast bool, sb *strings.Builder) {
 	connector := "├── "
 	if isLast {
 		connector = "└── "
 	}
 
-	color := "#d4d4d4" // Default file color
+	// Use <font> tags which are still supported by GitHub for color
+	color := "#d4d4d4" // Grey for files
 	if node.IsDir {
 		color = "#569cd6" // Blue for folders
 	} else if strings.HasSuffix(node.Name, ".sh") || strings.HasSuffix(node.Name, ".go") {
-		color = "#6a9955" // Green for code
+		color = "#6a9955" // Green for scripts
 	}
 
-	// Translate to an HTML Table Row with inline colors
-	fmt.Fprintf(sb, "<tr><td style=\"font-family:monospace; white-space:pre; color:#888;\">%s%s</td><td style=\"font-family:monospace; color:%s;\">%s</td></tr>\n",
+	// Write a table row. The first cell has the pipes (grey), the second has the name (colored)
+	fmt.Fprintf(sb, "<tr><td style=\"font-family:monospace; color:#888;\">%s%s</td><td style=\"font-family:monospace;\"><font color=\"%s\">%s</font></td></tr>\n",
 		prefix, connector, color, node.Name)
 
 	ext := "│   "
@@ -62,10 +64,11 @@ func translateToHTMLTable(node *Node, prefix string, isLast bool, sb *strings.Bu
 		ext = "    "
 	}
 	for i, child := range node.Children {
-		translateToHTMLTable(child, prefix+ext, i == len(node.Children)-1, sb)
+		translateToMarkdownTable(child, prefix+ext, i == len(node.Children)-1, sb)
 	}
 }
 
+// translateToWebList creates a simple styled list for your index.html
 func translateToWebList(node *Node, prefix string, isLast bool, sb *strings.Builder) {
 	connector := "├── "
 	if isLast {
@@ -100,14 +103,14 @@ func main() {
 
 	var mdBuilder, htmlBuilder strings.Builder
 
-	// Start Markdown Table
+	// Start Markdown Table (GitHub renders this with colors)
 	mdBuilder.WriteString("<table style=\"border:none; background:#1e1e1e; border-radius:8px; padding:10px;\">\n")
 	for i, child := range tree.Children {
-		translateToHTMLTable(child, "", i == len(tree.Children)-1, &mdBuilder)
+		translateToMarkdownTable(child, "", i == len(tree.Children)-1, &mdBuilder)
 	}
 	mdBuilder.WriteString("</table>")
 
-	// Start Web List
+	// Start Web List (For index.html)
 	htmlBuilder.WriteString("<div style=\"font-family:monospace; line-height:1.5;\">")
 	for i, child := range tree.Children {
 		translateToWebList(child, "", i == len(tree.Children)-1, &htmlBuilder)
