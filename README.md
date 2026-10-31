@@ -116,5 +116,10 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure <br>
       — Interconnected
 
-<!-- TREE START -->
-<!-- TREE END -->
+## 06 — Repository Structure
+
+<!-- AUTO_TREE_START -->
+<!-- Auto-updated by .github/workflows/update-tree.yml -->
+<!-- Last updated: [Will be populated automatically] -->
+[The generated tree will be injected here]
+<!-- AUTO_TREE_END -->
