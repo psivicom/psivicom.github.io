@@ -151,6 +151,7 @@ robots.txt
 scripts/update-tree/README.md
 scripts/update-tree/main.go
 sitemap.xml
+tree_clean.txt
 update-tree
 ```
 <!-- TREE END -->
