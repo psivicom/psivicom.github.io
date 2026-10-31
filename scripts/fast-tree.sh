@@ -1,24 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-OUTPUT_FILE="tree_clean.txt"
-
-# Create the awk script for drawing pipes
-cat > /tmp/draw_tree.awk << 'AWKEOF'
-BEGIN { FS="/" }
-{
-  sub(/^\.\//, "", $0)
-  if ($0 == "") next
-  n = split($0, parts, "/")
-  name = parts[n]
-  depth = n - 1
-  indent = ""
-  for (i = 1; i < depth; i++) indent = indent "│   "
-  print indent "├── " name
-}
-AWKEOF
-
-# Generate raw structure
+# 1. Generate raw structure (Lightning fast find + awk)
 find . \
   -not -path './.git/*' \
   -not -path './.github/*' \
@@ -28,42 +11,71 @@ find . \
   -not -name 'tree_clean.txt' \
   -not -name 'tree_snippet.html' \
   -not -name 'fast-tree.sh' \
-  -print | sort | awk -f /tmp/draw_tree.awk > /tmp/raw_tree.txt
+  -print | sort | awk '
+  BEGIN { FS="/" }
+  {
+    sub(/^\.\//, "", $0)
+    if ($0 == "") next
+    n = split($0, parts, "/")
+    name = parts[n]
+    depth = n - 1
+    indent = ""
+    for (i = 1; i < depth; i++) indent = indent "│   "
+    print indent "├── " name
+  }' > /tmp/raw_tree.txt
 
-# Prepare files
-> "$OUTPUT_FILE"
-> tree_snippet.html
-> tree.md
-
-printf '```text\n' >> tree.md
-
-while IFS= read -r line; do
-  path=$(echo "$line" | sed 's/^[^a-zA-Z0-9_./-]*//')
-  
-  # 1. For HTML (Colors)
-  if [ -d "$path" ]; then
-    echo "<span style=\"color:#569cd6\">${line}</span>" >> tree_snippet.html # Blue
-  elif [ -x "$path" ]; then
-    echo "<span style=\"color:#6a9955\">${line}</span>" >> tree_snippet.html # Green
-  else
-    echo "<span style=\"color:#d4d4d4\">${line}</span>" >> tree_snippet.html # White
-  fi
-  
-  # 2. For Markdown (Bold for folders)
-  if [ -d "$path" ]; then
-    echo "**${line}**" >> tree.md
-  else
-    echo "${line}" >> tree.md
-  fi
-
-  # 3. For Plain/JSON
-  echo "$line" >> "$OUTPUT_FILE"
-  
-done < /tmp/raw_tree.txt
-
+# 2. Build PLAIN Markdown (No bold, just clean text)
+printf '```text\n' > tree.md
+cat /tmp/raw_tree.txt >> tree.md
 printf '```\n' >> tree.md
 
-# JSON
-printf '[\n' > tree.json
-awk '{gsub(/\033\[[0-9;]*m/, ""); sub(/^[^a-zA-Z0-9_./-]*/, ""); if($0!="") printf "  \"%s\",\n", $0}' "$OUTPUT_FILE" | sed '$ s/,$//' >> tree.json
-printf ']\n' >> tree.json
+# 3. Build KLEIN BLUE HTML
+{
+  echo '<div style="font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;">'
+  while IFS= read -r line; do
+    path=$(echo "$line" | sed 's/^[^a-zA-Z0-9_./-]*//')
+    if [ -d "$path" ]; then
+      echo "  <span style=\"color:#80BFFF\">${line}</span><br>" # Light blue for dirs
+    elif [[ "$path" == *.sh || "$path" == *.go || "$path" == *.py ]]; then
+      echo "  <span style=\"color:#80FF80\">${line}</span><br>" # Light green for scripts
+    else
+      echo "  <span style=\"color:#ffffff\">${line}</span><br>" # White for files
+    fi
+  done < /tmp/raw_tree.txt
+  echo '</div>'
+} > tree_snippet.html
+
+# 4. Inject into README.md (Safe multiline replacement using awk)
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+MD_CONTENT=$(cat tree.md)
+awk -v content="$MD_CONTENT" -v ts="$TIMESTAMP" '
+  /<!-- AUTO_TREE_START -->/ {
+    print "<!-- AUTO_TREE_START -->"
+    print "<!-- Auto-updated by .github/workflows/update-tree.yml -->"
+    print "<!-- Last updated: " ts " -->"
+    print content
+    print "<!-- AUTO_TREE_END -->"
+    skip = 1
+    next
+  }
+  /<!-- AUTO_TREE_END -->/ { skip = 0; next }
+  !skip { print }
+' README.md > README.md.tmp && mv README.md.tmp README.md
+
+# 5. Inject into index.html
+HTML_CONTENT=$(cat tree_snippet.html)
+awk -v content="$HTML_CONTENT" -v ts="$TIMESTAMP" '
+  /<!-- AUTO_TREE_START -->/ {
+    print "<!-- AUTO_TREE_START -->"
+    print "<!-- Auto-updated by .github/workflows/update-tree.yml -->"
+    print "<!-- Last updated: " ts " -->"
+    print content
+    print "<!-- AUTO_TREE_END -->"
+    skip = 1
+    next
+  }
+  /<!-- AUTO_TREE_END -->/ { skip = 0; next }
+  !skip { print }
+' index.html > index.html.tmp && mv index.html.tmp index.html
+
+echo "✅ Tree generated and injected successfully (Plain Markdown + Klein Blue HTML)."
