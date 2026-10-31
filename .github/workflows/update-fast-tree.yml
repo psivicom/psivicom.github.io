@@ -1,4 +1,4 @@
-name: Update FAST tree
+name: Update tree
 
 on:
   workflow_dispatch:
@@ -15,7 +15,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate tree files (Ultra-Fast)
-        run: chmod +x scripts/fast-tree.sh && ./scripts/fast-tree.sh
+        run: |
+          chmod +x scripts/fast-tree.sh
+          ./scripts/fast-tree.sh
+          echo "--- Contents of tree_clean.txt ---"
+          cat tree_clean.txt
+          echo "--- End of file ---"
 
       - name: Inject tree.md into README.md
         run: |
