@@ -119,7 +119,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ## 06 — Repository Structure
 
 <!-- AUTO_TREE_START -->
-<!-- Last updated: 2026-10-31T19:35:52.000Z -->
+<!-- Last updated: 2026-10-31T19:44:17.000Z -->
 ```
 ./
 ├── LICENSES/
