@@ -1,33 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
-# Ultra-fast tree generator using native Linux utilities
 OUTPUT_FILE="tree_clean.txt"
 
-# Create a temporary awk script to handle the drawing logic safely
+# Create the awk script for drawing
 cat > /tmp/draw_tree.awk << 'AWKEOF'
 BEGIN { FS="/" }
 {
-  # Remove leading ./
   sub(/^\.\//, "", $0)
   if ($0 == "") next
 
-  # Split path to get depth and name
   n = split($0, parts, "/")
   name = parts[n]
   depth = n - 1
 
-  # Build indentation
   indent = ""
   for (i = 1; i < depth; i++) {
     indent = indent "│   "
   }
 
+  # We will append color codes later in the bash loop
   print indent "├── " name
 }
 AWKEOF
 
-# Find files, sort them, and draw the tree
+# Generate the raw structure first
 find . \
   -not -path './.git/*' \
   -not -path './.github/*' \
@@ -37,19 +34,42 @@ find . \
   -not -name 'tree_clean.txt' \
   -not -name 'fast-tree.sh' \
   -not -name 'draw_tree.awk' \
-  -print | sort | awk -f /tmp/draw_tree.awk > "$OUTPUT_FILE"
+  -print | sort | awk -f /tmp/draw_tree.awk > /tmp/raw_tree.txt
 
-# 1. Markdown
+# Now add colors by checking each path against the filesystem
+> "$OUTPUT_FILE"
+while IFS= read -r line; do
+  # Extract the path from the tree line (remove indentation and connector)
+  path=$(echo "$line" | sed 's/^[^a-zA-Z0-9_./-]*//')
+  
+  if [ -d "$path" ]; then
+    # Blue for directories: \033[34m
+    echo -e "${line/├── /├── \033[34m}\033[0m" >> "$OUTPUT_FILE"
+  elif [ -x "$path" ]; then
+    # Green for executables: \033[32m
+    echo -e "${line/├── /├── \033[32m}\033[0m" >> "$OUTPUT_FILE"
+  else
+    # White/Grey for files: \033[37m
+    echo -e "${line/├── /├── \033[37m}\033[0m" >> "$OUTPUT_FILE"
+  fi
+done < /tmp/raw_tree.txt
+
+# 1. Markdown (supports ANSI colors in many viewers)
 printf '```text\n' > tree.md
 cat "$OUTPUT_FILE" >> tree.md
 printf '```\n' >> tree.md
 
-# 2. Plain
+# 2. Plain (with colors)
 cp "$OUTPUT_FILE" TREE
 
-# 3. JSON
+# 3. JSON (clean names only, no colors)
 printf '[\n' > tree.json
-awk '{printf "  \"%s\",\n", $0}' "$OUTPUT_FILE" | sed '$ s/,$//' >> tree.json
+awk '{
+  # Strip ANSI codes and tree characters for JSON
+  gsub(/\033\[[0-9;]*m/, "", $0)
+  sub(/^[^a-zA-Z0-9_./-]*/, "", $0)
+  if ($0 != "") printf "  \"%s\",\n", $0
+}' "$OUTPUT_FILE" | sed '$ s/,$//' >> tree.json
 printf ']\n' >> tree.json
 
-echo "Tree generated successfully."
+echo "Colored tree generated."
