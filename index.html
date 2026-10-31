@@ -376,193 +376,40 @@ footer {
 <section id="structure" class="section">
 <div class="section-head"><h2 class="mono">06 — Repository Structure — Interconnected</h2><div class="line"></div></div>
 <!-- BRENT START -->
-<pre id="brent-tree">
-AUTHOR.md
-CITATION.cff
-CNAME
-CODEOWNERS
-CODE_OF_CONDUCT.md
-CONTRIBUTING.md
-DISCLAIMER.md
-LICENSE
-LICENSES/COPYRIGHT.md
-LICENSES/LICENSE-CC-BY-SA-4.0.md
-LICENSES/LICENSE-EUPL-1.2.md
-LICENSES/README.md
-NOTICE.md
-OPEN_SCIENCE_POLICY.md
-POLICY.md
-README.md
-REUSE.toml
-SECURITY.md
-SECURITY_PLAN.md
-TRUST_AND_PROVENANCE.md
-archive/README.md
-cmd/render-readme/README.md
-cmd/render-readme/main.go
-cmd/update-tree/README.md
-cmd/update-tree/go.mod
-cmd/update-tree/main.go
-codemeta.json
-index.html
-openscience.html
-robots.txt
-scripts/update-tree/README.md
-scripts/update-tree/main.go
-sitemap.xml
-update-tree
+<pre id="brent-tree" style="font-family: monospace;">
+├── .
+├── .git
+├── .github
+├── AUTHOR.md
+├── CITATION.cff
+├── CNAME
+├── CODEOWNERS
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── DISCLAIMER.md
+├── LICENSE
+├── LICENSES
+├── COPYRIGHT.md
+├── LICENSE-CC-BY-SA-4.0.md
+├── LICENSE-EUPL-1.2.md
+├── README.md
+├── NOTICE.md
+├── OPEN_SCIENCE_POLICY.md
+├── POLICY.md
+├── README.md
+├── REUSE.toml
+├── SECURITY.md
+├── SECURITY_PLAN.md
+├── TRUST_AND_PROVENANCE.md
+├── archive
+├── README.md
+├── cmd
+├── update-tree
+│   ├── README.md
+├── codemeta.json
+├── index.html
+├── openscience.html
+├── robots.txt
+├── scripts
+├── sitemap.xml
 </pre>
-
-
-
-</section>
-
-<section id="cite" class="section">
-<div class="section-head"><h2 class="mono">07 — Links & Citation</h2><div class="line"></div></div>
-<div class="card" style="margin-top:24px">
-<p class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a">Website & Persistence — FAIR Findable</p>
-<p style="margin-top:12px">Website: <a href="https://psivi.com">https://psivi.com</a> · GitHub Pages: <a href="https://psivicom.github.io">https://psivicom.github.io</a> · Repo: <a href="https://github.com/psivicom/psivicom.github.io">github.com/psivicom/psivicom.github.io</a></p>
-<pre style="margin-top:16px">Audette, L.-P. (2026). PSIVI.COM Open Science Research. Zenodo. https://doi.org/10.5281/zenodo.0000000</pre>
-</div>
-</section>
-
-<section id="dns" class="section">
-<div class="section-head"><h2 class="mono">08 — GoDaddy DNS for GitHub Pages</h2><div class="line"></div></div>
-<div style="margin-top:24px;border:1px solid #e4e4e7;border-radius:12px;overflow:hidden">
-<div style="background:#0A1931;color:#fff;padding:12px 20px;display:flex;justify-content:space-between" class="mono"><span style="font-size:11px;text-transform:uppercase">GoDaddy → My Products → DNS Management</span></div>
-<table>
-<thead><tr><th>Type</th><th>Name / Host</th><th>Value / Points to</th><th>TTL</th></tr></thead>
-<tbody>
-<tr><td>A</td><td>@</td><td>185.199.108.153</td><td>1 Hour</td></tr>
-<tr><td>A</td><td>@</td><td>185.199.109.153</td><td>1 Hour</td></tr>
-<tr><td>A</td><td>@</td><td>185.199.110.153</td><td>1 Hour</td></tr>
-<tr><td>A</td><td>@</td><td>185.199.111.153</td><td>1 Hour</td></tr>
-<tr style="background:#fafafa"><td>CNAME</td><td>www</td><td>psivicom.github.io</td><td>1 Hour</td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<section id="contact" class="section">
-<div class="section-head"><h2 class="mono">09 — Contact</h2><div class="line"></div></div>
-<div class="grid2" style="margin-top:24px">
-<div style="font-size:14.5px">Based in Goldstream, Langford, BC. Open to collaborations on pollinator monitoring, SAR/optical fusion, and community science infrastructure.<br><br><span class="mono" style="font-size:12px;color:#71717a">ORCID: 0009-0005-1234-5678</span></div>
-<div class="card" style="background:#fafafa"><div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a">Preferred Contact</div><p style="font-size:13px;margin-top:8px">For data requests, collaboration, or technical inquiries regarding the AETHER Mesh, please email <a href="mailto:louis@psivi.com" style="text-decoration:underline">louis@psivi.com</a>.</p></div>
-</div>
-</section>
-
-<!-- BOTTOM AETHER LIVE -->
-<div id="psivi-bottom" style="background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:18px;border-radius:12px;margin:48px 0 0">
-  <span id="pulse-bottom" style="display:inline-block;width:8px;height:8px;background:#00D4FF;border-radius:50%;box-shadow:0 0 8px #00D4FF;animation:psivi-pulse 1s infinite;vertical-align:middle"></span>
-  <span id="status-bottom">AETHER</span><br>
-  <span id="live-bottom"></span><br>
-  <small style="color:#9fb3c8">Goldstream, Langford BC</small>
-</div>
-
-<!-- AETHER VANGUARD TELEMETRY -->
-<div id="mesh-status" style="background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:18px;border-radius:12px;margin:24px 0 0">
-  <div style="font-size:10px;letter-spacing:0.15em;opacity:0.7;margin-bottom:10px">AETHER VANGUARD · TELEMETRY LOG</div>
-  <div id="mesh-log" style="font-size:12px;line-height:1.6;opacity:0.9">awaiting telemetry...</div>
-</div>
-
-</main>
-
-<footer>
-<div>
-<p>© 2026 Louis-Philippe Audette — PSIVI.COM</p>
-<p>Content: <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="text-decoration:underline">CC BY-SA 4.0</a> · Code: <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12" style="text-decoration:underline">EUPL 1.2</a></p>
-<p>Built as single-file semantic HTML5 for GitHub Pages — Excellence Edition — NASA blue</p>
-</div>
-<div style="text-align:right">
-<p id="footer-last">Last updated: 2026-10-31T00:00:00.000Z</p>
-<p>NASA Open Science 101 Certified — Langford, BC — Goldstream — Vancouver Island</p>
-</div>
-</footer>
-
-</div>
-
-<script>
-// AETHER CLOCK — TOP + BOTTOM
-setInterval(()=>{
-  const now = new Date().toISOString();
-  const t = document.getElementById('live-top'); if(t) t.textContent = now;
-  const b = document.getElementById('live-bottom'); if(b) b.textContent = now;
-},37);
-
-// AETHER VANGUARD STATUS — DYNAMIC HEARTBEAT
-function checkVanguard() {
-  fetch('/mesh_state.json')
-    .then(r => { if(!r.ok) throw new Error(); return r.json(); })
-    .then(data => {
-      let nodeCount = 1;
-      if(data.nodes && Array.isArray(data.nodes)) {
-        nodeCount = data.nodes.length;
-      } else if(data.node) {
-        nodeCount = 1;
-      }
-
-      let pulseDuration = '1s';
-      let rhythmName = 'HUMAN';
-      if(nodeCount >= 8) {
-        pulseDuration = '0.33s';
-        rhythmName = 'FORAGER';
-      } else if(nodeCount >= 4) {
-        pulseDuration = '0.5s';
-        rhythmName = 'APIARY';
-      } else if(nodeCount >= 2) {
-        pulseDuration = '0.67s';
-        rhythmName = 'WORKER';
-      }
-
-      ['pulse-top','pulse-bottom'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) {
-          el.style.background='#00D4FF';
-          el.style.boxShadow='0 0 8px #00D4FF';
-          el.style.opacity='1';
-          el.style.animationDuration = pulseDuration;
-        }
-      });
-      ['status-top','status-bottom'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) { el.textContent='AETHER · NOMINAL'; el.style.color='#00D4FF'; }
-      });
-
-      const log = document.getElementById('mesh-log');
-      if(log) {
-        let nodeInfo = '';
-        if(data.nodes && Array.isArray(data.nodes)) {
-          nodeInfo = data.nodes.map(n => n.id).join(' · ');
-        } else if(data.node) {
-          nodeInfo = data.node.id;
-        }
-        const ts = data.nodes ? data.nodes[0].timestamp : data.node.timestamp;
-        log.innerHTML = '[' + ts + ']<br>' +
-          'Nodes: ' + nodeCount + ' · Rhythm: ' + rhythmName + '<br>' +
-          nodeInfo + ' · Status: ' + data.status;
-      }
-    })
-    .catch(() => {
-      ['pulse-top','pulse-bottom'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) {
-          el.style.background='#00D4FF';
-          el.style.boxShadow='0 0 3px #00D4FF';
-          el.style.opacity='0.35';
-          el.style.animationDuration = '2s';
-        }
-      });
-      ['status-top','status-bottom'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) { el.textContent='AETHER · SILENT'; el.style.color='#00D4FF'; el.style.opacity='0.5'; }
-      });
-      const log = document.getElementById('mesh-log');
-      if(log) log.textContent = 'telemetry link dormant';
-    });
-}
-checkVanguard();
-setInterval(checkVanguard, 60000);
-</script>
-<style>@keyframes psivi-pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}</style>
-</body>
-</html>
