@@ -1,94 +1,89 @@
-// Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
-// Licensed under EUPL 1.2 | https://psivi.com
-
-// cmd/update-tree/main.go
 package main
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
+	"os/exec"
 	"sort"
 	"strings"
 )
 
-func main() {
-	tree, err := buildTree(".")
+func getTree() ([]string, error) {
+	cmd := exec.Command("git", "ls-tree", "-r", "--name-only", "HEAD")
+	out, err := cmd.Output()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-
-	sum := sha256.Sum256([]byte(tree))
-	hash := hex.EncodeToString(sum[:])
-
-	mustWrite("TREE.md", tree)
-	mustWrite(".tree.hash", hash+"\n")
-
-	fmt.Println("updated TREE.md and .tree.hash")
-}
-
-func mustWrite(path, content string) {
-	if err := os.WriteFile(path, []byte(content), 0644); err != nil {
-		panic(err)
-	}
-}
-
-func buildTree(root string) (string, error) {
 	var paths []string
-
-	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
-		if err != nil {
-			return err
+	scanner := bufio.NewScanner(strings.NewReader(string(out)))
+	for scanner.Scan() {
+		p := scanner.Text()
+		if !strings.HasPrefix(p, ".git") && p != "TREE" && p != "tree.json" && p != "tree.md" {
+			paths = append(paths, p)
 		}
-		if path == "." {
-			return nil
-		}
-
-		slash := filepath.ToSlash(path)
-		if shouldSkip(slash, d.IsDir()) {
-			if d.IsDir() {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-
-		paths = append(paths, slash)
-		return nil
-	})
-	if err != nil {
-		return "", err
 	}
-
 	sort.Strings(paths)
-
-	var b strings.Builder
-	b.WriteString("# TREE.md\n\n")
-	b.WriteString("psivicom.github.io/\n")
-	for _, p := range paths {
-		b.WriteString("- ")
-		b.WriteString(p)
-		b.WriteByte('\n')
-	}
-	b.WriteByte('\n')
-
-	return b.String(), nil
+	return paths, nil
 }
 
-func shouldSkip(path string, isDir bool) bool {
-	skips := []string{
-		".git",
-		".github",
-		".tree.hash",
-		"TREE.md",
+func writePlain(paths []string) error {
+	f, err := os.Create("TREE")
+	if err != nil {
+		return err
 	}
-
-	for _, s := range skips {
-		if path == s || strings.HasPrefix(path, s+"/") {
-			return true
-		}
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	for _, p := range paths {
+		fmt.Fprintln(w, p)
 	}
+	return w.Flush()
+}
 
-	return false
+func writeJSON(paths []string) error {
+	f, err := os.Create("tree.json")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	enc := json.NewEncoder(f)
+	enc.SetIndent("", "  ")
+	return enc.Encode(paths)
+}
+
+func writeMarkdown(paths []string) error {
+	f, err := os.Create("tree.md")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	fmt.Fprintln(w, "```")
+	for _, p := range paths {
+		fmt.Fprintln(w, p)
+	}
+	fmt.Fprintln(w, "```")
+	return w.Flush()
+}
+
+func main() {
+	paths, err := getTree()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed: %v\n", err)
+		os.Exit(1)
+	}
+	if err := writePlain(paths); err != nil {
+		fmt.Fprintf(os.Stderr, "TREE: %v\n", err)
+		os.Exit(1)
+	}
+	if err := writeJSON(paths); err != nil {
+		fmt.Fprintf(os.Stderr, "tree.json: %v\n", err)
+		os.Exit(1)
+	}
+	if err := writeMarkdown(paths); err != nil {
+		fmt.Fprintf(os.Stderr, "tree.md: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("wrote %d paths to TREE, tree.json, tree.md\n", len(paths))
 }
