@@ -3,7 +3,7 @@ name: Update Repository Tree
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch: # You can also click "Run workflow" manually in the Actions tab
 
 permissions:
   contents: write
@@ -15,11 +15,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate and Inject Tree (C-Level Speed)
+      - name: Generate and Inject Tree (C-Level Speed + Debug)
         run: |
-          # 1. Generate perfect tree structure in C (< 5ms). 
-          # FIX: Removed '.github' and 'archive' from the ignore list so they are visible.
+          echo "🔍 Generating tree with -F (classify) and --dirsfirst..."
+          
+          # 1. Generate perfect tree structure. 
+          # -F appends '/' to directories and '*' to executables.
+          # .github and archive are intentionally NOT in this ignore list.
           tree --dirsfirst -F --charset utf-8 -I '.git|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
+          
+          # DEBUG: Print the first 30 lines to the Actions log so you can verify it's working
+          echo "✅ Raw tree output sample (first 30 lines):"
+          head -n 30 /tmp/raw_tree.txt
 
           # 2. Build Markdown (Plain text, no bold, no ANSI)
           {
@@ -28,26 +35,31 @@ jobs:
             echo '```'
           } > tree.md
 
-          # 3. Build Klein Blue HTML with smart syntax coloring (< 2ms via awk)
+          # 3. Build Klein Blue HTML with bulletproof syntax coloring
           awk '
           BEGIN {
             print "<div style=\"font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;\">"
           }
           {
             line = $0
-            # Skip the summary line at the bottom (e.g., "3 directories, 25 files")
+            
+            # Skip the summary line at the bottom
             if (line ~ /^[0-9]+ directories?, [0-9]+ files?$/) next
             
-            # Determine type and assign exact hex color (Relies on -F flag adding / or *)
-            if (line ~ /\/$/) {
-              color = "#80BFFF" # Directory (Light Blue)
-            } else if (line ~ /\.(sh|go|py)\*?$/) {
-              color = "#80FF80" # Script (Light Green)
+            # Create a clean version without trailing spaces for reliable regex matching
+            clean_line = line
+            sub(/[ \t]+$/, "", clean_line)
+            
+            # Determine type and assign exact hex color
+            if (clean_line ~ /\/$/) {
+              color = "#80BFFF" # Directory (Light Blue) - matches trailing /
+            } else if (clean_line ~ /\.(sh|go|py)\*?$/) {
+              color = "#80FF80" # Script (Light Green) - matches .sh/.go/.py with optional *
             } else {
               color = "#ffffff" # File (White)
             }
             
-            # Escape HTML entities to prevent rendering breaks
+            # Escape HTML entities safely
             gsub(/&/, "\\&amp;", line)
             gsub(/</, "\\&lt;", line)
             gsub(/>/, "\\&gt;", line)
@@ -58,7 +70,7 @@ jobs:
             print "</div>"
           }' /tmp/raw_tree.txt > tree_snippet.html
 
-          # 4. Inject into README.md and index.html (< 2ms via robust awk getline)
+          # 4. Inject into README.md and index.html
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
           
           for file in README.md index.html; do
@@ -89,12 +101,12 @@ jobs:
           done
 
           rm -f /tmp/raw_tree.txt
-          echo "✅ Tree generated with .github and archive visible."
+          echo "🎉 Tree generation and injection complete."
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tree.md tree_snippet.html README.md index.html
-          git diff --cached --quiet || git commit -m "chore: auto-update tree, restoring .github and archive visibility [skip ci]"
+          git diff --cached --quiet || git commit -m "chore: auto-update tree with bulletproof directory coloring [skip ci]"
           git push
