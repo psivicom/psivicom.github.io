@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-10-31T20:03:44.000Z -->
+<!-- Last updated: 2026-10-31T20:04:21.000Z -->
 ```text
 .
 ├── LICENSES
@@ -128,8 +128,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── LICENSE-CC-BY-SA-4.0.md
 │   ├── LICENSE-EUPL-1.2.md
 │   └── README.md
-├── scripts
-│   └── fast-tree.sh
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -154,6 +152,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── tree.md
 └── tree_snippet.html
 
-3 directories, 28 files
+2 directories, 27 files
 ```
 <!-- AUTO_TREE_END -->
