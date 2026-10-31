@@ -1,51 +1,21 @@
-.<!DOCTYPE html>
+<!DOCTYPE html>
 <!--
   Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
-  Code: EUPL 1.2 | Docs: CC BY-SA 4.0 | Hardware: (Proprietary)
+  Code: EUPL 1.2 | Docs: CC BY-SA 4.0 | Hardware: All Rights Reserved
 -->
 <html lang="en-CA">
 <head>
-<style>
-/* ===================================================
-   0. GLOBAL RESET & BORDER PROTECTION
-   =================================================== */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PSIVI.COM — Open Science Hub — Excellence Edition — Louis-Philippe Audette</title>
-
-<meta name="description" content="FAIR open science, reproducible research aligned with NASA, ESA, and CSA. Fully compliant with NIST SP 800-218 (SSDF), utilizing domain-separated EUPL 1.2 / CC BY[...]>
+<meta name="description" content="FAIR open science, reproducible research aligned with NASA, ESA, and CSA. Fully compliant with NIST SP 800-218 (SSDF), utilizing domain-separated EUPL 1.2 / CC BY-SA 4.0 licensing.">
 <meta property="og:title" content="PSIVI.COM — Open Science Research — Langford, BC">
-<meta property="og:description" content="FAIR open science, reproducible research aligned with NASA, ESA, and CSA. Fully compliant with NIST SP 800-218 (SSDF), utilizing domain-separated EUPL 1.2 [...]
+<meta property="og:description" content="FAIR open science, reproducible research aligned with NASA, ESA, and CSA.">
 <meta property="og:url" content="https://psivi.com">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PSIVI.COM">
-
 <link rel="icon" href="/favicon.ico">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');
 
@@ -83,7 +53,6 @@ a:hover { text-decoration-thickness: 2px; }
 
 .header { border-bottom: 1px solid #e4e4e7; padding-bottom: 32px; }
 .kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #71717a; font-weight: 500; }
-
 .h1 { font-size: 42px; line-height: .95; letter-spacing: -.02em; font-weight: 600; margin: 12px 0 0; }
 @media(max-width:640px) { .h1 { font-size: 32px; } }
 
@@ -109,17 +78,7 @@ a:hover { text-decoration-thickness: 2px; }
 .nav a:hover { border-color: #0A1931; background: #0A1931; color: #fff; }
 
 .section { margin-top: 64px; scroll-margin-top: 60px; }
-
-/* FIXED FLEX CONTAINER FOR TITLES */
-.section-head { 
-  display: flex; 
-  align-items: center; 
-  gap: 16px; 
-}
-
-/* ===================================================
-   UNIFIED TYPOGRAPHY SCALE
-   =================================================== */
+.section-head { display: flex; align-items: center; gap: 16px; }
 .section-head h2 {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
@@ -135,25 +94,10 @@ a:hover { text-decoration-thickness: 2px; }
   flex-shrink: 1;
   max-width: 100%;
 }
+.line { flex: 1; height: 1px; background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); opacity: 0.5; }
 
-.line { 
-  flex: 1; 
-  height: 1px; 
-  background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); 
-  opacity: 0.5; 
-}
+h3 { font-size: 16px !important; font-weight: 600; line-height: 1.4; color: #18181b; margin: 0 0 8px 0; }
 
-h3 {
-  font-size: 16px !important;
-  font-weight: 600;
-  line-height: 1.4;
-  color: #18181b;
-  margin: 0 0 8px 0;
-}
-
-/* ===================================================
-   CARD & YVES KLEIN BLUE DATA BOXES
-   =================================================== */
 .card {
   border: 1px solid #e4e4e7;
   border-radius: 12px;
@@ -163,18 +107,6 @@ h3 {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
-
-.card-dark {
-  border: 1px solid #0A1931;
-  border-radius: 12px;
-  padding: 20px;
-  background: #0A1931;
-  color: #fff;
-  overflow: hidden;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
 .klein-box {
   background: #002FA7;
   color: #ffffff;
@@ -189,31 +121,10 @@ h3 {
   overflow-wrap: break-word;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.klein-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35);
-}
-.klein-box .label {
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
-  font-family: 'IBM Plex Mono', monospace;
-  margin-bottom: 8px;
-}
-.klein-box .value {
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-  color: #ffffff;
-  line-height: 1.2;
-}
-.klein-box .desc {
-  font-size: 14px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.9);
-}
+.klein-box:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35); }
+.klein-box .label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.75); font-family: 'IBM Plex Mono', monospace; margin-bottom: 8px; }
+.klein-box .value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 12px; color: #ffffff; line-height: 1.2; }
+.klein-box .desc { font-size: 14px; line-height: 1.55; color: rgba(255, 255, 255, 0.9); }
 
 .klein-box-full {
   background: #002FA7;
@@ -229,36 +140,13 @@ h3 {
   overflow-wrap: break-word;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.klein-box-full:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35);
-}
-.klein-box-full .label {
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
-  font-family: 'IBM Plex Mono', monospace;
-  margin-bottom: 8px;
-}
-.klein-box-full .value {
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
-  color: #ffffff;
-  line-height: 1.2;
-}
-.klein-box-full .desc {
-  font-size: 15px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 700px;
-}
+.klein-box-full:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35); }
+.klein-box-full .label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.75); font-family: 'IBM Plex Mono', monospace; margin-bottom: 8px; }
+.klein-box-full .value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; color: #ffffff; line-height: 1.2; }
+.klein-box-full .desc { font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.9); max-width: 700px; }
 
 .grid2 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; }
 @media(max-width:640px) { .grid2 { grid-template-columns: 1fr; } }
-
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 @media(max-width:768px) { .grid3 { grid-template-columns: 1fr; } }
 
@@ -302,14 +190,34 @@ footer {
 </style>
 
 <script type="application/ld+json" id="json-ld-person">
-{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://psivi.com/#person","name":"Louis-Philippe Audette","givenName":"Louis-Philippe","familyName":"Audette","email":"louis@p[...]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://psivi.com/#person",
+      "name": "Louis-Philippe Audette",
+      "givenName": "Louis-Philippe",
+      "familyName": "Audette",
+      "email": "louis@psivi.com",
+      "url": "https://psivi.com",
+      "jobTitle": "Open Science Researcher",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Langford",
+        "addressRegion": "BC",
+        "addressCountry": "CA"
+      }
+    }
+  ]
+}
 </script>
 </head>
 
 <body>
 <!-- TOP STICKY AETHER LIVE -->
-<div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:0.05em;border[...]
-  <span id="pulse-top" style="display:inline-block;width:7px;height:7px;background:#00D4FF;border-radius:50%;box-shadow:0 0 6px #00D4FF;animation:psivi-pulse 1s infinite;margin-right:6px;vertical[...]
+<div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:0.05em;border-bottom:1px solid #00D4FF33">
+  <span id="pulse-top" style="display:inline-block;width:7px;height:7px;background:#00D4FF;border-radius:50%;box-shadow:0 0 6px #00D4FF;animation:psivi-pulse 1s infinite;margin-right:6px;vertical-align:middle"></span>
   <span id="status-top">AETHER</span> — <span id="live-top">loading...</span>
 </div>
 
@@ -317,7 +225,8 @@ footer {
 <header class="header">
 <div class="kicker">PSIVI.COM — Open Science Hub — Excellence Edition — Langford, BC — Goldstream — NASA Open Science 101 Certified</div>
 <h1 class="h1">Louis-Philippe<br>Audette</h1>
-<div class="sub">Open Science Researcher · Pollinator Ecology · Earth Observation<br>Goldstream Watershed, Langford, BC, Canada — V9B · Vancouver Island · Personal site → <a href="https:/[...]
+<div class="sub">Open Science Researcher · Pollinator Ecology · Earth Observation<br>Goldstream Watershed, Langford, BC, Canada — V9B · Vancouver Island · Personal site → <a href="https://psivi.com" style="text-decoration:underline">psivi.com</a></div>
+
 <div class="address mono">
 <a href="mailto:louis@psivi.com" style="text-decoration:underline">louis@psivi.com</a> <span style="color:#d4d4d8">|</span>
 <a href="https://github.com/psivicom" style="text-decoration:underline">github.com/psivicom</a> <span style="color:#d4d4d8">|</span>
@@ -355,18 +264,17 @@ footer {
 </header>
 
 <main>
-<!-- REWRITTEN TO PROPERLY REPRESENT THE REPOSITORY'S WORK -->
 <section id="about" class="section">
 <div class="section-head"><h2 class="mono">01 — About</h2><div class="line"></div></div>
 <div style="margin-top:24px;font-size:16px;color:#27272a">
-<p>This repository (<code class="mono" style="font-size:14px;background:#f4f4f5;padding:2px 6px;border-radius:4px;">psivicom.github.io</code>) serves as the operational blueprint and digital infr[...]
-<p style="margin-top:16px">While my applied domain focuses on <strong>pollinator ecology and Earth observation</strong> (using RADARSAT SAR and NASA Earthdata) in the Goldstream watershed of Lang[...]
+<p>This repository (<code class="mono" style="font-size:14px;background:#f4f4f5;padding:2px 6px;border-radius:4px;">psivicom.github.io</code>) serves as the operational blueprint and digital infrastructure for FAIR open science, reproducible research, and autonomous AI mesh operations.</p>
+<p style="margin-top:16px">While my applied domain focuses on <strong>pollinator ecology and Earth observation</strong> (using RADARSAT SAR and NASA Earthdata) in the Goldstream watershed of Langford, BC, this framework is designed for global scalability and strict adherence to NASA TOPS, ESA, and CSA open science mandates.</p>
 
 <div class="grid3" style="margin-top:24px">
   <div class="klein-box">
     <div class="label">Primary Focus</div>
     <div class="value">Open Science</div>
-    <div class="desc">The core of this repository. A fully interconnected framework utilizing domain-separated EUPL 1.2 and CC BY-SA 4.0 licensing to guarantee reproducible, auditable workflows.<[...]
+    <div class="desc">The core of this repository. A fully interconnected framework utilizing domain-separated EUPL 1.2 and CC BY-SA 4.0 licensing to guarantee reproducible, auditable workflows.</div>
   </div>
   <div class="klein-box">
     <div class="label">AI Infrastructure</div>
@@ -379,7 +287,6 @@ footer {
     <div class="desc">The primary use-case: monitoring Goldstream pollinators correlated with RADARSAT soil moisture and NASA Earthdata phenology.</div>
   </div>
 </div>
-
 </div>
 </section>
 
@@ -400,17 +307,17 @@ footer {
 <li style="border-left:2px solid #0A1931;padding-left:20px;margin-bottom:24px">
   <h3>Goldstream Pollinator Forage Atlas</h3>
   <div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">2024—present · Langford, BC · Open data + notebook</div>
-  <p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Weekly transects and hive entrance imaging to map bloom sequence vs. RADARSAT soil moisture anomalies. Goal: reproducible forage forecas[...]
+  <p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Weekly transects and hive entrance imaging to map bloom sequence vs. RADARSAT soil moisture anomalies. Goal: reproducible forage forecasting and ecological resilience modeling.</p>
 </li>
 <li style="border-left:2px solid #0A1931;padding-left:20px;margin-bottom:24px">
   <h3>SAR-Optical Fusion for Garry Oak Meadow Phenology</h3>
   <div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">RADARSAT-2 / RCM · Sentinel-2 · NASA HLS</div>
-  <p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Test of backscatter + NDVI fusion to detect early green-up and drought stress in fragmented meadows. Code in Python, GDAL, xarray, fully[...]
+  <p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Test of backscatter + NDVI fusion to detect early green-up and drought stress in fragmented meadows. Code in Python, GDAL, xarray, fully reproducible and open.</p>
 </li>
 <li style="border-left:2px solid #0A1931;padding-left:20px">
   <h3>Open Hive Health Logger</h3>
   <div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">Hardware · FAIR IoT</div>
-  <p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Low-cost weight, temperature, acoustic logger for Langford apiaries. Hardware schematics are (proprietary)
+  <p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Low-cost weight, temperature, acoustic logger for Langford apiaries. Hardware schematics are proprietary (All Rights Reserved, see LICENSES/COPYRIGHT.md).</p>
 </li>
 </ul>
 </section>
@@ -419,13 +326,13 @@ footer {
 <div class="section-head"><h2 class="mono">03 — OSDMP — Excellence Edition</h2><div class="line"></div></div>
 <div class="card" style="margin-top:24px">
 <div style="display:flex;flex-wrap:wrap;gap:8px">
-<a href="https://psivi.com/docs/osdmp.html" style="border:1px solid #0A1931;background:#0A1931;color:#fff;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">V[...]
+<a href="https://psivi.com/docs/osdmp.html" style="border:1px solid #0A1931;background:#0A1931;color:#fff;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">View OSDMP</a>
 <a href="docs/osdmp.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">Source: docs/osdmp.md</a>
 <a href="docs/FAIR_CHECKLIST.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">FAIR Checklist</a>
 <a href="docs/LICENSE_COMPLIANCE.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">License Compliance</a>
 <a href="docs/DATA_MANAGEMENT.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">Data Management</a>
 </div>
-<p style="margin-top:16px;font-size:14.5px">All docs cross-reference each other. OSDMP follows NASA template, links to LICENSES/, includes FAIR 15 sub-principles mapped, data lifecycle CC BY-SA 4[...]
+<p style="margin-top:16px;font-size:14.5px">All docs cross-reference each other. OSDMP follows NASA template, links to LICENSES/, includes FAIR 15 sub-principles mapped, data lifecycle CC BY-SA 4.0.</p>
 </div>
 </section>
 
@@ -435,31 +342,31 @@ footer {
 <table>
 <thead><tr><th>Type</th><th>License</th><th>Path</th><th>For</th></tr></thead>
 <tbody>
-<tr><td><strong>Software / code / workflows / config</strong></td><td><strong>EUPL 1.2</strong></td><td class="mono">/LICENSE-EUPL-1.2.txt</td><td>All .go, .js, .py, .sh, .yml, .json (code), .htm[...]
-<tr><td><strong>Docs, data, datasets, photos, images, videos, figures, CSV, OSDMP</strong></td><td><strong>CC BY-SA 4.0</strong></td><td class="mono">/LICENSE-CC-BY-SA-4.0.md</td><td>All .md, .cs[...]
-<tr><td><strong>Hardware / Schematics / Physical IP</strong></td><td><strong>ALL HARDWARES are All Rights Reserved</strong></td><td class="mono">N/A <!--(See <a href="https://w-1-n.com" style="text-decoration:underlin[...]-->
+<tr><td><strong>Software / code / workflows / config</strong></td><td><strong>EUPL 1.2</strong></td><td class="mono">/LICENSE-EUPL-1.2.txt</td><td>All .go, .js, .py, .sh, .yml, .json (code), .html</td></tr>
+<tr><td><strong>Docs, data, datasets, photos, images, videos, figures, CSV, OSDMP</strong></td><td><strong>CC BY-SA 4.0</strong></td><td class="mono">/LICENSE-CC-BY-SA-4.0.md</td><td>All .md, .csv, .pdf, .png, .jpg, datasets</td></tr>
+<tr><td><strong>Hardware / Schematics / Physical IP</strong></td><td><strong>All Rights Reserved</strong></td><td class="mono">LICENSES/COPYRIGHT.md</td><td>Physical device schematics and proprietary hardware designs</td></tr>
 </tbody>
 </table>
 </div>
 <p style="margin-top:12px;font-size:13px;color:#52525b" class="mono">See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-linked.</p>
-<div class="card" style="margin-top:16px;background:#fafafa"><strong>Why this split?</strong> NASA SPD-41a §VI and ESA Open Science require: Software = OSI-approved (EUPL 1.2 is the official ESA[...]
+<div class="card" style="margin-top:16px;background:#fafafa"><strong>Why this split?</strong> NASA SPD-41a §VI and ESA Open Science require: Software = OSI-approved (EUPL 1.2 is the official ESA preferred license), Data/Docs = CC BY or CC BY-SA 4.0 for maximum scientific reuse.</div>
 </section>
 
 <section id="compliance" class="section">
 <div class="section-head"><h2 class="mono">05 — Multi-Agency Compliance</h2><div class="line"></div></div>
 <div class="grid2" style="margin-top:24px">
-<div class="card"><strong>NASA TOPS / SPD-41a</strong><br><span class="mono-sm">Open code EUPL 1.2 (OSI-approved), open data CC BY-SA 4.0, DOIs, FAIR, OSDMP required — docs/osdmp.md</span></div[...]
+<div class="card"><strong>NASA TOPS / SPD-41a</strong><br><span class="mono-sm">Open code EUPL 1.2 (OSI-approved), open data CC BY-SA 4.0, DOIs, FAIR, OSDMP required — docs/osdmp.md</span></div>
 <div class="card"><strong>CSA</strong><br><span class="mono-sm">Canadian Space Agency Open Science & FAIR — accepts EUPL 1.2 + CC BY-SA 4.0</span></div>
-<div class="card"><strong>ESA</strong><br><span class="mono-sm">ESA Open Science Policy + Open Access — EUPL 1.2 is the preferred/official license — covers CNES-FR, ASI-IT, UKSA-UK, DTU Space[...]
+<div class="card"><strong>ESA</strong><br><span class="mono-sm">ESA Open Science Policy + Open Access — EUPL 1.2 is the preferred/official license — covers CNES-FR, ASI-IT, UKSA-UK, DTU Space</span></div>
 <div class="card"><strong>JAXA</strong><br><span class="mono-sm">JAXA Open Science — EUPL 1.2 compatible</span></div>
-<div class="card"><strong>EU Horizon Europe</strong><br><span class="mono-sm">Reg 2021/695, MGA Art.14 & 17, Directive 2019/1024, Plan S, EOSC — EUPL 1.2 native, data CC BY-SA 4.0 required</spa[...]
+<div class="card"><strong>EU Horizon Europe</strong><br><span class="mono-sm">Reg 2021/695, MGA Art.14 & 17, Directive 2019/1024, Plan S, EOSC — EUPL 1.2 native, data CC BY-SA 4.0 required</span></div>
 <div class="card"><strong>UNESCO</strong><br><span class="mono-sm">41 C/22 Recommendation on Open Science (2021)</span></div>
 </div>
 
 <div class="card" style="margin-top:16px; border-left: 4px solid #0A1931;">
   <div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a;margin-bottom:8px">Institutional Compliance & Security (NIST SP 800-218)</div>
   <p style="font-size:14px; line-height:1.6; margin:0; color:#27272a;">
-    This research software and data pipeline is fully compliant with the <strong>NIST Secure Software Development Framework (SP 800-218)</strong>. It utilizes a domain-separated open-source archi[...]
+    This research software and data pipeline is fully compliant with the <strong>NIST Secure Software Development Framework (SP 800-218)</strong>. It utilizes a domain-separated open-source architecture with cryptographic provenance tracking.
     <br><br>
     <a href="docs/NIST-SSDF-COMPLIANCE-MAPPING.md" style="color:#0A1931; font-weight:600; text-decoration:underline;">View full technical and legal verification &rarr;</a>
   </p>
@@ -468,26 +375,20 @@ footer {
 
 <section id="structure" class="section">
 <div class="section-head"><h2 class="mono">06 — Repository Structure — Interconnected</h2><div class="line"></div></div>
-<pre style="margin-top:24px">psivicom.github.io/
-├── LICENSE-EUPL-1.2.txt (EUPL 1.2 full — code)
-├── LICENSE-CC-BY-SA-4.0.md (CC BY-SA 4.0 full — data/docs)
-├── NOTICE.md (Audette Clause & attributions)
-├── LICENSES/ (README.md explains domain-separated dual licensing)
-├── CITATION.cff (GitHub Cite button → EUPL 1.2, links to DOI)
-├── codemeta.json (machine-readable → EUPL-1.2 AND CC-BY-SA-4.0 SPDX)
-├── _config.yml (Jekyll + SEO + links to licenses)
-├── index.html (this file — Excellence Edition)
-├── docs/ ...
-└── data/ ...
-
-All files cross-reference each other — no orphan files.</pre>
+<!-- AUTO_TREE_START -->
+<!-- This section is automatically updated by .github/workflows/update-tree.yml -->
+<!-- Last updated: [Will be populated automatically] | Hash: [Will be populated automatically] -->
+<pre style="margin-top:24px">
+[The generated tree will be injected here by the Go script]
+</pre>
+<!-- AUTO_TREE_END -->
 </section>
 
 <section id="cite" class="section">
 <div class="section-head"><h2 class="mono">07 — Links & Citation</h2><div class="line"></div></div>
 <div class="card" style="margin-top:24px">
 <p class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a">Website & Persistence — FAIR Findable</p>
-<p style="margin-top:12px">Website: <a href="https://psivi.com">https://psivi.com</a> · GitHub Pages: <a href="https://psivicom.github.io">https://psivicom.github.io</a> · Repo: <a href="https:[...]
+<p style="margin-top:12px">Website: <a href="https://psivi.com">https://psivi.com</a> · GitHub Pages: <a href="https://psivicom.github.io">https://psivicom.github.io</a> · Repo: <a href="https://github.com/psivicom/psivicom.github.io">github.com/psivicom/psivicom.github.io</a></p>
 <pre style="margin-top:16px">Audette, L.-P. (2026). PSIVI.COM Open Science Research. Zenodo. https://doi.org/10.5281/zenodo.0000000</pre>
 </div>
 </section>
@@ -495,7 +396,7 @@ All files cross-reference each other — no orphan files.</pre>
 <section id="dns" class="section">
 <div class="section-head"><h2 class="mono">08 — GoDaddy DNS for GitHub Pages</h2><div class="line"></div></div>
 <div style="margin-top:24px;border:1px solid #e4e4e7;border-radius:12px;overflow:hidden">
-<div style="background:#0A1931;color:#fff;padding:12px 20px;display:flex;justify-content:space-between" class="mono"><span style="font-size:11px;text-transform:uppercase">GoDaddy → My Products [...]
+<div style="background:#0A1931;color:#fff;padding:12px 20px;display:flex;justify-content:space-between" class="mono"><span style="font-size:11px;text-transform:uppercase">GoDaddy → My Products → DNS Management</span></div>
 <table>
 <thead><tr><th>Type</th><th>Name / Host</th><th>Value / Points to</th><th>TTL</th></tr></thead>
 <tbody>
@@ -512,14 +413,14 @@ All files cross-reference each other — no orphan files.</pre>
 <section id="contact" class="section">
 <div class="section-head"><h2 class="mono">09 — Contact</h2><div class="line"></div></div>
 <div class="grid2" style="margin-top:24px">
-<div style="font-size:14.5px">Based in Goldstream, Langford, BC. Open to collaborations on pollinator monitoring, SAR/optical fusion, and community science infrastructure.<br><br><span class="mon[...]
-<div class="card" style="background:#fafafa"><div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a">Preferred Contact</div><p style="font-size:13px;margin-top:8px">For da[...]
+<div style="font-size:14.5px">Based in Goldstream, Langford, BC. Open to collaborations on pollinator monitoring, SAR/optical fusion, and community science infrastructure.<br><br><span class="mono" style="font-size:12px;color:#71717a">ORCID: 0009-0005-1234-5678</span></div>
+<div class="card" style="background:#fafafa"><div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a">Preferred Contact</div><p style="font-size:13px;margin-top:8px">For data requests, collaboration, or technical inquiries regarding the AETHER Mesh, please email <a href="mailto:louis@psivi.com" style="text-decoration:underline">louis@psivi.com</a>.</p></div>
 </div>
 </section>
 
 <!-- BOTTOM AETHER LIVE -->
 <div id="psivi-bottom" style="background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:18px;border-radius:12px;margin:48px 0 0">
-  <span id="pulse-bottom" style="display:inline-block;width:8px;height:8px;background:#00D4FF;border-radius:50%;box-shadow:0 0 8px #00D4FF;animation:psivi-pulse 1s infinite;vertical-align:middle"[...]
+  <span id="pulse-bottom" style="display:inline-block;width:8px;height:8px;background:#00D4FF;border-radius:50%;box-shadow:0 0 8px #00D4FF;animation:psivi-pulse 1s infinite;vertical-align:middle"></span>
   <span id="status-bottom">AETHER</span><br>
   <span id="live-bottom"></span><br>
   <small style="color:#9fb3c8">Goldstream, Langford BC</small>
@@ -536,11 +437,11 @@ All files cross-reference each other — no orphan files.</pre>
 <footer>
 <div>
 <p>© 2026 Louis-Philippe Audette — PSIVI.COM</p>
-<p>Content: <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="text-decoration:underline">CC BY-SA 4.0</a> · Code: <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eu[...]
+<p>Content: <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="text-decoration:underline">CC BY-SA 4.0</a> · Code: <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12" style="text-decoration:underline">EUPL 1.2</a></p>
 <p>Built as single-file semantic HTML5 for GitHub Pages — Excellence Edition — NASA blue</p>
 </div>
 <div style="text-align:right">
-<p id="footer-last">Last updated: 2026-09-11T00:00:00.000Z</p>
+<p id="footer-last">Last updated: 2026-10-31T00:00:00.000Z</p>
 <p>NASA Open Science 101 Certified — Langford, BC — Goldstream — Vancouver Island</p>
 </div>
 </footer>
@@ -630,5 +531,5 @@ checkVanguard();
 setInterval(checkVanguard, 60000);
 </script>
 <style>@keyframes psivi-pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}</style>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","so[...]
+</body>
 </html>
