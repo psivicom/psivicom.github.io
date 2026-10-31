@@ -2,12 +2,32 @@
 set -euo pipefail
 
 # Ultra-fast tree generator using native Linux utilities
-# Latency: <2ms
-
 OUTPUT_FILE="tree_clean.txt"
 
-# Use find with correct exclusion syntax
-# -not -path '*/.git/*' excludes the directory and its contents
+# Create a temporary awk script to handle the drawing logic safely
+cat > /tmp/draw_tree.awk << 'AWKEOF'
+BEGIN { FS="/" }
+{
+  # Remove leading ./
+  sub(/^\.\//, "", $0)
+  if ($0 == "") next
+
+  # Split path to get depth and name
+  n = split($0, parts, "/")
+  name = parts[n]
+  depth = n - 1
+
+  # Build indentation
+  indent = ""
+  for (i = 1; i < depth; i++) {
+    indent = indent "│   "
+  }
+
+  print indent "├── " name
+}
+AWKEOF
+
+# Find files, sort them, and draw the tree
 find . \
   -not -path './.git/*' \
   -not -path './.github/*' \
@@ -16,40 +36,8 @@ find . \
   -not -name 'tree.md' \
   -not -name 'tree_clean.txt' \
   -not -name 'fast-tree.sh' \
-  -print | sort | awk '
-BEGIN { 
-  # We will store lines to determine the "last" child in a directory later if needed,
-  # but for speed, we use a simple prefix logic.
-}
-{
-  path = $0
-  # Remove leading ./
-  sub(/^\.\//, "", path)
-  
-  # Count depth by counting slashes
-  n = gsub(/\//, "/", path)
-  # Restore path (gsub modifies in place, so we need to be careful or re-split)
-  # Actually, let's just split the original line
-  split($0, parts, "/")
-  depth = length(parts) - 1 # -1 because first part is "."
-  
-  name = parts[length(parts)]
-  if (name == "") next
-
-  # Build indentation
-  indent = ""
-  for (i = 1; i < depth; i++) {
-    indent = indent "│   "
-  }
-
-  # For this ultra-fast version, we use ├── for all items. 
-  # To get perfect └── for the last item requires a second pass or complex buffering,
-  # which slows us down. However, this still gives the "pipe" look.
-  connector = "├── "
-  
-  print indent connector name
-}
-' > "$OUTPUT_FILE"
+  -not -name 'draw_tree.awk' \
+  -print | sort | awk -f /tmp/draw_tree.awk > "$OUTPUT_FILE"
 
 # 1. Markdown
 printf '```text\n' > tree.md
