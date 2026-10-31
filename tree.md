@@ -1,11 +1,12 @@
-```
-./
-├── LICENSES/
+```text
+.
+├── LICENSES
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
 │   ├── LICENSE-EUPL-1.2.md
 │   └── README.md
-├── scripts/
+├── scripts
+│   └── fast-tree.sh
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -26,7 +27,9 @@
 ├── index.html
 ├── openscience.html
 ├── robots.txt
-└── sitemap.xml
+├── sitemap.xml
+├── tree.md
+└── tree_snippet.html
 
-3 directories, 25 files
+3 directories, 28 files
 ```
