@@ -30,26 +30,23 @@ jobs:
 
       - name: Inject tree into index.html
         run: |
-          # Extract clean tree content (remove markdown backticks)
-          sed '/^```/d' tree.md > tree_clean.txt
+          # Use a Python script for robust HTML injection to avoid shell quoting issues
+          python3 -c "
+          import re
+          with open('index.html', 'r') as f: content = f.read()
+          with open('tree_clean.txt', 'r') as f: tree_content = f.read()
           
-          # Use awk to inject the content between markers
-          awk '
-            /<!-- BRENT START -->/ { 
-              print; 
-              print "<pre id=\"brent-tree\">"; 
-              while ((getline line < "tree_clean.txt") > 0) print line; 
-              print "</pre>"; 
-              skip=1; 
-              next 
-            }
-            /<!-- BRENT END -->/   { skip=0 }
-            !skip                  { print }
-          ' index.html > index.tmp && mv index.tmp index.html
+          # Replace content between markers
+          pattern = r'(<!-- BRENT START -->).*?(<!-- BRENT END -->)'
+          replacement = r'\1\n<pre id=\"brent-tree\">\n' + tree_content + '</pre>\n\2'
+          new_content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+          
+          with open('index.html', 'w') as f: f.write(new_content)
+          "
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add TREE tree.json tree.md README.md index.html tree_clean.txt
+          git add TREE tree.json tree.md tree_clean.txt README.md index.html
           git diff --staged --quiet || git commit -m "Update tree" && git push
