@@ -28,8 +28,6 @@
 **├── cmd**
 ├── tree-gen
 │   ├── main.go
-├── update-tree
-│   ├── README.md
 ├── codemeta.json
 ├── index.html
 ├── openscience.html
