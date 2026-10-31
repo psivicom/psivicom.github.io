@@ -35,7 +35,5 @@
 ├── openscience.html
 ├── robots.txt
 **├── scripts**
-├── update-tree
-│   ├── main.go
 ├── sitemap.xml
 ```
