@@ -5,6 +5,8 @@
 │   ├── LICENSE-CC-BY-SA-4.0.md
 │   ├── LICENSE-EUPL-1.2.md
 │   └── README.md
+├── archive/
+│   └── README.md
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -27,5 +29,5 @@
 ├── robots.txt
 └── sitemap.xml
 
-2 directories, 25 files
+3 directories, 26 files
 ```

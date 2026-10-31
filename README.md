@@ -120,13 +120,15 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-10-31T20:13:34.000Z -->
+<!-- Last updated: 2026-10-31T20:17:07.000Z -->
 ```text
 ./
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
 │   ├── LICENSE-EUPL-1.2.md
+│   └── README.md
+├── archive/
 │   └── README.md
 ├── AUTHOR.md
 ├── CITATION.cff
@@ -150,6 +152,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── robots.txt
 └── sitemap.xml
 
-2 directories, 25 files
+3 directories, 26 files
 ```
 <!-- AUTO_TREE_END -->
