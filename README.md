@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-10-31T20:31:16.000Z -->
+<!-- Last updated: 2026-11-04T02:09:09.000Z -->
 ```text
 ./
 ├── .github/
@@ -154,8 +154,9 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── index.html
 ├── openscience.html
 ├── robots.txt
-└── sitemap.xml
+├── sitemap.xml
+└── wendy_autonomous_core.py
 
-5 directories, 28 files
+5 directories, 29 files
 ```
 <!-- AUTO_TREE_END -->
