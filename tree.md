@@ -3,7 +3,8 @@
 ├── .github/
 │   └── workflows/
 │       ├── README.md
-│       └── update-tree.yml
+│       ├── update-tree.yml
+│       └── wendy_synapse.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
@@ -36,5 +37,5 @@
 ├── wendy_crystalline_executor.py
 └── wendy_synapse_orchestrator.py
 
-5 directories, 31 files
+5 directories, 32 files
 ```
