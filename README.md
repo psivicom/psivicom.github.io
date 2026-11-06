@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-06T06:11:25.000Z -->
+<!-- Last updated: 2026-11-06T06:18:34.000Z -->
 ```text
 ./
 ├── .github/
@@ -156,8 +156,9 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── robots.txt
 ├── sitemap.xml
 ├── wendy_autonomous_core.py
-└── wendy_crystalline_executor.py
+├── wendy_crystalline_executor.py
+└── wendy_synapse_orchestrator.py
 
-5 directories, 30 files
+5 directories, 31 files
 ```
 <!-- AUTO_TREE_END -->

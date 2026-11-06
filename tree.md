@@ -33,7 +33,8 @@
 ├── robots.txt
 ├── sitemap.xml
 ├── wendy_autonomous_core.py
-└── wendy_crystalline_executor.py
+├── wendy_crystalline_executor.py
+└── wendy_synapse_orchestrator.py
 
-5 directories, 30 files
+5 directories, 31 files
 ```
