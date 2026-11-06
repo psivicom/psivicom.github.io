@@ -18,3 +18,9 @@ env/
 .DS_Store
 Thumbs.db
 *.log
+
+# ==========================================
+# WENDY Habermasian Artifacts (Do Not Ignore)
+# ==========================================
+!.wendy_dream.gmi
+!.wendy_manifest.gmi
