@@ -13,6 +13,8 @@
 ├── archive/
 │   └── README.md
 ├── raw_input_stream/
+│   ├── mobile_drops/
+│   │   └── qwen_task_01.txt
 │   └── genesis_seed.txt
 ├── wendy-cortex/
 │   └── Cargo.toml
@@ -47,5 +49,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-7 directories, 40 files
+8 directories, 41 files
 ```
