@@ -39,6 +39,7 @@
 ├── gemini_client.py
 ├── index.html
 ├── openscience.html
+├── requirements-core.txt
 ├── requirements.txt
 ├── robots.txt
 ├── sitemap.xml
@@ -49,5 +50,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-8 directories, 41 files
+8 directories, 42 files
 ```
