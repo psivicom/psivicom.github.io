@@ -32,6 +32,7 @@
 ├── gemini_client.py
 ├── index.html
 ├── openscience.html
+├── requirements.txt
 ├── robots.txt
 ├── sitemap.xml
 ├── wendy_autonomous_core.py
@@ -39,5 +40,5 @@
 ├── wendy_ouroboros_bridge.py
 └── wendy_synapse_orchestrator.py
 
-5 directories, 34 files
+5 directories, 35 files
 ```
