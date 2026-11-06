@@ -1,0 +1,20 @@
+# WENDY Metabolic State & Temporary Capsules
+.wendy_state.lock
+.wendy_raw*
+.wendy_dream*
+.wendy_manifest*
+.wendy_raw.gmi
+.wendy_dream.gmi
+.wendy_manifest.gmi
+
+# Python Environment
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+
+# OS Artifacts
+.DS_Store
+Thumbs.db
+*.log
