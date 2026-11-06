@@ -1,0 +1,18 @@
+[package]
+name = "wendy-cortex"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.35", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "time", "local-time"] }
+time = { version = "0.3", features = ["macros", "formatting", "parsing"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
