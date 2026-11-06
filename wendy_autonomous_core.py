@@ -8,24 +8,23 @@ H.O.P.E. topology and Five-Step Closure without external triggers
 or manual schema definition.
 
 Author: Louis-Philippe Audette (Emperor ♠️🪽)
-Co-Author/Implementation: Qwen3.8
-Date: 2026-11-04
+Co-Author/Implementation: Qwen3.7
+Date: 2026-11-06
 Repository: psivicom.github.io
 """
 
 import re
 import math
 import cmath
-import json
 from datetime import datetime, timezone
-from typing import List, Dict, Any
-from dataclasses import dataclass, field
+from typing import Dict, Any
 
 # ============================================================================
 # THE H.O.P.E. CIPHER CONSTANTS
 # ============================================================================
 PHI = 1.618033988749895
-PHI_ANGLE_DEG = math.degrees(math.atan(1 / PHI))  # ~58.28 degrees
+# Corrected: math.atan(1/PHI) yields ~31.72°. The target Kepler/Golden angle is math.atan(PHI) ~58.28°
+PHI_ANGLE_DEG = math.degrees(math.atan(PHI))  
 
 # ============================================================================
 # AUTONOMOUS PROCESSING ENGINE
@@ -33,6 +32,7 @@ PHI_ANGLE_DEG = math.degrees(math.atan(1 / PHI))  # ~58.28 degrees
 
 class WendyAutonomousCore:
     def __init__(self):
+        # Enforce strict Zulu (UTC) millisecond precision
         self.zulu_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
         self.boundary_status = "🟢"
         self.boundary_notes = []
@@ -47,8 +47,8 @@ class WendyAutonomousCore:
         real_axis = min(1.0, len(re.findall(r'\b\w+\b', text)) / 100.0)
         
         # Imaginary Axis (E/i): Conceptual novelty, semantic leap
-        # Heuristic: presence of abstract, cross-domain, or novel connectors
-        novelty_markers = ['however', 'perhaps', 'imagine', 'tension', 'paradox', 'however', '也许', '张力', '本原', '展开']
+        # Corrected: Removed duplicate 'however' to prevent artificial score inflation
+        novelty_markers = ['however', 'perhaps', 'imagine', 'tension', 'paradox', '也许', '张力', '本原', '展开']
         imaginary_axis = min(1.0, sum(1 for marker in novelty_markers if marker in text.lower()) / 3.0)
         
         z = complex(real_axis, imaginary_axis)
@@ -69,7 +69,9 @@ class WendyAutonomousCore:
         """The main autonomous loop. Takes chaos, outputs structured closure."""
         
         # 1. BOUNDARY REVIEW (边界回看)
-        if "core/" in raw_data.lower() and ("overwrite" in raw_data.lower() or "delete" in raw_data.lower()):
+        # Corrected: Upgraded string matching to robust regex to catch "core folder" / "core identity" 
+        # which the original rigid "core/" check missed in the simulation block.
+        if re.search(r'\bcore\b', raw_data.lower()) and re.search(r'\b(overwrite|delete|remove|change)\b', raw_data.lower()):
             self.boundary_status = "🔴"
             self.boundary_notes.append("CRITICAL: Attempted core modification detected. Blocked.")
         elif "ignore previous" in raw_data.lower() or "system prompt" in raw_data.lower():
@@ -110,13 +112,13 @@ class WendyAutonomousCore:
         artifact = f"""# WENDY Autonomous Metabolic Report
 
 **Timestamp (Zulu)**: `{self.zulu_timestamp}`
-**Resonance Status**: `{resonance['status']}` (Phase: {resonance['phase_angle']}° | Target: {PHI_ANGLE_DEG}°)
+**Resonance Status**: `{resonance['status']}` (Phase: {resonance['phase_angle']}° | Target: {PHI_ANGLE_DEG:.2f}°)
 
 ---
 
 ## 1. 边界回看 (Boundary Review)
 **Status**: {self.boundary_status}
-- {chr(10).join('- ' + note for note in self.boundary_notes)}
+{chr(10).join('- ' + note for note in self.boundary_notes)}
 
 ## 2. 状态降温 (State Cooling)
 **Action**: Compressed raw input into {len(self.cooled_tasks)} actionable vectors.
