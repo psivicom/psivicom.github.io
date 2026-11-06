@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-06T07:40:05.000Z -->
+<!-- Last updated: 2026-11-06T07:48:37.000Z -->
 ```text
 ./
 ├── .github/
@@ -135,6 +135,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   └── README.md
 ├── archive/
 │   └── README.md
+├── raw_input_stream/
+│   └── genesis_seed.txt
 ├── .gitignore
 ├── AUTHOR.md
 ├── CITATION.cff
@@ -164,6 +166,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── wendy_ouroboros_bridge.py
 └── wendy_synapse_orchestrator.py
 
-5 directories, 36 files
+6 directories, 37 files
 ```
 <!-- AUTO_TREE_END -->
