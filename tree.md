@@ -43,7 +43,8 @@
 ├── wendy_autonomous_core.py
 ├── wendy_crystalline_executor.py
 ├── wendy_ouroboros_bridge.py
+├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-7 directories, 38 files
+7 directories, 39 files
 ```
