@@ -29,6 +29,7 @@
 ├── SECURITY_PLAN.md
 ├── TRUST_AND_PROVENANCE.md
 ├── codemeta.json
+├── gemini_client.py
 ├── index.html
 ├── openscience.html
 ├── robots.txt
@@ -38,5 +39,5 @@
 ├── wendy_ouroboros_bridge.py
 └── wendy_synapse_orchestrator.py
 
-5 directories, 33 files
+5 directories, 34 files
 ```
