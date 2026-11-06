@@ -12,6 +12,7 @@
 │   └── README.md
 ├── archive/
 │   └── README.md
+├── .gitignore
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -40,5 +41,5 @@
 ├── wendy_ouroboros_bridge.py
 └── wendy_synapse_orchestrator.py
 
-5 directories, 35 files
+5 directories, 36 files
 ```
