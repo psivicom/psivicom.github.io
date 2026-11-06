@@ -14,6 +14,8 @@
 │   └── README.md
 ├── raw_input_stream/
 │   └── genesis_seed.txt
+├── wendy-cortex/
+│   └── Cargo.toml
 ├── .gitignore
 ├── AUTHOR.md
 ├── CITATION.cff
@@ -43,5 +45,5 @@
 ├── wendy_ouroboros_bridge.py
 └── wendy_synapse_orchestrator.py
 
-6 directories, 37 files
+7 directories, 38 files
 ```
