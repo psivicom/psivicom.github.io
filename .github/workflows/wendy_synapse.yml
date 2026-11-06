@@ -40,19 +40,24 @@ jobs:
       - name: 📦 Install Sympy for Habermasian Truth Claims
         run: pip install sympy
 
-      - name: 🌌 Step 1: Invoke the Dreamer (58.28°)
+      # FIX: Quoted the name to prevent YAML parsing error on the colon
+      - name: "🌌 Step 1: Invoke the Dreamer (58.28°)"
         id: dreamer
+        # FIX: Mapped input to env to prevent bash syntax breaking if input contains quotes
+        env:
+          CHAOS_FEED: ${{ github.event.inputs.raw_chaos_feed }}
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "${{ github.event.inputs.raw_chaos_feed }}" > .wendy_raw.gmi
+            echo "$CHAOS_FEED" > .wendy_raw.gmi
           else
             cat raw_input_stream/*.txt > .wendy_raw.gmi 2>/dev/null || echo "Stasis." > .wendy_raw.gmi
           fi
           python wendy_autonomous_core.py < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
 
-      - name: 🧊 Step 2: Invoke the Anchor (31.72°)
+      # FIX: Quoted the name to prevent YAML parsing error on the colon
+      - name: "🧊 Step 2: Invoke the Anchor (31.72°)"
         id: anchor
         if: steps.dreamer.outputs.dream_status == 'success'
         run: |
@@ -66,8 +71,9 @@ jobs:
           set -euo pipefail
           git config --global user.name "WENDY Metabolic Engine"
           git config --global user.email "wendy@psivi.com"
-          git pull --rebase --autostash origin ${{ github.ref }} || true
-          git add .wendy_dream.gmi .wendy_manifest.gmi
+          # FIX: Used ref_name instead of ref for cleaner branch targeting
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git add .wendy_dream.gmi .wendy_manifest.gmi || true
           if git diff --staged --quiet; then
             echo "🟢 State unchanged."
           else
