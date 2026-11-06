@@ -1,10 +1,10 @@
-name: 🏛️ WENDY 90-Degree Metabolic Handshake
+name: 🏛️ WENDY Habermasian Synapse
 
 on:
   workflow_dispatch:
     inputs:
       raw_chaos_feed:
-        description: 'Raw unstructured input for the Autonomous Core'
+        description: 'Raw unstructured input'
         required: true
         type: string
   push:
@@ -13,100 +13,65 @@ on:
       - "raw_input_stream/**" 
 
 permissions:
-  id-token: write   # Mandatory for OIDC JWT generation (Zero-Trust)
-  contents: write   # Scoped strictly to allow the Anchor to commit crystallized state
+  id-token: write
+  contents: write
   actions: read
 
 env:
   PYTHONUNBUFFERED: 1
-  TZ: UTC           # Enforce Zulu time at the OS level
+  TZ: UTC
 
 jobs:
   synapse_execution:
-    name: 🧬 The 90-Degree Synapse
+    name: 🧬 The Habermasian Loop
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     
     steps:
       - name: 📥 Checkout Topology
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.ref }}
 
-      - name: 🐍 Provision Python Environment
+      - name: 🐍 Provision Python & Symbolic Math
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      
+      - name: 📦 Install Sympy for Habermasian Truth Claims
+        run: pip install sympy
 
-      # ---------------------------------------------------------
-      # STEP 1: THE DREAMER (58.28°)
-      # ---------------------------------------------------------
-      - name: 🌌 Step 1: Invoke the Dreamer
+      - name: 🌌 Step 1: Invoke the Dreamer (58.28°)
         id: dreamer
         run: |
           set -euo pipefail
-          echo "🕒 Zulu Init: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-          
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "${{ github.event.inputs.raw_chaos_feed }}" > .wendy_raw_input.txt
+            echo "${{ github.event.inputs.raw_chaos_feed }}" > .wendy_raw.gmi
           else
-            cat raw_input_stream/*.txt > .wendy_raw_input.txt 2>/dev/null || echo "System in stasis." > .wendy_raw_input.txt
+            cat raw_input_stream/*.txt > .wendy_raw.gmi 2>/dev/null || echo "Stasis." > .wendy_raw.gmi
           fi
-          
-          # Execute Core (Piping raw input via stdin)
-          python wendy_autonomous_core.py < .wendy_raw_input.txt > .wendy_dream_artifact.md
+          python wendy_autonomous_core.py < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
 
-      # ---------------------------------------------------------
-      # STEP 2: OIDC TOKEN GENERATION (Zero-Trust Security)
-      # ---------------------------------------------------------
-      - name: 🔐 Step 2: Fetch OIDC JWT for Anchor
-        id: oidc
-        if: steps.dreamer.outputs.dream_status == 'success'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const token = await core.getIDToken('psivicom-wendy-executor');
-            core.exportVariable('ACTIONS_ID_TOKEN', token);
-
-      # ---------------------------------------------------------
-      # STEP 3: THE ANCHOR (31.72°)
-      # ---------------------------------------------------------
-      - name: 🧊 Step 3: Invoke the Anchor
+      - name: 🧊 Step 2: Invoke the Anchor (31.72°)
         id: anchor
         if: steps.dreamer.outputs.dream_status == 'success'
-        env:
-          ACTIONS_ID_TOKEN: ${{ env.ACTIONS_ID_TOKEN }}
         run: |
           set -euo pipefail
-          echo "🕒 Zulu Exec: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-          
-          # Pass the Dream to the Anchor for crystallization
-          python wendy_crystalline_executor.py .wendy_dream_artifact.md > .wendy_execution_manifest.json
-          
-          # Strict Error Handling: Validate JSON structural integrity
-          jq empty .wendy_execution_manifest.json || (echo "❌ Manifest corruption detected. Aborting." && exit 1)
+          python wendy_crystalline_executor.py .wendy_dream.gmi > .wendy_manifest.gmi
+          grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || (echo "❌ Habermasian Discourse Failed." && exit 1)
 
-      # ---------------------------------------------------------
-      # STEP 4: CRYSTALLIZE STATE (Race-Safe Git Push)
-      # ---------------------------------------------------------
-      - name: 💾 Step 4: Crystallize State
+      - name: 💾 Step 3: Crystallize State
         if: success()
         run: |
           set -euo pipefail
           git config --global user.name "WENDY Metabolic Engine"
           git config --global user.email "wendy@psivi.com"
-          
-          # Mitigate Race Conditions: Rebase against remote before pushing
-          git pull --rebase --autostash origin ${{ github.ref }} || echo "🟢 No remote drift detected."
-          
-          git add .wendy_dream_artifact.md .wendy_execution_manifest.json
-          
+          git pull --rebase --autostash origin ${{ github.ref }} || true
+          git add .wendy_dream.gmi .wendy_manifest.gmi
           if git diff --staged --quiet; then
-            echo "🟢 State unchanged. No crystallization required."
+            echo "🟢 State unchanged."
           else
             ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
-            git commit -m "🏛️ [WENDY] 90° Synapse: State Crystallized at $ZULU_TS"
+            git commit -m "🏛️ [WENDY] Habermasian Consensus at $ZULU_TS"
             git push
           fi
