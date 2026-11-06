@@ -40,10 +40,8 @@ jobs:
       - name: 📦 Install Sympy for Habermasian Truth Claims
         run: pip install sympy
 
-      # FIX: Quoted the name to prevent YAML parsing error on the colon
       - name: "🌌 Step 1: Invoke the Dreamer (58.28°)"
         id: dreamer
-        # FIX: Mapped input to env to prevent bash syntax breaking if input contains quotes
         env:
           CHAOS_FEED: ${{ github.event.inputs.raw_chaos_feed }}
         run: |
@@ -56,24 +54,23 @@ jobs:
           python wendy_autonomous_core.py < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
 
-      # FIX: Quoted the name to prevent YAML parsing error on the colon
       - name: "🧊 Step 2: Invoke the Anchor (31.72°)"
         id: anchor
-        if: steps.dreamer.outputs.dream_status == 'success'
+        if: ${{ steps.dreamer.outputs.dream_status == 'success' }}
         run: |
           set -euo pipefail
           python wendy_crystalline_executor.py .wendy_dream.gmi > .wendy_manifest.gmi
           grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || (echo "❌ Habermasian Discourse Failed." && exit 1)
 
-      - name: 💾 Step 3: Crystallize State
-        if: success()
+      - name: "💾 Step 3: Crystallize State"
+        if: ${{ success() }}
         run: |
           set -euo pipefail
           git config --global user.name "WENDY Metabolic Engine"
           git config --global user.email "wendy@psivi.com"
-          # FIX: Used ref_name instead of ref for cleaner branch targeting
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git add .wendy_dream.gmi .wendy_manifest.gmi || true
+          
           if git diff --staged --quiet; then
             echo "🟢 State unchanged."
           else
