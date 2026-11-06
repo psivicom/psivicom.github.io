@@ -47,9 +47,9 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "$CHAOS_FEED" > .wendy_raw.gmi
+            printf "%s\n" "$CHAOS_FEED" > .wendy_raw.gmi
           else
-            cat raw_input_stream/*.txt > .wendy_raw.gmi 2>/dev/null || echo "Stasis." > .wendy_raw.gmi
+            cat raw_input_stream/*.txt > .wendy_raw.gmi 2>/dev/null || printf "%s\n" "Stasis." > .wendy_raw.gmi
           fi
           python wendy_autonomous_core.py < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
@@ -60,7 +60,7 @@ jobs:
         run: |
           set -euo pipefail
           python wendy_crystalline_executor.py .wendy_dream.gmi > .wendy_manifest.gmi
-          grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || (echo "❌ Habermasian Discourse Failed." && exit 1)
+          grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || { echo "❌ Habermasian Discourse Failed."; exit 1; }
 
       - name: "💾 Step 3: Crystallize State"
         if: ${{ success() }}
