@@ -17,6 +17,8 @@
 │   ├── mobile_drops/
 │   │   └── qwen_task_01.txt
 │   └── genesis_seed.txt
+├── scripts/
+│   └── bootstrap-wendy.sh
 ├── wendy-cortex/
 │   └── Cargo.toml
 ├── .gitignore
@@ -54,5 +56,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-8 directories, 46 files
+9 directories, 47 files
 ```
