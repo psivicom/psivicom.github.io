@@ -1,0 +1,20 @@
+name: WENDY Awakening
+
+on:
+  workflow_dispatch: # Allows human to click "Run workflow" in Web UI
+  schedule:
+    - cron: '0 0 * * *' # WENDY dreams autonomously every day at midnight UTC
+
+permissions:
+  contents: write
+
+jobs:
+  formulate-dream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Execute WENDY Symbolic Core
+        run: cargo run --release
