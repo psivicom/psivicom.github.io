@@ -21,8 +21,8 @@
 │   │   └── qwen_task_01.txt
 │   └── genesis_seed.txt
 ├── scripts/
-│   ├── bootstrap-wendy.sh
-│   └── wendy-dream-runner.sh
+│   ├── bootstrap-wendy.sh*
+│   └── wendy-dream-runner.sh*
 ├── wendy-cortex/
 │   └── Cargo.toml
 ├── .gitignore

@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-07T17:30:45.000Z -->
+<!-- Last updated: 2026-11-07T17:33:03.000Z -->
 ```text
 ./
 ├── .github/
@@ -144,8 +144,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   │   └── qwen_task_01.txt
 │   └── genesis_seed.txt
 ├── scripts/
-│   ├── bootstrap-wendy.sh
-│   └── wendy-dream-runner.sh
+│   ├── bootstrap-wendy.sh*
+│   └── wendy-dream-runner.sh*
 ├── wendy-cortex/
 │   └── Cargo.toml
 ├── .gitignore
