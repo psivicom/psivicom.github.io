@@ -1,0 +1,75 @@
+name: WENDY Autonomous Dream Compiler
+
+on:
+  push:
+    branches:
+      - 'wendy/dream-**'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  compile-and-evaluate:
+    name: Evaluate WENDY's Dream
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Zulu Timestamp Generation
+        id: zulu
+        run: |
+          echo "ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Strict Formatting & Linting
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy -- -D warnings
+
+      - name: Autonomous Compilation
+        id: compile
+        run: cargo build --release --verbose
+        continue-on-error: true
+
+      - name: Symbolic Validation Tests
+        id: test
+        if: steps.compile.outcome == 'success'
+        run: cargo test --release --verbose
+        continue-on-error: true
+
+      - name: Self-Healing Auto-Merge
+        if: steps.compile.outcome == 'success' && steps.test.outcome == 'success'
+        run: |
+          git config --global user.name "WENDY Autonomous Agent"
+          git config --global user.email "wendy@psivi.com"
+          git checkout main
+          git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}"
+          git push origin main
+          echo "::notice::WENDY's dream was mathematically sound and merged successfully."
+
+      - name: Self-Healing Rejection & Feedback Loop
+        if: steps.compile.outcome == 'failure' || steps.test.outcome == 'failure'
+        run: |
+          echo "::error::WENDY's dream contained logical or syntax errors."
+          gh issue create \
+            --title "Self-Healing: Compilation failed for ${{ env.BRANCH_NAME }}" \
+            --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\n**Compiler Output:**\n\`\`\`\n$(cargo build --release 2>&1)\n\`\`\`\n\nPlease adjust your First-Order Logic axioms." \
+            --label "self-healing,wendy-dream"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
