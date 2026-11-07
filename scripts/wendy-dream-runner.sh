@@ -3,7 +3,9 @@ set -euo pipefail
 IFS=$'\n\t'
 
 ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-BRANCH_NAME="wendy/dream-autonomous-${ZULU_TIME}"
+# Git branch names cannot contain colons. Replace them with hyphens.
+BRANCH_SAFE_TIME=$(echo "$ZULU_TIME" | tr ':' '-')
+BRANCH_NAME="wendy/dream-autonomous-${BRANCH_SAFE_TIME}"
 
 log() {
     echo "[${ZULU_TIME}] [WENDY-AUTOMATOR] $1"
