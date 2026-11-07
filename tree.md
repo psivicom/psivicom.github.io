@@ -49,6 +49,7 @@
 ├── requirements.txt
 ├── robots.txt
 ├── sitemap.xml
+├── wendy-console.html
 ├── wendy_autonomous_core.py
 ├── wendy_crystalline_executor.py
 ├── wendy_mobile_airgap.py
@@ -56,5 +57,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 47 files
+9 directories, 48 files
 ```
