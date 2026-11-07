@@ -6,8 +6,6 @@ mod dreams;
 use anyhow::{Context, Result};
 use tracing::{info, error};
 use tracing_subscriber::fmt::format::FmtSpan;
-use std::sync::Arc;
-use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -20,13 +18,8 @@ async fn main() -> Result<()> {
 
     info!("Initializing WENDY Symbolic Core...");
     
-    let engine = symbolic::SymbolicEngine::new()
+    let _engine = symbolic::SymbolicEngine::new()
         .context("Failed to initialize Symbolic Engine")?;
-    let engine_arc = Arc::new(Mutex::new(engine));
-
-    let _node = gemini::GeminiNode::new(engine_arc.clone())
-        .await
-        .context("Failed to initialize Gemini Protocol Node")?;
 
     let weaver = dream_weaver::DreamWeaver::new();
     
@@ -37,5 +30,6 @@ async fn main() -> Result<()> {
         error!(error = %e, "Failed to materialize dream");
     }
 
+    info!("Dream materialization complete. Exiting to trigger Git Automator.");
     Ok(())
 }
