@@ -27,6 +27,7 @@
 ├── CODEOWNERS
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
+├── Cargo.toml
 ├── DISCLAIMER.md
 ├── LICENSE
 ├── NOTICE.md
@@ -52,5 +53,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-8 directories, 44 files
+8 directories, 45 files
 ```
