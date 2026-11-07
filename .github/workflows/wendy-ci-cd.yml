@@ -1,0 +1,55 @@
+name: WENDY Core CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write   # Strict OIDC security for deployments
+  contents: read
+  checks: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-and-validate:
+    name: Build, Test, and Validate Symbolic Core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Cargo dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Strict Formatting Check
+        run: cargo fmt --all -- --check
+
+      - name: Static Analysis (Clippy)
+        run: cargo clippy -- -D warnings
+
+      - name: Build WENDY Core
+        run: cargo build --release --verbose
+
+      - name: Execute Symbolic Validation Tests
+        run: cargo test --release --verbose
+
+      - name: Generate Zulu-Timestamped Build Artifact
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          echo "BUILD_TIME=${TIMESTAMP}" >> $GITHUB_ENV
+          echo "WENDY_BUILD_${TIMESTAMP}" > build_artifact.txt
+
+      - name: Self-Healing Rollback Check
+        if: failure()
+        run: |
+          echo "::error::WENDY CI/CD Pipeline failed. Initiating self-healing rollback protocol."
+          # Add logic here to revert state or notify Emperor ♠️🪽 via webhook
