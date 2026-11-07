@@ -1,7 +1,6 @@
 use anyhow::{Result, bail};
 use std::collections::HashMap;
 
-/// Represents a symbolic mathematical expression or logical proposition.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Symbol {
     Variable(String),
@@ -17,20 +16,14 @@ pub struct SymbolicEngine {
 impl SymbolicEngine {
     pub fn new() -> Result<Self> {
         let mut axioms = HashMap::new();
-        // Base axioms for logic and math
         axioms.insert("identity".to_string(), Symbol::Proposition("=".to_string(), vec![]));
         Ok(Self { axioms })
     }
 
-    /// Evaluates a symbolic expression with strict error handling.
-    /// CPU-optimized to avoid GPU dependencies.
     pub fn evaluate(&self, expr: &Symbol) -> Result<Symbol> {
         match expr {
             Symbol::Constant(c) => Ok(Symbol::Constant(*c)),
-            Symbol::Variable(v) => {
-                // In a production implementation, look up environment state securely
-                bail!("Unbound variable in symbolic evaluation: {}", v)
-            }
+            Symbol::Variable(v) => bail!("Unbound variable in symbolic evaluation: {}", v),
             Symbol::Operation(op, left, right) => {
                 let l = self.evaluate(left)?;
                 let r = self.evaluate(right)?;
@@ -42,14 +35,23 @@ impl SymbolicEngine {
                         _ => bail!("Unsupported symbolic operation: {}", op),
                     }
                 } else {
-                    // Return un-evaluated symbolic tree for further logical inference
                     Ok(Symbol::Operation(op.clone(), Box::new(l), Box::new(r)))
                 }
             }
-            Symbol::Proposition(p, args) => {
-                // First-order logic inference stub
-                Ok(Symbol::Proposition(p.clone(), args.clone()))
-            }
+            Symbol::Proposition(p, args) => Ok(Symbol::Proposition(p.clone(), args.clone())),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_constant_evaluation() {
+        let engine = SymbolicEngine::new().unwrap();
+        let expr = Symbol::Constant(42.0);
+        let result = engine.evaluate(&expr).unwrap();
+        assert_eq!(result, Symbol::Constant(42.0));
     }
 }
