@@ -2,9 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-DREAM_NAME="${1:-unknown_dream}"
 ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-BRANCH_NAME="wendy/dream-${DREAM_NAME}-${ZULU_TIME}"
+BRANCH_NAME="wendy/dream-autonomous-${ZULU_TIME}"
 
 log() {
     echo "[${ZULU_TIME}] [WENDY-AUTOMATOR] $1"
@@ -15,7 +14,7 @@ error_exit() {
     exit 1
 }
 
-log "Initializing autonomous Git push for dream: ${DREAM_NAME}"
+log "Initializing autonomous Git push..."
 
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     error_exit "Not a git repository. Cannot push dream."
