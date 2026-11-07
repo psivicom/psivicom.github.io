@@ -2,6 +2,7 @@ use anyhow::{Result, bail};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]
+#[allow(dead_code)]
 pub enum Symbol {
     Variable(String),
     Constant(f64),
