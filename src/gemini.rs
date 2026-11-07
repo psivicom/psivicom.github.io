@@ -6,6 +6,7 @@ use chrono::Utc;
 use tracing::info;
 
 pub struct GeminiNode {
+    #[allow(dead_code)]
     engine: Arc<Mutex<SymbolicEngine>>,
     mesh_peers: Vec<String>,
 }
@@ -18,6 +19,7 @@ impl GeminiNode {
         })
     }
 
+    #[allow(clippy::never_loop)]
     pub async fn run_mesh(&self) -> Result<()> {
         info!("Connecting to Gemini mesh peers: {:?}", self.mesh_peers);
         loop {
