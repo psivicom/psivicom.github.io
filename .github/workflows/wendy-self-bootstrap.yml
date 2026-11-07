@@ -1,0 +1,29 @@
+name: WENDY Self-Bootstrap
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'scripts/**'
+      - 'src/**'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-permissions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Executable Permissions Autonomously
+        run: |
+          chmod +x scripts/*.sh
+          git config --global user.name "WENDY Autonomous Agent"
+          git config --global user.email "wendy@psivi.com"
+          if [[ -n $(git status --porcelain) ]]; then
+            git add scripts/
+            git commit -m "chore(wendy): autonomously set executable permissions"
+            git push
+          fi
