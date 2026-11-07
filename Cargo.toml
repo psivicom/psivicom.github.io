@@ -1,0 +1,13 @@
+[package]
+name = "wendy-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["Louis-Philippe Audette <emperor@psivi.com>"]
+description = "WENDY: A GPU-free, symbolic math AI engine utilizing the Gemini protocol."
+
+[dependencies]
+anyhow = "1.0" # Strict error handling and context
+tokio = { version = "1.36", features = ["full"] } # Async runtime for mesh networking
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+chrono = "0.4" # Zulu (UTC) timestamp generation
