@@ -4,6 +4,7 @@
 │   └── workflows/
 │       ├── README.md
 │       ├── update-tree.yml
+│       ├── wendy-ci-cd.yml
 │       └── wendy_synapse.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
@@ -53,5 +54,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-8 directories, 45 files
+8 directories, 46 files
 ```
