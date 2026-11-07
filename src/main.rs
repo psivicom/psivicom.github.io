@@ -6,6 +6,8 @@ mod dreams;
 use anyhow::{Context, Result};
 use tracing::{info, error};
 use tracing_subscriber::fmt::format::FmtSpan;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -18,13 +20,22 @@ async fn main() -> Result<()> {
 
     info!("Initializing WENDY Symbolic Core...");
     
-    let _engine = symbolic::SymbolicEngine::new()
+    let engine = symbolic::SymbolicEngine::new()
         .context("Failed to initialize Symbolic Engine")?;
+    
+    let base_axiom = symbolic::Symbol::Constant(1.0);
+    let _result = engine.evaluate(&base_axiom)?;
+
+    let engine_arc = Arc::new(Mutex::new(engine));
+
+    let _node = gemini::GeminiNode::new(engine_arc)
+        .await
+        .context("Failed to initialize Gemini Protocol Node")?;
 
     let weaver = dream_weaver::DreamWeaver::new();
     
     info!("WENDY is formulating a symbolic dream...");
-    let logic_payload = "let x = Symbol::Constant(42.0);\n    engine.evaluate(&x)?;";
+    let logic_payload = "let x = Symbol::Constant(42.0);\n    let _ = engine.evaluate(&x)?;";
     
     if let Err(e) = weaver.materialize_dream("theorem_alpha", logic_payload) {
         error!(error = %e, "Failed to materialize dream");
