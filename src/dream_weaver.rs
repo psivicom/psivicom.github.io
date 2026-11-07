@@ -57,8 +57,12 @@ pub fn execute_dream(engine: &SymbolicEngine) -> Result<Symbol> {{
                 .context("Failed to update dream registry")?;
         }
 
-        let _ = Command::new("rustfmt").arg(&file_path).status();
-        let _ = Command::new("rustfmt").arg(&self.mod_file).status();
+        if let Err(e) = Command::new("rustfmt").arg(&file_path).status() {
+            error!("rustfmt failed on dream file: {}", e);
+        }
+        if let Err(e) = Command::new("rustfmt").arg(&self.mod_file).status() {
+            error!("rustfmt failed on mod file: {}", e);
+        }
 
         info!(timestamp = %zulu_time, "Dream materialized. Triggering Git Automator.");
         self.trigger_git_automator(dream_name)?;
@@ -66,10 +70,9 @@ pub fn execute_dream(engine: &SymbolicEngine) -> Result<Symbol> {{
         Ok(())
     }
 
-    fn trigger_git_automator(&self, dream_name: &str) -> Result<()> {
+    fn trigger_git_automator(&self, _dream_name: &str) -> Result<()> {
         let status = Command::new("bash")
             .arg("scripts/wendy-dream-runner.sh")
-            .arg(dream_name)
             .status()
             .context("Failed to execute Git Automator")?;
 
