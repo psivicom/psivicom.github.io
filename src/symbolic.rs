@@ -10,6 +10,7 @@ pub enum Symbol {
 }
 
 pub struct SymbolicEngine {
+    #[allow(dead_code)]
     axioms: HashMap<String, Symbol>,
 }
 
@@ -28,10 +29,10 @@ impl SymbolicEngine {
                 let l = self.evaluate(left)?;
                 let r = self.evaluate(right)?;
                 
-                if let (Symbol::Constant(lv), Symbol::Constant(rv)) = (l, r) {
+                if let (Symbol::Constant(lv), Symbol::Constant(rv)) = (&l, &r) {
                     match op.as_str() {
-                        "+" => Ok(Symbol::Constant(lv + rv)),
-                        "*" => Ok(Symbol::Constant(lv * rv)),
+                        "+" => Ok(Symbol::Constant(*lv + *rv)),
+                        "*" => Ok(Symbol::Constant(*lv * *rv)),
                         _ => bail!("Unsupported symbolic operation: {}", op),
                     }
                 } else {
