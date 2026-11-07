@@ -19,6 +19,8 @@
 ├── wendy-cortex/
 │   └── Cargo.toml
 ├── .gitignore
+├── .wendy_dream.gmi
+├── .wendy_manifest.gmi
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -50,5 +52,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-8 directories, 42 files
+8 directories, 44 files
 ```
