@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WENDY | Symbolic AI Console</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #e0e0e0;
+            --accent: #00ffcc;
+            --warning: #ffaa00;
+        }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 { color: var(--accent); }
+        .terminal {
+            background: #111;
+            border: 1px solid #333;
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-top: 2rem;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+        }
+        .prompt { color: var(--accent); }
+        .info { color: #888; }
+        .timestamp { color: var(--warning); }
+    </style>
+</head>
+<body>
+    <h1>WENDY: Symbolic Intelligence</h1>
+    <p>GPU-Free AI powered by Mathematical Symbolic Text and the Gemini Protocol. Maintained by Emperor ♠️🪽.</p>
+    
+    <div class="terminal" id="wendy-terminal">
+        <p><span class="prompt">emperor@psivi:~$</span> ./wendy-core --init</p>
+        <p class="info">[INFO] Initializing WENDY Symbolic Core...</p>
+        <p class="info">[INFO] Loading First-Order Logic Axioms...</p>
+        <p class="info">[INFO] Connecting to Gemini mesh peers: ["psivicom.github.io"]</p>
+        <p class="info" id="zulu-sync">[INFO] System Time Sync: Calculating...</p>
+        <p class="info">[INFO] WENDY is online. Awaiting symbolic logic inference...</p>
+        <p><span class="prompt">emperor@psivi:~$</span> <span id="cursor">_</span></p>
+    </div>
+
+    <script>
+        // 1. Simple blinking cursor effect
+        setInterval(() => {
+            const cursor = document.getElementById('cursor');
+            cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
+        }, 500);
+
+        // 2. Inject dynamic Zulu (UTC) timestamp with millisecond precision
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            // toISOString() natively provides YYYY-MM-DDTHH:mm:ss.sssZ (Zulu time with ms precision)
+            const zuluTime = now.toISOString(); 
+            
+            const syncElement = document.getElementById('zulu-sync');
+            syncElement.innerHTML = `<span class="timestamp">[SYNC]</span> Zulu Timestamp Locked: ${zuluTime}`;
+        });
+    </script>
+</body>
+</html>
