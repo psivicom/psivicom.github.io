@@ -1,16 +1,18 @@
 [package]
-name = "wendy-cortex"
+name = "wendy-core"
 version = "0.1.0"
 edition = "2021"
 authors = ["Louis-Philippe Audette <emperor@psivi.com>"]
-description = "WENDY Crystalline Cortex: Hot-swappable native artifacts for Earth Observation."
+description = "WENDY Core: Autonomous symbolic math engine and Python/Rust bridge orchestrator."
 license = "EUPL-1.2"
 
-[lib]
-name = "wendy_cortex"
-# cdylib creates the real .so/.dll/.dylib artifact Python can load via ctypes
-crate-type = ["cdylib", "rlib"]
+# NOTE: No [lib] block here. This package builds the main binary (src/main.rs).
 
 [dependencies]
 anyhow = "1.0"
+tokio = { version = "1.36", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "time"] }
 chrono = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
