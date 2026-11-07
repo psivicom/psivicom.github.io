@@ -1,13 +1,16 @@
 mod symbolic;
 mod gemini;
+mod dream_weaver;
+mod dreams;
 
 use anyhow::{Context, Result};
 use tracing::{info, error};
 use tracing_subscriber::fmt::format::FmtSpan;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Initialize tracing with strict Zulu (UTC) timestamps and millisecond precision
     let timer = tracing_subscriber::fmt::time::UtcTime::rfc_3339();
     tracing_subscriber::fmt()
         .with_timer(timer)
@@ -19,16 +22,19 @@ async fn main() -> Result<()> {
     
     let engine = symbolic::SymbolicEngine::new()
         .context("Failed to initialize Symbolic Engine")?;
-        
-    let node = gemini::GeminiNode::new(engine)
+    let engine_arc = Arc::new(Mutex::new(engine));
+
+    let _node = gemini::GeminiNode::new(engine_arc.clone())
         .await
         .context("Failed to initialize Gemini Protocol Node")?;
 
-    info!("WENDY is online. Listening for symbolic mesh sync...");
+    let weaver = dream_weaver::DreamWeaver::new();
     
-    if let Err(e) = node.run_mesh().await {
-        error!(error = %e, "WENDY Mesh Sync encountered a fatal error");
-        return Err(e);
+    info!("WENDY is formulating a symbolic dream...");
+    let logic_payload = "let x = Symbol::Constant(42.0);\n    engine.evaluate(&x)?;";
+    
+    if let Err(e) = weaver.materialize_dream("theorem_alpha", logic_payload) {
+        error!(error = %e, "Failed to materialize dream");
     }
 
     Ok(())
