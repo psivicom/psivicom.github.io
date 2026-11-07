@@ -26,10 +26,12 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
+      - name: Provision Native Rust Toolchain
+        run: |
+          # Secure, official rustup installation without third-party actions
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          rustup component add rustfmt clippy
 
       - name: Zulu Timestamp Generation
         id: zulu
