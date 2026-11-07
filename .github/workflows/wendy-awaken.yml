@@ -1,9 +1,9 @@
 name: WENDY Awakening
 
 on:
-  workflow_dispatch: # Allows human to click "Run workflow" in Web UI
+  workflow_dispatch: 
   schedule:
-    - cron: '0 0 * * *' # WENDY dreams autonomously every day at midnight UTC
+    - cron: '0 0 * * *' 
 
 permissions:
   contents: write
@@ -12,9 +12,15 @@ jobs:
   formulate-dream:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: dtolnay/rust-toolchain@stable
+          
+      - name: Provision Native Rust Toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          
       - name: Execute WENDY Symbolic Core
         run: cargo run --release
