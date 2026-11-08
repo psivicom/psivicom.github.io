@@ -1,16 +1,18 @@
 [package]
 name = "wendy-cortex"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Louis-Philippe Audette <emperor@psivi.com>"]
-description = "WENDY Crystalline Cortex: Hot-swappable native artifacts for Earth Observation."
+description = "WENDY Crystalline Cortex: Hard real-time, numerically stable Earth Observation math."
 license = "EUPL-1.2"
 
 [lib]
 name = "wendy_cortex"
-# cdylib creates the real .so/.dll/.dylib artifact Python can load via ctypes
 crate-type = ["cdylib", "rlib"]
 
-[dependencies]
-anyhow = "1.0"
-chrono = "0.4"
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
