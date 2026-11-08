@@ -1,0 +1,34 @@
+name: WENDY Real Science Benchmark
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'wendy-cortex/**'
+      - 'run_real_science_benchmark.py'
+      - 'wendy_crystalline_executor.py'
+  workflow_dispatch: # Allows you to click "Run Workflow" manually in the Web UI
+
+permissions:
+  contents: read
+
+jobs:
+  execute-real-science:
+    name: Hard Real-Time Telemetry Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Provision Native Rust Toolchain (Zero External Actions)
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Execute WENDY Benchmark Autonomously
+        run: |
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          echo "[${ZULU_TIME}] WENDY is compiling her crystalline cortex and running real science..."
+          python3 run_real_science_benchmark.py
