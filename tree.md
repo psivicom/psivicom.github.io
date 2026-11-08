@@ -1,14 +1,12 @@
 ```text
 ./
-├── . github/
-│   └── workflows/
-│       └── wendy-benchmark.yml
 ├── .github/
 │   └── workflows/
 │       ├── README.md
 │       ├── update-tree.yml
 │       ├── wendy-autonomous-compile.yml
 │       ├── wendy-awaken.yml
+│       ├── wendy-benchmark.yml
 │       ├── wendy-ci-cd.yml
 │       ├── wendy-self-bootstrap.yml
 │       └── wendy_synapse.yml
@@ -65,5 +63,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 54 files
+9 directories, 54 files
 ```
