@@ -1,18 +1,20 @@
 [package]
 name = "wendy-cortex"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["Louis-Philippe Audette <emperor@psivi.com>"]
-description = "WENDY Crystalline Cortex: Hard real-time, numerically stable Earth Observation math."
+description = "WENDY Polyglot Cortex: Rust Mathematical Core"
 license = "EUPL-1.2"
 
 [lib]
 name = "wendy_cortex"
 crate-type = ["cdylib", "rlib"]
 
+[[bin]]
+name = "wendy_rust_pride"
+path = "src/main.rs"
+
 [profile.release]
 opt-level = 3
 lto = "fat"
 codegen-units = 1
-panic = "abort"
-strip = true
