@@ -1,20 +1,36 @@
 [package]
 name = "wendy-cortex"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 authors = ["Louis-Philippe Audette <emperor@psivi.com>"]
-description = "WENDY Polyglot Cortex: Rust Mathematical Core"
+description = "WENDY Cortex: Tokio-driven Hebbian substrate with Gemini IPC"
 license = "EUPL-1.2"
 
-[lib]
-name = "wendy_cortex"
-crate-type = ["cdylib", "rlib"]
+# We rely on the TCP IPC bridge (port 1966) for Python communication, 
+# so we do not need cdylib/FFI. Cargo will automatically compile src/main.rs 
+# and its submodules (daemon, topology, veto).
 
-[[bin]]
-name = "wendy_rust_pride"
-path = "src/main.rs"
+[dependencies]
+# Async runtime for the IPC server and Gemini daemon
+tokio = { version = "1.36", features = ["full"] }
+
+# Strict Zulu time formatting with millisecond precision
+time = { version = "0.3", features = ["macros", "formatting"] }
+
+# Structured logging and environment filtering
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "time", "json"] }
+
+# JSON serialization for the IPC Payload bridge
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+anyhow = "1.0"
 
 [profile.release]
 opt-level = 3
 lto = "fat"
 codegen-units = 1
+panic = "abort"
+strip = true
