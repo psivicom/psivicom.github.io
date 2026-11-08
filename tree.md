@@ -24,6 +24,7 @@
 ├── scripts/
 │   ├── bootstrap-wendy.sh*
 │   ├── wendy-dream-runner.sh*
+│   ├── wendy_evolution_engine.py
 │   └── wendy_ipc_client.py
 ├── wendy-cortex/
 │   ├── Cargo.toml
@@ -66,5 +67,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 57 files
+9 directories, 58 files
 ```
