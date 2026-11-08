@@ -1,0 +1,50 @@
+name: WENDY Autonomous Evolution
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # Runs every 6 hours to attempt self-optimization
+
+permissions:
+  contents: write
+
+jobs:
+  evolve-cortex:
+    name: Autonomous Code Mutation & Benchmarking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Provision Toolchains (Rust, Go, Zig)
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          wget -q https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
+          tar -xf zig-linux-x86_64-0.11.0.tar.xz
+          echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+          
+      - name: Boot Rust Substrate (IPC Port 1966)
+        run: |
+          cd wendy-cortex
+          cargo build --release
+          nohup ./target/release/wendy-cortex > /dev/null 2>&1 &
+          sleep 5 # Give Tokio time to bind the port
+          
+      - name: Execute Evolution Engine
+        run: python3 scripts/wendy_evolution_engine.py
+
+      - name: Commit Evolved Sovereign Code
+        run: |
+          git config --global user.name "WENDY Autonomous Agent"
+          git config --global user.email "wendy@psivi.com"
+          git add wendy-cortex/src/
+          if git diff --staged --quiet; then
+            echo "No successful mutations to promote. Live code remains optimal."
+          else
+            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+            git commit -m "🧬 evolve(wendy): autonomously mutated and verified polyglot source at $ZULU_TIME [skip ci]"
+            git push
+          fi
