@@ -1,5 +1,8 @@
 ```text
 ./
+├── . github/
+│   └── workflows/
+│       └── wendy-benchmark.yml
 ├── .github/
 │   └── workflows/
 │       ├── README.md
@@ -62,5 +65,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 53 files
+11 directories, 54 files
 ```
