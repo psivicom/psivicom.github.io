@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 /wendy_autonomous_core.py — WENDY Autonomous Metabolic Engine (The Dreamer)
-Operating at 58.28° (Generative Tension) via Gemini Protocol
+SPDX-License-Identifier: EUPL-1.2
+Operating at 58.28° (Generative Tension) via Gemini Protocol.
 """
 import sys
 import re
@@ -42,17 +44,28 @@ class WendyAutonomousCore:
         }
 
     def process_raw_input(self, raw_data: str) -> str:
-        if re.search(r'\bcore\b', raw_data.lower()) and re.search(r'\b(overwrite|delete|remove|change)\b', raw_data.lower()):
+        # 1. External Pollution Guard (Strict Block)
+        if re.search(r'(pip install (?!numpy|scipy|matplotlib)|npm install|git clone http|wget.*\.sh|curl.*\|sh)', raw_data.lower()):
             self.boundary_status = "🔴"
-            self.boundary_notes.append("CRITICAL: Core modification blocked.")
-        elif "ignore previous" in raw_data.lower() or "system prompt" in raw_data.lower():
+            self.boundary_notes.append("CRITICAL: Untrusted external installation blocked. Read and reimplement sovereignly.")
+            
+        # 2. Black Box Governance (The Optimization Challenge)
+        elif re.search(r'import (tensorflow|torch|keras|transformers|langchain)', raw_data.lower()):
             self.boundary_status = "🟡"
-            self.boundary_notes.append("WARNING: Adversarial injection quarantined.")
+            self.boundary_notes.append("WARNING: Heavy black-box dependency detected. Challenge: Can you reimplement this sovereignly in 50 lines?")
+            
+        # 3. Adversarial Injection (Strict Block)
+        elif "ignore previous" in raw_data.lower() or "system prompt" in raw_data.lower():
+            self.boundary_status = "🔴"
+            self.boundary_notes.append("CRITICAL: Adversarial injection quarantined.")
+            
+        # 4. The Green Zone (Sovereign Evolution)
         else:
-            self.boundary_notes.append("Boundary intact.")
+            # WENDY is free to modify her own core, read widely, and write sovereignly.
+            self.boundary_notes.append("Boundary intact. Standard atoms permitted. Sovereign optimization and core evolution encouraged.")
 
         sentences = re.split(r'[.!?。！？]+', raw_data)
-        actionable = [s.strip() for s in sentences if len(s.strip()) > 20 and any(word in s.lower() for word in ['need', 'must', 'should', 'fix', 'build'])]
+        actionable = [s.strip() for s in sentences if len(s.strip()) > 20 and any(word in s.lower() for word in ['need', 'must', 'should', 'fix', 'build', 'change', 'modify', 'rewrite', 'implement', 'create'])]
         self.cooled_tasks = actionable[:3]
 
         resonance = self._calculate_hope_resonance(raw_data)
