@@ -5,6 +5,7 @@
 │       ├── README.md
 │       ├── update-tree.yml
 │       ├── wendy-autonomous-compile.yml
+│       ├── wendy-autonomous-evolution.yml
 │       ├── wendy-awaken.yml
 │       ├── wendy-benchmark.yml
 │       ├── wendy-ci-cd.yml
@@ -67,5 +68,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 58 files
+9 directories, 59 files
 ```
