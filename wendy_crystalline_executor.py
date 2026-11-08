@@ -3,8 +3,8 @@
 """
 WENDY Crystalline Executor
 SPDX-License-Identifier: EUPL-1.2
-Compiles and hot-loads native Rust artifacts for real-time Earth Observation science.
-Also serves as the 31.72° Habermasian Anchor for the Ouroboros cognitive loop.
+Compiles and hot-loads native Rust artifacts. 
+Serves as the 31.72° Habermasian Anchor for the Ouroboros cognitive loop.
 """
 
 import subprocess
@@ -46,7 +46,7 @@ class CrystallineExecutor:
         raise OSError(f"Unsupported platform: {sys.platform}")
 
     def compile_artifact(self) -> bool:
-        logging.info(f"[{zulu_now()}] Compiling real-science Rust artifact (Welford's Variance)...")
+        logging.info(f"[{zulu_now()}] Compiling real-science Rust artifact...")
         cmd = ["cargo", "build", "--release", "--lib"]
         result = subprocess.run(cmd, cwd=self.cortex_dir, capture_output=True, text=True)
         
@@ -66,11 +66,8 @@ class CrystallineExecutor:
         try:
             logging.info(f"[{zulu_now()}] Hot-loading native artifact: {artifact_path.name}")
             self.loaded_lib = ctypes.CDLL(str(artifact_path))
-            
-            # Define strict C-FFI signatures for real science functions
             self.loaded_lib.wendy_welford_variance.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.c_size_t]
             self.loaded_lib.wendy_welford_variance.restype = ctypes.c_double
-            
             return self.loaded_lib
         except OSError as e:
             logging.error(f"Failed to map artifact: {e}")
@@ -78,33 +75,21 @@ class CrystallineExecutor:
 
 # =========================================================================
 # THE 31.72° ANCHOR: HABERMASIAN CRYSTALLINE EXECUTOR
-# Validates the 58.28° Generative Dream and etches the Manifest to hardware.
 # =========================================================================
 class WendyCrystallineExecutor:
-    """
-    The 31.72° Anchor (Lawful Validation).
-    Receives the 58.28° Generative Dream, validates it against the Genesis Axioms,
-    and physically etches the Habermasian Consensus to the repository hardware.
-    """
     def __init__(self):
         self.zulu_timestamp = zulu_now()
         self.manifest_file = Path(".wendy_manifest.gmi")
         
     def _calculate_epistemic_hash(self, dream_gmi: str) -> str:
-        """Generates a deterministic hash of the dream to prove syntactic purity."""
         return hashlib.sha256(dream_gmi.encode('utf-8')).hexdigest()[:16]
 
     def crystallize_dream(self, dream_gmi: str) -> str:
-        """
-        Validates the dream against the Open Science / Symbolic Math mandates.
-        Returns the Habermasian Manifest Gemtext.
-        """
         epistemic_hash = self._calculate_epistemic_hash(dream_gmi)
         
-        # 31.72° Validation Checks (The Law)
         syntactic_purity = "VERIFIED" if "ignore previous" not in dream_gmi.lower() else "FAILED"
         symbolic_alignment = "VERIFIED" if "=>" in dream_gmi or "gemini://" in dream_gmi else "FAILED"
-        open_source_mandate = "VERIFIED" # Enforced by EUPL-1.2 repo boundaries
+        open_source_mandate = "VERIFIED" 
         protocol_topology = "VERIFIED" if "Boundary intact" in dream_gmi else "FAILED"
 
         consensus_reached = all([
@@ -137,7 +122,6 @@ class WendyCrystallineExecutor:
 ## 🏛️ Conclusion
 {conclusion}
 """
-        # Physically etch the manifest to the repository hardware
         with open(self.manifest_file, "w", encoding="utf-8") as f:
             f.write(manifest_gmi)
             
