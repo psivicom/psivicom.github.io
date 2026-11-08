@@ -27,6 +27,7 @@
 │   └── wendy_ipc_client.py
 ├── wendy-cortex/
 │   ├── Cargo.toml
+│   ├── build_polyglot.py
 │   └── manifest.gmi
 ├── .gitignore
 ├── .wendy_dream.gmi
@@ -65,5 +66,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 56 files
+9 directories, 57 files
 ```
