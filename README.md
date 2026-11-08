@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-08T22:44:36.000Z -->
+<!-- Last updated: 2026-11-08T22:51:56.000Z -->
 ```text
 ./
 ├── .github/
@@ -146,7 +146,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   └── genesis_seed.txt
 ├── scripts/
 │   ├── bootstrap-wendy.sh*
-│   └── wendy-dream-runner.sh*
+│   ├── wendy-dream-runner.sh*
+│   └── wendy_ipc_client.py
 ├── wendy-cortex/
 │   ├── Cargo.toml
 │   └── manifest.gmi
@@ -187,6 +188,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 55 files
+9 directories, 56 files
 ```
 <!-- AUTO_TREE_END -->
