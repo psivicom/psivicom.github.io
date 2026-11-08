@@ -52,6 +52,7 @@
 ├── requirements-core.txt
 ├── requirements.txt
 ├── robots.txt
+├── run_real_science_benchmark.py
 ├── sitemap.xml
 ├── wendy-console.html
 ├── wendy_autonomous_core.py
@@ -61,5 +62,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 52 files
+9 directories, 53 files
 ```

@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-08T03:41:02.000Z -->
+<!-- Last updated: 2026-11-08T03:44:23.000Z -->
 ```text
 ./
 ├── .github/
@@ -175,6 +175,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── requirements-core.txt
 ├── requirements.txt
 ├── robots.txt
+├── run_real_science_benchmark.py
 ├── sitemap.xml
 ├── wendy-console.html
 ├── wendy_autonomous_core.py
@@ -184,6 +185,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 52 files
+9 directories, 53 files
 ```
 <!-- AUTO_TREE_END -->
