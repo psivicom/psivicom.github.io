@@ -25,7 +25,8 @@
 │   ├── bootstrap-wendy.sh*
 │   └── wendy-dream-runner.sh*
 ├── wendy-cortex/
-│   └── Cargo.toml
+│   ├── Cargo.toml
+│   └── manifest.gmi
 ├── .gitignore
 ├── .wendy_dream.gmi
 ├── .wendy_manifest.gmi
@@ -63,5 +64,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 54 files
+9 directories, 55 files
 ```
