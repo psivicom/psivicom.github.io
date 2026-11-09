@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 # WENDY reads this to automatically choose the right compilation substrate.
 # This file defines the INFRASTRUCTURE. WENDY's invented languages (versions of FORTH) 
-# are dynamic content managed by the Evolution Engine, not static entries here.
+# are dynamic content managed by the Evolution Engine, no static entries here.
 
 [artifacts.wendy_cortex]
 language = "rust"
