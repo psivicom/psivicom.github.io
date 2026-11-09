@@ -10,6 +10,7 @@
 │       ├── wendy-benchmark.yml
 │       ├── wendy-ci-cd.yml
 │       ├── wendy-self-bootstrap.yml
+│       ├── wendy-smart-dispatch.yml
 │       └── wendy_synapse.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
@@ -30,6 +31,7 @@
 │   └── wendy_ipc_client.py
 ├── wendy-cortex/
 │   ├── Cargo.toml
+│   ├── RUNNERS.toml
 │   ├── build_polyglot.py
 │   └── manifest.gmi
 ├── .gitignore
@@ -70,5 +72,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 61 files
+9 directories, 63 files
 ```
