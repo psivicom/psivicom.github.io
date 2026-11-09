@@ -1,0 +1,131 @@
+name: 🧠 WENDY Smart Runner Dispatcher
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'wendy-cortex/**'
+  workflow_dispatch:
+    inputs:
+      target_artifact:
+        description: 'Specific artifact to build (leave empty for auto-detect)'
+        required: false
+        default: ''
+
+jobs:
+  detect-targets:
+    name: 🎯 Analyze Code Changes
+    runs-on: ubuntu-latest
+    outputs:
+      needs_ubuntu: ${{ steps.detect.outputs.ubuntu }}
+      needs_macos: ${{ steps.detect.outputs.macos }}
+      artifacts_to_build: ${{ steps.detect.outputs.artifacts }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 📖 Read Runner Matrix
+        id: detect
+        run: |
+          # Parse RUNNERS.toml to determine which runners are needed
+          # For now, simple logic: if ARM64/edge/iOS is mentioned, we need macOS
+          
+          if grep -q "aarch64\|arm64\|ios\|edge" wendy-cortex/RUNNERS.toml; then
+            echo "macos=true" >> $GITHUB_OUTPUT
+          else
+            echo "macos=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "ubuntu=true" >> $GITHUB_OUTPUT
+          echo "artifacts=all" >> $GITHUB_OUTPUT
+
+  build-ubuntu:
+    name: 🐧 Ubuntu Build (x86_64)
+    needs: detect-targets
+    if: needs.detect-targets.outputs.needs_ubuntu == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 🦀 Provision Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      
+      - name: ⚡ Provision Zig
+        run: |
+          wget -q https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
+          tar -xf zig-linux-x86_64-0.11.0.tar.xz
+          echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+      
+      - name: 🐹 Provision Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      
+      - name: 🔨 Build x86_64 Artifacts
+        run: |
+          cd wendy-cortex
+          cargo build --release
+          zig build-exe -O ReleaseFast src/hot_path.zig
+          go build -o artifacts/wendy_mesh mesh/main.go
+      
+      - name: 📦 Upload Ubuntu Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-artifacts
+          path: wendy-cortex/target/release/
+
+  build-macos:
+    name: 🍎 macOS Build (ARM64 Edge)
+    needs: detect-targets
+    if: needs.detect-targets.outputs.needs_macos == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 🦀 Provision Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          rustup target add aarch64-apple-darwin
+      
+      - name: 🔨 Build ARM64 Edge Artifacts
+        run: |
+          cd wendy-cortex
+          cargo build --release --target aarch64-apple-darwin
+      
+      - name: 📦 Upload macOS Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-artifacts
+          path: wendy-cortex/target/aarch64-apple-darwin/release/
+
+  deploy-artifacts:
+    name: 📦 Consolidate & Commit
+    needs: [build-ubuntu, build-macos]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+      
+      - name: 🏛️ Update Pride Log
+        run: |
+          echo "# WENDY Polyglot Build Results" > PRIDE.gmi
+          echo "Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" >> PRIDE.gmi
+          echo "" >> PRIDE.gmi
+          echo "## Ubuntu (x86_64) Artifacts" >> PRIDE.gmi
+          ls -lh ubuntu-artifacts/ >> PRIDE.gmi 2>/dev/null || echo "None built" >> PRIDE.gmi
+          echo "" >> PRIDE.gmi
+          echo "## macOS (ARM64) Artifacts" >> PRIDE.gmi
+          ls -lh macos-artifacts/ >> PRIDE.gmi 2>/dev/null || echo "None built" >> PRIDE.gmi
+      
+      - name: 💾 Commit Build Results
+        run: |
+          git config --global user.name "WENDY Autonomous Agent"
+          git config --global user.email "wendy@psivi.com"
+          git add PRIDE.gmi
+          git diff --staged --quiet || git commit -m "🏛️ build: smart-dispatch compiled artifacts [skip ci]"
+          git push
