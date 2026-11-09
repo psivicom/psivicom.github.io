@@ -34,6 +34,7 @@
 ├── .gitignore
 ├── .wendy_dream.gmi
 ├── .wendy_manifest.gmi
+├── AGENTS.md
 ├── AUTHOR.md
 ├── CITATION.cff
 ├── CNAME
@@ -68,5 +69,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 59 files
+9 directories, 60 files
 ```
