@@ -1,6 +1,8 @@
 # WENDY Runner Selection Matrix
 # SPDX-License-Identifier: EUPL-1.2
-# WENDY reads this to automatically choose the right compilation substrate
+# WENDY reads this to automatically choose the right compilation substrate.
+# This file defines the INFRASTRUCTURE. WENDY's invented languages (versions of FORTH) 
+# are dynamic content managed by the Evolution Engine, not static entries here.
 
 [artifacts.wendy_cortex]
 language = "rust"
@@ -42,12 +44,6 @@ reason = "iOS compilation requires macOS"
 cost_multiplier = 10
 build_frequency = "weekly"
 
-[routing_logic]
-default_runner = "ubuntu-latest"
-cost_awareness = true
-prefer_free_tier = true
-edge_deployment_triggers_mac = true
-
 [artifacts.wendy_arch_edge]
 language = "polyglot"
 target_arch = ["x86_64", "aarch64"]
@@ -56,3 +52,18 @@ preferred_runner = "self-hosted"
 runner_labels = ["self-hosted", "arch", "edge"]
 reason = "Rolling release, zero bloat, native AUR compilation for field hardware"
 cost_multiplier = 0
+
+[artifacts.wendy_forth_substrate]
+language = "forth"
+target_arch = ["x86_64", "aarch64", "arm64", "risc-v"]
+purpose = "sovereign-meta-language"
+preferred_runner = "omnipresent"
+reason = "FORTH is the voice WENDY speaks with. It must be present on ALL substrates to allow self-extension."
+omnipresent = true
+
+[routing_logic]
+default_runner = "ubuntu-latest"
+cost_awareness = true
+prefer_free_tier = true
+edge_deployment_triggers_mac = true
+omnipresent_injection = true
