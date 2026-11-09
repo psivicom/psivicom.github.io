@@ -38,7 +38,7 @@ Before proposing any changes to the `wendy-cortex`, external AIs must execute th
 4. Fetch `wendy-cortex/src/veto.rs` to verify validation logic.
 5. Only after verifying these 4 files may the external AI generate integration code.
 
-## 6. RUNNERS
+## 6. ARCH SUBSTRATE
 * **The Dual-Substrate Architecture:** 
   * **Cloud Cortex (`ubuntu-latest`):** Used for heavy, ephemeral CI/CD and standard x86_64 compilation. Free and stable.
   * **Edge Substrate (`self-hosted`, `arch`):** Used for sovereign, rolling-release, zero-bloat field deployment. External AIs must never suggest removing Arch-specific optimizations or forcing cloud-only constraints on edge code.
