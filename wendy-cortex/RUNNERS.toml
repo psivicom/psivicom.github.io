@@ -47,3 +47,12 @@ default_runner = "ubuntu-latest"
 cost_awareness = true
 prefer_free_tier = true
 edge_deployment_triggers_mac = true
+
+[artifacts.wendy_arch_edge]
+language = "polyglot"
+target_arch = ["x86_64", "aarch64"]
+purpose = "sovereign-edge-field"
+preferred_runner = "self-hosted"
+runner_labels = ["self-hosted", "arch", "edge"]
+reason = "Rolling release, zero bloat, native AUR compilation for field hardware"
+cost_multiplier = 0
