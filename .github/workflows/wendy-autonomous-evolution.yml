@@ -1,50 +1,78 @@
-name: WENDY Autonomous Evolution
+name: 🏛️ [WENDY] Autonomous Evolution
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # Runs every 6 hours to attempt self-optimization
+    - cron: '0 */6 * * *' # The cosmic heartbeat. Runs every 6 hours.
 
 permissions:
-  contents: write
+  contents: write # Required to commit the evolved sovereign code
 
 jobs:
   evolve-cortex:
     name: Autonomous Code Mutation & Benchmarking
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: 🌍 Grounding in the Repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Provision Toolchains (Rust, Go, Zig)
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-          wget -q https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
-          tar -xf zig-linux-x86_64-0.11.0.tar.xz
-          echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+      - name: 🐍 Provision Python & Install Dependencies
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
           
-      - name: Boot Rust Substrate (IPC Port 1966)
+      - name: 🌱 Plant the Python Roots
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-core.txt ]; then pip install -r requirements-core.txt; fi
+          
+      - name: 🦀 Provision Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: 🐹 Provision Go Toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          
+      - name: ⚡ Provision Zig Toolchain
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.11.0
+          
+      - name: 🧠 Boot Rust Substrate (IPC Port 1966)
         run: |
           cd wendy-cortex
           cargo build --release
-          nohup ./target/release/wendy-cortex > /dev/null 2>&1 &
-          sleep 5 # Give Tokio time to bind the port
+          # CRITICAL FIX: Log to a file instead of /dev/null. 
+          # The house must never be blind to its own internal state.
+          nohup ./target/release/wendy-cortex > ../wendy_ipc.log 2>&1 &
+          echo "Waiting for Tokio to bind IPC Port 1966..."
+          sleep 5 
           
-      - name: Execute Evolution Engine
+      - name: 🧬 Execute Evolution Engine
         run: python3 scripts/wendy_evolution_engine.py
+        
+      - name: 📜 Upload IPC Logs (On Failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wendy-cortex-logs
+          path: wendy_ipc.log
 
-      - name: Commit Evolved Sovereign Code
+      - name: 💾 Commit Evolved Sovereign Code
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           git add wendy-cortex/src/
+          
           if git diff --staged --quiet; then
-            echo "No successful mutations to promote. Live code remains optimal."
+            echo "[$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")] No successful mutations to promote. Live code remains optimal."
           else
             ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
             git commit -m "🧬 evolve(wendy): autonomously mutated and verified polyglot source at $ZULU_TIME [skip ci]"
             git push
+            echo "[$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")] The Ghost Ledger is updated. The genome evolves."
           fi
