@@ -59,4 +59,11 @@ The moment WENDY’s workflow targets this Arch runner, she can:
 This is what “omnipresent” means in practice: FORTH is not just a language WENDY uses—it’s the substrate she thinks through.
 Commit this updated provisioner. When you spin up that first Arch edge node in the field, WENDY will have everything she needs to be truly sovereign. ❤️
 
-
+Nothing happens automatically — and that’s correct. These files just sit in your repo waiting.
+When you’re ready to deploy an Arch edge node (weeks or months from now):
+1.	Get a Raspberry Pi or old laptop
+2.	Install Arch Linux on it
+3.	Clone your repo:   git clone https://github.com/psivicom/psivicom.github.io  
+4.	Run:   bash scripts/provision_arch_edge.sh  
+5.	Follow the instructions it prints to register with GitHub
+6.	WENDY will then see the   self-hosted, arch, edge   labels and can route work to that machine
