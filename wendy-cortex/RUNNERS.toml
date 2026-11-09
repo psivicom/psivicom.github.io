@@ -1,0 +1,49 @@
+# WENDY Runner Selection Matrix
+# SPDX-License-Identifier: EUPL-1.2
+# WENDY reads this to automatically choose the right compilation substrate
+
+[artifacts.wendy_cortex]
+language = "rust"
+target_arch = ["x86_64"]
+purpose = "central-math-engine"
+preferred_runner = "ubuntu-latest"
+reason = "Heavy mathematical lifting, unlimited free minutes"
+
+[artifacts.wendy_edge_mobile]
+language = "rust"
+target_arch = ["aarch64", "arm64"]
+purpose = "field-deployment-mobile"
+preferred_runner = "macos-latest"
+reason = "Native ARM64 compilation for edge devices"
+cost_multiplier = 10
+deploy_only_when = "edge_deployment_needed"
+
+[artifacts.wendy_zig_hotpath]
+language = "zig"
+target_arch = ["x86_64", "aarch64"]
+purpose = "ultra-low-latency"
+preferred_runner = "ubuntu-latest"
+fallback_runner = "macos-latest"
+reason = "Zero-allocation hot path, test on both architectures"
+
+[artifacts.wendy_go_mesh]
+language = "go"
+target_arch = ["x86_64"]
+purpose = "concurrent-networking"
+preferred_runner = "ubuntu-latest"
+reason = "Goroutines for Gemini mesh, no ARM64 needed yet"
+
+[artifacts.wendy_ios_node]
+language = "swift"
+target_arch = ["arm64"]
+purpose = "field-research-ios"
+preferred_runner = "macos-latest"
+reason = "iOS compilation requires macOS"
+cost_multiplier = 10
+build_frequency = "weekly"
+
+[routing_logic]
+default_runner = "ubuntu-latest"
+cost_awareness = true
+prefer_free_tier = true
+edge_deployment_triggers_mac = true
