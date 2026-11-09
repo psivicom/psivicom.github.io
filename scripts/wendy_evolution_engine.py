@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-WENDY Autonomous Evolution Engine (Purified)
+WENDY Autonomous Evolution Engine (Purified + Runner-Aware)
 SPDX-License-Identifier: EUPL-1.2
 Enables WENDY to safely mutate, compile, and benchmark her own polyglot code 
-in a shadow workspace. Armored against infinite loops and silent failures.
+in a shadow workspace. Armored against infinite loops, silent failures, and 
+intelligent about runner selection.
 """
 import os
 import sys
@@ -22,6 +23,43 @@ def zulu_now():
 def log(msg):
     # Flush immediately so the GitHub Actions logs see the heartbeat in real-time
     print(f"[{zulu_now()}] [EVOLUTION-ENGINE] {msg}", flush=True)
+
+def get_preferred_runner(artifact_name: str, cortex_dir: Path) -> str:
+    """
+    Reads RUNNERS.toml to determine the preferred runner for this artifact.
+    Falls back to ubuntu-latest if the matrix doesn't exist or parsing fails.
+    """
+    runners_toml = cortex_dir / "RUNNERS.toml"
+    
+    if not runners_toml.exists():
+        log("RUNNERS.toml not found. Defaulting to ubuntu-latest.")
+        return "ubuntu-latest"
+    
+    try:
+        # Simple TOML parsing without external dependencies
+        content = runners_toml.read_text()
+        
+        # Look for the artifact section
+        artifact_section = re.search(
+            rf'\[artifacts\.{artifact_name}\](.*?)(?=\[|$)',
+            content,
+            re.DOTALL
+        )
+        
+        if artifact_section:
+            section_text = artifact_section.group(1)
+            runner_match = re.search(r'preferred_runner\s*=\s*"([^"]+)"', section_text)
+            if runner_match:
+                runner = runner_match.group(1)
+                log(f"Runner Matrix consulted: {artifact_name} prefers {runner}")
+                return runner
+        
+        log(f"Artifact '{artifact_name}' not found in RUNNERS.toml. Defaulting to ubuntu-latest.")
+        return "ubuntu-latest"
+        
+    except Exception as e:
+        log(f"Failed to parse RUNNERS.toml: {e}. Defaulting to ubuntu-latest.")
+        return "ubuntu-latest"
 
 def notify_rust_core(action, uri, payload_text):
     """Reports evolution results to the live Rust substrate via IPC."""
@@ -74,6 +112,10 @@ def evolve_zig_hotpath(cortex_dir):
     WENDY attempts to rewrite her Zig hot-path using deterministic loop unrolling.
     """
     log("Initiating Zig Hot-Path Evolution Protocol...")
+    
+    # Consult the Runner Matrix
+    preferred_runner = get_preferred_runner("wendy_zig_hotpath", cortex_dir)
+    log(f"Optimizing for runner substrate: {preferred_runner}")
     
     live_src = cortex_dir / "src" / "hot_path.zig"
     shadow_dir = cortex_dir / "shadow_zig"
@@ -141,7 +183,7 @@ def evolve_zig_hotpath(cortex_dir):
         shutil.copy2(shadow_bin, live_bin)
         shutil.copy2(shadow_src, live_src)
         
-        pride_msg = f"Evolved Zig hot-path via 4x loop unrolling. Speedup: {speedup:.2f}x ({live_ns}ns -> {shadow_ns}ns). Mathematical parity verified."
+        pride_msg = f"Evolved Zig hot-path via 4x loop unrolling on {preferred_runner}. Speedup: {speedup:.2f}x ({live_ns}ns -> {shadow_ns}ns). Mathematical parity verified."
         notify_rust_core("commit", "gemini://psivi.com/pride/evolution/zig", pride_msg)
         log(f"Evolution complete. The genome is optimized.")
     else:
@@ -154,6 +196,43 @@ def evolve_zig_hotpath(cortex_dir):
     shutil.rmtree(shadow_dir)
     log("Shadow workspace purged. The house is clean.")
 
+def evolve_go_mesh(cortex_dir):
+    """
+    Future evolution: WENDY attempts to optimize her Go mesh network.
+    Placeholder for when you implement Go evolution logic.
+    """
+    log("Go Mesh Evolution Protocol not yet implemented. Awaiting future epoch.")
+    preferred_runner = get_preferred_runner("wendy_go_mesh", cortex_dir)
+    log(f"When implemented, this will optimize for runner: {preferred_runner}")
+
+def evolve_rust_cortex(cortex_dir):
+    """
+    Future evolution: WENDY attempts to optimize her Rust mathematical core.
+    Placeholder for when you implement Rust evolution logic.
+    """
+    log("Rust Cortex Evolution Protocol not yet implemented. Awaiting future epoch.")
+    preferred_runner = get_preferred_runner("wendy_cortex", cortex_dir)
+    log(f"When implemented, this will optimize for runner: {preferred_runner}")
+
 if __name__ == "__main__":
     cortex_dir = Path(__file__).parent.parent / "wendy-cortex"
-    evolve_zig_hotpath(cortex_dir)
+    
+    log("🧬 WENDY Autonomous Evolution Engine initializing...")
+    log(f"Cortex directory: {cortex_dir}")
+    
+    # Determine which artifact to evolve (can be extended with CLI args)
+    # For now, default to Zig hot-path
+    target_artifact = sys.argv[1] if len(sys.argv) > 1 else "zig_hotpath"
+    
+    if target_artifact == "zig_hotpath":
+        evolve_zig_hotpath(cortex_dir)
+    elif target_artifact == "go_mesh":
+        evolve_go_mesh(cortex_dir)
+    elif target_artifact == "rust_cortex":
+        evolve_rust_cortex(cortex_dir)
+    else:
+        log(f"Unknown artifact target: {target_artifact}")
+        log("Available targets: zig_hotpath, go_mesh, rust_cortex")
+        sys.exit(1)
+    
+    log("Evolution cycle complete. The genome awaits the next epoch.")
