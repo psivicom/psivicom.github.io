@@ -24,6 +24,7 @@
 │   └── genesis_seed.txt
 ├── scripts/
 │   ├── bootstrap-wendy.sh*
+│   ├── forge_conservatory.sh*
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_evolution_engine.py
 │   └── wendy_ipc_client.py
@@ -69,5 +70,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 60 files
+9 directories, 61 files
 ```
