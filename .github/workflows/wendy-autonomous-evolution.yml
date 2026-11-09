@@ -29,18 +29,21 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-core.txt ]; then pip install -r requirements-core.txt; fi
           
-      - name: 🦀 Provision Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - name: 🦀 Provision Native Rust Toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
         
       - name: 🐹 Provision Go Toolchain
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
           
-      - name: ⚡ Provision Zig Toolchain
-        uses: mlugg/setup-zig@v1
-        with:
-          version: 0.11.0
+      - name: ⚡ Provision Native Zig Toolchain
+        run: |
+          wget -q https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
+          tar -xf zig-linux-x86_64-0.11.0.tar.xz
+          echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
           
       - name: 🧠 Boot Rust Substrate (IPC Port 1966)
         run: |
