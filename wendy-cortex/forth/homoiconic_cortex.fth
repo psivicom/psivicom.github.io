@@ -216,20 +216,19 @@ VARIABLE contract-table
 ;
 
 \ Property: fast-mean must equal mean (mathematical equivalence)
-\ Guard: only test if fast-mean exists
+\ Uses execute token to avoid compile-time dependency on fast-mean
 : prop-fast-mean-equivalence ( addr u -- passed? )
     \ Check if fast-mean exists in dictionary
     s" fast-mean" find-name 0= if
         \ fast-mean doesn't exist yet, property is vacuously true
-        drop
         2drop true
         exit
     then
-    drop
     
-    \ fast-mean exists, test equivalence
+    \ fast-mean exists, test equivalence using execute
+    \ Stack: addr u xt (execution token)
     2dup mean -rot
-    2dup fast-mean -rot
+    2swap rot execute    \ Execute fast-mean token instead of calling word
     f- fabs 1e-10 f<
 ;
 
