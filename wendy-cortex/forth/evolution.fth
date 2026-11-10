@@ -13,7 +13,9 @@ s" wendy_dictionary.fth" included
 : forth-evolve ( -- )
     ." ⚡ FORTH Evolution: Symbolic reasoning..." cr
     ." 🧪 Shadow test: Defining fast-mean..." cr
-    s" fast-mean" find-name 0= if
+    
+    \ Check if fast-mean exists using gforth's find word
+    s" fast-mean" find nip 0= if
         s" : fast-mean ( addr count -- mean ) 0.0 -rot 0 do dup i 8 * + f@ f+ dup i 1+ 8 * + f@ f+ dup i 2 + 8 * + f@ f+ dup i 3 + 8 * + f@ f+ 4 +loop swap s>f f/ ;" evaluate
         ." ✅ FORTH shadow test passed" cr
         ." ✅ Promoting mutation to live dictionary..." cr
