@@ -118,7 +118,7 @@ VARIABLE contract-table
 
 \ ==========================================================================
 \ PILLAR IV: PROPERTY-BASED TESTING (Claessen & Hughes 2000)
-\ CORRECTED: Self-contained parameter-less properties (no DO loop nesting)
+\ CORRECTED: Use scientific notation for float literals (0e, 1e)
 \ ==========================================================================
 
 \ Property 1: Random bounds [0, n)
@@ -128,10 +128,23 @@ VARIABLE contract-table
 ;
 
 \ Property 2: Float normalization [0, 1)
+\ FIXED: Use scientific notation for float literals
 : prop-float-normalization ( -- passed? )
-    500 random s>f 1000.0 f/
-    fdup 0.0 f>= -rot
-    1.0 f< and
+    \ Generate a random float in [0, 1)
+    100 random          \ Random int in [0, 100)
+    s>f                 \ Convert to float: ( f:n )
+    100 s>f             \ Push 100 as float: ( f:n f:100 )
+    f/                  \ Divide: ( f:n/100 )
+    
+    \ Test: result should be >= 0
+    fdup 0e f>=         \ 0e is float literal 0.0
+    swap                \ Rearrange stack
+    
+    \ Test: result should be < 1
+    1e f<               \ 1e is float literal 1.0
+    
+    \ Combine tests
+    and
 ;
 
 \ Property 3: LCG determinism (same seed = same sequence)
