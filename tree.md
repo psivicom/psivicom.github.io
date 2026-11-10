@@ -9,7 +9,7 @@
 │       ├── wendy-awaken.yml
 │       ├── wendy-benchmark.yml
 │       ├── wendy-ci-cd.yml
-│       ├── wendy-forth-evolution.yml
+│       ├── wendy-evolution.yml
 │       ├── wendy-self-bootstrap.yml
 │       ├── wendy-smart-dispatch.yml
 │       └── wendy_synapse.yml

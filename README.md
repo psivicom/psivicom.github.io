@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-10T10:01:58.000Z -->
+<!-- Last updated: 2026-11-10T10:15:08.000Z -->
 ```text
 ./
 ├── .github/
@@ -132,7 +132,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │       ├── wendy-awaken.yml
 │       ├── wendy-benchmark.yml
 │       ├── wendy-ci-cd.yml
-│       ├── wendy-forth-evolution.yml
+│       ├── wendy-evolution.yml
 │       ├── wendy-self-bootstrap.yml
 │       ├── wendy-smart-dispatch.yml
 │       └── wendy_synapse.yml
