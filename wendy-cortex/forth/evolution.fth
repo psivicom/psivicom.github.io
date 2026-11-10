@@ -1,4 +1,4 @@
-\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 4)
+\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 5)
 \ SPDX-License-Identifier: EUPL-1.2
 \ FORTH is the meta-language. All logic in FORTH. Pure speed.
 
@@ -13,10 +13,10 @@ s" wendy_dictionary.fth" included
     ." Phase 1: FORTH Symbolic Reasoning" cr
     ." Checking for fast-mean..." cr
     
-    \ Use tick (') with catch to safely check if word exists
-    ['] fast-mean catch if
-        \ Not found (catch returned non-zero error code)
-        drop  \ drop the error code
+    \ Use system to check if fast-mean exists in file
+    s" grep -q fast-mean wendy_dictionary.fth" system 0= if
+        ." fast-mean already exists" cr
+    else
         ." fast-mean not found. Inventing..." cr
         
         \ Append to file line by line
@@ -35,10 +35,6 @@ s" wendy_dictionary.fth" included
         
         ." FORTH mutation promoted to dictionary" cr
         ." Note: fast-mean will be available on next evolution cycle" cr
-    else
-        \ Found (catch returned 0, xt is on stack)
-        drop  \ drop the execution token
-        ." fast-mean already exists" cr
     then
 ;
 
