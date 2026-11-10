@@ -35,6 +35,7 @@
 ├── wendy-cortex/
 │   ├── forth/
 │   │   ├── bootstrap_dictionary.sh
+│   │   ├── bootstrap_zig.sh
 │   │   └── evolution.fth
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
@@ -78,5 +79,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 68 files
+10 directories, 69 files
 ```
