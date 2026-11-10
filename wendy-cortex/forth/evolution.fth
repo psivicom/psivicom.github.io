@@ -1,4 +1,4 @@
-\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 2)
+\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 3)
 \ SPDX-License-Identifier: EUPL-1.2
 \ FORTH is the meta-language. All logic in FORTH. Pure speed.
 
@@ -13,31 +13,29 @@ s" wendy_dictionary.fth" included
     ." Phase 1: FORTH Symbolic Reasoning" cr
     ." Checking for fast-mean..." cr
     
+    \ Check if fast-mean exists in the dictionary
     s" fast-mean" sfind if
         drop
         ." fast-mean already exists" cr
     else
-        ." Defining fast-mean..." cr
+        ." fast-mean not found. Inventing..." cr
         
-        \ Use sliteral to create permanent copies before concatenation
-        s" : fast-mean ( addr count -- mean ) " sliteral
-        s" 0.0 -rot 0 do " sliteral s+
-        s" dup i 8 * + f@ f+ " sliteral s+
-        s" dup i 1+ 8 * + f@ f+ " sliteral s+
-        s" dup i 2 + 8 * + f@ f+ " sliteral s+
-        s" dup i 3 + 8 * + f@ f+ " sliteral s+
-        s" 4 +loop swap s>f f/ ;" sliteral s+
+        \ Append to file directly (no in-memory string building)
+        s" echo '' >> wendy_dictionary.fth" system drop
+        s" echo '\ WENDY invented fast-mean at runtime' >> wendy_dictionary.fth" system drop
+        s" echo ': fast-mean ( addr count -- mean )' >> wendy_dictionary.fth" system drop
+        s" echo '    0.0 -rot' >> wendy_dictionary.fth" system drop
+        s" echo '    0 do' >> wendy_dictionary.fth" system drop
+        s" echo '        dup i 8 * + f@ f+' >> wendy_dictionary.fth" system drop
+        s" echo '        dup i 1+ 8 * + f@ f+' >> wendy_dictionary.fth" system drop
+        s" echo '        dup i 2 + 8 * + f@ f+' >> wendy_dictionary.fth" system drop
+        s" echo '        dup i 3 + 8 * + f@ f+' >> wendy_dictionary.fth" system drop
+        s" echo '    4 +loop' >> wendy_dictionary.fth" system drop
+        s" echo '    swap s>f f/' >> wendy_dictionary.fth" system drop
+        s" echo ';' >> wendy_dictionary.fth" system drop
         
-        \ Evaluate to define the word
-        evaluate
-        
-        ." fast-mean defined successfully" cr
-        
-        \ Append to file using simple echo commands
-        s" echo '\ WENDY invented fast-mean' >> wendy_dictionary.fth" system drop
-        s" echo ': fast-mean ( addr count -- mean ) 0.0 -rot 0 do dup i 8 * + f@ f+ dup i 1+ 8 * + f@ f+ dup i 2 + 8 * + f@ f+ dup i 3 + 8 * + f@ f+ 4 +loop swap s>f f/ ;' >> wendy_dictionary.fth" system drop
-        
-        ." FORTH mutation promoted" cr
+        ." FORTH mutation promoted to dictionary" cr
+        ." Note: fast-mean will be available on next evolution cycle" cr
     then
 ;
 
