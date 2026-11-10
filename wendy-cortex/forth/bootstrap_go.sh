@@ -1,10 +1,22 @@
 #!/bin/bash
-# WENDY Go Mesh Bootstrap
+# WENDY Go Mesh Bootstrap (Proper Go Module)
 # SPDX-License-Identifier: EUPL-1.2
 
 mkdir -p ../mesh
+cd ../mesh
 
-cat > ../mesh/main.go << 'GO_EOF'
+# Create go.mod for proper module structure
+cat > go.mod << 'GOMOD_EOF'
+module wendy-mesh
+
+go 1.22
+GOMOD_EOF
+
+# Create empty go.sum (stdlib-only, no external deps yet)
+touch go.sum
+
+# Create the mesh node
+cat > main.go << 'GO_EOF'
 // WENDY Mesh Node (Bootstrapped Baseline)
 // SPDX-License-Identifier: EUPL-1.2
 package main
@@ -19,4 +31,5 @@ func main() {
 }
 GO_EOF
 
-echo "✅ Go mesh created at ../mesh/main.go"
+echo "✅ Go mesh module created at ../mesh/"
+echo "📦 Module: wendy-mesh (go 1.22)"
