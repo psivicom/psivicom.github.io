@@ -1,4 +1,4 @@
-\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 5)
+\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 6)
 \ SPDX-License-Identifier: EUPL-1.2
 \ FORTH is the meta-language. All logic in FORTH. Pure speed.
 
@@ -13,29 +13,10 @@ s" wendy_dictionary.fth" included
     ." Phase 1: FORTH Symbolic Reasoning" cr
     ." Checking for fast-mean..." cr
     
-    \ Use system to check if fast-mean exists in file
-    s" grep -q fast-mean wendy_dictionary.fth" system 0= if
-        ." fast-mean already exists" cr
-    else
-        ." fast-mean not found. Inventing..." cr
-        
-        \ Append to file line by line
-        s" echo '' >> wendy_dictionary.fth" system drop
-        s" echo '\ WENDY invented fast-mean at runtime' >> wendy_dictionary.fth" system drop
-        s" echo ': fast-mean ( addr count -- mean )' >> wendy_dictionary.fth" system drop
-        s" echo '    0.0 -rot' >> wendy_dictionary.fth" system drop
-        s" echo '    0 do' >> wendy_dictionary.fth" system drop
-        s" echo '        dup i 8 * + f@ f+' >> wendy_dictionary.fth" system drop
-        s" echo '        dup i 1+ 8 * + f@ f+' >> wendy_dictionary.fth" system drop
-        s" echo '        dup i 2 + 8 * + f@ f+' >> wendy_dictionary.fth" system drop
-        s" echo '        dup i 3 + 8 * + f@ f+' >> wendy_dictionary.fth" system drop
-        s" echo '    4 +loop' >> wendy_dictionary.fth" system drop
-        s" echo '    swap s>f f/' >> wendy_dictionary.fth" system drop
-        s" echo ';' >> wendy_dictionary.fth" system drop
-        
-        ." FORTH mutation promoted to dictionary" cr
-        ." Note: fast-mean will be available on next evolution cycle" cr
-    then
+    \ Use bash to handle the entire conditional logic
+    s" if ! grep -q fast-mean wendy_dictionary.fth; then echo '' >> wendy_dictionary.fth; echo '\ WENDY invented fast-mean at runtime' >> wendy_dictionary.fth; echo ': fast-mean ( addr count -- mean )' >> wendy_dictionary.fth; echo '    0.0 -rot' >> wendy_dictionary.fth; echo '    0 do' >> wendy_dictionary.fth; echo '        dup i 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 1+ 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 2 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 3 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '    4 +loop' >> wendy_dictionary.fth; echo '    swap s>f f/' >> wendy_dictionary.fth; echo ';' >> wendy_dictionary.fth; echo 'FORTH mutation promoted to dictionary'; else echo 'fast-mean already exists'; fi" system
+    
+    ." Note: fast-mean will be available on next evolution cycle" cr
 ;
 
 \ =========================================================================
