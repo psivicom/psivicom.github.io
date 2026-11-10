@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-10T18:31:03.000Z -->
+<!-- Last updated: 2026-11-10T18:34:20.000Z -->
 ```text
 ./
 ├── .github/
@@ -161,7 +161,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   │   ├── bootstrap_go.sh
 │   │   ├── bootstrap_rust.sh
 │   │   ├── bootstrap_zig.sh
-│   │   └── evolution.fth
+│   │   ├── evolution.fth
+│   │   └── promote_forth.sh
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
 │   ├── build_polyglot.py
@@ -205,6 +206,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 72 files
+10 directories, 73 files
 ```
 <!-- AUTO_TREE_END -->
