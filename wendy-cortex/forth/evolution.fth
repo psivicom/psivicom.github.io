@@ -19,6 +19,29 @@ s" wendy_dictionary.fth" included
     ." Note: fast-mean will be available on next evolution cycle" cr
 ;
 
+\ Load the Homoiconic Cortex
+s" homoiconic_cortex.fth" included
+
+\ Integrate homoiconic evolution into main loop
+: WENDY-EVOLVE ( -- )
+    ." 🧬 WENDY Polyglot Evolution Engine" cr
+    ." FORTH orchestrates Zig + Rust + Go" cr
+    ." With Homoiconic Cortex: reflective, type-theoretic, CRDT-convergent" cr cr
+    
+    \ Phase 1: Standard polyglot evolution
+    EVOLVE
+    
+    ." " cr
+    
+    \ Phase 2: Homoiconic evolution (computer science layer)
+    HOMOICONIC-EVOLVE
+    
+    ." " cr
+    ." 🏛️ Full evolution cycle complete" cr
+    ." Polyglot substrates evolved" cr
+    ." Homoiconic cortex refined" cr
+;
+
 \ =========================================================================
 \ ZIG EVOLUTION
 \ =========================================================================
