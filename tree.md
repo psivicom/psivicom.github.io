@@ -34,6 +34,7 @@
 │   └── wendy_llm_query.py
 ├── wendy-cortex/
 │   ├── forth/
+│   │   ├── bootstrap_dictionary.sh
 │   │   └── evolution.fth
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
@@ -77,5 +78,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 67 files
+10 directories, 68 files
 ```
