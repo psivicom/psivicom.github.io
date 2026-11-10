@@ -63,6 +63,7 @@
 ├── REUSE.toml
 ├── SECURITY.md
 ├── SECURITY_PLAN.md
+├── SOVEREIGN_ARCHITECTURE_LAW.md
 ├── TRUST_AND_PROVENANCE.md
 ├── codemeta.json
 ├── gemini_client.py
@@ -81,5 +82,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 71 files
+10 directories, 72 files
 ```
