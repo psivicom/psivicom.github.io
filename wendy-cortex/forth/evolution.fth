@@ -14,8 +14,10 @@ s" wendy_dictionary.fth" included
     ." ⚡ FORTH Evolution: Symbolic reasoning..." cr
     ." 🧪 Shadow test: Defining fast-mean..." cr
     
-    \ Check if fast-mean exists using gforth's find word
-    s" fast-mean" find nip 0= if
+    \ Use sfind (gforth-specific) for proper word lookup
+    \ sfind returns: 0 (not found) | xt 1 (immediate) | xt -1 (normal)
+    s" fast-mean" sfind 0= if
+        \ Not found - define it via EVALUATE
         s" : fast-mean ( addr count -- mean ) 0.0 -rot 0 do dup i 8 * + f@ f+ dup i 1+ 8 * + f@ f+ dup i 2 + 8 * + f@ f+ dup i 3 + 8 * + f@ f+ 4 +loop swap s>f f/ ;" evaluate
         ." ✅ FORTH shadow test passed" cr
         ." ✅ Promoting mutation to live dictionary..." cr
@@ -24,12 +26,13 @@ s" wendy_dictionary.fth" included
         s" echo ': fast-mean ( addr count -- mean ) 0.0 -rot 0 do dup i 8 * + f@ f+ dup i 1+ 8 * + f@ f+ dup i 2 + 8 * + f@ f+ dup i 3 + 8 * + f@ f+ 4 +loop swap s>f f/ ;' >> wendy_dictionary.fth" system drop
         ." ✅ FORTH mutation promoted" cr
     else
+        drop  \ drop the xt from stack
         ." ⚠️ fast-mean already exists" cr
     then
 ;
 
 \ =========================================================================
-\ ZIG EVOLUTION (FORTH Calls Zig Compiler Directly)
+\ ZIG EVOLUTION
 \ =========================================================================
 
 : zig-bootstrap ( -- )
@@ -100,7 +103,7 @@ s" wendy_dictionary.fth" included
 ;
 
 \ =========================================================================
-\ RUST EVOLUTION (FORTH Calls Rust Compiler Directly)
+\ RUST EVOLUTION
 \ =========================================================================
 
 : rust-bootstrap ( -- )
@@ -168,7 +171,7 @@ s" wendy_dictionary.fth" included
 ;
 
 \ =========================================================================
-\ GO EVOLUTION (FORTH Calls Go Compiler Directly)
+\ GO EVOLUTION
 \ =========================================================================
 
 : go-bootstrap ( -- )
@@ -190,7 +193,7 @@ s" wendy_dictionary.fth" included
 ;
 
 \ =========================================================================
-\ MAIN EVOLUTION LOOP (FORTH Orchestrates All)
+\ MAIN EVOLUTION LOOP
 \ =========================================================================
 
 : EVOLVE ( -- )
