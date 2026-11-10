@@ -34,13 +34,18 @@
 │   └── wendy_llm_query.py
 ├── wendy-cortex/
 │   ├── forth/
-│   │   ├── bootstrap_dictionary.sh
-│   │   ├── bootstrap_go.sh
-│   │   ├── bootstrap_rust.sh
+│   │   ├── bootstrap_dictionary.sh*
+│   │   ├── bootstrap_go.sh*
+│   │   ├── bootstrap_rust.sh*
 │   │   ├── bootstrap_zig.sh
 │   │   ├── evolution.fth
 │   │   ├── homoiconic_cortex.fth
-│   │   └── promote_forth.sh
+│   │   ├── promote_forth.sh
+│   │   └── wendy_dictionary.fth
+│   ├── mesh/
+│   │   ├── go.mod
+│   │   ├── go.sum
+│   │   └── main.go
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
 │   ├── build_polyglot.py
@@ -79,10 +84,11 @@
 ├── wendy-console.html
 ├── wendy_autonomous_core.py
 ├── wendy_crystalline_executor.py
+├── wendy_homoiconic_cortex.md
 ├── wendy_mobile_airgap.py
 ├── wendy_ouroboros_bridge.py
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 74 files
+11 directories, 79 files
 ```

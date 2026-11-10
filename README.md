@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-10T22:59:30.000Z -->
+<!-- Last updated: 2026-11-10T23:40:24.000Z -->
 ```text
 ./
 ├── .github/
@@ -157,13 +157,18 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   └── wendy_llm_query.py
 ├── wendy-cortex/
 │   ├── forth/
-│   │   ├── bootstrap_dictionary.sh
-│   │   ├── bootstrap_go.sh
-│   │   ├── bootstrap_rust.sh
+│   │   ├── bootstrap_dictionary.sh*
+│   │   ├── bootstrap_go.sh*
+│   │   ├── bootstrap_rust.sh*
 │   │   ├── bootstrap_zig.sh
 │   │   ├── evolution.fth
 │   │   ├── homoiconic_cortex.fth
-│   │   └── promote_forth.sh
+│   │   ├── promote_forth.sh
+│   │   └── wendy_dictionary.fth
+│   ├── mesh/
+│   │   ├── go.mod
+│   │   ├── go.sum
+│   │   └── main.go
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
 │   ├── build_polyglot.py
@@ -202,11 +207,12 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── wendy-console.html
 ├── wendy_autonomous_core.py
 ├── wendy_crystalline_executor.py
+├── wendy_homoiconic_cortex.md
 ├── wendy_mobile_airgap.py
 ├── wendy_ouroboros_bridge.py
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 74 files
+11 directories, 79 files
 ```
 <!-- AUTO_TREE_END -->
