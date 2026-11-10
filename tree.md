@@ -29,7 +29,8 @@
 │   ├── provision_arch_edge.sh*
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_evolution_engine.py
-│   └── wendy_ipc_client.py
+│   ├── wendy_ipc_client.py
+│   └── wendy_llm_query.py
 ├── wendy-cortex/
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
@@ -73,5 +74,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 64 files
+9 directories, 65 files
 ```
