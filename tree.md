@@ -39,6 +39,7 @@
 │   │   ├── bootstrap_rust.sh
 │   │   ├── bootstrap_zig.sh
 │   │   ├── evolution.fth
+│   │   ├── h omoiconic_cortex.fth
 │   │   └── promote_forth.sh
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
@@ -83,5 +84,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 73 files
+10 directories, 74 files
 ```
