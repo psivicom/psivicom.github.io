@@ -1,6 +1,7 @@
 name: WENDY 🍀 FORTH Evolution
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 */6 * * *'  # Every 6 hours
 
@@ -9,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Install FORTH
         run: sudo apt-get install -y gforth
