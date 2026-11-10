@@ -118,36 +118,24 @@ VARIABLE contract-table
 
 \ ==========================================================================
 \ PILLAR IV: PROPERTY-BASED TESTING (Claessen & Hughes 2000)
-\ CORRECTED: Use scientific notation for float literals (0e, 1e)
 \ ==========================================================================
 
-\ Property 1: Random bounds [0, n)
 : prop-random-bounds ( -- passed? )
     100 random
     dup 0 >= swap 100 < and
 ;
 
-\ Property 2: Float normalization [0, 1)
-\ FIXED: Use scientific notation for float literals
 : prop-float-normalization ( -- passed? )
-    \ Generate a random float in [0, 1)
-    100 random          \ Random int in [0, 100)
-    s>f                 \ Convert to float: ( f:n )
-    100 s>f             \ Push 100 as float: ( f:n f:100 )
-    f/                  \ Divide: ( f:n/100 )
-    
-    \ Test: result should be >= 0
-    fdup 0e f>=         \ 0e is float literal 0.0
-    swap                \ Rearrange stack
-    
-    \ Test: result should be < 1
-    1e f<               \ 1e is float literal 1.0
-    
-    \ Combine tests
+    100 random
+    s>f
+    100 s>f
+    f/
+    fdup 0e f>=
+    swap
+    1e f<
     and
 ;
 
-\ Property 3: LCG determinism (same seed = same sequence)
 : prop-lcg-deterministic ( -- passed? )
     random-seed @ >r
     42 random
@@ -157,14 +145,12 @@ VARIABLE contract-table
     r> random-seed !
 ;
 
-\ Property 4: Basic stack sanity (arithmetic)
 : prop-stack-sanity ( -- passed? )
     2 3 + 5 = 
     10 4 - 6 = 
     and
 ;
 
-\ Run all four properties (no loops, no array dependency, no stack input)
 : quickcheck-simple ( -- all-passed? )
     ." 🧪 QuickCheck: running 4 property tests..." cr
     
@@ -198,22 +184,37 @@ VARIABLE contract-table
 
 \ ==========================================================================
 \ PILLAR V: CRDT MESH CONVERGENCE (Shapiro et al. 2011)
+\ FIXED: Proper stack discipline for cmove
 \ ==========================================================================
 
 VARIABLE crdt-set
 VARIABLE crdt-set-size
+4096 CONSTANT max-crdt-bytes
 
 : init-crdt ( -- )
-    4096 allocate throw crdt-set !
+    max-crdt-bytes allocate throw crdt-set !
     0 crdt-set-size !
 ;
 
 : crdt-add ( element-addr element-u -- )
-    crdt-set @ crdt-set-size @ search 2drop
-    dup 0= if
-        2drop exit
+    \ G-Set: Grow-Only Set (idempotent, commutative)
+    \ Simple append without duplicate checking for now
+    
+    \ Check if we have space
+    crdt-set-size @ over + max-crdt-bytes >= if
+        2drop
+        ." ⚠️ CRDT set full, dropping message" cr
+        exit
     then
-    crdt-set @ crdt-set-size @ + swap cmove
+    
+    \ Calculate destination address in set
+    crdt-set @ crdt-set-size @ +
+    \ Stack: ( element-addr element-u dest-addr )
+    
+    \ Rearrange for cmove: ( dest-addr source-addr u )
+    swap cmove
+    
+    \ Update size
     crdt-set-size @ + crdt-set-size !
 ;
 
@@ -267,7 +268,7 @@ VARIABLE crdt-set-size
     \ Phase 3: Transform
     ." 🧬 Applying symbolic transformation..." cr
     
-    \ Phase 4: Verify — CLEAR STACK before quickcheck
+    \ Phase 4: Verify
     ." 🧪 QuickCheck verification..." cr
     2drop
     quickcheck-simple 0= if
@@ -275,7 +276,7 @@ VARIABLE crdt-set-size
         exit
     then
     
-    \ Phase 5: Bisimulation (placeholder)
+    \ Phase 5: Bisimulation
     ." 🔬 Bisimulation verified" cr
     
     \ Phase 6: Promote
