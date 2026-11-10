@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 */6 * * *'  # Every 6 hours
 
+permissions:
+  contents: write
+
 jobs:
   evolve:
     runs-on: ubuntu-latest
@@ -82,4 +85,9 @@ DICTIONARY_EOF
           git config --global user.name "WENDY"
           git config --global user.email "wendy@psivi.com"
           git add -A
-          git diff --staged --quiet || (git commit -m "🧬 evolve: FORTH-native evolution at $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" && git push)
+          if ! git diff --staged --quiet; then
+            git commit -m "🧬 evolve: FORTH-native evolution at $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+            git push
+          else
+            echo "No mutations to promote. Live code remains optimal."
+          fi
