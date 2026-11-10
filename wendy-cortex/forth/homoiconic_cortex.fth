@@ -17,7 +17,33 @@
 \ ==========================================================================
 
 REQUIRE see.fs       \ gforth reflection primitives
-REQUIRE random.fs    \ gforth random number generator
+
+\ ==========================================================================
+\ RANDOM NUMBER GENERATION (Self-Healing Fallback)
+\ If random.fs fails to load, WENDY provides her own implementation
+\ ==========================================================================
+
+[undefined] random [if]
+    \ Linear Congruential Generator (LCG) for deterministic randomness
+    \ Parameters from Numerical Recipes
+    VARIABLE random-seed
+    
+    : init-random ( -- )
+        utime drop random-seed !
+    ;
+    
+    : random ( n -- random-value )
+        \ Generate random number in range [0, n)
+        random-seed @
+        1103515245 * 12345 +  \ LCG formula
+        dup random-seed !
+        swap mod
+        abs
+    ;
+    
+    init-random
+    ." ⚡ Random fallback activated (LCG)" cr
+[then]
 
 \ ==========================================================================
 \ PILLAR I: REFLECTION LAYER (Smith 1982)
