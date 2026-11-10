@@ -7,7 +7,6 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{info, error};
 use tracing_subscriber::{fmt, EnvFilter};
 use time::macros::format_description;
-use time::UtcOffset;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -25,7 +24,9 @@ async fn main() {
     let format = format_description!(
         "[year]-[month]-[day]T[hour]:[minute]:[second].[subsecond digits:3]Z"
     );
-    let timer = fmt::time::UtcTime::new(UtcOffset::UTC, format);
+    // FIXED: UtcTime::new() now takes only 1 argument (the format).
+    // It assumes UTC internally, which is exactly what WENDY requires.
+    let timer = fmt::time::UtcTime::new(format);
 
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::new("info"))
