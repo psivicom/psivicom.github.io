@@ -186,10 +186,15 @@ def evolve_zig_hotpath(cortex_dir):
     shadow_dir.mkdir()
     shutil.copy2(live_src, shadow_src)
     original_code = shadow_src.read_text()
+    # Mutation: Replace the entire while loop with an unrolled version using 'idx' 
+    # and remove the unused 'var i' declaration to satisfy Zig's strictness.
     if "while (i < 10000)" in original_code and "// UNROLLED" not in original_code:
-        mutated_code = original_code.replace("while (i < 10000) : (i += 1) {", "var step: usize = 0;\n    while (step < 2500) : (step += 1) {\n        const idx = step * 4;\n        // UNROLLED BY WENDY").replace("buffer[i] = @as(f64, @floatFromInt(i));", "buffer[idx] = @as(f64, @floatFromInt(idx));\n        buffer[idx+1] = @as(f64, @floatFromInt(idx+1));\n        buffer[idx+2] = @as(f64, @floatFromInt(idx+2));\n        buffer[idx+3] = @as(f64, @floatFromInt(idx+3));")
+        mutated_code = original_code.replace(
+            "var i: usize = 0;\n    while (i < 10000) : (i += 1) { buffer[i] = @as(f64, @floatFromInt(i)); }",
+            "var idx: usize = 0;\n    while (idx < 10000) : (idx += 4) {\n        buffer[idx] = @as(f64, @floatFromInt(idx));\n        buffer[idx+1] = @as(f64, @floatFromInt(idx+1));\n        buffer[idx+2] = @as(f64, @floatFromInt(idx+2));\n        buffer[idx+3] = @as(f64, @floatFromInt(idx+3));\n    }\n    // UNROLLED BY WENDY"
+        )
         shadow_src.write_text(mutated_code)
-        log("Mutation applied: Deterministic 4x loop unrolling (Zig-scoped).")
+        log("Mutation applied: Deterministic 4x loop unrolling (Zig-strict compliant).")
     else:
         log("No valid mutation target found. Awaiting next epoch.")
         shutil.rmtree(shadow_dir); return
