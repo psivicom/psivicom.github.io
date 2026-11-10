@@ -45,7 +45,12 @@ jobs:
           tar -xf zig-linux-x86_64-0.11.0.tar.xz
           echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
           
-      - name: 🧠 Boot Rust Substrate (IPC Port 1966)
+      - name: 🧠 Provision FORTH Interpreter (For Meta-Language Evolution)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gforth
+          
+      - name: 🏛️ Boot Rust Substrate (IPC Port 1966)
         run: |
           cd wendy-cortex
           cargo build --release
@@ -69,7 +74,7 @@ jobs:
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
-          git add wendy-cortex/src/
+          git add wendy-cortex/src/ wendy-cortex/forth/ wendy-cortex/mesh/
           
           if git diff --staged --quiet; then
             echo "[$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")] No successful mutations to promote. Live code remains optimal."
