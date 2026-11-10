@@ -1,0 +1,39 @@
+name: WENDY FORTH Evolution
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+
+jobs:
+  evolve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install FORTH
+        run: sudo apt-get install -y gforth
+      
+      - name: Install Zig
+        run: |
+          wget -q https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
+          tar -xf zig-linux-x86_64-0.11.0.tar.xz
+          echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+      
+      - name: Boot Rust Cortex
+        run: |
+          cd wendy-cortex
+          cargo build --release
+          nohup ./target/release/wendy-cortex > ../wendy_ipc.log 2>&1 &
+          sleep 5
+      
+      - name: Run FORTH Evolution
+        run: |
+          cd wendy-cortex/forth
+          gforth evolution.fth -e "WENDY-EVOLVE" -e "bye"
+      
+      - name: Commit Evolutions
+        run: |
+          git config --global user.name "WENDY"
+          git config --global user.email "wendy@psivi.com"
+          git add -A
+          git diff --staged --quiet || (git commit -m "🧬 evolve: FORTH-native evolution at $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" && git push)
