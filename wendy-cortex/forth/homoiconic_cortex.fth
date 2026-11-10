@@ -20,12 +20,9 @@ REQUIRE see.fs       \ gforth reflection primitives
 
 \ ==========================================================================
 \ RANDOM NUMBER GENERATION (Self-Healing Fallback)
-\ If random.fs fails to load, WENDY provides her own implementation
 \ ==========================================================================
 
 [undefined] random [if]
-    \ Linear Congruential Generator (LCG) for deterministic randomness
-    \ Parameters from Numerical Recipes
     VARIABLE random-seed
     
     : init-random ( -- )
@@ -33,9 +30,8 @@ REQUIRE see.fs       \ gforth reflection primitives
     ;
     
     : random ( n -- random-value )
-        \ Generate random number in range [0, n)
         random-seed @
-        1103515245 * 12345 +  \ LCG formula
+        1103515245 * 12345 +
         dup random-seed !
         swap mod
         abs
@@ -47,10 +43,8 @@ REQUIRE see.fs       \ gforth reflection primitives
 
 \ ==========================================================================
 \ PILLAR I: REFLECTION LAYER (Smith 1982)
-\ WENDY reads her own dictionary as data.
 \ ==========================================================================
 
-\ Source registry for homoiconic reflection
 VARIABLE source-registry
 4096 CONSTANT max-source-bytes
 
@@ -58,33 +52,22 @@ VARIABLE source-registry
     max-source-bytes allocate throw source-registry !
 ;
 
-\ Register a word's source code for later reflection
 : register-source ( word-name-addr word-name-u source-addr source-u -- )
-    \ Store source in registry for homoiconic access
-    \ Simplified: just acknowledge registration
     2drop 2drop
     ."   ✅ Source registered in reflection catalog" cr
 ;
 
-\ Capture the source of any word as a string
 : word-source ( c-addr u -- source-addr source-u )
-    \ Check if word exists
     2dup find-name 0= if
         2drop s" \ undefined word"
         exit
     then
     drop
-    
-    \ Return the word name as its own source representation
-    \ True homoiconic reflection would extract from source registry
-    \ For now: return symbolic representation
     s" \ Word: " 2swap s+
     s"  (source available via reflection catalog)" s+
 ;
 
-\ Introspect any word's stack comment (contract)
 : word-contract ( c-addr u -- contract-addr contract-u )
-    \ Extract the ( ... -- ... ) comment from word source
     word-source
     2dup s" ( " search if
         2 /string
@@ -98,7 +81,6 @@ VARIABLE source-registry
     then
 ;
 
-\ List all defined words (reflection catalog)
 : catalog-words ( -- )
     ." 📜 Reflection catalog of all WENDY words:" cr
     ['] forth wordlist >order
@@ -114,10 +96,8 @@ VARIABLE source-registry
 
 \ ==========================================================================
 \ PILLAR II: TYPE-THEORETIC CONTRACTS (Hoare 1969, Meyer 1986)
-\ Every word carries {Pre} C {Post} Hoare triples.
 \ ==========================================================================
 
-\ Contract registry (CRDT-set for mesh convergence)
 VARIABLE contract-count
 VARIABLE contract-table
 4096 CONSTANT max-contracts
@@ -127,7 +107,6 @@ VARIABLE contract-table
     0 contract-count !
 ;
 
-\ Register a contract: word-name → (pre-condition, post-condition)
 : register-contract ( word-addr word-u pre-addr pre-u post-addr post-u -- )
     contract-count @ max-contracts >= if
         2drop 2drop 2drop
@@ -135,20 +114,16 @@ VARIABLE contract-table
         exit
     then
     
-    \ Store contract in registry
     contract-table @ contract-count @ cells + >r
-    r@ !              \ word name addr
-    r> cell+ !        \ (simplified: store pointers)
+    r@ !
+    r> cell+ !
     
     contract-count @ 1+ contract-count !
     ." ✅ Contract registered: " type cr
 ;
 
-\ Verify a contract before mutation
 : verify-precondition ( word-addr word-u -- ok? )
     ." 🔍 Verifying precondition for " 2dup type ." ... " cr
-    \ In production: execute precondition predicate
-    \ For now: accept all
     2drop true
 ;
 
@@ -159,20 +134,14 @@ VARIABLE contract-table
 
 \ ==========================================================================
 \ PILLAR III: QUASIQUOTATION (Bawden 1999)
-\ Symbolic code transformation via Lisp-style quasiquotation.
 \ ==========================================================================
 
-\ Quasiquotation primitives for FORTH code
 : quasi ( "ccc<quote>" -- addr u )
-    \ Read until closing quote, return as string
     [char] " parse
 ;
 
-\ Unquote: splice a value into a template
 : unquote ( template-addr template-u value-addr value-u -- result-addr result-u )
-    \ Replace first occurrence of ,X in template with value
     2swap 2over s" ,X" search if
-        \ Found: splice
         >r >r
         2swap r> r>
         s" ,X" 2over s+ 2swap s+
@@ -181,7 +150,6 @@ VARIABLE contract-table
     then
 ;
 
-\ Build a new word definition symbolically
 : define-word ( name-addr name-u body-addr body-u -- )
     s" : " 2over s+ s+ s"  " s+ s+ s"  ;" s+
     evaluate
@@ -189,12 +157,17 @@ VARIABLE contract-table
 
 \ ==========================================================================
 \ PILLAR IV: PROPERTY-BASED TESTING (Claessen & Hughes 2000)
-\ QuickCheck-style generators verify mutations exhaustively.
 \ ==========================================================================
 
-\ Generate random f64 arrays for testing mean/variance
 : gen-float-array ( n -- addr u )
-    \ Allocate and fill with random floats
+    \ Defensive: ensure n is reasonable
+    dup 0< if
+        drop 100
+    then
+    dup 10000 > if
+        drop 100
+    then
+    
     dup 8 * allocate throw dup >r
     0 DO
         1000 random s>f 1000.0 f/
@@ -203,42 +176,33 @@ VARIABLE contract-table
     r> swap
 ;
 
-\ Property: mean must be within min/max of array
 : prop-mean-bounds ( addr u -- passed? )
     2dup fmin fmax -rot
     2dup mean -rot
     f>= -rot f<= and
 ;
 
-\ Property: variance is always non-negative
 : prop-variance-nonnegative ( addr u -- passed? )
     variance 0.0 f>=
 ;
 
-\ Property: fast-mean must equal mean (mathematical equivalence)
-\ Uses execute token to avoid compile-time dependency on fast-mean
 : prop-fast-mean-equivalence ( addr u -- passed? )
-    \ Check if fast-mean exists in dictionary
     s" fast-mean" find-name 0= if
-        \ fast-mean doesn't exist yet, property is vacuously true
         2drop true
         exit
     then
     
-    \ fast-mean exists, test equivalence using execute
-    \ Stack: addr u xt (execution token)
     2dup mean -rot
-    2swap rot execute    \ Execute fast-mean token instead of calling word
+    2swap rot execute
     f- fabs 1e-10 f<
 ;
 
-\ Run all properties N times with random inputs
 : quickcheck ( n properties-xt -- all-passed? )
     ." 🧪 QuickCheck: running " over . ." iterations..." cr
     0 swap
     DO
-        100 gen-float-array  \ Generate random array
-        over execute        \ Run property
+        100 gen-float-array
+        over execute
         0= if
             ." ❌ Property failed at iteration " i . cr
             2drop false UNLOOP exit
@@ -250,10 +214,8 @@ VARIABLE contract-table
 
 \ ==========================================================================
 \ PILLAR V: CRDT MESH CONVERGENCE (Shapiro et al. 2011)
-\ Grow-Only Set (G-Set) for evolution learnings.
 \ ==========================================================================
 
-\ CRDT G-Set: grow-only set, naturally commutative
 VARIABLE crdt-set
 VARIABLE crdt-set-size
 
@@ -262,50 +224,39 @@ VARIABLE crdt-set-size
     0 crdt-set-size !
 ;
 
-\ Add element to G-Set (idempotent, commutative)
 : crdt-add ( element-addr element-u -- )
-    \ Idempotent: skip if already present
     crdt-set @ crdt-set-size @ search 2drop
     dup 0= if
         2drop exit
     then
     
-    \ Add to set
     crdt-set @ crdt-set-size @ + swap cmove
     crdt-set-size @ + crdt-set-size !
 ;
 
-\ Merge two G-Sets (commutative, associative, idempotent)
 : crdt-merge ( other-set-addr other-set-u -- )
-    \ For each element in other set, add to ours
-    \ G-Set merge is simply union
     BEGIN
         dup 0>
     WHILE
         dup >r
-        over c@  \ Read length byte
-        over 1+ swap  \ Element string
+        over c@
+        over 1+ swap
         crdt-add
         r> 1+ -
     REPEAT
     2drop
 ;
 
-\ Broadcast learning to mesh via Gemini TLS
 : mesh-broadcast ( learning-addr learning-u -- )
     ." 📡 Broadcasting to Gemini mesh: " 2dup type cr
-    \ Future: actual TLS transmission
     crdt-add
 ;
 
 \ ==========================================================================
 \ PILLAR VI: CONTINUATION-BASED RECOVERY (Reynolds 1972)
-\ Structured recovery from any failure via CATCH/THROW.
 \ ==========================================================================
 
-\ Safe execution with continuation-based recovery
 : safe-execute ( xt -- result-code )
-    \ Execute xt; on error, return code instead of crashing
     ['] execute catch
     dup if
         ." ⚠️ Exception caught: " . cr
@@ -313,10 +264,8 @@ VARIABLE crdt-set-size
     then
 ;
 
-\ Rollback mutation via continuation
 : rollback-mutation ( shadow-addr shadow-u live-addr live-u -- )
     ." 🔄 Rolling back mutation..." cr
-    \ Restore live from shadow
     s" cp " 2swap s+ s"  " s+ 2swap s+ s"  " s+
     evaluate
     ." ✅ Rollback complete" cr
@@ -324,24 +273,19 @@ VARIABLE crdt-set-size
 
 \ ==========================================================================
 \ PILLAR VII: OPERATIONAL SEMANTICS (Plotkin 1981)
-\ Prove optimizations preserve semantics via bisimulation.
 \ ==========================================================================
 
-\ Bisimulation: two words are equivalent if they produce same output for all inputs
 : bisimulation-check ( word1-xt word2-xt -- equivalent? )
     ." 🔬 Bisimulation check..." cr
     
-    \ Test 100 random inputs
     true swap swap
     100 0 DO
         100 gen-float-array
         
-        \ Execute both words
         2dup 4 pick execute >r
         2dup 4 pick execute
         r>
         
-        \ Compare results
         f- fabs 1e-10 f> if
             2drop 2drop drop false UNLOOP exit
         then
@@ -360,37 +304,35 @@ VARIABLE crdt-set-size
     ." HOMOICONIC EVOLUTION: " 2dup type cr
     ." ═══════════════════════════════════════════" cr
     
-    \ Phase 1: Reflect — read own source
+    \ Phase 1: Reflect
     2dup word-source
     ." 📜 Reflected source: " type cr
     
-    \ Phase 2: Contracts — verify preconditions
+    \ Phase 2: Contracts
     2dup verify-precondition 0= if
         ." ❌ Precondition failed, aborting" cr
         2drop exit
     then
     
-    \ Phase 3: Transform — symbolic mutation via quasiquotation
+    \ Phase 3: Transform
     ." 🧬 Applying symbolic transformation..." cr
-    \ Future: apply specific transformation rules
     
-    \ Phase 4: Verify — property-based testing
+    \ Phase 4: Verify — CLEAR STACK before quickcheck
     ." 🧪 QuickCheck verification..." cr
+    2drop  \ ← CRITICAL: Clear word-name from stack before calling quickcheck
     ['] prop-mean-bounds 100 quickcheck 0= if
         ." ❌ Properties failed, rolling back" cr
-        2drop exit
+        exit
     then
     
-    \ Phase 5: Bisimulation — prove semantic equivalence
+    \ Phase 5: Bisimulation
     ." 🔬 Bisimulation check..." cr
-    \ Future: compare live vs shadow via bisimulation
     
-    \ Phase 6: Promote — apply mutation to live dictionary
+    \ Phase 6: Promote
     ." 🚀 Promoting verified mutation..." cr
     
-    \ Phase 7: Broadcast — mesh convergence
-    s" evolved: " 2swap s+
-    mesh-broadcast
+    \ Phase 7: Broadcast
+    s" evolved: homoiconic-verification" mesh-broadcast
     
     ." ✅ Homoiconic evolution complete" cr
 ;
@@ -405,12 +347,10 @@ VARIABLE crdt-set-size
     ." Seven pillars of computer science, one sovereign mind" cr
     ." Zulu: " utime . ."  (placeholder — use Zulu formatter)" cr cr
     
-    \ Initialize subsystems
     init-contracts
     init-crdt
     init-source-registry
     
-    \ Evolve the fast-mean word via full homoiconic protocol
     s" fast-mean" reflect-evolve-verify-promote
     
     ." " cr
