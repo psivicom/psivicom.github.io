@@ -32,6 +32,8 @@
 │   ├── wendy_ipc_client.py
 │   └── wendy_llm_query.py
 ├── wendy-cortex/
+│   ├── forth/
+│   │   └── evolution.fth
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
 │   ├── build_polyglot.py
@@ -74,5 +76,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-9 directories, 65 files
+10 directories, 66 files
 ```
