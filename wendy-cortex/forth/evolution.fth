@@ -3,49 +3,36 @@
 \ FORTH is the meta-language. All logic in FORTH. Pure speed.
 \ With Homoiconic Cortex: reflective, type-theoretic, CRDT-convergent
 \
-\ Computer Science Fix: Replace system 0= with pure FORTH file-status
-\ gforth 0.7.3: system ( c-addr u -- ) does NOT return exit code
-\ Proper idiom: r/o open-file + close-file for existence checks
+\ Computer Science Fix: Correct stack discipline for file-exists?
+\ gforth 0.7.3: open-file returns ( fileid 0 ) on success, ( ? ior ) on failure
 
 \ =========================================================================
 \ DETERMINISTIC FILE OPERATIONS (Plotkin 1981 Operational Semantics)
-\ Pure FORTH file operations — no shell exit code ambiguity
 \ ==========================================================================
 
 : file-exists? ( c-addr u -- flag )
     \ Deterministic file existence check via FORTH native operations
     \ Returns true if file exists and is readable
     r/o open-file
-    dup 0= if
+    0= if
+        \ Success: ( fileid )
         close-file drop true
     else
-        2drop false
+        \ Failure: ( ? )
+        drop false
     then
 ;
 
 : file-contains? ( filename-addr filename-u pattern-addr pattern-u -- flag )
-    \ Deterministic grep-equivalent using FORTH file I/O
-    \ Returns true if pattern appears anywhere in file
-    2swap r/o open-file if
-        2drop false exit
-    then
+    \ Deterministic grep-equivalent using bash + flag file
+    \ This avoids complex FORTH file I/O while remaining deterministic
     
-    >r
-    \ Read file in chunks and search for pattern
-    4096 allocate throw >r
-    BEGIN
-        r@ 4096 r@ 3 pick read-file if
-            2drop r> free drop r> close-file drop false exit
-        then
-        dup 0= if
-            2drop r> free drop r> close-file drop false exit
-        then
-        r@ swap search if
-            2drop r> free drop r> close-file drop true exit
-        else
-            2drop
-        then
-    AGAIN
+    \ Construct bash command: grep -q PATTERN FILE && touch FLAG || rm FLAG
+    s" grep -q " 2over s+ s"  " s+ 2swap s+ s"  > /dev/null 2>&1 && touch /tmp/wendy_grep_yes || rm -f /tmp/wendy_grep_yes" s+
+    system
+    
+    \ Check if flag file was created
+    s" /tmp/wendy_grep_yes" file-exists?
 ;
 
 \ =========================================================================
@@ -62,8 +49,6 @@ s" wendy_dictionary.fth" included
     ." Phase 1: FORTH Symbolic Reasoning" cr
     ." Checking for fast-mean..." cr
     
-    \ Use bash to handle the entire conditional logic
-    \ Note: We use system here WITHOUT 0= — just execute for effect
     s" if ! grep -q fast-mean wendy_dictionary.fth; then echo '' >> wendy_dictionary.fth; echo '\ WENDY invented fast-mean at runtime' >> wendy_dictionary.fth; echo ': fast-mean ( addr count -- mean )' >> wendy_dictionary.fth; echo '    0.0 -rot' >> wendy_dictionary.fth; echo '    0 do' >> wendy_dictionary.fth; echo '        dup i 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 1+ 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 2 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 3 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '    4 +loop' >> wendy_dictionary.fth; echo '    swap s>f f/' >> wendy_dictionary.fth; echo ';' >> wendy_dictionary.fth; echo 'FORTH mutation promoted to dictionary'; else echo 'fast-mean already exists'; fi" system
     
     ." Note: fast-mean will be available on next evolution cycle" cr
@@ -77,7 +62,6 @@ s" wendy_dictionary.fth" included
     ." Phase 2: Zig Hot Path" cr
     ." Checking Zig..." cr
     
-    \ DETERMINISTIC: use pure FORTH file-exists?
     s" ../src/hot_path.zig" file-exists? if
         ." Zig exists" cr
     else
@@ -86,7 +70,6 @@ s" wendy_dictionary.fth" included
         s" ./bootstrap_zig.sh" system
     then
     
-    \ DETERMINISTIC: use pure FORTH file-contains?
     s" ../src/hot_path.zig" s" UNROLLED" file-contains? if
         ." Already optimized" cr
     else
@@ -109,7 +92,6 @@ s" wendy_dictionary.fth" included
     ." Phase 3: Rust Cortex" cr
     ." Checking Rust..." cr
     
-    \ DETERMINISTIC: use pure FORTH file-exists?
     s" ../src/rust_math_core.rs" file-exists? if
         ." Rust exists" cr
     else
@@ -118,7 +100,6 @@ s" wendy_dictionary.fth" included
         s" ./bootstrap_rust.sh" system
     then
     
-    \ DETERMINISTIC: use pure FORTH file-contains?
     s" ../src/rust_math_core.rs" s" VECTORIZED" file-contains? if
         ." Already optimized" cr
     else
@@ -138,7 +119,6 @@ s" wendy_dictionary.fth" included
     ." Phase 4: Go Mesh" cr
     ." Checking Go..." cr
     
-    \ DETERMINISTIC: use pure FORTH file-exists?
     s" ../mesh/main.go" file-exists? if
         ." Go exists" cr
     else
@@ -178,12 +158,10 @@ s" homoiconic_cortex.fth" included
     ." FORTH orchestrates Zig + Rust + Go" cr
     ." With Homoiconic Cortex: reflective, type-theoretic, CRDT-convergent" cr cr
     
-    \ Phase 1: Standard polyglot evolution
     EVOLVE
     
     ." " cr
     
-    \ Phase 2: Homoiconic evolution (computer science layer)
     HOMOICONIC-EVOLVE
     
     ." " cr
