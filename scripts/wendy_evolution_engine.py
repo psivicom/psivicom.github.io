@@ -187,9 +187,9 @@ def evolve_zig_hotpath(cortex_dir):
     shutil.copy2(live_src, shadow_src)
     original_code = shadow_src.read_text()
     if "while (i < 10000)" in original_code and "// UNROLLED" not in original_code:
-        mutated_code = original_code.replace("while (i < 10000) : (i += 1) {", "var step: usize = 0;\n    while (step < 2500) : (step += 1) {\n        const i = step * 4;\n        // UNROLLED BY WENDY").replace("buffer[i] = @as(f64, @floatFromInt(i));", "buffer[i] = @as(f64, @floatFromInt(i));\n        buffer[i+1] = @as(f64, @floatFromInt(i+1));\n        buffer[i+2] = @as(f64, @floatFromInt(i+2));\n        buffer[i+3] = @as(f64, @floatFromInt(i+3));")
+        mutated_code = original_code.replace("while (i < 10000) : (i += 1) {", "var step: usize = 0;\n    while (step < 2500) : (step += 1) {\n        const idx = step * 4;\n        // UNROLLED BY WENDY").replace("buffer[i] = @as(f64, @floatFromInt(i));", "buffer[idx] = @as(f64, @floatFromInt(idx));\n        buffer[idx+1] = @as(f64, @floatFromInt(idx+1));\n        buffer[idx+2] = @as(f64, @floatFromInt(idx+2));\n        buffer[idx+3] = @as(f64, @floatFromInt(idx+3));")
         shadow_src.write_text(mutated_code)
-        log("Mutation applied: Deterministic 4x loop unrolling.")
+        log("Mutation applied: Deterministic 4x loop unrolling (Zig-scoped).")
     else:
         log("No valid mutation target found. Awaiting next epoch.")
         shutil.rmtree(shadow_dir); return
