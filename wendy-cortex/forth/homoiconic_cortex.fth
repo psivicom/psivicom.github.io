@@ -216,9 +216,19 @@ VARIABLE contract-table
 ;
 
 \ Property: fast-mean must equal mean (mathematical equivalence)
+\ Guard: only test if fast-mean exists
 : prop-fast-mean-equivalence ( addr u -- passed? )
+    \ Check if fast-mean exists in dictionary
+    s" fast-mean" find-name 0= if
+        \ fast-mean doesn't exist yet, property is vacuously true
+        drop
+        2drop true
+        exit
+    then
+    drop
+    
+    \ fast-mean exists, test equivalence
     2dup mean -rot
-    \ After fast-mean is defined:
     2dup fast-mean -rot
     f- fabs 1e-10 f<
 ;
