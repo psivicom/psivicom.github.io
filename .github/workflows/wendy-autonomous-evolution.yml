@@ -74,7 +74,9 @@ jobs:
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
-          git add wendy-cortex/src/ wendy-cortex/forth/ wendy-cortex/mesh/
+          # Use 'git add -A' to stage all changes in the working tree.
+          # This gracefully handles directories that don't exist yet (like forth/ or mesh/).
+          git add -A
           
           if git diff --staged --quiet; then
             echo "[$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")] No successful mutations to promote. Live code remains optimal."
