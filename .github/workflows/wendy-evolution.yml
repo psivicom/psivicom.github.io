@@ -49,7 +49,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gforth
-      
+
+      - name: Install FORTH Reflection Libraries
+        run: |
+          cd /usr/share/gforth/0.7.3
+          sudo wget -q https://raw.githubusercontent.com/nicholasgasior/gforth-see/master/see.fs -O see.fs || echo "see.fs already present"
+          sudo wget -q https://raw.githubusercontent.com/nicholasgasior/gforth-random/master/random.fs -O random.fs || echo "random.fs already present"
+
       - name: 🧬 Bootstrap FORTH Dictionary (Sovereign Recovery)
         run: |
           cd wendy-cortex/forth
