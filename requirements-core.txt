@@ -2,7 +2,7 @@
 # requirements-core.txt
 # Lightweight dependencies for agent logic, governance, and basic mesh operations
 sympy>=1.13.3
-numpy>=2.5.4  # The engine for all dense vector math and PSVC operations
+numpy>=2.3.0  # The engine for all dense vector math and PSVC operations
 pyyaml>=6.0.3
 msgpack>=1.2.3  # Binary serialization for wendy_twin.psvec
 requests>=2.34.2
