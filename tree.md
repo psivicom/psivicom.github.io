@@ -39,7 +39,7 @@
 │   │   ├── bootstrap_rust.sh
 │   │   ├── bootstrap_zig.sh
 │   │   ├── evolution.fth
-│   │   ├── h omoiconic_cortex.fth
+│   │   ├── homoiconic_cortex.fth
 │   │   └── promote_forth.sh
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
