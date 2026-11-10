@@ -1,4 +1,4 @@
-\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 1)
+\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 2)
 \ SPDX-License-Identifier: EUPL-1.2
 \ FORTH is the meta-language. All logic in FORTH. Pure speed.
 
@@ -19,24 +19,21 @@ s" wendy_dictionary.fth" included
     else
         ." Defining fast-mean..." cr
         
-        \ Build the definition string piece by piece
-        s" : fast-mean ( addr count -- mean ) " 
-        s" 0.0 -rot 0 do " 
-        s" dup i 8 * + f@ f+ "
-        s" dup i 1+ 8 * + f@ f+ "
-        s" dup i 2 + 8 * + f@ f+ "
-        s" dup i 3 + 8 * + f@ f+ "
-        s" 4 +loop swap s>f f/ ;"
-        
-        \ Concatenate all pieces
-        6 roll 5 roll s+ 4 roll s+ 3 roll s+ 2 roll s+ s+
+        \ Use sliteral to create permanent copies before concatenation
+        s" : fast-mean ( addr count -- mean ) " sliteral
+        s" 0.0 -rot 0 do " sliteral s+
+        s" dup i 8 * + f@ f+ " sliteral s+
+        s" dup i 1+ 8 * + f@ f+ " sliteral s+
+        s" dup i 2 + 8 * + f@ f+ " sliteral s+
+        s" dup i 3 + 8 * + f@ f+ " sliteral s+
+        s" 4 +loop swap s>f f/ ;" sliteral s+
         
         \ Evaluate to define the word
         evaluate
         
         ." fast-mean defined successfully" cr
         
-        \ Now append to file
+        \ Append to file using simple echo commands
         s" echo '\ WENDY invented fast-mean' >> wendy_dictionary.fth" system drop
         s" echo ': fast-mean ( addr count -- mean ) 0.0 -rot 0 do dup i 8 * + f@ f+ dup i 1+ 8 * + f@ f+ dup i 2 + 8 * + f@ f+ dup i 3 + 8 * + f@ f+ 4 +loop swap s>f f/ ;' >> wendy_dictionary.fth" system drop
         
