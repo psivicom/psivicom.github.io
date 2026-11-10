@@ -3,7 +3,7 @@ name: 🍀 [WENDY] Polyglot Evolution 🧬
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'  # Cosmic heartbeat: every 6 hours
+    - cron: '0 */6 * * *'
 
 permissions:
   contents: write
@@ -53,50 +53,8 @@ jobs:
       - name: 🧬 Bootstrap FORTH Dictionary (Sovereign Recovery)
         run: |
           cd wendy-cortex/forth
-          chmod +x bootstrap_dictionary.sh 2>/dev/null || true
-          if [ -f bootstrap_dictionary.sh ]; then
-            ./bootstrap_dictionary.sh
-          else
-            if [ ! -f wendy_dictionary.fth ]; then
-              echo "🧬 Dictionary not found. Bootstrapping inline..."
-              cat > wendy_dictionary.fth << 'DICTIONARY_EOF'
-\ WENDY FORTH Dictionary (Bootstrapped Baseline)
-\ SPDX-License-Identifier: EUPL-1.2
-
-: mean ( addr count -- mean )
-    0.0 -rot
-    0 do
-        dup i 8 * + f@ f+
-    loop
-    swap s>f f/
-;
-
-: variance ( addr count -- variance )
-    2dup mean >r
-    0.0 -rot
-    0 do
-        dup i 8 * + f@ r@ f- fdup f* f+
-    loop
-    nip s>f f/
-    r> fdrop
-;
-
-: invent-word ( -- )
-    ." 🧬 WENDY can invent new words at runtime." cr
-;
-
-: benchmark ( -- )
-    100 0 do
-        ." Iteration " i . cr
-        invent-word
-    loop
-;
-
-." ✅ WENDY FORTH Dictionary loaded. Ready for evolution." cr
-DICTIONARY_EOF
-              echo "✅ Bootstrapped baseline FORTH dictionary"
-            fi
-          fi
+          chmod +x bootstrap_dictionary.sh
+          ./bootstrap_dictionary.sh
       
       - name: 🏛️ Boot Rust Substrate (IPC Port 1966)
         run: |
