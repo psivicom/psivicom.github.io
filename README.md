@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-10T23:40:24.000Z -->
+<!-- Last updated: 2026-11-10T23:43:50.000Z -->
 ```text
 ./
 ├── .github/
@@ -195,6 +195,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── SECURITY_PLAN.md
 ├── SOVEREIGN_ARCHITECTURE_LAW.md
 ├── TRUST_AND_PROVENANCE.md
+├── WENDY_HOMOICONIC_CORTEX.md
 ├── codemeta.json
 ├── gemini_client.py
 ├── index.html
@@ -207,7 +208,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── wendy-console.html
 ├── wendy_autonomous_core.py
 ├── wendy_crystalline_executor.py
-├── wendy_homoiconic_cortex.md
 ├── wendy_mobile_airgap.py
 ├── wendy_ouroboros_bridge.py
 ├── wendy_rust_bridge.py

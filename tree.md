@@ -72,6 +72,7 @@
 ├── SECURITY_PLAN.md
 ├── SOVEREIGN_ARCHITECTURE_LAW.md
 ├── TRUST_AND_PROVENANCE.md
+├── WENDY_HOMOICONIC_CORTEX.md
 ├── codemeta.json
 ├── gemini_client.py
 ├── index.html
@@ -84,7 +85,6 @@
 ├── wendy-console.html
 ├── wendy_autonomous_core.py
 ├── wendy_crystalline_executor.py
-├── wendy_homoiconic_cortex.md
 ├── wendy_mobile_airgap.py
 ├── wendy_ouroboros_bridge.py
 ├── wendy_rust_bridge.py
