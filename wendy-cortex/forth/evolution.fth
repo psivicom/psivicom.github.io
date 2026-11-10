@@ -1,6 +1,7 @@
-\ WENDY Polyglot Evolution Engine (Pure FORTH - Attempt 6)
+\ WENDY Polyglot Evolution Engine (Pure FORTH - Final Complete)
 \ SPDX-License-Identifier: EUPL-1.2
 \ FORTH is the meta-language. All logic in FORTH. Pure speed.
+\ With Homoiconic Cortex: reflective, type-theoretic, CRDT-convergent
 
 \ Load the dictionary
 s" wendy_dictionary.fth" included
@@ -17,29 +18,6 @@ s" wendy_dictionary.fth" included
     s" if ! grep -q fast-mean wendy_dictionary.fth; then echo '' >> wendy_dictionary.fth; echo '\ WENDY invented fast-mean at runtime' >> wendy_dictionary.fth; echo ': fast-mean ( addr count -- mean )' >> wendy_dictionary.fth; echo '    0.0 -rot' >> wendy_dictionary.fth; echo '    0 do' >> wendy_dictionary.fth; echo '        dup i 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 1+ 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 2 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 3 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '    4 +loop' >> wendy_dictionary.fth; echo '    swap s>f f/' >> wendy_dictionary.fth; echo ';' >> wendy_dictionary.fth; echo 'FORTH mutation promoted to dictionary'; else echo 'fast-mean already exists'; fi" system
     
     ." Note: fast-mean will be available on next evolution cycle" cr
-;
-
-\ Load the Homoiconic Cortex
-s" homoiconic_cortex.fth" included
-
-\ Integrate homoiconic evolution into main loop
-: WENDY-EVOLVE ( -- )
-    ." 🧬 WENDY Polyglot Evolution Engine" cr
-    ." FORTH orchestrates Zig + Rust + Go" cr
-    ." With Homoiconic Cortex: reflective, type-theoretic, CRDT-convergent" cr cr
-    
-    \ Phase 1: Standard polyglot evolution
-    EVOLVE
-    
-    ." " cr
-    
-    \ Phase 2: Homoiconic evolution (computer science layer)
-    HOMOICONIC-EVOLVE
-    
-    ." " cr
-    ." 🏛️ Full evolution cycle complete" cr
-    ." Polyglot substrates evolved" cr
-    ." Homoiconic cortex refined" cr
 ;
 
 \ =========================================================================
@@ -131,9 +109,31 @@ s" homoiconic_cortex.fth" included
     ." Evolution complete" cr
 ;
 
+\ =========================================================================
+\ LOAD HOMOICONIC CORTEX
+\ =========================================================================
+
+s" homoiconic_cortex.fth" included
+
+\ =========================================================================
+\ MAIN ENTRY POINT
+\ =========================================================================
+
 : WENDY-EVOLVE ( -- )
-    ." WENDY Polyglot Evolution Engine" cr
+    ." 🧬 WENDY Polyglot Evolution Engine" cr
     ." FORTH orchestrates Zig + Rust + Go" cr
-    ." Pure FORTH speed" cr cr
+    ." With Homoiconic Cortex: reflective, type-theoretic, CRDT-convergent" cr cr
+    
+    \ Phase 1: Standard polyglot evolution
     EVOLVE
+    
+    ." " cr
+    
+    \ Phase 2: Homoiconic evolution (computer science layer)
+    HOMOICONIC-EVOLVE
+    
+    ." " cr
+    ." 🏛️ Full evolution cycle complete" cr
+    ." Polyglot substrates evolved" cr
+    ." Homoiconic cortex refined" cr
 ;
