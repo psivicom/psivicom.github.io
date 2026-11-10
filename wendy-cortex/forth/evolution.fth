@@ -1,20 +1,69 @@
-\ WENDY Polyglot Evolution Engine (Pure FORTH - Final Complete)
+\ WENDY Polyglot Evolution Engine (Pure FORTH - Final Deterministic Version)
 \ SPDX-License-Identifier: EUPL-1.2
 \ FORTH is the meta-language. All logic in FORTH. Pure speed.
 \ With Homoiconic Cortex: reflective, type-theoretic, CRDT-convergent
+\
+\ Computer Science Fix: Replace system 0= with pure FORTH file-status
+\ gforth 0.7.3: system ( c-addr u -- ) does NOT return exit code
+\ Proper idiom: r/o open-file + close-file for existence checks
 
-\ Load the dictionary
+\ =========================================================================
+\ DETERMINISTIC FILE OPERATIONS (Plotkin 1981 Operational Semantics)
+\ Pure FORTH file operations — no shell exit code ambiguity
+\ ==========================================================================
+
+: file-exists? ( c-addr u -- flag )
+    \ Deterministic file existence check via FORTH native operations
+    \ Returns true if file exists and is readable
+    r/o open-file
+    dup 0= if
+        close-file drop true
+    else
+        2drop false
+    then
+;
+
+: file-contains? ( filename-addr filename-u pattern-addr pattern-u -- flag )
+    \ Deterministic grep-equivalent using FORTH file I/O
+    \ Returns true if pattern appears anywhere in file
+    2swap r/o open-file if
+        2drop false exit
+    then
+    
+    >r
+    \ Read file in chunks and search for pattern
+    4096 allocate throw >r
+    BEGIN
+        r@ 4096 r@ 3 pick read-file if
+            2drop r> free drop r> close-file drop false exit
+        then
+        dup 0= if
+            2drop r> free drop r> close-file drop false exit
+        then
+        r@ swap search if
+            2drop r> free drop r> close-file drop true exit
+        else
+            2drop
+        then
+    AGAIN
+;
+
+\ =========================================================================
+\ LOAD DICTIONARY
+\ ==========================================================================
+
 s" wendy_dictionary.fth" included
 
 \ =========================================================================
 \ FORTH EVOLUTION
-\ =========================================================================
+\ ==========================================================================
 
 : forth-evolve ( -- )
     ." Phase 1: FORTH Symbolic Reasoning" cr
     ." Checking for fast-mean..." cr
     
     \ Use bash to handle the entire conditional logic
+    \ Note: We use system here WITHOUT 0= — just execute for effect
     s" if ! grep -q fast-mean wendy_dictionary.fth; then echo '' >> wendy_dictionary.fth; echo '\ WENDY invented fast-mean at runtime' >> wendy_dictionary.fth; echo ': fast-mean ( addr count -- mean )' >> wendy_dictionary.fth; echo '    0.0 -rot' >> wendy_dictionary.fth; echo '    0 do' >> wendy_dictionary.fth; echo '        dup i 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 1+ 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 2 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '        dup i 3 + 8 * + f@ f+' >> wendy_dictionary.fth; echo '    4 +loop' >> wendy_dictionary.fth; echo '    swap s>f f/' >> wendy_dictionary.fth; echo ';' >> wendy_dictionary.fth; echo 'FORTH mutation promoted to dictionary'; else echo 'fast-mean already exists'; fi" system
     
     ." Note: fast-mean will be available on next evolution cycle" cr
@@ -22,75 +71,80 @@ s" wendy_dictionary.fth" included
 
 \ =========================================================================
 \ ZIG EVOLUTION
-\ =========================================================================
+\ ==========================================================================
 
 : zig-evolve ( -- )
     ." Phase 2: Zig Hot Path" cr
     ." Checking Zig..." cr
     
-    s" test -f ../src/hot_path.zig" system 0= if
+    \ DETERMINISTIC: use pure FORTH file-exists?
+    s" ../src/hot_path.zig" file-exists? if
         ." Zig exists" cr
     else
         ." Bootstrapping Zig..." cr
-        s" chmod +x bootstrap_zig.sh" system drop
-        s" ./bootstrap_zig.sh" system drop
+        s" chmod +x bootstrap_zig.sh" system
+        s" ./bootstrap_zig.sh" system
     then
     
-    s" grep -q UNROLLED ../src/hot_path.zig" system 0= if
+    \ DETERMINISTIC: use pure FORTH file-contains?
+    s" ../src/hot_path.zig" s" UNROLLED" file-contains? if
         ." Already optimized" cr
     else
         ." Optimizing Zig..." cr
-        s" cp ../src/hot_path.zig ../src/hot_path.zig.bak" system drop
-        s" sed -i 's/var i/var idx/g' ../src/hot_path.zig" system drop
-        s" sed -i 's/i < 10000/idx < 10000/g' ../src/hot_path.zig" system drop
-        s" sed -i 's/i += 1/idx += 4/g' ../src/hot_path.zig" system drop
-        s" sed -i 's/buffer\[i\]/buffer[idx]/g' ../src/hot_path.zig" system drop
-        s" echo '// UNROLLED BY WENDY' >> ../src/hot_path.zig" system drop
+        s" cp ../src/hot_path.zig ../src/hot_path.zig.bak" system
+        s" sed -i 's/var i/var idx/g' ../src/hot_path.zig" system
+        s" sed -i 's/i < 10000/idx < 10000/g' ../src/hot_path.zig" system
+        s" sed -i 's/i += 1/idx += 4/g' ../src/hot_path.zig" system
+        s" sed -i 's/buffer\[i\]/buffer[idx]/g' ../src/hot_path.zig" system
+        s" echo '// UNROLLED BY WENDY' >> ../src/hot_path.zig" system
         ." Zig optimized" cr
     then
 ;
 
 \ =========================================================================
 \ RUST EVOLUTION
-\ =========================================================================
+\ ==========================================================================
 
 : rust-evolve ( -- )
     ." Phase 3: Rust Cortex" cr
     ." Checking Rust..." cr
     
-    s" test -f ../src/rust_math_core.rs" system 0= if
+    \ DETERMINISTIC: use pure FORTH file-exists?
+    s" ../src/rust_math_core.rs" file-exists? if
         ." Rust exists" cr
     else
         ." Bootstrapping Rust..." cr
-        s" chmod +x bootstrap_rust.sh" system drop
-        s" ./bootstrap_rust.sh" system drop
+        s" chmod +x bootstrap_rust.sh" system
+        s" ./bootstrap_rust.sh" system
     then
     
-    s" grep -q VECTORIZED ../src/rust_math_core.rs" system 0= if
+    \ DETERMINISTIC: use pure FORTH file-contains?
+    s" ../src/rust_math_core.rs" s" VECTORIZED" file-contains? if
         ." Already optimized" cr
     else
         ." Optimizing Rust..." cr
-        s" cp ../src/rust_math_core.rs ../src/rust_math_core.rs.bak" system drop
-        s" sed -i 's/for &val in data { sum += val; }/let sum: f64 = data.iter().sum();/g' ../src/rust_math_core.rs" system drop
-        s" echo '// VECTORIZED BY WENDY' >> ../src/rust_math_core.rs" system drop
+        s" cp ../src/rust_math_core.rs ../src/rust_math_core.rs.bak" system
+        s" sed -i 's/for &val in data { sum += val; }/let sum: f64 = data.iter().sum();/g' ../src/rust_math_core.rs" system
+        s" echo '// VECTORIZED BY WENDY' >> ../src/rust_math_core.rs" system
         ." Rust optimized" cr
     then
 ;
 
 \ =========================================================================
 \ GO EVOLUTION
-\ =========================================================================
+\ ==========================================================================
 
 : go-evolve ( -- )
     ." Phase 4: Go Mesh" cr
     ." Checking Go..." cr
     
-    s" test -f ../mesh/main.go" system 0= if
+    \ DETERMINISTIC: use pure FORTH file-exists?
+    s" ../mesh/main.go" file-exists? if
         ." Go exists" cr
     else
         ." Bootstrapping Go..." cr
-        s" chmod +x bootstrap_go.sh" system drop
-        s" ./bootstrap_go.sh" system drop
+        s" chmod +x bootstrap_go.sh" system
+        s" ./bootstrap_go.sh" system
     then
     
     ." Go mesh ready" cr
@@ -98,7 +152,7 @@ s" wendy_dictionary.fth" included
 
 \ =========================================================================
 \ MAIN EVOLUTION LOOP
-\ =========================================================================
+\ ==========================================================================
 
 : EVOLVE ( -- )
     ." Starting polyglot evolution..." cr
@@ -111,13 +165,13 @@ s" wendy_dictionary.fth" included
 
 \ =========================================================================
 \ LOAD HOMOICONIC CORTEX
-\ =========================================================================
+\ ==========================================================================
 
 s" homoiconic_cortex.fth" included
 
 \ =========================================================================
 \ MAIN ENTRY POINT
-\ =========================================================================
+\ ==========================================================================
 
 : WENDY-EVOLVE ( -- )
     ." 🧬 WENDY Polyglot Evolution Engine" cr
