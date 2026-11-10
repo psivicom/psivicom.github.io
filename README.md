@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-10T06:27:49.000Z -->
+<!-- Last updated: 2026-11-10T06:58:11.000Z -->
 ```text
 ./
 ├── .github/
@@ -149,7 +149,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── scripts/
 │   ├── bootstrap-wendy.sh*
 │   ├── forge_conservatory.sh*
-│   ├── provision_arch_edge.sh
+│   ├── provision_arch_edge.sh*
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_evolution_engine.py
 │   └── wendy_ipc_client.py
