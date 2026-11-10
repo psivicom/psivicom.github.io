@@ -9,6 +9,7 @@
 │       ├── wendy-awaken.yml
 │       ├── wendy-benchmark.yml
 │       ├── wendy-ci-cd.yml
+│       ├── wendy-evolution.yml
 │       ├── wendy-self-bootstrap.yml
 │       ├── wendy-smart-dispatch.yml
 │       └── wendy_synapse.yml
@@ -76,5 +77,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-10 directories, 66 files
+10 directories, 67 files
 ```
