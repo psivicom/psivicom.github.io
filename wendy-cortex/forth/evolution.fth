@@ -14,16 +14,14 @@ s" wendy_dictionary.fth" included
     ." ⚡ FORTH Evolution: Symbolic reasoning..." cr
     ." 🧪 Shadow test: Defining fast-mean..." cr
     
-    \ Use sfind (gforth-specific) for proper word lookup
-    \ sfind returns: 0 (not found) | xt 1 (immediate) | xt -1 (normal)
+    \ Use sfind for word lookup (gforth-specific)
     s" fast-mean" sfind 0= if
         \ Not found - define it via EVALUATE
         s" : fast-mean ( addr count -- mean ) 0.0 -rot 0 do dup i 8 * + f@ f+ dup i 1+ 8 * + f@ f+ dup i 2 + 8 * + f@ f+ dup i 3 + 8 * + f@ f+ 4 +loop swap s>f f/ ;" evaluate
         ." ✅ FORTH shadow test passed" cr
-        ." ✅ Promoting mutation to live dictionary..." cr
-        s" echo '' >> wendy_dictionary.fth" system drop
-        s" echo '\ WENDY invented fast-mean' >> wendy_dictionary.fth" system drop
-        s" echo ': fast-mean ( addr count -- mean ) 0.0 -rot 0 do dup i 8 * + f@ f+ dup i 1+ 8 * + f@ f+ dup i 2 + 8 * + f@ f+ dup i 3 + 8 * + f@ f+ 4 +loop swap s>f f/ ;' >> wendy_dictionary.fth" system drop
+        ." ✅ Promoting mutation via bash script..." cr
+        s" chmod +x promote_forth.sh" system drop
+        s" ./promote_forth.sh" system drop
         ." ✅ FORTH mutation promoted" cr
     else
         drop  \ drop the xt from stack
