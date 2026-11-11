@@ -45,7 +45,7 @@ fn compile_substrate() -> Result<bool> {
     println!("[{}] Compiling real-science Rust artifact...", zulu_now());
     
     let output = Command::new("cargo")
-        .args(&["build", "--release", "--lib"])
+        .args(["build", "--release", "--lib"])
         .current_dir("wendy-cortex")
         .output()
         .context("Failed to execute cargo build")?;
@@ -97,7 +97,7 @@ fn crystallize_dream(dream_gmi: &str) -> Result<String> {
         ));
     }
     
-    // Step 2: Validate artifact
+    // Step 2: Validate artifact — FIX: actually use the validation_status in the manifest
     let validation_status = validate_artifact()?;
     
     // Step 3: Check epistemic boundaries
@@ -120,6 +120,7 @@ fn crystallize_dream(dream_gmi: &str) -> Result<String> {
         "DISCOURSE FAILED. Epistemic boundary violated."
     };
     
+    // FIX: Include validation_status in the manifest
     let manifest = format!(
         "# 🏛️ WENDY Habermasian Manifest\n\
          # Generated at: {}\n\
@@ -127,6 +128,7 @@ fn crystallize_dream(dream_gmi: &str) -> Result<String> {
          ## 🌌 Dream Ingestion (58.28°)\n\
          {}\n\n\
          ## 🧊 Anchor Validation (31.72°)\n\
+         - Artifact Status: {}\n\
          - Syntactic Purity: {}\n\
          - Symbolic Math Alignment: {}\n\
          - Open Source Mandate: {}\n\
@@ -136,6 +138,7 @@ fn crystallize_dream(dream_gmi: &str) -> Result<String> {
         timestamp,
         epistemic_hash,
         dream_gmi,
+        validation_status,
         syntactic_purity,
         symbolic_alignment,
         open_source_mandate,
