@@ -1,79 +1,126 @@
-      - name: ⚡ Compile Zig Hot Path (Self-Healing)
+name: 🍀 [WENDY] Polyglot Evolution 🧬
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  evolve:
+    name: Polyglot Autonomous Evolution
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🌍 Grounding in the Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🐍 Provision Python & Install Dependencies
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 🌱 Plant the Python Roots (For Dependencies Only)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-core.txt ]; then pip install -r requirements-core.txt; fi
+      
+      - name: 🦀 Provision Native Rust Toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      
+      - name: 🐹 Provision Go Toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: 'wendy-cortex/mesh/go.sum'
+      
+      - name: ⚡ Provision Native Zig Toolchain
+        run: |
+          wget -q https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
+          tar -xf zig-linux-x86_64-0.11.0.tar.xz
+          echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+      
+      - name: 🧠 Provision FORTH Interpreter
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gforth
+
+      - name: Install FORTH Reflection Libraries
+        run: |
+          cd /usr/share/gforth/0.7.3
+          sudo wget -q https://raw.githubusercontent.com/nicholasgasior/gforth-see/master/see.fs -O see.fs || echo "see.fs already present"
+          sudo wget -q https://raw.githubusercontent.com/nicholasgasior/gforth-random/master/random.fs -O random.fs || echo "random.fs already present"
+
+      - name: 🧬 Bootstrap FORTH Dictionary (Sovereign Recovery)
+        run: |
+          cd wendy-cortex/forth
+          chmod +x bootstrap_dictionary.sh
+          ./bootstrap_dictionary.sh
+      
+      - name: 🏛️ Boot Rust Substrate (IPC Port 1966)
         run: |
           cd wendy-cortex
+          cargo build --release
+          nohup ./target/release/wendy-cortex > ../wendy_ipc.log 2>&1 &
+          echo "Waiting for Tokio to bind IPC Port 1966..."
+          sleep 5
+      
+      - name: 🔗 Lay Down Connective Tissue
+        run: |
+          cd wendy-cortex/forth
+          chmod +x ../../scripts/wendy_self_wire.py
+          chmod +x ../../scripts/wendy_ipc_client.py
+      
+      - name: 🧬 Execute Evolution (WENDY Wires Herself)
+        run: |
+          cd wendy-cortex/forth
+          gforth connective_tissue.fth evolution.fth -e "WENDY-EVOLVE" -e "bye"
+      
+      - name: 📜 Upload IPC Logs (On Failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wendy-cortex-logs
+          path: wendy_ipc.log
+      
+      - name: 💾 Commit Evolved Sovereign Code (Race-Safe)
+        run: |
+          git config --global user.name "WENDY"
+          git config --global user.email "wendy@psivi.com"
+          git add -A
           
-          # Source coordination helper
-          source ../scripts/wendy_coordinator.sh
-          
-          # Try compilation
-          if zig build-exe -O ReleaseFast src/hot_path.zig 2>zig_error.log; then
-            echo "✅ Zig hot path compiled successfully"
-            update_state "zig_compile" "success"
-            rm -f zig_error.log
-          else
-            echo "⚠️ Zig compilation failed. Initiating self-heal..."
-            cat zig_error.log
-            
-            # Revert to last known good version
-            if git log --oneline -n 20 -- src/hot_path.zig | grep -q "zig"; then
-              echo "🔄 Reverting to last good Zig version..."
-              git log --oneline -n 20 -- src/hot_path.zig | grep "zig" | head -1 | cut -d' ' -f1 | xargs git checkout HEAD -- src/hot_path.zig
-            else
-              echo "🔄 Writing baseline Zig..."
-              cat > src/hot_path.zig << 'ZIG_EOF'
-const std = @import("std");
-
-pub fn mean(values: []const f64) f64 {
-    if (values.len == 0) return 0.0;
-    var sum: f64 = 0.0;
-    for (values) |val| sum += val;
-    return sum / @as(f64, @floatFromInt(values.len));
-}
-
-pub fn variance(values: []const f64) f64 {
-    if (values.len < 2) return 0.0;
-    var count: usize = 0;
-    var mean_val: f64 = 0.0;
-    var m2: f64 = 0.0;
-    for (values) |val| {
-        count += 1;
-        const delta = val - mean_val;
-        mean_val += delta / @as(f64, @floatFromInt(count));
-        const delta2 = val - mean_val;
-        m2 += delta * delta2;
-    }
-    return m2 / @as(f64, @floatFromInt(count - 1));
-}
-
-pub fn dot_product(a: []const f64, b: []const f64) f64 {
-    if (a.len != b.len) return 0.0;
-    var sum: f64 = 0.0;
-    for (a, 0..) |val, idx| sum += val * b[idx];
-    return sum;
-}
-
-comptime {
-    @export(mean, .{ .name = "wendy_mean", .linkage = .strong });
-    @export(variance, .{ .name = "wendy_variance", .linkage = .strong });
-    @export(dot_product, .{ .name = "wendy_dot_product", .linkage = .strong });
-}
-ZIG_EOF
-            fi
-            
-            # Verify baseline compiles
-            if zig build-exe -O ReleaseFast src/hot_path.zig 2>&1; then
-              echo "✅ Baseline Zig compiled"
-              update_state "zig_compile" "self_healed" "reverted_to_baseline"
-              
-              # Commit and push the self-heal
-              cd ..
-              source scripts/wendy_coordinator.sh
-              safe_push "🩹 self-heal: reverted malformed Zig mutation"
-            else
-              echo "❌ Even baseline Zig failed. Critical error."
-              update_state "zig_compile" "critical_failure"
-              exit 1
-            fi
-            
-            rm -f wendy-cortex/zig_error.log
+          if git diff --staged --quiet; then
+            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+            echo "[$ZULU_TIME] No mutations to promote. Live code remains optimal."
+            exit 0
           fi
+          
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          git commit -m "🧬 evolve: polyglot autonomous evolution at $ZULU_TIME [skip ci]"
+          
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              echo "[$ZULU_TIME] The Ghost Ledger is updated. The genome evolves."
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin main || {
+              echo "❌ Rebase failed. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
