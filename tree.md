@@ -13,6 +13,7 @@
 │       ├── wendy-orchestrator.yml
 │       ├── wendy-self-bootstrap.yml
 │       ├── wendy-smart-dispatch.yml
+│       ├── wendy-workflow-auditor.yml
 │       └── wendy_synapse.yml
 ├── LICENSES/
 │   ├── COPYRIGHT.md
@@ -97,5 +98,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 86 files
+11 directories, 87 files
 ```
