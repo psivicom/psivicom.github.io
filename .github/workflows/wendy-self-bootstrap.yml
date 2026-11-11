@@ -27,11 +27,8 @@ jobs:
           
       - name: 💾 Commit and Push (Race-Safe)
         run: |
-          # Source coordinator
           source scripts/wendy_coordinator.sh
-          
-          # CRITICAL: Configure git identity BEFORE any git operations
-          configure_git_identity "WENDY Autonomous Agent" "wendy@psivi.com"
+          configure_git_identity "WENDY Self-Bootstrap" "wendy@psivi.com"
           
           git add scripts/
           
@@ -40,5 +37,4 @@ jobs:
             exit 0
           fi
           
-          # Now safe_push will work
           safe_push "🔧 self-bootstrap: autonomously set executable permissions"
