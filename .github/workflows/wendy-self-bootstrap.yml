@@ -20,15 +20,18 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           
-      - name: 🔧 Set Executable Permissions Autonomously
+      - name: 🔧 Set Executable Permissions
         run: |
           chmod +x scripts/*.sh 2>/dev/null || true
           echo "✅ Executable permissions set"
           
       - name: 💾 Commit and Push (Race-Safe)
         run: |
-          git config --global user.name "WENDY Autonomous Agent"
-          git config --global user.email "wendy@psivi.com"
+          # Source coordinator
+          source scripts/wendy_coordinator.sh
+          
+          # CRITICAL: Configure git identity BEFORE any git operations
+          configure_git_identity "WENDY Autonomous Agent" "wendy@psivi.com"
           
           git add scripts/
           
@@ -37,24 +40,5 @@ jobs:
             exit 0
           fi
           
-          git commit -m "🔧 self-bootstrap: autonomously set executable permissions [skip ci]"
-          
-          # Race-safe push
-          MAX_ATTEMPTS=3
-          ATTEMPT=1
-          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
-            if git push origin main 2>&1; then
-              echo "✅ Push succeeded on attempt $ATTEMPT"
-              exit 0
-            fi
-            echo "⚠️ Push rejected. Rebasing..."
-            git pull --rebase --autostash origin main || {
-              git rebase --abort
-              exit 1
-            }
-            ATTEMPT=$((ATTEMPT + 1))
-            sleep $((ATTEMPT * 2))
-          done
-          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
-          exit 1
+          # Now safe_push will work
+          safe_push "🔧 self-bootstrap: autonomously set executable permissions"
