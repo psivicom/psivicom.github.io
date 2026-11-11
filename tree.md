@@ -90,8 +90,7 @@
 ├── robots.txt
 ├── run_real_science_benchmark.py
 ├── sitemap.xml
-├── wendy-console.html
-└── wendy_synapse_orchestrator.py
+└── wendy-console.html
 
-11 directories, 82 files
+11 directories, 81 files
 ```
