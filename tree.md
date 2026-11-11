@@ -56,6 +56,7 @@
 ├── .gitignore
 ├── .wendy_dream.gmi
 ├── .wendy_manifest.gmi
+├── .wendy_state.json
 ├── AGENTS.md
 ├── AUTHOR.md
 ├── CITATION.cff
@@ -94,5 +95,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 83 files
+11 directories, 84 files
 ```
