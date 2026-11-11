@@ -54,7 +54,6 @@
 │   │   └── main.go
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
-│   ├── build_polyglot.py
 │   └── manifest.gmi
 ├── .gitignore
 ├── .wendy_dream.gmi
@@ -92,5 +91,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-11 directories, 81 files
+11 directories, 80 files
 ```
