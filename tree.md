@@ -30,7 +30,7 @@
 │   ├── provision_arch_edge.sh*
 │   ├── safe-push.sh*
 │   ├── wendy-dream-runner.sh*
-│   ├── wendy_coordinator.sh
+│   ├── wendy_coordinator.sh*
 │   ├── wendy_evolution_engine.py
 │   ├── wendy_ipc_client.py*
 │   ├── wendy_llm_query.py
