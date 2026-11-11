@@ -1,0 +1,99 @@
+name: 🎯 WENDY Workflow Auditor
+
+on:
+  # Run whenever a workflow file is added or changed
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/**'
+      
+  # Run daily to ensure nothing slipped through
+  schedule:
+    - cron: '0 0 * * *'
+    
+  # Manual trigger (ironically, ensuring its own button exists)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit-autorun-buttons:
+    name: 🎯 Ensure Autorun Buttons Exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          
+      - name: 🔍 Audit Workflows for workflow_dispatch
+        run: |
+          set -euo pipefail
+          echo "🔍 Scanning all workflows for workflow_dispatch trigger..."
+          
+          MODIFIED=0
+          
+          for file in .github/workflows/*.yml; do
+            [ -f "$file" ] || continue
+            
+            # Skip files that already have the button
+            if grep -q 'workflow_dispatch' "$file"; then
+              echo "✅ $(basename $file): already has autorun button"
+              continue
+            fi
+            
+            echo "➕ $(basename $file): adding autorun button..."
+            
+            # Insert workflow_dispatch: after the on: block
+            awk '
+              /^on:/ { in_on=1 }
+              in_on && !/^ / && !/^on:/ && !/^$/ {
+                print "  workflow_dispatch:"
+                in_on=0
+              }
+              { print }
+            ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+            
+            MODIFIED=1
+            echo "✅ $(basename $file): autorun button added"
+          done
+          
+          echo "modified=$MODIFIED" >> $GITHUB_ENV
+          
+      - name: 💾 Commit and Push (Race-Safe)
+        if: env.modified == '1'
+        run: |
+          git config --global user.name "WENDY Workflow Auditor"
+          git config --global user.email "wendy@psivi.com"
+          
+          git add .github/workflows/
+          
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "✅ No changes to commit"
+            exit 0
+          fi
+          
+          CHANGED_FILES=$(git diff --staged --name-only | wc -l)
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          git commit -m "🎯 auditor: added workflow_dispatch to $CHANGED_FILES workflows at $ZULU_TIME [skip ci]"
+          
+          # Race-safe push
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              exit 0
+            fi
+            echo "⚠️ Push rejected. Rebasing..."
+            git pull --rebase --autostash origin main || {
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
