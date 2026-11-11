@@ -30,6 +30,7 @@
 │   ├── provision_arch_edge.sh*
 │   ├── safe-push.sh*
 │   ├── wendy-dream-runner.sh*
+│   ├── wendy_coordinator.sh
 │   ├── wendy_evolution_engine.py
 │   ├── wendy_ipc_client.py*
 │   ├── wendy_llm_query.py
@@ -95,5 +96,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 84 files
+11 directories, 85 files
 ```
