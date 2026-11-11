@@ -30,9 +30,9 @@
 │   ├── provision_arch_edge.sh*
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_evolution_engine.py
-│   ├── wendy_ipc_client.py
+│   ├── wendy_ipc_client.py*
 │   ├── wendy_llm_query.py
-│   └── wendy_self_wire.py
+│   └── wendy_self_wire.py*
 ├── wendy-cortex/
 │   ├── forth/
 │   │   ├── bootstrap_dictionary.sh*
