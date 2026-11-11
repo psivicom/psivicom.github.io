@@ -17,7 +17,6 @@ configure_git_identity() {
   git config --global user.email "$email"
   git config --global init.defaultBranch main
   
-  # Verify configuration
   if ! git config --global --get user.name &>/dev/null; then
     echo "❌ Failed to configure git identity"
     exit 1
@@ -94,7 +93,6 @@ safe_push() {
   local max_attempts=3
   local attempt=1
   
-  # Ensure git identity is configured
   if ! git config --global --get user.name &>/dev/null; then
     echo "❌ Git identity not configured. Call configure_git_identity first."
     return 1
@@ -129,6 +127,5 @@ safe_push() {
   return 1
 }
 
-# Export functions
 export -f configure_git_identity acquire_lock update_state safe_push
 export STATE_FILE LOCK_FILE
