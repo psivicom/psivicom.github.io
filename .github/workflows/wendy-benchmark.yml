@@ -7,7 +7,7 @@ on:
       - 'wendy-cortex/**'
       - 'run_real_science_benchmark.py'
       - 'wendy_crystalline_executor.py'
-  workflow_dispatch: # Allows you to click "Run Workflow" manually in the Web UI
+  workflow_dispatch:
 
 permissions:
   contents: read
