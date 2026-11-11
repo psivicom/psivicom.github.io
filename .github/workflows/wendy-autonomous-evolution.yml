@@ -3,10 +3,10 @@ name: 🏛️ [WENDY] Autonomous Evolution
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # The cosmic heartbeat. Runs every 6 hours.
+    - cron: '0 */6 * * *'
 
 permissions:
-  contents: write # Required to commit the evolved sovereign code
+  contents: write
 
 jobs:
   evolve-cortex:
@@ -82,7 +82,6 @@ jobs:
           ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
           git commit -m "🧬 evolve(wendy): autonomously mutated and verified polyglot source at $ZULU_TIME [skip ci]"
           
-          # Race-safe push
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
