@@ -49,7 +49,7 @@ jobs:
         continue-on-error: true
         run: cargo fmt --all -- --check
 
-      - name: 🩹 Self-Healing: Auto-Format if Needed
+      - name: "Self-Healing: Auto-Format if Needed"
         if: steps.fmt-check.outcome == 'failure'
         run: |
           echo "⚠️ Formatting issues detected. Initiating self-healing..."
@@ -62,7 +62,7 @@ jobs:
             git add src/
             
             ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-            git commit -m "🩹 self-heal: auto-format Rust code at $ZULU_TIME"
+            git commit -m "self-heal: auto-format Rust code at $ZULU_TIME"
             git push
             echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
             echo ""
