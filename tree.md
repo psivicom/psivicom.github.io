@@ -69,6 +69,7 @@
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
+├── PRIDE.gmi
 ├── README.md
 ├── REUSE.toml
 ├── SECURITY.md
@@ -93,5 +94,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 82 files
+11 directories, 83 files
 ```
