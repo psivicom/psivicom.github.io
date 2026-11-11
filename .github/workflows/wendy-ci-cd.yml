@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -65,28 +66,17 @@ jobs:
             ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
             git commit -m "self-heal: auto-format Rust code at $ZULU_TIME"
             
-            # Race-safe push with retry
-            MAX_ATTEMPTS=3
-            ATTEMPT=1
-            while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-              echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
-              if git push origin main 2>&1; then
-                echo "✅ Push succeeded on attempt $ATTEMPT"
-                echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
-                echo "🔄 A new CI run will be triggered automatically to verify the fix."
-                exit 0
-              fi
-              echo "⚠️ Push rejected (race condition). Rebasing..."
-              git pull --rebase --autostash origin main || {
-                echo "❌ Rebase conflict detected. Aborting self-heal."
-                git rebase --abort
-                exit 1
-              }
-              ATTEMPT=$((ATTEMPT + 1))
-              sleep $((ATTEMPT * 2))
-            done
-            echo "❌ Push failed after $MAX_ATTEMPTS attempts"
-            exit 1
+            echo "🔄 Pulling remote changes to avoid race condition..."
+            git pull --rebase --autostash origin main || {
+              echo "⚠️ Rebase conflict detected. Aborting self-heal to preserve remote state."
+              git rebase --abort
+              exit 1
+            }
+            
+            git push
+            echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
+            echo ""
+            echo "🔄 A new CI run will be triggered automatically to verify the fix."
           else
             echo "✅ No formatting changes needed after heal attempt"
           fi
