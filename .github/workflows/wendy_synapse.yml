@@ -31,6 +31,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🐍 Provision Python & Symbolic Math
         uses: actions/setup-python@v5
@@ -62,19 +63,39 @@ jobs:
           python wendy_crystalline_executor.py .wendy_dream.gmi > .wendy_manifest.gmi
           grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || { echo "❌ Habermasian Discourse Failed."; exit 1; }
 
-      - name: "💾 Step 3: Crystallize State"
+      - name: "💾 Step 3: Crystallize State (Race-Safe)"
         if: ${{ success() }}
         run: |
           set -euo pipefail
           git config --global user.name "WENDY Metabolic Engine"
           git config --global user.email "wendy@psivi.com"
-          git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git add .wendy_dream.gmi .wendy_manifest.gmi || true
           
           if git diff --staged --quiet; then
             echo "🟢 State unchanged."
-          else
-            ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
-            git commit -m "🏛️ [WENDY] Habermasian Consensus at $ZULU_TS"
-            git push
+            exit 0
           fi
+          
+          ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
+          git commit -m "🏛️ [WENDY] Habermasian Consensus at $ZULU_TS"
+          
+          # Race-safe push with retry (handles concurrent workflows)
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin ${{ github.ref_name }} 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin ${{ github.ref_name }} || {
+              echo "❌ Rebase conflict. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
