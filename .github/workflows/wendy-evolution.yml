@@ -71,10 +71,16 @@ jobs:
           echo "Waiting for Tokio to bind IPC Port 1966..."
           sleep 5
       
-      - name: 🧬 Execute Polyglot Evolution (FORTH Orchestrates Zig/Rust/Go)
+      - name: 🔗 Lay Down Connective Tissue
         run: |
           cd wendy-cortex/forth
-          gforth evolution.fth -e "WENDY-EVOLVE" -e "bye"
+          chmod +x ../../scripts/wendy_self_wire.py
+          chmod +x ../../scripts/wendy_ipc_client.py
+      
+      - name: 🧬 Execute Evolution (WENDY Wires Herself)
+        run: |
+          cd wendy-cortex/forth
+          gforth connective_tissue.fth evolution.fth -e "WENDY-EVOLVE" -e "bye"
       
       - name: 📜 Upload IPC Logs (On Failure)
         if: failure()
