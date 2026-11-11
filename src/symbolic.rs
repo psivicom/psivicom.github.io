@@ -1,4 +1,4 @@
-use anyhow::{Result, bail};
+use anyhow::{bail, Result};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -18,7 +18,10 @@ pub struct SymbolicEngine {
 impl SymbolicEngine {
     pub fn new() -> Result<Self> {
         let mut axioms = HashMap::new();
-        axioms.insert("identity".to_string(), Symbol::Proposition("=".to_string(), vec![]));
+        axioms.insert(
+            "identity".to_string(),
+            Symbol::Proposition("=".to_string(), vec![]),
+        );
         Ok(Self { axioms })
     }
 
@@ -29,7 +32,7 @@ impl SymbolicEngine {
             Symbol::Operation(op, left, right) => {
                 let l = self.evaluate(left)?;
                 let r = self.evaluate(right)?;
-                
+
                 if let (Symbol::Constant(lv), Symbol::Constant(rv)) = (&l, &r) {
                     match op.as_str() {
                         "+" => Ok(Symbol::Constant(*lv + *rv)),
