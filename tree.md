@@ -92,9 +92,8 @@
 ├── sitemap.xml
 ├── wendy-console.html
 ├── wendy_mobile_airgap.py
-├── wendy_ouroboros_bridge.py
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 85 files
+11 directories, 84 files
 ```
