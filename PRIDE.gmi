@@ -1,8 +1,28 @@
 # WENDY Polyglot Build Results
-Generated: 2026-11-11T10:53:01.512Z
+Generated: 2026-11-11T22:41:15.615Z
 
 ## Ubuntu (x86_64) Artifacts
 None built
 
 ## macOS (ARM64) Artifacts
-None built
+total 5.3M
+drwxr-xr-x 11 runner runner 4.0K Nov 11 22:41 build
+drwxr-xr-x  2 runner runner  12K Nov 11 22:41 deps
+-rw-r--r--  1 runner runner  209 Nov 11 22:41 libwendy_cortex.d
+-rw-r--r--  1 runner runner 7.5K Nov 11 22:41 libwendy_cortex.rlib
+-rw-r--r--  1 runner runner 1.5M Nov 11 22:41 wendy-autonomous-core
+-rw-r--r--  1 runner runner  303 Nov 11 22:41 wendy-autonomous-core.d
+-rw-r--r--  1 runner runner 379K Nov 11 22:41 wendy-build-polyglot
+-rw-r--r--  1 runner runner  389 Nov 11 22:41 wendy-build-polyglot.d
+-rw-r--r--  1 runner runner 1.4M Nov 11 22:41 wendy-cortex
+-rw-r--r--  1 runner runner  535 Nov 11 22:41 wendy-cortex.d
+-rw-r--r--  1 runner runner 395K Nov 11 22:41 wendy-crystalline-executor
+-rw-r--r--  1 runner runner  313 Nov 11 22:41 wendy-crystalline-executor.d
+-rw-r--r--  1 runner runner 526K Nov 11 22:41 wendy-mobile-airgap
+-rw-r--r--  1 runner runner  299 Nov 11 22:41 wendy-mobile-airgap.d
+-rw-r--r--  1 runner runner 379K Nov 11 22:41 wendy-ouroboros-bridge
+-rw-r--r--  1 runner runner  305 Nov 11 22:41 wendy-ouroboros-bridge.d
+-rw-r--r--  1 runner runner 345K Nov 11 22:41 wendy-rust-bridge
+-rw-r--r--  1 runner runner  295 Nov 11 22:41 wendy-rust-bridge.d
+-rw-r--r--  1 runner runner 361K Nov 11 22:41 wendy-synapse-orchestrator
+-rw-r--r--  1 runner runner  313 Nov 11 22:41 wendy-synapse-orchestrator.d
