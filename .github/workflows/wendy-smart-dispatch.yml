@@ -26,9 +26,6 @@ jobs:
       - name: 📖 Read Runner Matrix
         id: detect
         run: |
-          # Parse RUNNERS.toml to determine which runners are needed
-          # For now, simple logic: if ARM64/edge/iOS is mentioned, we need macOS
-          
           if grep -q "aarch64\|arm64\|ios\|edge" wendy-cortex/RUNNERS.toml; then
             echo "macos=true" >> $GITHUB_OUTPUT
           else
@@ -101,12 +98,14 @@ jobs:
           path: wendy-cortex/target/aarch64-apple-darwin/release/
 
   deploy-artifacts:
-    name: 📦 Consolidate & Commit
+    name: 📦 Consolidate & Commit (Race-Safe)
     needs: [build-ubuntu, build-macos]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
@@ -122,10 +121,36 @@ jobs:
           echo "## macOS (ARM64) Artifacts" >> PRIDE.gmi
           ls -lh macos-artifacts/ >> PRIDE.gmi 2>/dev/null || echo "None built" >> PRIDE.gmi
       
-      - name: 💾 Commit Build Results
+      - name: 💾 Commit Build Results (Race-Safe)
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           git add PRIDE.gmi
-          git diff --staged --quiet || git commit -m "🏛️ build: smart-dispatch compiled artifacts [skip ci]"
-          git push
+          
+          if git diff --staged --quiet; then
+            echo "✅ No build results to commit"
+            exit 0
+          fi
+          
+          git commit -m "🏛️ build: smart-dispatch compiled artifacts [skip ci]"
+          
+          # Race-safe push
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin main || {
+              echo "❌ Rebase failed. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
