@@ -7,7 +7,7 @@ description = "WENDY Cortex: Tokio-driven Hebbian substrate with Gemini IPC"
 license = "EUPL-1.2"
 
 # =========================================================================
-# BINARIES: The Four Pillars of the WENDY Organism
+# BINARIES: The Pillars of the WENDY Organism
 # =========================================================================
 
 # Primary IPC Daemon (main.rs) — listens on port 1966
@@ -36,6 +36,16 @@ path = "src/rust_bridge.rs"
 [[bin]]
 name = "wendy-synapse-orchestrator"
 path = "src/synapse_orchestrator.rs"
+
+[[bin]]
+name = "wendy-build-polyglot"
+path = "src/build_polyglot.rs"
+
+# =========================================================================
+# SHARED MODULES
+# =========================================================================
+# src/ipc_client.rs — Shared IPC client used by multiple binaries
+# (Rust automatically discovers modules via `mod ipc_client;` in each binary)
 
 # =========================================================================
 # DEPENDENCIES
