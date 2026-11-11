@@ -84,6 +84,7 @@ regex = "1.10"
 syn = { version = "2.0", features = ["full", "parsing", "printing", "visit-mut"] }
 quote = "1.0"
 proc-macro2 = "1.0"
+prettyplease = "0.2"
 
 # =========================================================================
 # RELEASE PROFILE: Maximum Optimization
