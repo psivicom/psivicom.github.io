@@ -1,4 +1,4 @@
-name: 💿 WENDY Core CI/CD Pipeline
+name: WENDY Core CI/CD Pipeline
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 permissions:
   id-token: write
-  contents: write     # ← CHANGED: need write for self-healing push
+  contents: write
   checks: write
 
 env:
@@ -72,9 +72,7 @@ jobs:
       - name: Fail Pipeline if Formatting Still Broken
         if: steps.fmt-check.outcome == 'failure'
         run: |
-          cargo fmt --all -- --check
-          # If we reach here, heal succeeded on second try (race condition)
-          echo "⚠️ Formatting fixed mid-run but pipeline must re-run for clean state"
+          echo "⚠️ Formatting was fixed, but failing this run to ensure the next run starts with a clean state."
           exit 1
 
       - name: Static Analysis (Clippy)
