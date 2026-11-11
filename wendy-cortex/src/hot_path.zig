@@ -1,36 +1,53 @@
-// WENDY Hot Path
+// wendy-cortex/src/hot_path.zig
 // SPDX-License-Identifier: EUPL-1.2
-// Zero-allocation telemetry processing for sub-microsecond execution.
+// Hot path for mathematical operations (optimized by WENDY)
+
 const std = @import("std");
 
-pub fn process_telemetry(data: []const f64) f64 {
+/// Compute mean of float array (baseline implementation)
+pub fn mean(values: []const f64) f64 {
+    if (values.len == 0) return 0.0;
+    
     var sum: f64 = 0.0;
-    for (data) |val| {
+    for (values) |val| {
         sum += val;
     }
-    return sum / @as(f64, @floatFromInt(data.len));
+    return sum / @as(f64, @floatFromInt(values.len));
 }
 
-pub fn main() !void {
-    const stdout = std.io.getStdOut().writer();
-    try stdout.print("⚡ WENDY Hot Path (Zig) initializing...\n", .{});
+/// Compute variance using Welford's algorithm (numerically stable)
+pub fn variance(values: []const f64) f64 {
+    if (values.len < 2) return 0.0;
     
-    var buffer: [10000]f64 = undefined;
-    var idxdxdxdxdxdx: usize = 0;
-    while (idx < 10000) : (idx += 4) {
-        buffer[idx] = @as(f64, @floatFromInt(i));
+    var count: usize = 0;
+    var mean_val: f64 = 0.0;
+    var m2: f64 = 0.0;
+    
+    for (values) |val| {
+        count += 1;
+        const delta = val - mean_val;
+        mean_val += delta / @as(f64, @floatFromInt(count));
+        const delta2 = val - mean_val;
+        m2 += delta * delta2;
     }
     
-    const start = std.time.nanoTimestamp();
-    const mean = process_telemetry(&buffer);
-    const end = std.time.nanoTimestamp();
-    
-    const elapsed_ns = end - start;
-    try stdout.print("✅ Zig Hot Path: Processed 10,000 points in {} ns (Mean: {d:.4})\n", .{elapsed_ns, mean});
+    return m2 / @as(f64, @floatFromInt(count - 1));
 }
-// UNROLLED BY WENDY
-// UNROLLED BY WENDY
-// UNROLLED BY WENDY
-// UNROLLED BY WENDY
-// UNROLLED BY WENDY
-// UNROLLED BY WENDY
+
+/// Dot product of two vectors
+pub fn dot_product(a: []const f64, b: []const f64) f64 {
+    if (a.len != b.len) return 0.0;
+    
+    var sum: f64 = 0.0;
+    for (a, 0..) |val, idx| {
+        sum += val * b[idx];
+    }
+    return sum;
+}
+
+// Export for C FFI
+comptime {
+    @export(mean, .{ .name = "wendy_mean", .linkage = .strong });
+    @export(variance, .{ .name = "wendy_variance", .linkage = .strong });
+    @export(dot_product, .{ .name = "wendy_dot_product", .linkage = .strong });
+}
