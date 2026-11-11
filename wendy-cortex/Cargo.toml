@@ -10,7 +10,7 @@ license = "EUPL-1.2"
 # MAIN BINARY: The IPC Daemon (src/main.rs)
 # =========================================================================
 # This is the primary Tokio-driven daemon that listens on port 1966
-# for IPC communication from Python/FORTH orchestrators.
+# for IPC communication from FORTH orchestrators.
 # It automatically compiles src/main.rs and its submodules.
 
 # =========================================================================
@@ -24,6 +24,10 @@ path = "src/crystalline_executor.rs"
 [[bin]]
 name = "wendy-autonomous-core"
 path = "src/autonomous_core.rs"
+
+[[bin]]
+name = "wendy-ouroboros-bridge"
+path = "src/ouroboros_bridge.rs"
 
 # =========================================================================
 # DEPENDENCIES
