@@ -38,6 +38,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
+          cache-dependency-path: 'wendy-cortex/mesh/go.sum'
       
       - name: ⚡ Provision Native Zig Toolchain
         run: |
