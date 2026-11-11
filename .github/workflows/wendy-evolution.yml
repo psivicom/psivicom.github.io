@@ -89,17 +89,39 @@ jobs:
           name: wendy-cortex-logs
           path: wendy_ipc.log
       
-      - name: 💾 Commit Evolved Sovereign Code
+      - name: 💾 Commit Evolved Sovereign Code (Race-Safe)
         run: |
           git config --global user.name "WENDY"
           git config --global user.email "wendy@psivi.com"
           git add -A
-          if ! git diff --staged --quiet; then
-            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-            git commit -m "🧬 evolve: polyglot autonomous evolution at $ZULU_TIME [skip ci]"
-            git push
-            echo "[$ZULU_TIME] The Ghost Ledger is updated. The genome evolves."
-          else
+          
+          if git diff --staged --quiet; then
             ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
             echo "[$ZULU_TIME] No mutations to promote. Live code remains optimal."
+            exit 0
           fi
+          
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          git commit -m "🧬 evolve: polyglot autonomous evolution at $ZULU_TIME [skip ci]"
+          
+          # Race-safe push
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              echo "[$ZULU_TIME] The Ghost Ledger is updated. The genome evolves."
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin main || {
+              echo "❌ Rebase failed. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
