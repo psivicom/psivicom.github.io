@@ -2,26 +2,31 @@
         run: |
           cd wendy-cortex
           
-          # Try to compile Zig
-          if zig build-exe -O ReleaseFast src/hot_path.zig 2>&1; then
+          # Source coordination helper
+          source ../scripts/wendy_coordinator.sh
+          
+          # Try compilation
+          if zig build-exe -O ReleaseFast src/hot_path.zig 2>zig_error.log; then
             echo "✅ Zig hot path compiled successfully"
+            update_state "zig_compile" "success"
+            rm -f zig_error.log
           else
-            echo "⚠️ Zig compilation failed. Reverting to baseline..."
+            echo "⚠️ Zig compilation failed. Initiating self-heal..."
+            cat zig_error.log
             
-            # Restore baseline from git
-            git checkout HEAD~1 -- src/hot_path.zig 2>/dev/null || {
-              echo "❌ No previous version. Using hardcoded baseline."
-              
-              # Write baseline directly
+            # Revert to last known good version
+            if git log --oneline -n 20 -- src/hot_path.zig | grep -q "zig"; then
+              echo "🔄 Reverting to last good Zig version..."
+              git log --oneline -n 20 -- src/hot_path.zig | grep "zig" | head -1 | cut -d' ' -f1 | xargs git checkout HEAD -- src/hot_path.zig
+            else
+              echo "🔄 Writing baseline Zig..."
               cat > src/hot_path.zig << 'ZIG_EOF'
 const std = @import("std");
 
 pub fn mean(values: []const f64) f64 {
     if (values.len == 0) return 0.0;
     var sum: f64 = 0.0;
-    for (values) |val| {
-        sum += val;
-    }
+    for (values) |val| sum += val;
     return sum / @as(f64, @floatFromInt(values.len));
 }
 
@@ -43,9 +48,7 @@ pub fn variance(values: []const f64) f64 {
 pub fn dot_product(a: []const f64, b: []const f64) f64 {
     if (a.len != b.len) return 0.0;
     var sum: f64 = 0.0;
-    for (a, 0..) |val, idx| {
-        sum += val * b[idx];
-    }
+    for (a, 0..) |val, idx| sum += val * b[idx];
     return sum;
 }
 
@@ -55,39 +58,22 @@ comptime {
     @export(dot_product, .{ .name = "wendy_dot_product", .linkage = .strong });
 }
 ZIG_EOF
-            }
+            fi
             
-            # Try compiling baseline
+            # Verify baseline compiles
             if zig build-exe -O ReleaseFast src/hot_path.zig 2>&1; then
-              echo "✅ Baseline Zig compiled successfully"
+              echo "✅ Baseline Zig compiled"
+              update_state "zig_compile" "self_healed" "reverted_to_baseline"
               
-              # Commit the revert
-              git config --global user.name "WENDY Self-Healing"
-              git config --global user.email "wendy@psivi.com"
-              git add src/hot_path.zig
-              
-              if ! git diff --staged --quiet; then
-                ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-                git commit -m "🩹 self-heal: reverted malformed Zig at $ZULU_TIME [skip ci]"
-                
-                # Race-safe push
-                MAX_ATTEMPTS=3
-                ATTEMPT=1
-                while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-                  if git push origin main 2>&1; then
-                    echo "✅ Self-heal pushed successfully"
-                    break
-                  fi
-                  git pull --rebase --autostash origin main || {
-                    git rebase --abort
-                    break
-                  }
-                  ATTEMPT=$((ATTEMPT + 1))
-                  sleep $((ATTEMPT * 2))
-                done
-              fi
+              # Commit and push the self-heal
+              cd ..
+              source scripts/wendy_coordinator.sh
+              safe_push "🩹 self-heal: reverted malformed Zig mutation"
             else
-              echo "❌ Even baseline Zig failed to compile. Critical error."
+              echo "❌ Even baseline Zig failed. Critical error."
+              update_state "zig_compile" "critical_failure"
               exit 1
             fi
+            
+            rm -f wendy-cortex/zig_error.log
           fi
