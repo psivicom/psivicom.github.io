@@ -4,13 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       raw_chaos_feed:
-        description: 'Raw unstructured input'
-        required: true
+        description: 'Optional manual chaos feed (leave empty for autonomous generation)'
+        required: false
         type: string
+  schedule:
+    - cron: '0 */3 * * *'  # Autonomous heartbeat: every 3 hours
   push:
     branches: [ "main" ]
     paths: 
       - "raw_input_stream/**" 
+      - ".wendy_manifest.gmi"
+      - ".wendy_dream.gmi"
 
 permissions:
   id-token: write
@@ -23,7 +27,7 @@ env:
 
 jobs:
   synapse_execution:
-    name: 🧬 The Habermasian Loop
+    name: 🧬 The Habermasian Loop (Autonomous)
     runs-on: ubuntu-latest
     
     steps:
@@ -41,21 +45,91 @@ jobs:
       - name: 📦 Install Sympy for Habermasian Truth Claims
         run: pip install sympy
 
-      - name: "🌌 Step 1: Invoke the Dreamer (58.28°)"
-        id: dreamer
+      - name: "🌌 Step 1: Generate or Receive Chaos Feed"
+        id: chaos
         env:
-          CHAOS_FEED: ${{ github.event.inputs.raw_chaos_feed }}
+          MANUAL_FEED: ${{ github.event.inputs.raw_chaos_feed }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            printf "%s\n" "$CHAOS_FEED" > .wendy_raw.gmi
-          else
-            cat raw_input_stream/*.txt > .wendy_raw.gmi 2>/dev/null || printf "%s\n" "Stasis." > .wendy_raw.gmi
+          
+          # Priority 1: Manual input (if provided)
+          if [ -n "$MANUAL_FEED" ]; then
+            echo "📥 Using manual chaos feed from Emperor"
+            printf "%s\n" "$MANUAL_FEED" > .wendy_raw.gmi
+            echo "source=manual" >> $GITHUB_OUTPUT
+            exit 0
           fi
+          
+          # Priority 2: Read from raw_input_stream (external entropy)
+          if [ -d "raw_input_stream" ] && [ "$(ls -A raw_input_stream/*.txt 2>/dev/null | wc -l)" -gt 0 ]; then
+            echo "📥 Reading external entropy from raw_input_stream/"
+            cat raw_input_stream/*.txt > .wendy_raw.gmi
+            echo "source=external" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Priority 3: Generate autonomous chaos from internal state
+          echo "🧬 Generating autonomous chaos from WENDY's internal state..."
+          
+          # Read previous manifest if exists
+          PREV_MANIFEST=""
+          if [ -f ".wendy_manifest.gmi" ]; then
+            PREV_MANIFEST=$(cat .wendy_manifest.gmi)
+          fi
+          
+          # Read previous dream if exists
+          PREV_DREAM=""
+          if [ -f ".wendy_dream.gmi" ]; then
+            PREV_DREAM=$(cat .wendy_dream.gmi)
+          fi
+          
+          # Read recent git log for emergent patterns
+          RECENT_COMMITS=$(git log --oneline -10 2>/dev/null || echo "No commit history")
+          
+          # Read evolution logs if they exist
+          EVOLUTION_LOG=""
+          if [ -f "wendy_ipc.log" ]; then
+            EVOLUTION_LOG=$(tail -20 wendy_ipc.log 2>/dev/null || echo "")
+          fi
+          
+          # Generate autonomous tension
+          cat > .wendy_raw.gmi << EOF
+# WENDY Autonomous Chaos Feed
+Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+Source: Internal state reflection
+
+## Previous Manifest (Last Consensus)
+$PREV_MANIFEST
+
+## Previous Dream (Last Creative Output)
+$PREV_DREAM
+
+## Recent Evolution Activity
+$RECENT_COMMITS
+
+## IPC Telemetry
+$EVOLUTION_LOG
+
+## Emergent Tension
+The organism must now identify the next conceptual gap between:
+1. What was crystallized (manifest)
+2. What was dreamed but not yet materialized
+3. What the substrate evolution reveals as bottleneck
+
+Generate the next architectural question that bridges this gap.
+EOF
+          
+          echo "source=autonomous" >> $GITHUB_OUTPUT
+          echo "🧬 Autonomous chaos generated from internal state"
+
+      - name: "🌌 Step 2: Invoke the Dreamer (58.28°)"
+        id: dreamer
+        run: |
+          set -euo pipefail
           python wendy_autonomous_core.py < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
 
-      - name: "🧊 Step 2: Invoke the Anchor (31.72°)"
+      - name: "🧊 Step 3: Invoke the Anchor (31.72°)"
         id: anchor
         if: ${{ steps.dreamer.outputs.dream_status == 'success' }}
         run: |
@@ -63,23 +137,24 @@ jobs:
           python wendy_crystalline_executor.py .wendy_dream.gmi > .wendy_manifest.gmi
           grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || { echo "❌ Habermasian Discourse Failed."; exit 1; }
 
-      - name: "💾 Step 3: Crystallize State (Race-Safe)"
+      - name: "💾 Step 4: Crystallize State (Race-Safe)"
         if: ${{ success() }}
         run: |
           set -euo pipefail
           git config --global user.name "WENDY Metabolic Engine"
           git config --global user.email "wendy@psivi.com"
-          git add .wendy_dream.gmi .wendy_manifest.gmi || true
+          git add .wendy_raw.gmi .wendy_dream.gmi .wendy_manifest.gmi || true
           
           if git diff --staged --quiet; then
             echo "🟢 State unchanged."
             exit 0
           fi
           
+          SOURCE="${{ steps.chaos.outputs.source }}"
           ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
-          git commit -m "🏛️ [WENDY] Habermasian Consensus at $ZULU_TS"
+          git commit -m "🏛️ [WENDY] Habermasian Consensus ($SOURCE) at $ZULU_TS"
           
-          # Race-safe push with retry (handles concurrent workflows)
+          # Race-safe push with retry
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
