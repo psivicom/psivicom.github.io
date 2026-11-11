@@ -7,6 +7,24 @@ set -euo pipefail
 STATE_FILE=".wendy_state.json"
 LOCK_FILE=".wendy_lock"
 
+# Configure git identity (called explicitly by workflows)
+configure_git_identity() {
+  local name="${1:-WENDY Autonomous Agent}"
+  local email="${2:-wendy@psivi.com}"
+  
+  echo "🔧 Configuring git identity: $name <$email>"
+  git config --global user.name "$name"
+  git config --global user.email "$email"
+  git config --global init.defaultBranch main
+  
+  # Verify configuration
+  if ! git config --global --get user.name &>/dev/null; then
+    echo "❌ Failed to configure git identity"
+    exit 1
+  fi
+  echo "✅ Git identity configured"
+}
+
 # Acquire lock (prevent concurrent workflow conflicts)
 acquire_lock() {
   local max_wait=60
@@ -34,12 +52,10 @@ update_state() {
   local status="$2"
   local details="${3:-}"
   
-  # Ensure state file exists
   if [ ! -f "$STATE_FILE" ]; then
     echo '{"last_heartbeat":"","workflows":{},"learned_patterns":{},"pending_actions":[]}' > "$STATE_FILE"
   fi
   
-  # Update with jq if available, otherwise use python
   if command -v jq &> /dev/null; then
     local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
     jq --arg wf "$workflow" \
@@ -50,7 +66,7 @@ update_state() {
        "$STATE_FILE" > "$STATE_FILE.tmp" && mv "$STATE_FILE.tmp" "$STATE_FILE"
   elif command -v python3 &> /dev/null; then
     python3 << EOF
-import json, sys
+import json
 from datetime import datetime, timezone
 
 with open("$STATE_FILE", 'r') as f:
@@ -72,30 +88,17 @@ EOF
   fi
 }
 
-# Check if action is needed (idempotency)
-needs_action() {
-  local action_type="$1"
-  
-  if [ ! -f "$STATE_FILE" ]; then
-    return 0  # No state = needs action
-  fi
-  
-  # Check pending actions
-  if command -v jq &> /dev/null; then
-    local pending=$(jq -r ".pending_actions[] | select(.type == \"$action_type\") | .type" "$STATE_FILE" 2>/dev/null || echo "")
-    if [ -n "$pending" ]; then
-      return 0  # Action pending
-    fi
-  fi
-  
-  return 1  # No action needed
-}
-
 # Race-safe push (universal)
 safe_push() {
   local commit_msg="$1"
   local max_attempts=3
   local attempt=1
+  
+  # Ensure git identity is configured
+  if ! git config --global --get user.name &>/dev/null; then
+    echo "❌ Git identity not configured. Call configure_git_identity first."
+    return 1
+  fi
   
   git add -A
   
@@ -127,5 +130,5 @@ safe_push() {
 }
 
 # Export functions
-export -f acquire_lock update_state needs_action safe_push
+export -f configure_git_identity acquire_lock update_state safe_push
 export STATE_FILE LOCK_FILE
