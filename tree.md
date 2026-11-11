@@ -28,7 +28,7 @@
 │   ├── bootstrap-wendy.sh*
 │   ├── forge_conservatory.sh*
 │   ├── provision_arch_edge.sh*
-│   ├── safe-push.sh
+│   ├── safe-push.sh*
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_evolution_engine.py
 │   ├── wendy_ipc_client.py*
