@@ -62,9 +62,11 @@ jobs:
             git add src/
             
             ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-            git commit -m "🩹 self-heal: auto-format Rust code at $ZULU_TIME [skip ci]"
+            git commit -m "🩹 self-heal: auto-format Rust code at $ZULU_TIME"
             git push
             echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
+            echo ""
+            echo "🔄 A new CI run will be triggered automatically to verify the fix."
           else
             echo "✅ No formatting changes needed after heal attempt"
           fi
