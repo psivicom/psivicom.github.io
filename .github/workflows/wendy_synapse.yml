@@ -52,7 +52,7 @@ jobs:
         run: |
           set -euo pipefail
           
-          if [ -n "$MANUAL_FEED" ]; then
+          if [ -n "${MANUAL_FEED:-}" ]; then
             echo "📥 Using manual chaos feed from Emperor"
             printf "%s\n" "$MANUAL_FEED" > .wendy_raw.gmi
             echo "source=manual" >> $GITHUB_OUTPUT
@@ -85,31 +85,33 @@ jobs:
             EVOLUTION_LOG=$(tail -20 wendy_ipc.log 2>/dev/null || echo "")
           fi
           
-          cat > .wendy_raw.gmi << EOF
-# WENDY Autonomous Chaos Feed
-Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-Source: Internal state reflection
-
-## Previous Manifest (Last Consensus)
-$PREV_MANIFEST
-
-## Previous Dream (Last Creative Output)
-$PREV_DREAM
-
-## Recent Evolution Activity
-$RECENT_COMMITS
-
-## IPC Telemetry
-$EVOLUTION_LOG
-
-## Emergent Tension
-The organism must now identify the next conceptual gap between:
-1. What was crystallized (manifest)
-2. What was dreamed but not yet materialized
-3. What the substrate evolution reveals as bottleneck
-
-Generate the next architectural question that bridges this gap.
-EOF
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          
+          {
+            echo "# WENDY Autonomous Chaos Feed"
+            echo "Generated: $TIMESTAMP"
+            echo "Source: Internal state reflection"
+            echo ""
+            echo "## Previous Manifest (Last Consensus)"
+            echo "$PREV_MANIFEST"
+            echo ""
+            echo "## Previous Dream (Last Creative Output)"
+            echo "$PREV_DREAM"
+            echo ""
+            echo "## Recent Evolution Activity"
+            echo "$RECENT_COMMITS"
+            echo ""
+            echo "## IPC Telemetry"
+            echo "$EVOLUTION_LOG"
+            echo ""
+            echo "## Emergent Tension"
+            echo "The organism must now identify the next conceptual gap between:"
+            echo "1. What was crystallized (manifest)"
+            echo "2. What was dreamed but not yet materialized"
+            echo "3. What the substrate evolution reveals as bottleneck"
+            echo ""
+            echo "Generate the next architectural question that bridges this gap."
+          } > .wendy_raw.gmi
           
           echo "source=autonomous" >> $GITHUB_OUTPUT
           echo "🧬 Autonomous chaos generated from internal state"
