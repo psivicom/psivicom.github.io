@@ -31,7 +31,8 @@
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_evolution_engine.py
 │   ├── wendy_ipc_client.py
-│   └── wendy_llm_query.py
+│   ├── wendy_llm_query.py
+│   └── wendy_self_wire.py
 ├── wendy-cortex/
 │   ├── forth/
 │   │   ├── bootstrap_dictionary.sh*
@@ -91,5 +92,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 80 files
+11 directories, 81 files
 ```
