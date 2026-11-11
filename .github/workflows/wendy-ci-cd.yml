@@ -1,4 +1,4 @@
-name: WENDY Core CI/CD Pipeline
+name: 💿 WENDY Core CI/CD Pipeline
 
 on:
   push:
