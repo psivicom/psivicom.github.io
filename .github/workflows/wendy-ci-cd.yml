@@ -7,8 +7,8 @@ on:
     branches: [ "main" ]
 
 permissions:
-  id-token: write   # Strict OIDC security for deployments
-  contents: read
+  id-token: write
+  contents: write     # ← CHANGED: need write for self-healing push
   checks: write
 
 env:
@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Rust Toolchain (Direct Installation)
         run: |
@@ -42,8 +44,38 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      - name: Strict Formatting Check
+      - name: Strict Formatting Check (Self-Healing)
+        id: fmt-check
+        continue-on-error: true
         run: cargo fmt --all -- --check
+
+      - name: 🩹 Self-Healing: Auto-Format if Needed
+        if: steps.fmt-check.outcome == 'failure'
+        run: |
+          echo "⚠️ Formatting issues detected. Initiating self-healing..."
+          cargo fmt --all
+          
+          if ! git diff --quiet; then
+            echo "🔧 Self-healing applied formatting fixes"
+            git config --global user.name "WENDY Self-Healing"
+            git config --global user.email "wendy@psivi.com"
+            git add src/
+            
+            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+            git commit -m "🩹 self-heal: auto-format Rust code at $ZULU_TIME [skip ci]"
+            git push
+            echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
+          else
+            echo "✅ No formatting changes needed after heal attempt"
+          fi
+
+      - name: Fail Pipeline if Formatting Still Broken
+        if: steps.fmt-check.outcome == 'failure'
+        run: |
+          cargo fmt --all -- --check
+          # If we reach here, heal succeeded on second try (race condition)
+          echo "⚠️ Formatting fixed mid-run but pipeline must re-run for clean state"
+          exit 1
 
       - name: Static Analysis (Clippy)
         run: cargo clippy -- -D warnings
@@ -60,39 +92,7 @@ jobs:
           echo "BUILD_TIME=${TIMESTAMP}" >> $GITHUB_ENV
           echo "WENDY_BUILD_${TIMESTAMP}" > build_artifact.txt
 
-      - name: Strict Formatting Check
-        id: fmt-check
-        continue-on-error: true
-        run: cargo fmt --all -- --check
-
-      - name: 🩹 Self-Healing: Auto-Format if Needed
-        if: steps.fmt-check.outcome == 'failure'
-        run: |
-          echo "⚠️ Formatting issues detected. Initiating self-healing..."
-          cargo fmt --all
-          
-          # Check if formatting made changes
-          if ! git diff --quiet; then
-            echo "🔧 Self-healing applied formatting fixes"
-            git config --global user.name "WENDY Self-Healing"
-            git config --global user.email "wendy@psivi.com"
-            git add src/
-            
-            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-            git commit -m "🩹 self-heal: auto-format Rust code at $ZULU_TIME [skip ci]"
-            git push
-            echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
-          else
-            echo "✅ No formatting changes needed"
-          fi
-
-      - name: Fail if Formatting Still Broken
-        if: steps.fmt-check.outcome == 'failure'
-        run: cargo fmt --all -- --check
-
-
       - name: Self-Healing Rollback Check
         if: failure()
         run: |
           echo "::error::WENDY CI/CD Pipeline failed. Initiating self-healing rollback protocol."
-          # Add logic here to revert state or notify Emperor ♠️🪽 via webhook
