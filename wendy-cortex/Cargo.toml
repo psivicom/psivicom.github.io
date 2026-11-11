@@ -95,3 +95,9 @@ strip = true               # Strip debug symbols from release binary
 opt-level = 0              # No optimization for fast compilation
 debug = true               # Full debug information
 lto = false                # No LTO for faster builds
+
+[dependencies]
+# ... existing dependencies ...
+syn = { version = "2.0", features = ["full", "parsing", "printing", "visit-mut"] }
+quote = "1.0"
+proc-macro2 = "1.0"
