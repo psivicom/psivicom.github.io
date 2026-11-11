@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-11T00:41:21.000Z -->
+<!-- Last updated: 2026-11-11T04:07:43.000Z -->
 ```text
 ./
 ├── .github/
@@ -161,6 +161,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   │   ├── bootstrap_go.sh*
 │   │   ├── bootstrap_rust.sh*
 │   │   ├── bootstrap_zig.sh
+│   │   ├── connective_tissue.fth
 │   │   ├── evolution.fth
 │   │   ├── homoiconic_cortex.fth
 │   │   ├── promote_forth.sh
@@ -213,6 +214,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 79 files
+11 directories, 80 files
 ```
 <!-- AUTO_TREE_END -->

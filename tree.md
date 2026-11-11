@@ -38,6 +38,7 @@
 │   │   ├── bootstrap_go.sh*
 │   │   ├── bootstrap_rust.sh*
 │   │   ├── bootstrap_zig.sh
+│   │   ├── connective_tissue.fth
 │   │   ├── evolution.fth
 │   │   ├── homoiconic_cortex.fth
 │   │   ├── promote_forth.sh
@@ -90,5 +91,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 79 files
+11 directories, 80 files
 ```
