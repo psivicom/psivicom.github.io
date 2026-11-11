@@ -30,14 +30,15 @@ fn calculate_hope_resonance(text: &str) -> HopeResonance {
     let real_axis = (word_count / 100.0).min(1.0);
     
     // Imaginary axis: novelty markers
+    // FIX: Use pattern matching to avoid triple-reference issue
     let novelty_markers = [
         "however", "perhaps", "imagine", "tension", "paradox",
-        "也许", "张力", "本原", "展开"
+        "也许", "张力", "本原", "展开",
     ];
     let text_lower = text.to_lowercase();
     let marker_count = novelty_markers
         .iter()
-        .filter(|m| text_lower.contains(m))
+        .filter(|&&marker| text_lower.contains(marker))
         .count() as f64;
     let imaginary_axis = (marker_count / 3.0).min(1.0);
     
