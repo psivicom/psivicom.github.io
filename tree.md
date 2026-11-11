@@ -28,6 +28,7 @@
 │   ├── bootstrap-wendy.sh*
 │   ├── forge_conservatory.sh*
 │   ├── provision_arch_edge.sh*
+│   ├── safe-push.sh
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_evolution_engine.py
 │   ├── wendy_ipc_client.py*
@@ -92,5 +93,5 @@
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 81 files
+11 directories, 82 files
 ```
