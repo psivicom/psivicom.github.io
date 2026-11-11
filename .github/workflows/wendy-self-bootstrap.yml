@@ -17,13 +17,39 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set Executable Permissions Autonomously
+          fetch-depth: 0
+          
+      - name: Set Executable Permissions Autonomously (Race-Safe)
         run: |
           chmod +x scripts/*.sh
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
-          if [[ -n $(git status --porcelain) ]]; then
-            git add scripts/
-            git commit -m "chore(wendy): autonomously set executable permissions"
-            git push
+          
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "✅ No permission changes needed"
+            exit 0
           fi
+          
+          git add scripts/
+          git commit -m "chore(wendy): autonomously set executable permissions [skip ci]"
+          
+          # Race-safe push
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin main || {
+              echo "❌ Rebase failed. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
