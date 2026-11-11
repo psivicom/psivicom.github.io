@@ -1,4 +1,4 @@
-name: ❇️ WENDY Workflowauditor
+name: 🎯 WENDY Workflow Auditor
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 permissions:
   contents: write
-  workflows: write    # ← REQUIRED to modify workflow files
+  workflows: write
 
 jobs:
   audit-autorun-buttons:
