@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   audit-autorun-buttons:
-    name: 🎯 Ensure Autorun Buttons Exist
+    name: ❇️ Ensure Autorun Buttons Exist
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -76,7 +76,7 @@ jobs:
           
           CHANGED_FILES=$(git diff --staged --name-only | wc -l)
           ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-          git commit -m "🎯 auditor: added workflow_dispatch to $CHANGED_FILES workflows at $ZULU_TIME [skip ci]"
+          git commit -m "❇️ auditor: added workflow_dispatch to $CHANGED_FILES workflows at $ZULU_TIME [skip ci]"
           
           # Race-safe push
           MAX_ATTEMPTS=3
