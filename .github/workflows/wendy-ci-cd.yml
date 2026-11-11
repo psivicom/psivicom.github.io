@@ -60,6 +60,37 @@ jobs:
           echo "BUILD_TIME=${TIMESTAMP}" >> $GITHUB_ENV
           echo "WENDY_BUILD_${TIMESTAMP}" > build_artifact.txt
 
+      - name: Strict Formatting Check
+        id: fmt-check
+        continue-on-error: true
+        run: cargo fmt --all -- --check
+
+      - name: 🩹 Self-Healing: Auto-Format if Needed
+        if: steps.fmt-check.outcome == 'failure'
+        run: |
+          echo "⚠️ Formatting issues detected. Initiating self-healing..."
+          cargo fmt --all
+          
+          # Check if formatting made changes
+          if ! git diff --quiet; then
+            echo "🔧 Self-healing applied formatting fixes"
+            git config --global user.name "WENDY Self-Healing"
+            git config --global user.email "wendy@psivi.com"
+            git add src/
+            
+            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+            git commit -m "🩹 self-heal: auto-format Rust code at $ZULU_TIME [skip ci]"
+            git push
+            echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
+          else
+            echo "✅ No formatting changes needed"
+          fi
+
+      - name: Fail if Formatting Still Broken
+        if: steps.fmt-check.outcome == 'failure'
+        run: cargo fmt --all -- --check
+
+
       - name: Self-Healing Rollback Check
         if: failure()
         run: |
