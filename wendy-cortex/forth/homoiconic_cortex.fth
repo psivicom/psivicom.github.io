@@ -53,13 +53,14 @@ VARIABLE source-registry
 ;
 
 : word-source ( c-addr u -- source-addr source-u )
+    \ Check if word exists in dictionary
     2dup find-name 0= if
         2drop s" \ undefined word"
         exit
     then
-    drop
-    s" \ Word: " 2swap s+
-    s"  (source available via reflection catalog)" s+
+    \ Word exists - return static placeholder to avoid s+ memory allocation
+    2drop
+    s" \ [reflection placeholder - source extraction pending]"
 ;
 
 : word-contract ( c-addr u -- contract-addr contract-u )
@@ -184,7 +185,6 @@ VARIABLE contract-table
 
 \ ==========================================================================
 \ PILLAR V: CRDT MESH CONVERGENCE (Shapiro et al. 2011)
-\ FIXED: Proper stack discipline for cmove
 \ ==========================================================================
 
 VARIABLE crdt-set
@@ -197,24 +197,15 @@ VARIABLE crdt-set-size
 ;
 
 : crdt-add ( element-addr element-u -- )
-    \ G-Set: Grow-Only Set (idempotent, commutative)
-    \ Simple append without duplicate checking for now
-    
-    \ Check if we have space
     crdt-set-size @ over + max-crdt-bytes >= if
         2drop
         ." ⚠️ CRDT set full, dropping message" cr
         exit
     then
     
-    \ Calculate destination address in set
     crdt-set @ crdt-set-size @ +
-    \ Stack: ( element-addr element-u dest-addr )
-    
-    \ Rearrange for cmove: ( dest-addr source-addr u )
     swap cmove
     
-    \ Update size
     crdt-set-size @ + crdt-set-size !
 ;
 
