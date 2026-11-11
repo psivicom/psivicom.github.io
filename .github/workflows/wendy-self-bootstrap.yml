@@ -6,13 +6,13 @@ on:
     paths:
       - 'scripts/**'
       - 'src/**'
-  workflow_dispatch:  # ← This adds the "Run workflow" button in GitHub UI
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  fix-permissions:
+  fix-permissions-and-audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,21 +20,70 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           
-      - name: Set Executable Permissions Autonomously (Race-Safe)
+      - name: 🔧 Set Executable Permissions Autonomously
         run: |
           chmod +x scripts/*.sh 2>/dev/null || true
+          echo "✅ Executable permissions set"
+      
+      - name: 🎯 Audit All Workflows for Autorun Button
+        run: |
+          set -euo pipefail
+          
+          echo "🔍 Scanning all workflows for workflow_dispatch trigger..."
+          
+          MODIFIED=0
+          
+          for file in .github/workflows/*.yml; do
+            [ -f "$file" ] || continue
+            
+            if grep -q 'workflow_dispatch' "$file"; then
+              echo "✅ $(basename $file): already has autorun button"
+              continue
+            fi
+            
+            echo "➕ $(basename $file): adding autorun button..."
+            
+            # Insert workflow_dispatch: after the on: block ends
+            awk '
+              /^on:/ { in_on=1 }
+              in_on && !/^ / && !/^on:/ && !/^$/ {
+                print "  workflow_dispatch:"
+                in_on=0
+              }
+              { print }
+            ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+            
+            MODIFIED=1
+            echo "✅ $(basename $file): autorun button added"
+          done
+          
+          if [ "$MODIFIED" -eq 0 ]; then
+            echo "🟢 All workflows already have autorun buttons"
+          else
+            echo "🔧 Some workflows were updated"
+          fi
+          
+          echo "modified=$MODIFIED" >> $GITHUB_ENV
+      
+      - name: 💾 Commit and Push (Race-Safe)
+        if: env.modified == '1' || !env.modified
+        run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           
+          # Stage everything (permissions + workflow audits)
+          git add scripts/ .github/workflows/
+          
           if [[ -z $(git status --porcelain) ]]; then
-            echo "✅ No permission changes needed"
+            echo "✅ No changes to commit"
             exit 0
           fi
           
-          git add scripts/
-          git commit -m "chore(wendy): autonomously set executable permissions [skip ci]"
+          # Craft descriptive commit message
+          CHANGED_FILES=$(git diff --staged --name-only | wc -l)
+          git commit -m "🔧 self-bootstrap: permissions + workflow autorun audit ($CHANGED_FILES files) [skip ci]"
           
-          # Race-safe push with retry (handles concurrent workflows)
+          # Race-safe push with retry
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
