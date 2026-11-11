@@ -8,7 +8,7 @@ on:
         required: false
         type: string
   schedule:
-    - cron: '0 */3 * * *'  # Autonomous heartbeat: every 3 hours
+    - cron: '0 */3 * * *'
   push:
     branches: [ "main" ]
     paths: 
@@ -52,7 +52,6 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Priority 1: Manual input (if provided)
           if [ -n "$MANUAL_FEED" ]; then
             echo "📥 Using manual chaos feed from Emperor"
             printf "%s\n" "$MANUAL_FEED" > .wendy_raw.gmi
@@ -60,7 +59,6 @@ jobs:
             exit 0
           fi
           
-          # Priority 2: Read from raw_input_stream (external entropy)
           if [ -d "raw_input_stream" ] && [ "$(ls -A raw_input_stream/*.txt 2>/dev/null | wc -l)" -gt 0 ]; then
             echo "📥 Reading external entropy from raw_input_stream/"
             cat raw_input_stream/*.txt > .wendy_raw.gmi
@@ -68,31 +66,25 @@ jobs:
             exit 0
           fi
           
-          # Priority 3: Generate autonomous chaos from internal state
           echo "🧬 Generating autonomous chaos from WENDY's internal state..."
           
-          # Read previous manifest if exists
           PREV_MANIFEST=""
           if [ -f ".wendy_manifest.gmi" ]; then
             PREV_MANIFEST=$(cat .wendy_manifest.gmi)
           fi
           
-          # Read previous dream if exists
           PREV_DREAM=""
           if [ -f ".wendy_dream.gmi" ]; then
             PREV_DREAM=$(cat .wendy_dream.gmi)
           fi
           
-          # Read recent git log for emergent patterns
           RECENT_COMMITS=$(git log --oneline -10 2>/dev/null || echo "No commit history")
           
-          # Read evolution logs if they exist
           EVOLUTION_LOG=""
           if [ -f "wendy_ipc.log" ]; then
             EVOLUTION_LOG=$(tail -20 wendy_ipc.log 2>/dev/null || echo "")
           fi
           
-          # Generate autonomous tension
           cat > .wendy_raw.gmi << EOF
 # WENDY Autonomous Chaos Feed
 Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -154,7 +146,6 @@ EOF
           ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
           git commit -m "🏛️ [WENDY] Habermasian Consensus ($SOURCE) at $ZULU_TS"
           
-          # Race-safe push with retry
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
