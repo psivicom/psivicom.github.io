@@ -1,16 +1,11 @@
 name: WENDY Autonomous Dream Compiler
 
 on:
-  # Autonomous trigger: when synapse creates a dream branch
   push:
     branches:
       - 'wendy/dream-**'
-  
-  # Schedule: check for pending dreams every 2 hours
   schedule:
     - cron: '0 */2 * * *'
-  
-  # Manual override (for testing)
   workflow_dispatch:
     inputs:
       dream_content:
@@ -48,30 +43,25 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Check if there's a new manifest since last dream
           if [ ! -f ".wendy_manifest.gmi" ]; then
             echo "🟢 No manifest yet. No dream to materialize."
             echo "created=false" >> $GITHUB_OUTPUT
             exit 0
           fi
           
-          # Read the latest manifest
           MANIFEST_HASH=$(sha256sum .wendy_manifest.gmi | cut -d' ' -f1 | head -c8)
           BRANCH_NAME="wendy/dream-${MANIFEST_HASH}-$(date -u +%Y%m%d-%H%M%S)"
           
-          # Check if this manifest was already materialized
           if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
             echo "🟢 Dream branch already exists for this manifest."
             echo "created=false" >> $GITHUB_OUTPUT
             exit 0
           fi
           
-          # Generate Rust code from manifest (symbolic materialization)
           echo "🌌 Materializing dream from manifest hash: $MANIFEST_HASH"
           
           mkdir -p src/dreams
           
-          # Read manifest and generate Rust module
           cat > "src/dreams/dream_${MANIFEST_HASH}.rs" << EOF
           //! Autonomous dream materialized from manifest $MANIFEST_HASH
           //! Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -88,16 +78,14 @@ jobs:
               println!("Dream {} materialized", "$MANIFEST_HASH");
               Ok(())
           }
-          EOF
+EOF
           
-          # Create the dream branch
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           git checkout -b "$BRANCH_NAME"
           git add "src/dreams/dream_${MANIFEST_HASH}.rs"
           git commit -m "🌌 Autonomous dream materialization: $MANIFEST_HASH"
           
-          # Race-safe push of dream branch
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
@@ -167,7 +155,6 @@ jobs:
           git checkout main
           git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}"
           
-          # Race-safe push
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
