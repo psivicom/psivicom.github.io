@@ -92,11 +92,10 @@
 ├── sitemap.xml
 ├── wendy-console.html
 ├── wendy_autonomous_core.py
-├── wendy_crystalline_executor.py
 ├── wendy_mobile_airgap.py
 ├── wendy_ouroboros_bridge.py
 ├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 87 files
+11 directories, 86 files
 ```
