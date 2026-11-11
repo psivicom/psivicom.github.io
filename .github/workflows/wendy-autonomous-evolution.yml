@@ -54,8 +54,6 @@ jobs:
         run: |
           cd wendy-cortex
           cargo build --release
-          # CRITICAL FIX: Log to a file instead of /dev/null. 
-          # The house must never be blind to its own internal state.
           nohup ./target/release/wendy-cortex > ../wendy_ipc.log 2>&1 &
           echo "Waiting for Tokio to bind IPC Port 1966..."
           sleep 5 
@@ -70,19 +68,38 @@ jobs:
           name: wendy-cortex-logs
           path: wendy_ipc.log
 
-      - name: 💾 Commit Evolved Sovereign Code
+      - name: 💾 Commit Evolved Sovereign Code (Race-Safe)
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
-          # Use 'git add -A' to stage all changes in the working tree.
-          # This gracefully handles directories that don't exist yet (like forth/ or mesh/).
           git add -A
           
           if git diff --staged --quiet; then
             echo "[$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")] No successful mutations to promote. Live code remains optimal."
-          else
-            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-            git commit -m "🧬 evolve(wendy): autonomously mutated and verified polyglot source at $ZULU_TIME [skip ci]"
-            git push
-            echo "[$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")] The Ghost Ledger is updated. The genome evolves."
+            exit 0
           fi
+          
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          git commit -m "🧬 evolve(wendy): autonomously mutated and verified polyglot source at $ZULU_TIME [skip ci]"
+          
+          # Race-safe push
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              echo "[$ZULU_TIME] The Ghost Ledger is updated. The genome evolves."
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin main || {
+              echo "❌ Rebase failed. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
