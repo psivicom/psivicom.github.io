@@ -1,8 +1,8 @@
-name: Update Repository Tree
+name: update-tree
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -10,12 +10,16 @@ permissions:
 
 jobs:
   update-tree:
+    name: update-tree
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-      - name: Generate and Inject Tree (C-Level Speed)
+      - name: Generate Tree
         run: |
           echo "🔍 Generating tree with -a (show hidden), -F (classify), and --dirsfirst..."
           
@@ -26,14 +30,14 @@ jobs:
           
           echo "✅ Raw tree output sample (first 30 lines):"
           head -n 30 /tmp/raw_tree.txt
-
+          
           # 2. Build Markdown (Plain text, no bold, no ANSI)
           {
             echo '```text'
             cat /tmp/raw_tree.txt
             echo '```'
           } > tree.md
-
+          
           # 3. Build Klein Blue HTML with bulletproof syntax coloring
           awk '
           BEGIN {
@@ -68,7 +72,7 @@ jobs:
           END {
             print "</div>"
           }' /tmp/raw_tree.txt > tree_snippet.html
-
+          
           # 4. Inject into README.md and index.html
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
           
@@ -98,14 +102,41 @@ jobs:
               !skip { print }
             ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
           done
-
+          
           rm -f /tmp/raw_tree.txt
           echo "🎉 Tree generation complete. .github and archive are now visible."
 
-      - name: Commit and push changes
+      - name: Commit and Push (Race-Safe)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tree.md tree_snippet.html README.md index.html
-          git diff --cached --quiet || git commit -m "chore: auto-update tree, revealing .github with -a flag [skip ci]"
-          git push
+          
+          if git diff --cached --quiet; then
+            echo "✅ No tree changes to commit"
+            exit 0
+          fi
+          
+          git commit -m "chore: auto-update tree, revealing .github with -a flag [skip ci]"
+          
+          # Race-safe push: retry up to 3 times with rebase
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing and retrying..."
+            git pull --rebase --autostash origin main || {
+              echo "❌ Rebase failed. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep 2
+          done
+          
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1
