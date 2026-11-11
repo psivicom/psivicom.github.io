@@ -80,7 +80,7 @@ sha2 = "0.10"
 # Regular expressions for boundary validation and pattern matching
 regex = "1.10"
 
-# Godel's Autonomous Recurcive Improvement 
+# Gödel's Autonomous Recursive Improvement
 syn = { version = "2.0", features = ["full", "parsing", "printing", "visit-mut"] }
 quote = "1.0"
 proc-macro2 = "1.0"
