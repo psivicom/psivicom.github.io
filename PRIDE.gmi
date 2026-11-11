@@ -1,14 +1,8 @@
 # WENDY Polyglot Build Results
-Generated: 2026-11-11T09:38:30.757Z
+Generated: 2026-11-11T09:46:25.547Z
 
 ## Ubuntu (x86_64) Artifacts
 None built
 
 ## macOS (ARM64) Artifacts
-total 1.1M
-drwxr-xr-x 9 runner runner  4.0K Nov 11 09:38 build
-drwxr-xr-x 2 runner runner   12K Nov 11 09:38 deps
--rw-r--r-- 1 runner runner   209 Nov 11 09:38 libwendy_cortex.d
--rw-r--r-- 1 runner runner  7.5K Nov 11 09:38 libwendy_cortex.rlib
--rw-r--r-- 1 runner runner 1009K Nov 11 09:38 wendy-cortex
--rw-r--r-- 1 runner runner   535 Nov 11 09:38 wendy-cortex.d
+None built
