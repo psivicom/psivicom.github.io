@@ -91,8 +91,7 @@
 ├── run_real_science_benchmark.py
 ├── sitemap.xml
 ├── wendy-console.html
-├── wendy_rust_bridge.py
 └── wendy_synapse_orchestrator.py
 
-11 directories, 83 files
+11 directories, 82 files
 ```
