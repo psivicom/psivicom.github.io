@@ -7,15 +7,11 @@ description = "WENDY Cortex: Tokio-driven Hebbian substrate with Gemini IPC"
 license = "EUPL-1.2"
 
 # =========================================================================
-# MAIN BINARY: The IPC Daemon (src/main.rs)
+# BINARIES: The Four Pillars of the WENDY Organism
 # =========================================================================
-# This is the primary Tokio-driven daemon that listens on port 1966
-# for IPC communication from FORTH orchestrators.
-# It automatically compiles src/main.rs and its submodules.
 
-# =========================================================================
-# SECONDARY BINARIES: Habermasian Loop Executors
-# =========================================================================
+# Primary IPC Daemon (main.rs) — listens on port 1966
+# Automatically compiled from src/main.rs
 
 [[bin]]
 name = "wendy-crystalline-executor"
@@ -29,12 +25,24 @@ path = "src/autonomous_core.rs"
 name = "wendy-ouroboros-bridge"
 path = "src/ouroboros_bridge.rs"
 
+[[bin]]
+name = "wendy-mobile-airgap"
+path = "src/mobile_airgap.rs"
+
+[[bin]]
+name = "wendy-rust-bridge"
+path = "src/rust_bridge.rs"
+
+[[bin]]
+name = "wendy-synapse-orchestrator"
+path = "src/synapse_orchestrator.rs"
+
 # =========================================================================
 # DEPENDENCIES
 # =========================================================================
 
 [dependencies]
-# Async runtime for the IPC server and Gemini daemon
+# Async runtime for the IPC server, airgap watcher, and Gemini daemon
 tokio = { version = "1.36", features = ["full"] }
 
 # Strict Zulu time formatting with millisecond precision
