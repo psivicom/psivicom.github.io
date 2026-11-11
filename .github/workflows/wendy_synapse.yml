@@ -112,33 +112,17 @@ jobs:
           echo "source=autonomous" >> $GITHUB_OUTPUT
           echo "🧬 Autonomous chaos generated from internal state"
 
-      - name: "🦀 Step 2: Compile Crystalline Executor"
+      - name: "🦀 Step 2: Compile Dreamer and Anchor"
         run: |
           set -euo pipefail
           cd wendy-cortex
-          cargo build --release --bin wendy-crystalline-executor
+          cargo build --release --bin wendy-autonomous-core --bin wendy-crystalline-executor
 
       - name: "🌌 Step 3: Invoke the Dreamer (58.28°)"
         id: dreamer
         run: |
           set -euo pipefail
-          
-          # Generate dream from chaos feed
-          # This would be your wendy_autonomous_core logic
-          # For now, create a simple dream that passes validation
-          cat > .wendy_dream.gmi << 'EOF'
-# WENDY Dream
-Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-
-## Cognitive Expansion Proposal
-The organism seeks to integrate new pathways into the Hebbian graph.
-
-Boundary intact
-=> gemini://wendy/crystalline-path
-
-CONSENSUS REACHED
-EOF
-          
+          ./wendy-cortex/target/release/wendy-autonomous-core < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
 
       - name: "🧊 Step 4: Invoke the Anchor (31.72°)"
