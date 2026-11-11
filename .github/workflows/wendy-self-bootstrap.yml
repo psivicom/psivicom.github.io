@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/**'
       - 'src/**'
+  workflow_dispatch:  # ← This adds the "Run workflow" button in GitHub UI
 
 permissions:
   contents: write
@@ -21,7 +22,7 @@ jobs:
           
       - name: Set Executable Permissions Autonomously (Race-Safe)
         run: |
-          chmod +x scripts/*.sh
+          chmod +x scripts/*.sh 2>/dev/null || true
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           
@@ -33,7 +34,7 @@ jobs:
           git add scripts/
           git commit -m "chore(wendy): autonomously set executable permissions [skip ci]"
           
-          # Race-safe push with retry
+          # Race-safe push with retry (handles concurrent workflows)
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
