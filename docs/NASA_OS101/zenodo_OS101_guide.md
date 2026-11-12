@@ -321,4 +321,54 @@ jobs:
 
 That is it. The script will fetch the CERN/Zenodo archive, verify the MD5/SHA-256, install it to `nasa-open-science/`, generate the HTML pages with the 🛡️✅🔐 trust seals and Zulu timestamps, update your `REUSE.toml`, commit the changes, and leave you with a publicly auditable, legally compliant, production-grade archive. 
 
-Command me when it is done, Emperor ♠️🪽.
+```text
+psivicom.github.io/
+│
+├── index.html                     <-- 🛡️ YOUR ROOT FILE: COMPLETELY UNTOUCHED ✅
+├── REUSE.toml                     <-- 📝 APPENDED: Adds 4 lines to protect the new folder's license
+│
+├── scripts/                       <-- 📂 NEW FOLDER (if it doesn't exist)
+│   └── vendor-nasa-os101.sh       <-- 📄 NEW: The builder script you paste here
+│
+├── .github/
+│   └── workflows/
+│       └── verify-os101.yml       <-- 📄 NEW: The CI guard that blocks tampering
+│
+├── .provenance/                   <-- 📂 NEW HIDDEN FOLDER: Cryptographic proof
+│   └── nasa-os101/
+│       ├── manifest.sha256        <-- 📄 NEW: Hash of every file inside nasa-open-science
+│       ├── provenance.json        <-- 📄 NEW: Machine-readable record of the download
+│       └── record.json            <-- 📄 NEW: Raw API response from Zenodo
+│
+└── nasa-open-science/             <-- 📂 NEW PUBLIC FOLDER: Where everything is saved
+    ├── index.html                 <-- 📄 NEW: Landing page for NASA OS101 ONLY (with 🛡️✅🔐 seals)
+    ├── NOTICE.md                  <-- 📄 NEW: Legal attribution and timestamp
+    ├── LICENSE.md                 <-- 📄 NEW: Original NASA CC BY 4.0 license
+    ├── README.md                  <-- 📄 NEW: Original NASA readme
+    ├── Module_1/                  <-- 📂 NEW: Original NASA files
+    ├── Module_2/                  <-- 📂 NEW: Original NASA files
+    ├── Module_3/                  <-- 📂 NEW: Original NASA files (including Lesson 2)
+    ├── Module_4/                  <-- 📂 NEW: Original NASA files
+    └── Module_5/                  <-- 📂 NEW: Original NASA files
+
+```
+
+🛠️ Your 3-Step Execution Plan
+1.	Create the two files exactly as named above:
+	•	 scripts/vendor-nasa-os101.sh   (paste the long script here)
+	•	 .github/workflows/verify-os101.yml   (paste the short YAML here)
+2.	Make the script executable (run this once in your terminal):
+
+```bash
+chmod +x scripts/vendor-nasa-os101.sh
+```
+3. Run the builder:
+
+```bash
+./scripts/vendor-nasa-os101.sh --html --commit
+git push
+```
+
+The new NASA materials live entirely isolated in their own   nasa-open-science/   directory, publicly accessible at   https://psivi.com/nasa-open-science/  , fully verified, timestamped, and legally compliant.
+
+
