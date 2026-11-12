@@ -1,0 +1,316 @@
+name: Vendor NASA OS101 (Web-Based Build)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vendor-os101
+  cancel-in-progress: false
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+
+      - name: Build verified archive
+        env:
+          BUILDER_PY: |
+            import hashlib, json, shutil, subprocess, sys, time, urllib.request, zipfile
+            from datetime import datetime, timezone
+            from pathlib import Path
+
+            REC_ID   = "10161527"
+            DOI      = "10.5281/zenodo." + REC_ID
+            API      = "https://zenodo.org/api/records/" + REC_ID
+            ZIP_NAME = "open-science-101-v-1-0-0.zip"
+            PIN_MD5  = "ecde9587a3c95be40eb0eb3cfa083ea5"
+            PIN_SIZE = 23311809
+            DEST     = Path("nasa-open-science")
+            PROV     = Path(".provenance/nasa-os101")
+            DOI_URL  = "https://doi.org/" + DOI
+            ZIP_URL  = "https://zenodo.org/records/" + REC_ID + "/files/" + ZIP_NAME + "?download=1"
+            TREE_URL = "https://github.com/psivicom/psivicom.github.io/tree/main/nasa-open-science"
+
+            def stamp():
+                n = datetime.now(timezone.utc)
+                return n.strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (n.microsecond // 1000)
+
+            def log(m):
+                print("[" + stamp() + "] " + m, flush=True)
+
+            def die(m):
+                log("FATAL: " + m)
+                sys.exit(1)
+
+            def fetch(url, out):
+                for i in range(1, 6):
+                    try:
+                        req = urllib.request.Request(url, headers={"User-Agent": "psivi-os101-vendor"})
+                        with urllib.request.urlopen(req, timeout=180) as r:
+                            with open(out, "wb") as f:
+                                shutil.copyfileobj(r, f)
+                        return
+                    except Exception as e:
+                        log("WARN fetch attempt %d/5: %s" % (i, e))
+                        time.sleep(5 * i)
+                die("download failed: " + url)
+
+            STAMP = stamp()
+            TMP = Path("os101_tmp")
+            if TMP.exists():
+                shutil.rmtree(TMP)
+            TMP.mkdir()
+
+            log("Querying Zenodo API")
+            fetch(API, TMP / "record.json")
+            rec = json.loads((TMP / "record.json").read_text(encoding="utf-8"))
+            f0 = rec["files"][0]
+            if f0["key"] != ZIP_NAME:
+                die("API filename drift: " + f0["key"])
+            if f0["checksum"].replace("md5:", "") != PIN_MD5:
+                die("API checksum differs from pin")
+            if int(f0["size"]) != PIN_SIZE:
+                die("API size differs from pin")
+            log("Pin confirmed by API")
+
+            log("Downloading pinned archive")
+            fetch(f0["links"]["self"], TMP / ZIP_NAME)
+            blob = (TMP / ZIP_NAME).read_bytes()
+            if len(blob) != PIN_SIZE:
+                die("size mismatch")
+            if hashlib.md5(blob).hexdigest() != PIN_MD5:
+                die("MD5 mismatch")
+            SHA = hashlib.sha256(blob).hexdigest()
+            log("Cryptographic verification passed sha256=" + SHA)
+
+            log("Extracting (zip-slip guarded)")
+            X = TMP / "x"
+            with zipfile.ZipFile(TMP / ZIP_NAME) as z:
+                for n in z.namelist():
+                    if n.startswith("/") or ".." in n.replace("\\", "/").split("/"):
+                        die("path traversal: " + n)
+                z.extractall(X)
+            roots = list(X.iterdir())
+            SRC = roots[0] if len(roots) == 1 and roots[0].is_dir() else X
+            if not (SRC / "LICENSE.md").exists():
+                die("upstream LICENSE.md missing")
+
+            if DEST.exists():
+                log("Clean rebuild: removing previous tree")
+                shutil.rmtree(DEST)
+            shutil.copytree(SRC, DEST)
+            log("Installed upstream payload")
+
+            PROV.mkdir(parents=True, exist_ok=True)
+            rows = []
+            for p in sorted(DEST.rglob("*")):
+                if p.is_file():
+                    rows.append(hashlib.sha256(p.read_bytes()).hexdigest() + "  " + p.relative_to(DEST).as_posix())
+            (PROV / "manifest.sha256").write_text("\n".join(rows) + "\n", encoding="utf-8")
+            shutil.copyfile(TMP / "record.json", PROV / "record.json")
+            (PROV / "provenance.json").write_text(json.dumps({
+                "source": "Zenodo (CERN)",
+                "record": REC_ID,
+                "version_doi": DOI,
+                "version": "1.0.0",
+                "license": "CC-BY-4.0",
+                "file": ZIP_NAME,
+                "size": PIN_SIZE,
+                "md5": PIN_MD5,
+                "sha256": SHA,
+                "retrieved_utc": STAMP,
+                "install_path": DEST.as_posix()
+            }, indent=2) + "\n", encoding="utf-8")
+            log("Provenance written: " + str(len(rows)) + " files hashed")
+
+            (DEST / "NOTICE.md").write_text(
+                "# Attribution Notice\n\n"
+                "This folder contains the NASA TOPS Open Science 101 Curriculum (Version 1.0.0).\n\n"
+                "- **Original Authors:** NASA TOPS Open Science 101 Curriculum Development Team (2023)\n"
+                "- **Source:** " + DOI_URL + "\n"
+                "- **License:** Creative Commons Attribution 4.0 International (CC BY 4.0)\n"
+                "- **Retrieved (UTC):** " + STAMP + "\n"
+                "- **Archive MD5:** " + PIN_MD5 + "\n"
+                "- **Archive SHA-256:** " + SHA + "\n\n"
+                "**Modifications:**\n"
+                "This copy has been archived for future reference and will be adapted for apiary and "
+                "Earth observation research by Louis-Philippe Audette. This adaptation is not endorsed by NASA.\n",
+                encoding="utf-8")
+
+            (DEST / "CITATION.cff").write_text(
+                "cff-version: 1.2.0\n"
+                "type: software\n"
+                'title: "NASA TOPS Open Science 101"\n'
+                'version: "1.0.0"\n'
+                'doi: "' + DOI + '"\n'
+                "license: CC-BY-4.0\n"
+                'date-released: "2023-12-06"\n'
+                "authors:\n"
+                '  - name: "NASA TOPS Open Science 101 Curriculum Development Team"\n'
+                'url: "' + DOI_URL + '"\n',
+                encoding="utf-8")
+
+            reuse = Path("REUSE.toml")
+            marker = 'path = "nasa-open-science/**"'
+            if reuse.exists():
+                txt = reuse.read_text(encoding="utf-8")
+                if marker not in txt:
+                    reuse.write_text(txt.rstrip() + "\n\n[[annotations]]\n" + marker +
+                        '\nprecedence = "override"\n'
+                        'SPDX-FileCopyrightText = "2023 NASA TOPS Open Science 101 Curriculum Development Team"\n'
+                        'SPDX-License-Identifier = "CC-BY-4.0"\n', encoding="utf-8")
+                    log("REUSE.toml annotated")
+            else:
+                log("REUSE.toml absent - skipped")
+
+            CSS = (
+                "body{max-width:60rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;"
+                "font:16px/1.6 system-ui,sans-serif}a{color:#7ee787;text-decoration:none}a:hover{text-decoration:underline}"
+                "img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #30363d;padding:.4rem}"
+                "h1{border-bottom:1px solid #30363d;padding-bottom:.5rem}"
+                ".trust-seal{margin:2rem 0;padding:1.5rem;border:2px solid #238636;border-radius:12px;"
+                "background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);text-align:center}"
+                ".big-seal{font-size:4rem;filter:drop-shadow(0 0 12px #2ea043)}"
+                ".trust-seal h2{color:#3fb950;margin:.3rem 0;font-size:1.25rem}"
+                ".verified-line{color:#7ee787;font-weight:600;margin:.5rem 0}"
+                "code{background:#0d1117;padding:.2rem .5rem;border-radius:4px;font-size:.8rem;color:#8b949e;"
+                "display:inline-block;margin:.15rem;word-break:break-all}"
+                ".action-card{display:flex;gap:1rem;justify-content:center;margin:2rem 0;flex-wrap:wrap}"
+                ".btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.4rem;border-radius:8px;"
+                "font-weight:600;transition:all .2s}"
+                ".btn-primary{background:#238636;color:#fff;border:1px solid #2ea043}.btn-primary:hover{background:#2ea043}"
+                ".btn-secondary{background:#21262d;color:#c9d1d9;border:1px solid #30363d}"
+                ".btn-secondary:hover{background:#30363d;color:#fff}"
+                ".card{border:1px solid #30363d;border-radius:8px;padding:1rem;margin:1rem 0;background:#161b22}"
+                "li{margin:.25rem 0}small{color:#8b949e}"
+                "footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}"
+            )
+
+            TPL = TMP / "tpl.html"
+            TPL.write_text(
+                '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
+                '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                "<title>$title$ - NASA Open Science 101 - PSIVI</title><style>" + CSS + "</style></head><body>"
+                '<div class="trust-seal"><div class="big-seal">🛡️✅</div>'
+                "<h2>Verified - Cryptographically Pinned</h2>"
+                '<div class="verified-line">Source: <a href="' + DOI_URL + '">Zenodo v1.0.0</a> - License: CC BY 4.0</div>'
+                "<div><code>MD5: " + PIN_MD5 + "</code><code>SHA-256: " + SHA + "</code></div>"
+                "<div><code>Retrieved: " + STAMP + "</code></div></div>"
+                '<p><a href="' + ("../" * 0) + 'index.html">&larr; Back to archive index</a></p>'
+                "$body$"
+                "<footer>🔐 Part of the NASA TOPS Open Science 101 archive, retrieved " + STAMP +
+                ' from <a href="' + DOI_URL + '">' + DOI + "</a>. Integrity verified against MD5 + SHA-256. "
+                "Not endorsed by NASA.</footer></body></html>",
+                encoding="utf-8")
+
+            mds = [p for p in sorted(DEST.rglob("*.md")) if p.name != "NOTICE.md"]
+            for p in mds:
+                r = subprocess.run(
+                    ["pandoc", str(p), "-f", "gfm", "-t", "html5", "-s",
+                     "--template", str(TPL.resolve()),
+                     "--metadata", "title=" + p.parent.name.replace("_", " "),
+                     "-o", str(p.with_suffix(".html"))],
+                    capture_output=True, text=True)
+                if r.returncode != 0:
+                    die("pandoc failed on " + str(p) + ": " + r.stderr.strip())
+            log("Rendered " + str(len(mds)) + " HTML pages")
+
+            seal = (
+                '<div class="trust-seal"><div class="big-seal">🛡️✅</div>'
+                "<h2>Verified - Cryptographically Pinned - Publicly Auditable</h2>"
+                '<div class="verified-line">Source: <a href="' + DOI_URL + '">Zenodo v1.0.0</a> - License: CC BY 4.0</div>'
+                "<div><code>MD5: " + PIN_MD5 + "</code><code>SHA-256: " + SHA + "</code></div>"
+                "<div><code>Retrieved: " + STAMP + "</code></div>"
+                '<p style="margin-top:1rem;font-size:.9rem;color:#8b949e">Immutable pin. Anyone can re-verify these '
+                'checksums against the Zenodo API. Per-file hashes: '
+                '<a href="../.provenance/nasa-os101/manifest.sha256">manifest.sha256</a></p></div>'
+            )
+            actions = (
+                '<div class="action-card">'
+                '<a class="btn btn-primary" href="' + ZIP_URL + '">⬇️ Download full archive (.zip)</a>'
+                '<a class="btn btn-secondary" href="files.html">🗂️ Browse all files &amp; folders</a>'
+                '<a class="btn btn-secondary" href="' + TREE_URL + '" target="_blank">🐙 View source on GitHub</a>'
+                "</div>"
+                '<p style="text-align:center;font-size:.85rem;color:#8b949e;margin-top:-1rem">'
+                "ZIP is served directly by Zenodo (CERN) - the exact byte-for-byte archive verified above.</p>"
+            )
+
+            cards = []
+            for m in sorted(DEST.glob("Module_*")):
+                if not m.is_dir():
+                    continue
+                items = []
+                for l in sorted(m.glob("Lesson_*")):
+                    if l.is_dir():
+                        items.append('<li><a href="' + l.relative_to(DEST).as_posix() + '/readme.html">' +
+                                     l.name.replace("_", " ") + "</a></li>")
+                cards.append('<div class="card"><h2>' + m.name.replace("_", " ") + "</h2><ul>" +
+                             "".join(items) + "</ul></div>")
+
+            (DEST / "index.html").write_text(
+                '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
+                '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                "<title>NASA Open Science 101 - PSIVI Open Science Hub</title><style>" + CSS +
+                "</style></head><body><h1>NASA Open Science 101 <small>v1.0.0</small></h1>" +
+                seal + actions + "".join(cards) +
+                '<p><a href="NOTICE.md">Attribution &amp; provenance</a> - '
+                '<a href="CITATION.cff">CITATION.cff</a> - <a href="LICENSE.md">License</a></p>'
+                "<footer>🔐 Retrieved " + STAMP + " - Not endorsed by NASA.</footer></body></html>",
+                encoding="utf-8")
+
+            groups = {}
+            for p in sorted(DEST.rglob("*")):
+                if p.is_file() and p.name not in ("index.html", "files.html"):
+                    groups.setdefault(p.parent, []).append(p)
+            listing = []
+            for d in sorted(groups, key=lambda q: q.as_posix()):
+                rel = d.relative_to(DEST).as_posix()
+                listing.append('<div class="card"><h3>📁 ' + ("archive root" if rel == "." else rel) + "</h3><ul>")
+                for p in groups[d]:
+                    listing.append('<li><a href="' + p.relative_to(DEST).as_posix() + '">' + p.name +
+                                   "</a> <small>" + str(p.stat().st_size) + " bytes</small></li>")
+                listing.append("</ul></div>")
+            (DEST / "files.html").write_text(
+                '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
+                '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                "<title>Browse files - NASA Open Science 101</title><style>" + CSS +
+                "</style></head><body><h1>🗂️ Browse the archive</h1>"
+                '<p><a href="index.html">&larr; Back to index</a> - '
+                '<a href="' + ZIP_URL + '">⬇️ Download everything (.zip)</a></p>' +
+                "".join(listing) +
+                "<footer>🔐 Retrieved " + STAMP + " - Not endorsed by NASA.</footer></body></html>",
+                encoding="utf-8")
+            log("Public index + file browser generated")
+
+            Path("tpl.html").unlink(missing_ok=True)
+            shutil.rmtree(TMP)
+            log("DONE")
+        run: |
+          printf '%s' "$BUILDER_PY" > "$RUNNER_TEMP/build_os101.py"
+          python3 "$RUNNER_TEMP/build_os101.py"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A nasa-open-science .provenance/nasa-os101
+          git add REUSE.toml || true
+          git add -A tpl.html || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore(os101): verified NASA TOPS OS101 v1.0.0 + file browser + direct ZIP download"
+            git push || { git pull --rebase origin main && git push; }
+          fi
