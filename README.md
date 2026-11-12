@@ -120,14 +120,13 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-12T23:49:13.000Z -->
+<!-- Last updated: 2026-11-12T23:50:27.000Z -->
 ```text
 ./
 ├── .github/
 │   └── workflows/
 │       ├── README.md
 │       ├── update-tree.yml
-│       ├── vendor-nasa-os101.yml
 │       ├── wendy-autonomous-compile.yml
 │       ├── wendy-autonomous-evolution.yml
 │       ├── wendy-awaken.yml
@@ -671,6 +670,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── tpl.html
 └── wendy-console.html
 
-56 directories, 492 files
+56 directories, 491 files
 ```
 <!-- AUTO_TREE_END -->
