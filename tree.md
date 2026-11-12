@@ -27,7 +27,8 @@
 │   ├── LICENSE-EUPL-1.2.md
 │   └── README.md
 ├── archive/
-│   └── README.md
+│   ├── README.md
+│   └── deprecated_vendor-nasa-os101.yml
 ├── nasa-open-science/
 │   ├── .github/
 │   │   └── workflows/
@@ -547,5 +548,5 @@
 ├── tpl.html
 └── wendy-console.html
 
-56 directories, 491 files
+56 directories, 492 files
 ```
