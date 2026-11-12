@@ -4,6 +4,7 @@
 │   └── workflows/
 │       ├── README.md
 │       ├── update-tree.yml
+│       ├── verify-os101.yml
 │       ├── wendy-autonomous-compile.yml
 │       ├── wendy-autonomous-evolution.yml
 │       ├── wendy-awaken.yml
@@ -31,7 +32,7 @@
 │   ├── forge_conservatory.sh*
 │   ├── provision_arch_edge.sh*
 │   ├── safe-push.sh*
-│   ├── vendor-nasa-os101.sh
+│   ├── vendor-nasa-os101.sh*
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_coordinator.sh*
 │   ├── wendy_evolution_engine.py
@@ -92,5 +93,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-11 directories, 81 files
+11 directories, 82 files
 ```
