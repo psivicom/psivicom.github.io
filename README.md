@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-11T23:41:14.000Z -->
+<!-- Last updated: 2026-11-12T20:10:09.000Z -->
 ```text
 ./
 ├── .github/
@@ -154,6 +154,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── forge_conservatory.sh*
 │   ├── provision_arch_edge.sh*
 │   ├── safe-push.sh*
+│   ├── vendor-nasa-os101.sh
 │   ├── wendy-dream-runner.sh*
 │   ├── wendy_coordinator.sh*
 │   ├── wendy_evolution_engine.py
@@ -214,6 +215,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-11 directories, 80 files
+11 directories, 81 files
 ```
 <!-- AUTO_TREE_END -->
