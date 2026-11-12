@@ -1,0 +1,22 @@
+name: Verify OS101 Provenance
+on:
+  push:
+    paths: ['nasa-open-science/**', '.provenance/nasa-os101/**']
+  pull_request:
+    paths: ['nasa-open-science/**', '.provenance/nasa-os101/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Cryptographic Integrity
+        run: |
+          chmod +x scripts/vendor-nasa-os101.sh
+          ./scripts/vendor-nasa-os101.sh --verify
