@@ -1,0 +1,513 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson_3 — NASA Open Science 101 · PSIVI</title>
+<style>
+body{max-width:52rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;font:16px/1.65 system-ui,sans-serif}
+a{color:#7ee787}img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #30363d;padding:.4rem}
+.trust-banner{margin:2rem 0 1.5rem;padding:1rem 1.25rem;border:1px solid #238636;border-radius:10px;background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);display:flex;align-items:center;gap:1rem;font-size:.9rem}
+.trust-banner .seal{font-size:2rem;filter:drop-shadow(0 0 8px #2ea043)}
+.trust-banner .meta{flex:1}
+.trust-banner .meta strong{color:#7ee787;display:block;margin-bottom:.25rem}
+.trust-banner .meta code{background:#0d1117;padding:.1rem .4rem;border-radius:4px;font-size:.8rem;color:#8b949e}
+.trust-banner .verified{color:#3fb950;font-weight:600}
+footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}
+</style></head><body>
+<div class="trust-banner">
+  <div class="seal">🛡️</div>
+  <div class="meta">
+    <strong>✅ Verified · Cryptographically Pinned</strong>
+    <span class="verified">Source: <a href="https://doi.org/10.5281/zenodo.10161527">Zenodo v1.0.0</a> · License: CC BY 4.0</span><br>
+    <code>MD5: ecde9587a3c95be40eb0eb3cfa083ea5</code> · <code>SHA-256: a40238e36b6efec82991e0c7ca8a8209603fce86c77f4f35cbf03b627623a8a2</code><br>
+    <code>Timestamp: 2026-11-12T21:25:44.577Z</code>
+  </div>
+</div>
+<h1 id="lesson-3-tools-for-open-data">Lesson 3: Tools for Open Data</h1>
+<h2 id="navigation">Navigation</h2>
+<ul>
+<li><a href="#introduction-to-open-data">Introduction to Open
+Data</a></li>
+<li><a href="#fair-principles">FAIR Principles</a></li>
+<li><a href="#tools-to-help-with-planning-for-open-data-creation">Tools
+to Help with Planning For Open Data Creation</a></li>
+<li><a href="#tools-to-help-with-using-and-making-open-data">Tools to
+Help with Using and Making Open Data</a></li>
+<li><a href="#lesson-3-summary">Lesson 3: Summary</a></li>
+<li><a href="#lesson-3-knowledge-check">Lesson 3: Knowledge
+Check</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>This lesson discusses the concepts, considerations, and tools for
+making data and results. It starts with a closer look at the FAIR
+principles and how they apply to data. The lesson includes an
+introduction to plans, tools, data formats, and other considerations
+that are related to making data and sharing the results related to that
+data.</p>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you should be able to:</p>
+<ul>
+<li>Define the different types of scientific data.</li>
+<li>Define what the acronym FAIR means and explain how it supports the
+sharing of open data.</li>
+<li>Identify data management practices and tools to locate data in
+repositories.</li>
+<li>List and explain the purpose of the resources commonly used in
+making data including the data formats, inspecting data, and assessing
+'FAIR'-ness of data.</li>
+</ul>
+<h2 id="introduction-to-open-data">Introduction to Open Data</h2>
+<p>Data is a major part of scientific research, and why wouldn’t it be?
+It informs tools that we use, stories that we read, and decisions that
+we make on a daily basis.</p>
+<p>For instance, the open access <a
+href="https://emergency.copernicus.eu/">Copernicus Emergency Management
+Service</a> implemented by the European Commission produces 24/7 open
+access data collected by ESA and NASA satellites to produce maps that
+inform disaster preparedness and response efforts across the globe. This
+is only one example among many others demonstrating the value of data,
+particularly open and public data, in our daily life and for public
+good.</p>
+<p>Data shared openly in scientific research brings tremendous value to
+the scientific community and beyond, from indigenous communities to
+urban populations. Before understanding the broad based impact of data,
+let’s first look at what is data in the context of scientific research.
+Specifically, we will discuss the definition and characteristics of open
+data?</p>
+<h3 id="what-is-data">What is Data?</h3>
+<p>Scientific data is any type of information that is collected,
+observed, or created, in the context of research. It can be:</p>
+<ul>
+<li>Primary – Raw from measurements or instruments</li>
+<li>Secondary – Processed from secondary analysis and
+interpretations.</li>
+<li>Published – Final format available for use and reuse.</li>
+<li>Metadata – Data about your data.</li>
+</ul>
+<p>It is everything that you need to validate or reproduce your research
+findings, as well as what is required for the understanding and handling
+of the data.</p>
+<p>The following sections discuss ways to ensure that data is fully
+utilized and accessible to the most amount of people. These best
+practices center around community frameworks and tools that help
+researchers manage and share open data.</p>
+<h2 id="fair-principles">FAIR Principles</h2>
+<img src="../images/media/image28.png" style="width:100%;height:auto;" />
+
+<p>Just like driving on a road, if everyone follows agreed upon rules,
+everything goes much smoother. The rules don’t need to be exactly the
+same for every region, but share common practices based on insights
+about safety and efficiency.</p>
+<p>For example, maybe you drive on the left side of the road or the
+right side. Either is fine, those sort of details are for different
+communities to decide on. However, there are overarching guidelines
+shared by communities across the globe, such as the rule to drive on the
+road not the sidewalk, use a turn signal when appropriate, adhere to
+lights at intersections that direct traffic, and follow speed limits.
+Some communities may implement stricter rules than others, or practice
+them differently, but these guidelines help everyone move around safely
+through a common understanding of how to drive on roads. For scientific
+data, these guidelines are called the Findable, Accessible,
+Interoperable, Reusable or “FAIR” principles. They do to data what their
+title suggests. That is, these principles make it possible for others
+(and yourself) to find, get , understand, and use data correctly.</p>
+<p><strong>Findable</strong>:</p>
+<p>To be <a
+href="https://www.go-fair.org/fair-principles/f1-meta-data-assigned-globally-unique-persistent-identifiers/">Findable:</a></p>
+<ul>
+<li>Data and results are assigned a globally unique and persistent
+identifier.</li>
+<li>Data are described with rich metadata.</li>
+<li>Metadata clearly and explicitly include the identifier of the data
+it describes.</li>
+<li>Data and results are registered or indexed in a searchable
+resource.</li>
+</ul>
+<p>Current Enabling Tech:</p>
+<ul>
+<li><a href="https://schema.datacite.org/">DataCite's Metadata
+Schema</a></li>
+<li>PIDs: Persistent IDentifiers (additional details in the following
+sections)
+<ul>
+<li><a href="https://www.doi.org/">Digital Object Identifier</a> (DOI):
+A top-level and a mandatory field in the metadata of each record - for
+data, code, publications.</li>
+<li><a href="https://orcid.org/">Open Research and Contributor ID</a>
+(ORCiD) - A code that uniquely identifies authors and contributors of
+research products and scholarly communication.</li>
+</ul></li>
+</ul>
+<p><strong>Accessible</strong></p>
+<p>To be <a
+href="https://www.go-fair.org/fair-principles/metadata-retrievable-identifier-standardised-communication-protocol/">Accessible:</a></p>
+<ul>
+<li>Data and results are retrievable by their identifiers using a
+standardized communication protocol.</li>
+<li>The protocol is open, free, and universally implementable.</li>
+<li>The protocol allows for an authentication and authorization
+procedure, where necessary. Data and results are publicly accessible and
+licensed under the public domain.
+<ul>
+<li>Metadata are accessible, even when the data are no longer available
+Data and metadata will be retained for the lifetime of the
+repository.</li>
+<li>Metadata are stored in high-availability database servers.</li>
+</ul></li>
+</ul>
+<p>Current Enabling Tech:</p>
+<ul>
+<li><a href="https://www.w3.org/Protocols/rfc959/">File Transfer
+Protocol (FTP)</a>, File Transfer Protocol Secure (FTPS)</li>
+<li><a href="https://www.w3.org/Protocols/">Hypertext Transfer Protocol
+(HTTP)</a>, Hypertext Transfer Protocol Secure (HTTPS)</li>
+</ul>
+<p>Note that Microsoft Exchange Server and Skype are examples of
+proprietary protocols.</p>
+<p><strong>Interoperable</strong></p>
+<p>To be <a
+href="https://www.go-fair.org/fair-principles/i1-metadata-use-formal-accessible-shared-broadly-applicable-language-knowledge-representation/">Interoperable:</a></p>
+<ul>
+<li>Data uses a formal, accessible, shared, and broadly applicable
+language for knowledge representation.</li>
+<li>Data uses a known, standardized data format.</li>
+<li>Data use vocabularies that follow FAIR principles.</li>
+<li>Data include qualified references to other (meta)data.</li>
+</ul>
+<p>Current Enabling Tech:</p>
+<ul>
+<li><a href="https://zenodo.org/">Zenodo</a> uses <a
+href="https://json-schema.org/">JSON Schema</a> as internal
+representation of metadata and offers export to other popular formats
+such as <a href="https://www.dublincore.org/">Dublin Core</a> or <a
+href="https://www.loc.gov/marc/marcxml.html">MARCXML</a>.</li>
+<li>For certain terms we refer to open, external vocabularies, e.g.:
+license (<a href="https://opendefinition.org/">Open Definition</a>),
+funders (<a
+href="https://www.crossref.org/services/funder-registry/">FundRef</a>)
+and grants (<a href="https://api.openaire.eu/">OpenAIRE</a>).</li>
+<li>Each referenced external piece of data is qualified by a resolvable
+URL.</li>
+</ul>
+<p><strong>Reusable</strong></p>
+<p>To be <a
+href="https://www.go-fair.org/fair-principles/r1-metadata-richly-described-plurality-accurate-relevant-attributes/">Reusable:</a></p>
+<ul>
+<li>Data are richly described with a plurality of accurate and relevant
+attributes.</li>
+<li>Data are released with a clear and accessible data usage
+license.</li>
+<li>Data are associated with detailed provenance.</li>
+<li>Data meet domain-relevant community standards.</li>
+</ul>
+<p>Current Enabling Tech:</p>
+<ul>
+<li>The metadata record contains a minimum of <a
+href="https://schema.datacite.org/">DataCite's</a> mandatory terms, with
+optionally additional DataCite recommended terms and Zenodo's
+enrichments.</li>
+<li><a href="https://zenodo.org/">Zenodo</a> is not a domain-specific
+repository, yet through compliance with DataCite's Metadata Schema,
+metadata meets one of the broadest cross-domain standards
+available.</li>
+</ul>
+<p>Wilkinson, M. D. et al. The FAIR Guiding Principles for scientific
+data management and stewardship. Sci.Data 3:160018, doi: <a
+href="https://doi.org/10.1038/sdata.2016.18">1 0 .1038/sdata.2016.18</a>
+(2016)</p>
+<p>These are high-level guidelines, and much like open science,
+implementation is nuanced. Sometimes it takes a group effort and/or a
+long production process/funding to make data and results FAIR. For other
+datasets, it could be more straightforward. A well-coordinated data
+management plan is needed for full compliance with FAIR, and the details
+of this will be discussed further in Module 3 – Open Data.</p>
+<h2 id="tools-to-help-with-planning-for-open-data-creation">Tools to
+Help with Planning For Open Data Creation</h2>
+<h3 id="data-management-plan">Data Management Plan</h3>
+<p>The previous lesson describes the requirements of a data management
+plan (DMP). Below are two open science resources to get you started or
+creating a data management plan:</p>
+<p><strong>DMPTool</strong></p>
+<p>The <a href="https://dmptool.org/">DMPTool</a> in the US helps
+researchers by featuring a template that lists a funder's requirements
+for specific directorate requests for proposals (RFP). The DMPTool also
+publishes other open DMPs from funded projects that can be referenced to
+improve your own. The Research Data Management Organizer (RDMO) enables
+German institutions as well as researchers to plan and carry out their
+management of research data.</p>
+<p><strong>ARGOS</strong></p>
+<p><a href="https://argos.openaire.eu/home">ARGOS</a> is used to plan
+Research Data Management activities of European and nationally funded
+projects (e.g. Horizon Europe, CHIST-ERA, the Portuguese Foundation for
+Science and Technology - FCT). ARGOS produces and publishes FAIR and
+machine actionable DMPs that contain links to other outputs, e.g.
+publications-data-software, and minimizes the effort to create DMPs from
+scratch by introducing automations in the writing process. OpenAIRE
+provides a guide on how to create DMP.</p>
+<h3 id="data-repositories">Data Repositories</h3>
+<p>A data repository is a digital space to house, curate, and share
+research outputs. Data repositories were originally used to support the
+needs of research communities. Examples of data repositories
+include:</p>
+<ul>
+<li><a href="https://www.rcsb.org/"><strong>Protein Data
+Bank</strong></a> uses a data repository to catalog 3D structures of
+proteins and nucleic acids.</li>
+<li><a
+href="https://www.ncbi.nlm.nih.gov/genbank/"><strong>Genbank</strong></a>
+of the National Institutes of Health uses a genetic sequence database
+that contains annotated publicly available nucleic acid sequences.</li>
+<li><a href="https://idr.openmicroscopy.org/"><strong>The Image Data
+Resource</strong></a> is a public repository of microscopy bio-image
+datasets from published studies.</li>
+<li><a href="https://www.ebi.ac.uk/empiar/"><strong>The Electron
+Microscopy Public Image Archive</strong></a> is a public resource for
+raw cryo-EM images.</li>
+<li><a href="https://openneuro.org/"><strong>OpenNeuro</strong></a> is
+an open platform for validating and sharing brain imaging data. The
+tools featured in Open Neuro enable easy access, search, and analysis of
+annotated datasets.</li>
+</ul>
+<p>Open science tools such as data repositories should implement FAIR
+principles, especially in the case of attribution of persistent
+identifiers (e.g., DOI), metadata annotation, and
+machine-readability.</p>
+<p><strong>ZENODO</strong></p>
+<p><a href="https://zenodo.org/">Zenodo</a> is an example of a data
+repository that allows the upload of research data and creates DOIs. Its
+popularity among the research community is due to its simplified
+interface, support of community curation, and feature that enables
+researchers to deposit diverse types of research outputs; from datasets
+and reports to publications, software, multimedia content.</p>
+<p><strong>DATAVERSE</strong></p>
+<p><a href="https://dataverse.org/">The Dataverse Project</a> is an open
+source online application to share, preserve, cite, explore, and analyze
+research data, available to researchers of all disciplines worldwide for
+free.</p>
+<p><strong>DRYAD</strong></p>
+<p><a href="https://datadryad.org/">The Dryad Digital Repository</a> is
+a curated online resource that makes research data discoverable, freely
+reusable, and citable. Unlike previously mentioned tools, it operates on
+a membership scheme for organizations such as research institutions and
+publishers.</p>
+<p><strong>DATACITE</strong></p>
+<p><a href="https://datacite.org/">Datacite</a> is a global non-profit
+organization that provides DOIs for research data and other research
+outputs, on a membership basis.</p>
+<p><strong>OSF</strong></p>
+<p><a href="https://osf.io/">The Open Science Framework</a> is an open
+source platform for sharing, managing, and collaborating research.</p>
+<hr />
+<p>Data services and resources for supporting research require robust
+infrastructure which relies on collaboration. An example of an
+initiative on the infrastructures of data services comes from the <a
+href="https://www.eudat.eu/">EUDAT Collaborative Data
+Infrastructure</a>, a sustained network of more than 20 European
+research organizations.</p>
+<p>Private companies also host and maintain online tools for sharing
+research data and files. For example, <a
+href="https://figshare.com/">Figshare</a> is one example of a free and
+open access service operated by private companies. It provides DOIs for
+all types of files and recently developed a restricted publishing model
+to accommodate intellectual property (IP) rights requirements. It allows
+sharing the outputs only within a customized Figshare group (could be
+your research team) or with users in a specific IP range. Additional
+advances include integration with code repositories, such as GitHub,
+GitLab, and Bitbucket.</p>
+<p>Additional research data repositories can be found in the publicly
+available <a href="https://www.re3data.org/"> Registry of Research Data
+Repositories. </a> <a
+href="https://explore.openaire.eu/search/find/dataproviders">OpenAire</a>,
+a hosted search engine, also provides a powerful search function of data
+and repositories. It features a filter for country, type, and thematic
+area, as well as enables the download of data.</p>
+<p>The amount of data, repositories, and different policies can be
+overwhelming. When in doubt of determining which repository is right for
+you, consult librarians, data managers and/or data stewards in your
+institution, or check within your discipline-specific or other community
+of practice.</p>
+<h3 id="activity-31-explore-zenodo-and-sign-up">Activity 3.1: Explore
+Zenodo and Sign Up!</h3>
+<p>Explore open repositories to familiarize yourself with their
+structure and available product information. The most popular repository
+at the moment is Zenodo. Review the following 4.5-minute video to get an
+overview of Zenodo and then sign up for an account. You can use your
+ORCID to sign up if you have one or made one in the previous lesson.</p>
+<p><a
+href="https://www.youtube.com/watch?v=BPVSErzNtME&amp;embeds_referring_euri=https%3A%2F%2Fopenscience101.org%2F&amp;feature=emb_imp_woyt">Watch
+Video</a></p>
+<h2 id="tools-to-help-with-using-and-making-open-data">Tools to Help
+with Using and Making Open Data</h2>
+<h3 id="data-formats">Data Formats</h3>
+<p>A useful file format can be read into memory by some software. Think
+of the format as a tool for making data accessible. Easy to use formats
+feature:</p>
+<ul>
+<li>A simple, easy to understand structure.</li>
+<li>A clear and open specification for the format that is ideally not
+tied to a specific software product.</li>
+<li>Open software libraries and APIs that can parse the format.</li>
+</ul>
+<p>The formats that are considered the most interoperable against the
+criteria above include Comma Separated Values (CSV), Extensible Markup
+Language (XML), and JavaScript Object Notation (JSON). Other common
+formats for researchers include binary array-based formats like Network
+Common Data Form (NetCDF), Hierarchical Data Format (HDF), Geotiff,
+Flexible Image Transport System (FITS), and other formats designed for
+cloud storage and access like <a href="https://zarr.dev/">Zarr</a>, <a
+href="https://www.cogeo.org/">Cloud Optimized GeoTIFF</a>, and <a
+href="https://parquet.apache.org/">Parquet</a>. Many of these formats
+have tools that check datasets for compliance and readability.</p>
+<h3 id="inspecting-data">Inspecting Data</h3>
+<p>Modern data formats allow the storage of much more than mere data
+points. Once one adopts these standards (e.g. NetCDF), the discovery of
+the contents on each file can be aided by a variety of tools which
+together help map primary data and/or display the associated metadata.
+Several tools exist for inspecting data, too numerous for all to be
+mentioned here. Notable tools to start with include:</p>
+<p><strong>CSV, XML, JSON</strong> - These files can all be opened with
+most common text editors. There are some tools that can create views of
+the files that are more user-friendly, such as:</p>
+<ul>
+<li>csv: Microsoft Excel and Google Sheets</li>
+<li>xml: Most internet browsers and with any text editor like Notepad or
+Microsoft Word or Google Docs</li>
+<li>json: <a
+href="http://json.parser.online.fr/"><span>http://json.parser.online.fr/</span></a>
+and <a
+href="https://jsonformatter.org/json-pretty-print"><span>https://jsonformatter.org/json-pretty-print</span></a></li>
+</ul>
+<p><strong>NetCDF, HDF, FITS</strong> - These files require special
+software tools to view their contents. Many of these tools will also
+visualize the data as well.</p>
+<ul>
+<li>NetCDF and HDF: Most files are easily viewed using the <a
+href="https://docs.xarray.dev/en/stable/">Xarray</a> open-source
+software library in Python or the <a
+href="https://cran.r-project.org/web/packages/ncdf4/index.html">ncdf4</a>
+library in R.</li>
+<li>FITS: There are many options, a list is provided at <a
+href="https://fits.gsfc.nasa.gov/fits_viewer.html"><span>https://fits.gsfc.nasa.gov/fits_viewer.html</span></a></li>
+</ul>
+<p><strong>ZARR, COG, PARQUET</strong> - These files require special
+software tools to view their contents. Many of these tools will also
+visualize the data as well.</p>
+<ul>
+<li>Zarr: Files are easily viewed using the <a
+href="https://docs.xarray.dev/en/stable/">Xarray</a> open-source
+software library in Python or the <a
+href="https://github.com/keller-mark/pizzarr">Pizzar</a> library in
+R.</li>
+<li>COG: Files are viewed using the <a
+href="https://corteva.github.io/rioxarray/html/index.html">rioXarray</a>
+open-source software library in Python or the <a
+href="https://cran.r-project.org/web/packages/terra/index.html">terra</a>
+library in R.</li>
+<li>Parquet: Files are viewed using the <a
+href="https://pandas.pydata.org/">Pandas</a> open-source software
+library in Python or the <a
+href="https://arrow.apache.org/docs/r/reference/read_parquet.html">Arrow</a>
+library in R.</li>
+</ul>
+<h3 id="fair-assessment">FAIR Assessment</h3>
+<p>How 'FAIR' is your data? Two groups - <a
+href="https://fairsharing.org/"> FAIRsharing.org</a> and the Research
+Data Alliance (<a href="https://www.rd-alliance.org/">RDA</a>) - have
+developed the <a href="https://www.nature.com/articles/sdata2018118">
+FAIR Metrics</a> and <a
+href="https://www.rd-alliance.org/group/fair-data-maturity-model-wg/outcomes/fair-data-maturity-model-specification-and-guidelines-0">
+FAIR Data Maturity Model</a> to help assess the 'FAIR'-ness of a
+dataset. There are open-source tools that help researchers assess their
+data:</p>
+<p><strong>AUSTRALIAN RESEARCH DATA COMMONS (ARDC)</strong></p>
+<p>Online questionnaire (manual) Best for:</p>
+<ul>
+<li>Triggering discussions at the initial stages of considering FAIR
+implementation</li>
+<li>Identifying areas for improvement</li>
+</ul>
+<p>Outputs include:</p>
+<ul>
+<li>Progress bar for each FAIR principle</li>
+<li>Aggregate bar for all</li>
+</ul>
+<p><strong>FAIR-CHECKER</strong></p>
+<p>Automated via website or API</p>
+<p>Best for:</p>
+<ul>
+<li>Scalability to many datasets</li>
+<li>Identifying areas for improvement</li>
+</ul>
+<p>Outputs include:</p>
+<ul>
+<li>A chart with scores and details</li>
+</ul>
+<p><strong>F-UJI</strong></p>
+<p>Automated via website or API</p>
+<p>Best for:</p>
+<ul>
+<li>Scalability to many datasets</li>
+<li>Detailed documentation of tool</li>
+</ul>
+<p>Outputs include:</p>
+<ul>
+<li>A report and chart with scores and details</li>
+</ul>
+<p><strong>FAIR EVALUATION SERVICES</strong></p>
+<p>Automated via website or API</p>
+<p>Best for:</p>
+<ul>
+<li>Scalability to many datasets</li>
+<li>To generate a custom assessment</li>
+</ul>
+<p>Outputs include:</p>
+<ul>
+<li>A detailed report and chart</li>
+</ul>
+<h2 id="lesson-3-summary">Lesson 3: Summary</h2>
+<p>In this lesson you learned:</p>
+<ul>
+<li>The different types of scientific data, including primary,
+secondary, published, and metadata.</li>
+<li>A list of open science practices to implement FAIR principles that
+make data and results easily accessible to a wide range of people.</li>
+<li>Digital tools to help plan for making and sharing open data.</li>
+</ul>
+<h2 id="lesson-3-knowledge-check">Lesson 3: Knowledge Check</h2>
+<p>Answer the following questions to test what you have learned so
+far.</p>
+<p><em>Question</em></p>
+<p><strong>01/03</strong></p>
+<p>Choose the FAIR Principles from the list below. Select all that
+apply.</p>
+<ul>
+<li>Reproducible</li>
+<li>Reusable</li>
+<li>Responsible</li>
+<li>Findable</li>
+<li>Interactive</li>
+<li>Interoperable</li>
+<li>Interspersed</li>
+<li>Accessible</li>
+<li>Authorizable</li>
+</ul>
+<p><em>Question</em></p>
+<p><strong>02/03</strong></p>
+<p>Which of the following can help make your data FAIR? Select all that
+apply.</p>
+<ul>
+<li>Get a license for your data</li>
+<li>Make sure you develop your own metadata</li>
+<li>Obtain a PID for your data</li>
+</ul>
+<p><em>Question</em></p>
+<p><strong>03/03</strong></p>
+<p>Which of the following are examples of repositories? Select all that
+apply.</p>
+<ul>
+<li>Zenodo</li>
+<li>Dataverse</li>
+<li>Dryad</li>
+<li>Datacite</li>
+<li>Google</li>
+</ul>
+<footer><p>🔐 This page is part of the NASA TOPS Open Science 101 archive, retrieved <strong>2026-11-12T21:25:44.577Z</strong> from the immutable Zenodo version DOI <a href="https://doi.org/10.5281/zenodo.10161527">10.5281/zenodo.10161527</a>. Integrity verified against MD5 + SHA-256 checksums. Not endorsed by NASA.</p></footer>
+</body></html>

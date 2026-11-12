@@ -1,0 +1,213 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module_4 — NASA Open Science 101 · PSIVI</title>
+<style>
+body{max-width:52rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;font:16px/1.65 system-ui,sans-serif}
+a{color:#7ee787}img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #30363d;padding:.4rem}
+.trust-banner{margin:2rem 0 1.5rem;padding:1rem 1.25rem;border:1px solid #238636;border-radius:10px;background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);display:flex;align-items:center;gap:1rem;font-size:.9rem}
+.trust-banner .seal{font-size:2rem;filter:drop-shadow(0 0 8px #2ea043)}
+.trust-banner .meta{flex:1}
+.trust-banner .meta strong{color:#7ee787;display:block;margin-bottom:.25rem}
+.trust-banner .meta code{background:#0d1117;padding:.1rem .4rem;border-radius:4px;font-size:.8rem;color:#8b949e}
+.trust-banner .verified{color:#3fb950;font-weight:600}
+footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}
+</style></head><body>
+<div class="trust-banner">
+  <div class="seal">🛡️</div>
+  <div class="meta">
+    <strong>✅ Verified · Cryptographically Pinned</strong>
+    <span class="verified">Source: <a href="https://doi.org/10.5281/zenodo.10161527">Zenodo v1.0.0</a> · License: CC BY 4.0</span><br>
+    <code>MD5: ecde9587a3c95be40eb0eb3cfa083ea5</code> · <code>SHA-256: a40238e36b6efec82991e0c7ca8a8209603fce86c77f4f35cbf03b627623a8a2</code><br>
+    <code>Timestamp: 2026-11-12T21:25:44.577Z</code>
+  </div>
+</div>
+<h1 id="os101-module-4-open-code">OS101 Module 4: Open Code</h1>
+<p><strong>Welcome to Open Science 101: Open Code</strong></p>
+<h2 id="about-this-module">About This Module</h2>
+<p>This module focuses on the practice and application of open code as
+part of the open science workflow. It provides a 'how to' process that
+follows the code development lifecycle and "Use, Make, Share" framework.
+Some of the key topics discussed include: benefits and limitations of
+open code, how to discover and assess code, considerations and methods
+for programming following open principles, and finally when and how to
+share your code.</p>
+<h3 id="module-learning-objectives">Module Learning Objectives</h3>
+<p>After completing this module, you should be able to:</p>
+<ul>
+<li>Explain what open-source software means, including the software
+development cycle, the benefits, some common limitations, and how they
+are addressed.</li>
+<li>Assess open-source software for reuse by evaluating provided
+documentation, including README files and licensing details, and then
+cite the software appropriately.</li>
+<li>Create an open-source software management plan that includes the
+strategy for selecting open software dependencies and open repositories,
+and how open elements including metadata, README files and version
+control, will be included to make the software reusable and
+findable.</li>
+<li>Evaluate whether your open-source software can be shared and the
+best options for sharing to increase visibility.</li>
+<li>List the responsibilities a software developer has once the
+open-source software is shared including managing legal requirements and
+ensuring the software is maintained.</li>
+</ul>
+<h2 id="key-terms">Key Terms</h2>
+<p>Select the term to see the description.</p>
+<p><strong>Source Code</strong> – Human-readable set of statements
+written in a programming language that together compose software.
+Programmers write software in source code, often saved as a text file on
+a computer. The terms code and source code are often used
+interchangeably.</p>
+<p><strong>Software</strong> – This general term is used for computer
+programs and applications that provide users some degree of utility or
+produce a result or service. Software can be distributed in executable
+form, as source code, or as a service via the internet.</p>
+<p><strong>Software License</strong> – A document that states the rights
+of the developer and user of a piece of software.</p>
+<p><strong>Open-Source License</strong> – A software license, approved
+by the Open Source Initiative (OSI) as compliant with the Open Source
+Definition, granting permissions for anyone to inspect, use, modify, and
+distribute the software’s source code for any purpose. Similar standards
+may be promulgated by other organizations.</p>
+<p><strong>Open-Source Software</strong> – Software whose source code is
+under an open source license, by which the copyright holder grants to
+anyone the rights to inspect, modify, and distribute the source.
+Synonymous with open code.</p>
+<p><strong>Closed-Source Software</strong> – Proprietary software with
+source code that is not publicly available. Only the original authors,
+not the users, have rights to copy, modify, update, and edit the source
+code. Users don’t have access to code.</p>
+<p><strong>Derivative Work</strong> – A creative work that is derived
+from or based upon a preexisting creative work and in which the
+preexisting work is translated, altered, arranged, or transformed in a
+manner that requires permission from the copyright owner of the original
+work or are from works in the public domain.</p>
+<p><strong>Version Control</strong> – A system to automatically manage
+changing versions of a computer file, especially one that contains
+source code. In software development, version control preserves a
+complete history of changes to the source code and enables a developer
+to roll back to an earlier version if needed.</p>
+<p><strong>Code Repository</strong> – A central storage location for the
+source code. Code repositories may contain source code in one or more
+programming languages. Repositories may provide tools for merging inputs
+from developers, automated testing to verify the proper functioning of
+source code, version control to track changes over time, and project
+management features. These sites may not promise long-term
+retention.</p>
+<p><strong>Software Repository</strong> – Online collections of
+stand-alone applications or software packages. Repositories typically
+control access and track the deployments and downloads of packages.
+These may include source code or executables.</p>
+<p><strong>Long-Term Repository</strong> – A service for long-term
+retention and referencing historical and contemporary software.
+Repositories facilitate sustainable citation of code.</p>
+<p>Definitions credit: National Academies of Sciences, Engineering, and
+Medicine. 2018. Open-source Software Policy Options for NASA Earth and
+Space Sciences. Washington, DC: The National Academies Press. <a
+href="https://doi.org/10.17226/25217"><span>https://doi.org/10.17226/25217</span></a>
+and other resources.</p>
+<h2 id="navigation">Navigation</h2>
+<h3 id="lesson-1-introduction-to-open-code"><a href="./Lesson_1">Lesson
+1: Introduction to Open Code</a></h3>
+<ul>
+<li><a href="./Lesson_1#overview">Overview</a></li>
+<li><a href="./Lesson_1#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_1#success-stories">Success Stories</a></li>
+<li><a
+href="./Lesson_1#definitions-and-considerations-of-open-code">Definitions
+and Considerations of Open Code</a></li>
+<li><a href="./Lesson_1#principles-benefits-and-challenges">Principles,
+Benefits, and Challenges</a></li>
+<li><a href="./Lesson_1#when-not-to-share">When Not to Share</a></li>
+<li><a href="./Lesson_1#software-management-plans-smp">Software
+Management Plans (SMP)</a></li>
+<li><a href="./Lesson_1#lesson-1-summary">Lesson 1: Summary</a></li>
+<li><a href="./Lesson_1#lesson-1-knowledge-check">Lesson 1: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-2-using-open-code"><a href="./Lesson_2">Lesson 2: Using
+Open Code</a></h3>
+<ul>
+<li><a href="./Lesson_2#overview">Overview</a></li>
+<li><a href="./Lesson_2#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_2#discovering-open-code-and-software">Discovering
+Open Code and Software</a></li>
+<li><a href="./Lesson_2#assessing-open-code-and-software">Assessing Open
+Code and Software</a></li>
+<li><a href="./Lesson_2#reusing-open-code">Reusing Open Code</a></li>
+<li><a href="./Lesson_2#citing-and-acknowledging-open-code-use">Citing
+and Acknowledging Open Code Use</a></li>
+<li><a href="./Lesson_2#lesson-2-summary">Lesson 2: Summary</a></li>
+<li><a href="./Lesson_2#lesson-2-knowledge-check">Lesson 2: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-3-making-open-code"><a href="./Lesson_3">Lesson 3: Making
+Open Code</a></h3>
+<ul>
+<li><a href="./Lesson_3#overview">Overview</a></li>
+<li><a href="./Lesson_3#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_3#how-do-we-plan-for-making-code">How do We Plan
+for Making Code?</a></li>
+<li><a href="./Lesson_3#importance-of-version-control">Importance of
+Version Control</a></li>
+<li><a href="./Lesson_3#describing-our-code-to-others">Describing Our
+Code to Others</a></li>
+<li><a href="./Lesson_3#what-license-should-we-choose-for-our-code">What
+License Should We Choose for Our Code?</a></li>
+<li><a href="./Lesson_3#programming-best-practices">Programming Best
+Practices</a></li>
+<li><a href="./Lesson_3#lesson-3-summary">Lesson 3: Summary</a></li>
+<li><a href="./Lesson_3#lesson-3-knowledge-check">Lesson 3: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-4-sharing-open-code"><a href="./Lesson_4">Lesson 4:
+Sharing Open Code</a></h3>
+<ul>
+<li><a href="./Lesson_4#overview">Overview</a></li>
+<li><a href="./Lesson_4#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_4#planning-to-share-your-code">Planning to Share
+Your Code</a></li>
+<li><a href="./Lesson_4#legal-and-security-concerns">Legal and Security
+Concerns</a></li>
+<li><a
+href="./Lesson_4#when-the-schedule-for-code-archiving-and-sharing">When:
+The Schedule for Code Archiving and Sharing</a></li>
+<li><a href="./Lesson_4#where-to-share-open-code">Where: Where To Share
+Open Code</a></li>
+<li><a href="./Lesson_4#how-how-to-enable-reuse-of-code">How: How to
+Enable Reuse of Code</a></li>
+<li><a
+href="./Lesson_4#who-roles-and-responsibilities-of-the-team-members-in-implementing-the-smp">Who:
+Roles and Responsibilities of the Team Members in Implementing the
+SMP</a></li>
+<li><a href="./Lesson_4#lesson-4-summary">Lesson 4: Summary</a></li>
+<li><a href="./Lesson_4#lesson-4-knowledge-check">Lesson 4: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-5-from-theory-to-practice"><a href="./Lesson_5">Lesson 5:
+From Theory to Practice</a></h3>
+<ul>
+<li><a href="./Lesson_5#overview">Overview</a></li>
+<li><a href="./Lesson_5#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_5#open-science-and-data-management-plans">Open
+Science and Data Management Plans</a></li>
+<li><a href="./Lesson_5#how-do-we-plan-for-making-our-code-open">How Do
+We Plan for Making our Code Open?</a></li>
+<li><a href="./Lesson_5#engage-and-build-communities">Engage and Build
+Communities</a></li>
+<li><a href="./Lesson_5#contribute-to-open-source-software">Contribute
+to Open-Source Software</a></li>
+<li><a href="./Lesson_5#additional-resources">Additional
+Resources</a></li>
+<li><a href="./Lesson_5#lesson-5-summary">Lesson 5: Summary</a></li>
+<li><a href="./Lesson_5#lesson-5-knowledge-check">Lesson 5: Knowledge
+Check</a></li>
+<li><a href="./Lesson_5#open-code-summary">Open Code Summary</a></li>
+</ul>
+<footer><p>🔐 This page is part of the NASA TOPS Open Science 101 archive, retrieved <strong>2026-11-12T21:25:44.577Z</strong> from the immutable Zenodo version DOI <a href="https://doi.org/10.5281/zenodo.10161527">10.5281/zenodo.10161527</a>. Integrity verified against MD5 + SHA-256 checksums. Not endorsed by NASA.</p></footer>
+</body></html>

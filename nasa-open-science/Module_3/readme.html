@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module_3 — NASA Open Science 101 · PSIVI</title>
+<style>
+body{max-width:52rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;font:16px/1.65 system-ui,sans-serif}
+a{color:#7ee787}img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #30363d;padding:.4rem}
+.trust-banner{margin:2rem 0 1.5rem;padding:1rem 1.25rem;border:1px solid #238636;border-radius:10px;background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);display:flex;align-items:center;gap:1rem;font-size:.9rem}
+.trust-banner .seal{font-size:2rem;filter:drop-shadow(0 0 8px #2ea043)}
+.trust-banner .meta{flex:1}
+.trust-banner .meta strong{color:#7ee787;display:block;margin-bottom:.25rem}
+.trust-banner .meta code{background:#0d1117;padding:.1rem .4rem;border-radius:4px;font-size:.8rem;color:#8b949e}
+.trust-banner .verified{color:#3fb950;font-weight:600}
+footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}
+</style></head><body>
+<div class="trust-banner">
+  <div class="seal">🛡️</div>
+  <div class="meta">
+    <strong>✅ Verified · Cryptographically Pinned</strong>
+    <span class="verified">Source: <a href="https://doi.org/10.5281/zenodo.10161527">Zenodo v1.0.0</a> · License: CC BY 4.0</span><br>
+    <code>MD5: ecde9587a3c95be40eb0eb3cfa083ea5</code> · <code>SHA-256: a40238e36b6efec82991e0c7ca8a8209603fce86c77f4f35cbf03b627623a8a2</code><br>
+    <code>Timestamp: 2026-11-12T21:25:44.577Z</code>
+  </div>
+</div>
+<h1 id="os101-module-3-open-data">OS101 Module 3: Open Data</h1>
+<p><strong>Welcome to Open Science 101: Open Data</strong></p>
+<h2 id="about-this-module">About This Module</h2>
+<p>This module focuses on the practice and application of open science
+for data. It provides a 'how to' process for finding and assessing open
+data for use, for making open data and for sharing open data. The
+step-by-step flows are easy to follow and can be used as checklists
+after you complete the module. Some of the key topics discussed include:
+data management plans, the process for assessing data for reuse,
+creating a plan for making data including choosing open formats and
+adding documentation, and the considerations for sharing data and making
+your data citable.</p>
+<h3 id="module-learning-objectives">Module Learning Objectives</h3>
+<p>After completing this module you should be able to:</p>
+<ul>
+<li>Describe the meaning and purpose of open data, its benefits, and how
+FAIR principles are used.</li>
+<li>Recall methods to assess the reusability of data based on its
+documentation, and cite the data as instructed.</li>
+<li>Implement an open data management plan, select open data formats,
+add the needed documentation, including metadata, README files and
+version control, to make the data reusable and findable.</li>
+<li>Evaluate whether your data should and can be shared.</li>
+<li>Recall practices to make data more accessible, including the
+registration of an affiliated DOI and the inclusion of citation
+instructions in documentation.</li>
+</ul>
+<h2 id="key-terms">Key Terms</h2>
+<p>These key terms are important topics for this module. Select the term
+to see the description.</p>
+<p><strong>Copyright</strong> – A type of intellectual property that
+protects original works of authorship as soon as an author fixes the
+work in a tangible form of expression. Many different types of works are
+covered by copyright law including data products and software. (As well
+as books, poems, paintings, photographs, illustrations, musical
+compositions, and many more.)</p>
+<p><strong>Data</strong> – Any type of information, recordable, or
+observable facts. Data are now most commonly stored electronically.</p>
+<p><strong>Data License</strong> – Data licenses give any data creator a
+way to grant the public permission to use their products under copyright
+law. Similarly, data licenses give data users clear guidelines regarding
+how they can reuse the material.</p>
+<p><strong>CC-BY and CC0 License</strong> – CC-BY and CC0 are Creative
+Commons data licenses. CC-BY allows reusers to distribute, remix, adapt,
+and build upon the material in any medium or format so long as
+attribution is given to the creator. The license allows for commercial
+use. CC0 allows creators to give up their copyright and put their works
+into the worldwide public domain. CC0 allows reusers to distribute,
+remix, adapt, and build upon the material in any medium or format, with
+no conditions.</p>
+<p><strong>Data Management Plan</strong> – A data management plan (DMP)
+describes the what, where, when, and who for data that will be created
+during a research project. Common components of data management plans
+include a description of the type, volume, and format of the data; where
+and when the data will be made available, and who will make the data
+available. The plan can also describe data variables, sources, accuracy,
+and precision if that information is available.</p>
+<p><strong>Metadata</strong> – Data that describes data. It can be
+global – describing the overall contents of a single file or collection
+of files – or local – describing an individual variable within the file.
+Typically, global metadata offers information about who created the
+file, information about the data set, what satellite/instrument/lab/etc.
+created the set, the DOI, and file format information, among other
+metadata fields. Local metadata about variables contains information
+such as the full/long name of the variable, any scaling factors or
+uncertainty information, and measurement units.</p>
+<p><strong>Machine-Readable Persistent Identiﬁers (PID)</strong> – A
+unique string that identifies an object, such as a dataset. Though the
+online location of the object may change, the PID will not, and will
+also lead back to the data, ensuring that citations referencing the PID
+will always be valid.</p>
+<p><strong>Findable (data)</strong> – Data that is readily discoverable
+to both humans and machines. It should include a unique persistent
+identifier and rich metadata describing the data and context and be
+registered in an index that is searchable.</p>
+<p><strong>Accessible (data)</strong> – Data that can be accessed over
+standard communication protocols, with metadata that can be accessed
+even if the data itself is no longer available.</p>
+<p><strong>Interoperable</strong> (data) – Data that uses controlled
+ontologies and vocabularies so that it can be used and/or combined with
+other relevant data sets in different applications.</p>
+<p><strong>Reusable (data)</strong> – Data that has a clear license,
+detailed provenance, adequate description/definition and meets
+community/domain standards, and can be replicated or combined with other
+data.</p>
+<p><strong>Dataﬂow</strong> – The data workflow that includes how data
+are used, made, and shared. Different actors will have different (or
+multiple) roles in this workflow.</p>
+<h2 id="navigation">Navigation</h2>
+<h3 id="lesson-1-introduction-to-open-data"><a href="./Lesson_1">Lesson
+1: Introduction to Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_1#overview">Overview</a></li>
+<li><a href="./Lesson_1#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_1#introduction">Introduction</a></li>
+<li><a
+href="./Lesson_1#definition-and-considerations-of-open-data">Definition
+and Considerations of Open Data</a></li>
+<li><a href="./Lesson_1#benefits-of-open-data">Benefits of Open
+Data</a></li>
+<li><a href="./Lesson_1#challenges-of-open-data">Challenges of Open
+Data</a></li>
+<li><a href="./Lesson_1#applying-fair-principles">Applying FAIR
+Principles</a></li>
+<li><a
+href="./Lesson_1#planning-for-openness-using-the-use-make-share-framework-for-open-data">Planning
+for Openness: Using the Use, Make, Share Framework for Open
+Data</a></li>
+<li><a href="./Lesson_1#lesson-1-summary">Lesson 1: Summary</a></li>
+<li><a href="./Lesson_1#lesson-1-knowledge-check">Lesson 1: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-2-using-open-data"><a href="./Lesson_2">Lesson 2: Using
+Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_2#overview">Overview</a></li>
+<li><a href="./Lesson_2#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_2#introduction">Introduction</a></li>
+<li><a href="./Lesson_2#discovering-open-data">Discovering Open
+Data</a></li>
+<li><a href="./Lesson_2#assessing-open-data">Assessing Open
+Data</a></li>
+<li><a href="./Lesson_2#using-open-data">Using Open Data</a></li>
+<li><a href="./Lesson_2#lesson-2-summary">Lesson 2: Summary</a></li>
+<li><a href="./Lesson_2#lesson-2-knowledge-check">Lesson 2: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-3-making-open-data"><a href="./Lesson_3">Lesson 3: Making
+Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_3#overview">Overview</a></li>
+<li><a href="./Lesson_3#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_3#planning-for-open-data">Planning for Open
+Data</a></li>
+<li><a
+href="./Lesson_3#selecting-data-formats-and-tools-for-interoperability">Selecting
+Data Formats and Tools for Interoperability</a></li>
+<li><a
+href="./Lesson_3#making-the-data-reusable-through-documentation">Making
+the Data Reusable Through Documentation</a></li>
+<li><a
+href="./Lesson_3#making-the-data-reusable-through-licensing">Making the
+Data Reusable Through Licensing</a></li>
+<li><a href="./Lesson_3#lesson-3-summary">Lesson 3: Summary</a></li>
+<li><a href="./Lesson_3#lesson-3-knowledge-check">Lesson 3: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-4-sharing-open-data"><a href="./Lesson_4">Lesson 4:
+Sharing Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_4#overview">Overview</a></li>
+<li><a href="./Lesson_4#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_4#when-and-if-to-share-data">When and If to Share
+Data</a></li>
+<li><a href="./Lesson_4#where-to-share-data">Where to Share
+Data</a></li>
+<li><a href="./Lesson_4#how-to-enable-reuse-of-data">How to Enable Reuse
+of Data</a></li>
+<li><a href="./Lesson_4#who-is-responsible-for-sharing-data">Who is
+Responsible for Sharing Data</a></li>
+<li><a href="./Lesson_4#lesson-4-summary">Lesson 4: Summary</a></li>
+<li><a href="./Lesson_4#lesson-4-knowledge-check">Lesson 4: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-5-from-theory-to-practice"><a href="./Lesson_5">Lesson 5:
+From Theory to Practice</a></h3>
+<ul>
+<li><a href="./Lesson_5#overview">Overview</a></li>
+<li><a href="./Lesson_5#learning-objectives">Learning
+Objectives</a></li>
+<li><a
+href="./Lesson_5#writing-an-open-science-and-data-management-plan">Writing
+an Open Science and Data Management Plan</a></li>
+<li><a href="./Lesson_5#open-data-communities-and-you">Open Data
+Communities and You</a></li>
+<li><a href="./Lesson_5#additional-resources">Additional
+Resources</a></li>
+<li><a href="./Lesson_5#lesson-5-summary">Lesson 5: Summary</a></li>
+<li><a href="./Lesson_5#lesson-5-knowledge-check">Lesson 5: Knowledge
+Check</a></li>
+<li><a href="./Lesson_5#open-data-summary">Open Data Summary</a></li>
+</ul>
+<footer><p>🔐 This page is part of the NASA TOPS Open Science 101 archive, retrieved <strong>2026-11-12T21:25:44.577Z</strong> from the immutable Zenodo version DOI <a href="https://doi.org/10.5281/zenodo.10161527">10.5281/zenodo.10161527</a>. Integrity verified against MD5 + SHA-256 checksums. Not endorsed by NASA.</p></footer>
+</body></html>

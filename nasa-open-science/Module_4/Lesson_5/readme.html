@@ -1,0 +1,486 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson_5 — NASA Open Science 101 · PSIVI</title>
+<style>
+body{max-width:52rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;font:16px/1.65 system-ui,sans-serif}
+a{color:#7ee787}img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #30363d;padding:.4rem}
+.trust-banner{margin:2rem 0 1.5rem;padding:1rem 1.25rem;border:1px solid #238636;border-radius:10px;background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);display:flex;align-items:center;gap:1rem;font-size:.9rem}
+.trust-banner .seal{font-size:2rem;filter:drop-shadow(0 0 8px #2ea043)}
+.trust-banner .meta{flex:1}
+.trust-banner .meta strong{color:#7ee787;display:block;margin-bottom:.25rem}
+.trust-banner .meta code{background:#0d1117;padding:.1rem .4rem;border-radius:4px;font-size:.8rem;color:#8b949e}
+.trust-banner .verified{color:#3fb950;font-weight:600}
+footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}
+</style></head><body>
+<div class="trust-banner">
+  <div class="seal">🛡️</div>
+  <div class="meta">
+    <strong>✅ Verified · Cryptographically Pinned</strong>
+    <span class="verified">Source: <a href="https://doi.org/10.5281/zenodo.10161527">Zenodo v1.0.0</a> · License: CC BY 4.0</span><br>
+    <code>MD5: ecde9587a3c95be40eb0eb3cfa083ea5</code> · <code>SHA-256: a40238e36b6efec82991e0c7ca8a8209603fce86c77f4f35cbf03b627623a8a2</code><br>
+    <code>Timestamp: 2026-11-12T21:25:44.577Z</code>
+  </div>
+</div>
+<h1 id="lesson-5-from-theory-to-practice">Lesson 5: From Theory to
+Practice</h1>
+<h2 id="navigation">Navigation</h2>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#learning-objectives">Learning Objectives</a></li>
+<li><a href="#open-science-and-data-management-plans">Open Science and
+Data Management Plans</a></li>
+<li><a href="#how-do-we-plan-for-making-our-code-open">How Do We Plan
+for Making our Code Open?</a></li>
+<li><a href="#engage-and-build-communities">Engage and Build
+Communities</a></li>
+<li><a href="#contribute-to-open-source-software">Contribute to
+Open-Source Software</a></li>
+<li><a href="#additional-resources">Additional Resources</a></li>
+<li><a href="#lesson-5-summary">Lesson 5: Summary</a></li>
+<li><a href="#lesson-5-knowledge-check">Lesson 5: Knowledge
+Check</a></li>
+<li><a href="#open-code-summary">Open Code Summary</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>This lesson ties the concepts of open access software development to
+the operation of a software management plan. The lesson also introduces
+you to the community aspect of open software. It begins with a
+discussion on writing software management plans, then continues with
+information on how to connect with open software communities. This
+information is contextualized with an introduction to the benefits of a
+software community and the roles involved in these groups. A list of
+communities is also presented, and you are asked to explore and engage
+with some of them. The lesson wraps up with helpful suggestions to
+contribute to open software and additional resources.</p>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you should be able to:</p>
+<ul>
+<li>Recall the definition of a software management plan, potentially as
+part of an open science and data management plan, and where to find
+helpful resources.</li>
+<li>List ways to engage with and contribute to open software
+communities.</li>
+</ul>
+<h2 id="open-science-and-data-management-plans">Open Science and Data
+Management Plans</h2>
+<img style="width: 100%; height: auto;" src="../images/media/codebg.jpg">
+
+<p>"A NASA Open Science and Data Management Plan (OSDMP) describes how
+the scientific information that will be produced from NASA-funded
+scientific activities will be managed and made openly available. The
+OSDMP should include sections on data management, software management,
+and publication sharing."</p>
+<p><strong><a
+href="https://science.nasa.gov/researchers/sara/faqs/"><span>https://science.nasa.gov/researchers/sara/faqs/</span></a></strong></p>
+<hr />
+<p>Example sections to include in an OSDMP:</p>
+<ul>
+<li>Data Management Plan (DMP)</li>
+<li>Software Management Plan (SMP)</li>
+<li>Publication sharing</li>
+<li>Other open science activities</li>
+<li>Roles and responsibilities</li>
+</ul>
+<h4 id="recall-the-steps-for-an-smp-from-the-previous-lessons">Recall
+the steps for an SMP from the previous lessons</h4>
+<ul>
+<li><strong>What:</strong> Description of management, preservation, and
+release of software.</li>
+<li><strong>When:</strong> The schedule for software archiving and
+sharing.</li>
+<li><strong>Where:</strong> Location where software will be shared and
+archived over the long-term.</li>
+<li><strong>How:</strong> Enable reuse of software through assigning a
+DOI, license, contribution guidelines, etc.</li>
+<li><strong>Who:</strong> Roles and responsibilities of the team
+members.</li>
+</ul>
+<img style="width: 350px; height: auto;" src="../images/media/recallsteps.jpg">
+
+<h2 id="how-do-we-plan-for-making-our-code-open">How Do We Plan for
+Making our Code Open?</h2>
+<h3 id="should-a-software-or-data-management-plan-be-written">Should a
+Software or Data Management Plan be Written?</h3>
+<p>If you are planning a project that requires a data management plan,
+writing that plan is a good first step. There is a threshold above which
+you should write a software/data management plan. “Software” here means
+scientifically or technically relevant computer programs as both source
+code and executable software.</p>
+<table>
+<tbody>
+<tr>
+<td>SMP is required</td>
+<td>You need a SMP to: <ul><li>Propose for funding (e.g., NASA, NSF, and
+likely everywhere soon)</li><li>Collaborate on a team that intends to
+release code to the public</li><li>Successfully manage any large mission
+or project</li></ul></td>
+</tr>
+<tr>
+<td>SMP is not required</td>
+<td>You probably don't need a SMP if you are working on: <ul><li>A paper
+by yourself (or with a very small group of collaborators)</li><li>The
+initial exploration of ideas or experimentation with analysis
+code</li><li>Education-focused activities</li></ul></td>
+</tr>
+</tbody>
+</table>
+<p>Perhaps your project does not fit into these categories. For example,
+if your aim is for your results to be reproduced by others then writing
+a SMP is your discretion.</p>
+<p>The following material assumes that you have met the threshold and
+are writing a data/software management plan.</p>
+<h3 id="pen-to-paper-getting-started-writing-a-plan">Pen to Paper:
+Getting Started Writing a Plan</h3>
+<p>If you are applying for funding, it is almost guaranteed that there
+will be specific data management requirements detailed in the funding
+opportunity. For example, the funder may require a certain license or
+use of a specific repository. Make sure to cross reference your plan
+with these requirements.</p>
+<p><strong>Examples of Software Management Plans</strong></p>
+<ul>
+<li><a
+href="https://www.software.ac.uk/resources/guides/software-management-plans">software.ac.uk/resources/guides/software-management-plans</a></li>
+<li><a
+href="https://www.software.ac.uk/resources/guides/software-management-plans">software.ac.uk/software-management-plans</a></li>
+<li><a
+href="https://www.esciencecenter.nl/national-guidelines-for-software-management-plans/">esciencecenter.nl/national-guidelines-for-software-management-plans/</a></li>
+<li><a
+href="https://zenodo.org/record/7589725"><span>https://zenodo.org/record/7589725</span></a></li>
+</ul>
+<p><strong>Policies</strong></p>
+<p>What are the policies for a SMP? (what does the funding agency say to
+do?)</p>
+<ul>
+<li>Data formats</li>
+<li>Plan for data/code archival/preservation</li>
+<li>Roles and responsibilities</li>
+</ul>
+<h3 id="funding-agencies">Funding Agencies</h3>
+<p>Scientific funding agencies generally solicit peer reviews to support
+funding decisions. These reviews explicitly or implicitly evaluate
+related open software. Community participation is necessary to arrive at
+consensus regarding community standards for funding.</p>
+<p>For example: <a href="https://science.nasa.gov/spd-41">NASA
+policy</a> explicitly states that "funded software should follow best
+practices in the relevant open source and research communities."</p>
+<h3
+id="established-open-software-policies-of-professional-societies">Established
+Open Software Policies of Professional Societies</h3>
+<p>Professional societies such as AAAS, AGU, AAS, etc., influence
+funding agency policies and directly influence the policies surrounding
+software used to generate publications. It is important to engage with
+the community via consensus papers and professional societies to guide
+policy decisions regarding open source software in science.</p>
+<p>Science/AAAS explicitly states that "In general, all computer code
+central to the findings being reported should be available to readers to
+ensure reproducibility."</p>
+<h3 id="institutions">Institutions</h3>
+<p>The individual institutions where we work impose highly variable
+restrictions on open source software due to security, privacy,
+intellectual property, commercial, or other concerns which do not
+necessarily align with the ethos of open science. It is important to
+engage with the institutional community to facilitate the movement
+toward policies that facilitate open source software as a foundation of
+open science.</p>
+<h3 id="activity-51-writing-an-smp">Activity 5.1: Writing an SMP</h3>
+<p>In this activity, review the SMP below and think about these
+questions:</p>
+<ul>
+<li>What kinds of software does the SMP describe?</li>
+<li>When will it be shared?</li>
+<li>Where will it be shared?</li>
+<li>How will it be shared so it is a citable artifact?</li>
+<li>Who will be responsible for different aspects of the software?</li>
+<li>What are some of the limitations for some of the software?</li>
+<li>How does not having an agreed upon plan when you start code
+development have impacts years down the line?</li>
+<li>Are results reproducible without the original IDL code?</li>
+<li>Are there things in the example plan that you would add or be more
+specific about?</li>
+</ul>
+<h4 id="example-software-management-plan">Example Software Management
+Plan</h4>
+<p><strong>1. Expected Software Types</strong></p>
+<p>We will use established simulation models to conduct initial
+simulations for this work. These simulation models are written in
+Fortran and developed over the last decade. While not publicly
+available, they are available for the project to use (private
+communication). The simulation models will lead to the generation of
+output files as described in the Data Management Plan (DMP). We will
+develop analysis software in Python to analyze the model output files,
+which will enable the development of derived data products, maps, and
+figures. Development of the Python analysis software will be shared on a
+GitHub repository.</p>
+<p><strong>2. Development of Analysis Software</strong></p>
+<p>All new development of Python code will be conducted openly on GitHub
+by members of this project. We will post and follow the established Code
+of Conduct for software development for our research project, which
+includes guidelines for contributions by additional members of the
+scientific community.</p>
+<p><strong>3. Repositories and Timeline for Sharing
+Software</strong></p>
+<p>This work will support the development of two peer-reviewed journal
+articles. All source code developed in Python to support each article
+will be archived on Zenodo no later than the article’s publication date.
+The software will be made available under a permissive Apache License
+2.0. Zenodo will assign a DOI to the archived software when it is
+archived.</p>
+<p><strong>4. Software Sharing Exemptions</strong></p>
+<p>This work does not support further development of the existing
+Fortran simulation models, which are maintained independently. We do not
+have permission to publicly share the Fortran source code for the
+simulation models.</p>
+<p><strong>5. Roles and Responsibilities</strong></p>
+<p>Initial simulation modeling and the development of Python analysis
+software will be completed by PhD students and postdocs. The PI of this
+project holds overall responsibility for the execution of this plan.</p>
+<h2 id="engage-and-build-communities">Engage and Build Communities</h2>
+<p>Open software communities are social learning spaces where
+individuals come together to learn a new skill, exchange knowledge and
+experiences, and then apply what they've learned from the community in
+their day-to-day work.</p>
+<h4 id="communities-offer">Communities offer:</h4>
+<ul>
+<li>A low entry point for learning and improving your use of software in
+research.</li>
+<li>An opportunity to share individual experiences, identify common
+hurdles, and iteratively enhance knowledge and resolve problems.</li>
+<li>A way to build the culture around open source software in science
+and a great way to keep updated on the latest tools and practices.</li>
+<li>A non-hierarchical community of practice where all members of the
+community should be treated equally.</li>
+</ul>
+<h3 id="connect-with-communities">Connect with Communities</h3>
+<p>Here are some communities that can help you get started:</p>
+<ul>
+<li><a href="https://pydata.org/">PyData</a></li>
+<li><a href="https://scientific-python.org/specs/">SPEC</a></li>
+<li><a href="https://ropensci.org/">rOpenSci</a></li>
+<li><a href="https://www.pyopensci.org/">pyOpenSci</a></li>
+<li><a href="https://heliopython.org/">PyHC</a></li>
+<li><a href="https://society-rse.org/">Research Software
+Engineering</a></li>
+<li><a href="https://numfocus.org/">NumFOCUS</a></li>
+<li><a href="https://rladies.org/">R-Ladies</a></li>
+<li><a href="https://pyladies.com/">PyLadies</a></li>
+<li><a href="https://woccode.github.io/">WoCCode</a></li>
+<li><a href="https://pangeo.io/">Pangeo</a></li>
+<li><a href="https://discourse.obspy.org/">ObsPy</a></li>
+</ul>
+<p>Subscribe to and/or participate in forums (e.g., GitHub discussions,
+Stack Overflow, or discipline/software specific), in-person workshops,
+conferences, hackathons, etc., related to your discipline or software
+you contribute to or use. Connect on social media. And last but not
+least, talk with your colleagues!</p>
+<p><strong>Explore: The Turing Way</strong></p>
+<p><strong>Hit the button to ﬁnd out more information on building a
+community.</strong></p>
+<p><a
+href="https://the-turing-way.netlify.app/collaboration/new-community.html">CLICK
+TO LEARN</a></p>
+<h3
+id="activity-52-browse-through-some-of-the-communities-of-practice">Activity
+5.2: Browse Through Some of the Communities of Practice</h3>
+<img style="width:350px;height:auto;" src="../images/media/lightbulb.png">
+
+<ul>
+<li>Find and browse through the websites associated with two communities
+of practice listed on the previous section "Connecting with
+Communities".</li>
+<li>Identify at least two points of entry for engagement, e.g., an
+upcoming event (virtual or in person), how you could contribute, forums,
+etc.</li>
+</ul>
+<h4
+id="key-takeaways-browse-through-some-of-the-communities-of-practice">Key
+takeaways: Browse through some of the communities of practice</h4>
+<ul>
+<li>There are many opportunities to engage with communities working on
+open software.</li>
+<li>Engaging with open software communities can enrich and improve your
+software.</li>
+</ul>
+<h2 id="contribute-to-open-source-software">Contribute to Open-Source
+Software</h2>
+<p>Contributing to open software provides many advantages and opens
+doors to a number of rewarding opportunities. There are few other
+industries that can boast the massive number of global contributions
+like the open-source community can. Contributing to open source software
+is a great way to improve your coding skills and to document your work
+while growing your community.</p>
+<p>There are several types of contributing to open software. Not all of
+them require writing actual code:</p>
+<table>
+<tbody>
+<tr>
+<td><strong>Add New Features</strong></td>
+<td>The most obvious case for contributing to open software is enhancing
+its usability by adding new features.</td>
+</tr>
+<tr>
+<td><strong>Fix Bugs</strong></td>
+<td>Alternatively, you can reply to an already opened issue by fixing
+it.</td>
+</tr>
+<tr>
+<td><strong>Report Issues and Make Suggestions About Improving
+Code</strong></td>
+<td>Reporting an issue is a valuable contribution even if you don’t know
+how to fix it. For example, you might be using a different browser in
+which the software has not been tested yet, have discovered a
+particularly uninformative error message, be colorblind or be otherwise
+able to feed a valuable user experience back to the developers that can
+help to improve the overall usability of the software.</td>
+</tr>
+<tr>
+<td><strong>Improving and Contributing to Documentation</strong></td>
+<td>Contributing to documentation constitutes a great starting point to
+contributing to open source software and is often overlooked in its
+importance. Writing documentations allows you to familiarize yourself
+with the use of the software, while helping to teach others.</td>
+</tr>
+<tr>
+<td><strong>Create Tutorials, Use Cases, or Visuals</strong></td>
+<td>Another way to contribute is to make your experience and use of the
+software publicly available. For example, you could create a tutorial
+based on your use of the software, summarize a use case or provide a
+summary of your use in a graphic. This part of contribution is
+particularly appealing as it does not create much extra work to just
+publish what you have used the software for.</td>
+</tr>
+<tr>
+<td><strong>Improve Layout, Automatization, Structure of
+Code</strong></td>
+<td>Apart from creating new code, a good way to contribute to open
+source software can also be to improve, restructure or automatize
+existing code. This is called refactoring and helps to make the software
+project more effective and stable.</td>
+</tr>
+<tr>
+<td><strong>Organize and Attend a Community Meet-Up</strong></td>
+<td>Another way to contribute to open source software is via community
+building. Many software products and toolboxes have a lively community
+of users that meet on a regular basis in person and online to discuss
+and improve the software and its use. Participating or even organizing
+such a meetup can be a good way to improve your knowledge of the
+software, get to know its community, and contribute to open source
+projects.</td>
+</tr>
+<tr>
+<td><strong>Code Review</strong></td>
+<td>Requests to integrate new contributions into the main code base
+usually require a review of the contribution by at least one other user.
+Similar to peer review, code review entails writing a short summary
+about the quality of the code and making suggestions about
+improvements.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="additional-resources">Additional Resources</h2>
+<h3 id="references-and-guides">References and Guides</h3>
+<p>In addition to the resources listed elsewhere in this training, the
+below community resources are excellent sources of information about
+Open Software.</p>
+<ul>
+<li><a href="https://zenodo.org/record/7662732">OpenSciency</a></li>
+<li><a
+href="https://science.nasa.gov/science-red/s3fs-public/atoms/files/SMD%20Open-Source%20Science%20Guidance%20v1%2020221208.pdf">NASA
+SMD's Open-Source Science Guidance</a></li>
+<li><a href="https://zenodo.org/record/7589725">Practical Guide to
+Software Management</a></li>
+<li><a href="https://zenodo.org/record/6623556">FAIR Principles for
+Research Software (FAIR4RS Principles)</a></li>
+<li><a href="https://doi.org/10.17226/25217">Open Source Software Policy
+Options for NASA Earth and Space Sciences</a></li>
+<li><a href="https://the-turing-way.netlify.app/index.html">Turing Way
+handbook to reproducible, ethical and collaborative data
+science</a></li>
+<li><a href="https://doi.org/10.1371/journal.pcbi.1006561">Ten simple
+rules for documenting scientific software</a></li>
+<li><a href="https://joss.theoj.org/">Journal of Open Source
+Software</a></li>
+</ul>
+<h3 id="additional-training">Additional Training</h3>
+<p>In addition to the resources listed elsewhere in this training, the
+below resources represent additional training on Open Source
+Software.</p>
+<ul>
+<li><a href="https://software-carpentry.org/lessons/">Software
+Carpentries</a></li>
+<li><a
+href="https://www.freecodecamp.org/news/how-to-contribute-to-open-source-projects-beginners-guide/">How
+to contribute to Open Source projects – A beginners guide</a></li>
+</ul>
+<h3
+id="a-journal-with-thousands-of-open-source-research-software-success-stories">A
+Journal with Thousands of Open-Source Research Software Success
+Stories</h3>
+<p><a href="https://joss.theoj.org/">The Journal of Open Source
+Software</a> has presented a venue for enhancing the quality and
+minimizing the effort of publishing open source research software:</p>
+<ul>
+<li>Peer-reviewed, open source "journal" covering open source research
+software published via GitHub.</li>
+<li>The emphasis is on the software.</li>
+<li>Published thousands of open source research software projects,
+several of which are highly cited. JOSS is one of several journals.
+Click <a
+href="https://www.software.ac.uk/which-journals-should-i-publish-my-software">here</a>
+for a list of many more journals that publish software.</li>
+</ul>
+<h2 id="lesson-5-summary">Lesson 5: Summary</h2>
+<p>In this lesson, you learned:</p>
+<ul>
+<li>When a SMP should be written and that your funding organization or
+institution may have rules around how you develop and share your
+code.</li>
+<li>That joining software communities can be a great way to exchange
+knowledge and learn new skills around open code.</li>
+<li>That there are many ways to contribute to open code, and that not
+all of them require writing code."</li>
+</ul>
+<h2 id="lesson-5-knowledge-check">Lesson 5: Knowledge Check</h2>
+<p>Answer the following questions to test what you have learned so
+far.</p>
+<p><em>Question</em></p>
+<p><strong>01/02</strong></p>
+<p>Read the statement and decide whether it's true or false:</p>
+<p><em>Community engagement with open software is non-hierarchical; all
+members of the community should be treated the same.</em></p>
+<ul>
+<li>True</li>
+<li>False</li>
+</ul>
+<p><em>Question</em></p>
+<p><strong>02/02</strong></p>
+<p>Select the beneficial way(s) to contribute to open sources
+software.</p>
+<ul>
+<li>Add new features</li>
+<li>Fix bugs</li>
+<li>Document your work</li>
+<li>Refactoring</li>
+<li>All of the above</li>
+</ul>
+<h2 id="open-code-summary">Open Code Summary</h2>
+<p>Congratulations! Now you should be able to:</p>
+<ul>
+<li>Explain what open source software means, including the software
+development cycle, the benefits of open software, and some common
+limitations and how they are addressed.</li>
+<li>Discover open source software and assess it for reuse by evaluating
+provided documentation, including README files and licensing details;
+cite the software when appropriate.</li>
+<li>Create an open source software management plan that includes the
+strategy for selecting open software dependencies and open repositories
+such as GIT, and how open elements including metadata, README files and
+version control, will be included to make the software reusable and
+findable.</li>
+<li>Evaluate whether your open source software can be shared and the
+best options for sharing to increase visibility.</li>
+<li>List the responsibilities a software developer has once the open
+source software is shared including managing legal requirements and
+ensuring the software is maintained.</li>
+</ul>
+<footer><p>🔐 This page is part of the NASA TOPS Open Science 101 archive, retrieved <strong>2026-11-12T21:25:44.577Z</strong> from the immutable Zenodo version DOI <a href="https://doi.org/10.5281/zenodo.10161527">10.5281/zenodo.10161527</a>. Integrity verified against MD5 + SHA-256 checksums. Not endorsed by NASA.</p></footer>
+</body></html>
