@@ -1,10 +1,10 @@
 name: Vendor NASA OS101 (Web-Based Build)
 
 on:
-  workflow_dispatch: # Allows you to run this manually from the GitHub UI
+  workflow_dispatch:
 
 permissions:
-  contents: write    # Required to commit and push the new files
+  contents: write
 
 jobs:
   build-and-commit:
@@ -53,10 +53,19 @@ jobs:
           echo "ZIP_SHA=${ZIP_SHA}" >> $GITHUB_ENV
           echo "✅ Cryptographic verification passed."
 
-          echo "📦 Extracting safely..."
+          echo "📦 Extracting safely (bulletproof logic)..."
+          mkdir -p temp_extract
           unzip -q "$ZIP_NAME" -d temp_extract
-          mv temp_extract/*/$DEST/ . || mv temp_extract/* . # Handle potential nested folder
-          rm -rf temp_extract "$ZIP_NAME"
+          rm -f "$ZIP_NAME"
+          
+          # Smart extraction: handles both nested folders and flat zip structures
+          ITEM_COUNT=$(ls -1 temp_extract | wc -l)
+          if [ "$ITEM_COUNT" -eq 1 ] && [ -d "temp_extract/$(ls temp_extract)" ]; then
+            mv "temp_extract/$(ls temp_extract)" "$DEST"
+            rmdir temp_extract
+          else
+            mv temp_extract "$DEST"
+          fi
           
           echo "🛡️ Generating provenance files..."
           mkdir -p "$PROV"
@@ -78,13 +87,13 @@ jobs:
 
           cat > "$DEST/NOTICE.md" <<EOF
           # Attribution Notice
-
+          
           This folder contains the NASA TOPS Open Science 101 Curriculum (Version 1.0.0).
-
+          
           - **Original Authors:** NASA TOPS Open Science 101 Curriculum Development Team (2023)
           - **Source:** https://doi.org/${DOI}
           - **License:** Creative Commons Attribution 4.0 International (CC BY 4.0)
-
+          
           **Modifications:** 
           This copy has been archived for future reference and will be adapted for apiary and Earth observation research by Louis-Philippe Audette. This adaptation is not endorsed by NASA.
           EOF
@@ -198,8 +207,8 @@ jobs:
           echo "💾 Committing and Pushing..."
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add "$DEST" "$PROV" REUSE.toml
-          git commit -m "chore: vendor NASA TOPS OS101 v1.0.0 (CC BY 4.0) with cryptographic proof"
+          git add "$DEST" "$PROV" REUSE.toml tpl.html
+          git commit -m "chore: vendor NASA TOPS OS101 v1.0.0 (CC BY 4.0) with cryptographic proof" || echo "No changes to commit"
           git push
           
           echo "🚀 DONE! Public at https://psivi.com/nasa-open-science/"
