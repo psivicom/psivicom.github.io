@@ -163,35 +163,53 @@ jobs:
                 -o "${md%.md}.html"
             done )
 
-          # Generate Index
+          # Generate Upgraded Index with Browse & Download Actions
           cat > "$DEST/index.html" <<HEAD
-          <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
-          <meta name="viewport" content="width=device-width,initial-scale=1">
-          <title>NASA Open Science 101 — PSIVI Open Science Hub</title>
-          <style>
-          body{max-width:60rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;font:16px/1.6 system-ui,sans-serif}
-          a{color:#7ee787;text-decoration:none}a:hover{text-decoration:underline}
-          h1{border-bottom:1px solid #30363d;padding-bottom:.5rem}
-          .trust-seal{margin:2rem 0;padding:1.5rem;border:2px solid #238636;border-radius:12px;background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);text-align:center}
-          .trust-seal .big-seal{font-size:4rem;margin-bottom:.5rem;filter:drop-shadow(0 0 12px #2ea043)}
-          .trust-seal h2{color:#3fb950;margin:0 0 .5rem;font-size:1.3rem}
-          .trust-seal .verified-line{color:#7ee787;font-weight:600;margin:.5rem 0}
-          .trust-seal code{background:#0d1117;padding:.2rem .5rem;border-radius:4px;font-size:.85rem;color:#8b949e;display:inline-block;margin:.2rem}
-          .card{border:1px solid #30363d;border-radius:8px;padding:1rem;margin:1rem 0;background:#161b22}
-          li{margin:.25rem 0}
-          footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}
-          </style></head><body>
-          <h1>NASA Open Science 101 <small>v1.0.0</small></h1>
-          <div class="trust-seal">
-            <div class="big-seal">🛡️✅</div>
-            <h2>Verified · Cryptographically Pinned · Publicly Auditable</h2>
-            <div class="verified-line">Source: <a href="https://doi.org/10.5281/zenodo.10161527">Zenodo v1.0.0</a> · License: CC BY 4.0</div>
-            <div><code>MD5: ecde9587a3c95be40eb0eb3cfa083ea5</code> <code>SHA-256: ${ZIP_SHA}</code></div>
-            <div><code>Retrieved: ${STAMP}</code></div>
-            <p style="margin-top:1rem;font-size:.9rem;color:#8b949e">This archive is immutable. Any visitor can independently verify the checksums against the Zenodo API. Provenance manifest: <a href="../.provenance/nasa-os101/manifest.sha256">manifest.sha256</a></p>
-          </div>
-          <p>Archived from the immutable Zenodo version DOI <a href="https://doi.org/10.5281/zenodo.10161527">10.5281/zenodo.10161527</a>, checksum-verified. <a href="NOTICE.md">Attribution &amp; provenance</a>.</p>
-          HEAD
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NASA Open Science 101 — PSIVI Open Science Hub</title>
+<style>
+body{max-width:60rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;font:16px/1.6 system-ui,sans-serif}
+a{color:#7ee787;text-decoration:none}a:hover{text-decoration:underline}
+h1{border-bottom:1px solid #30363d;padding-bottom:.5rem}
+.trust-seal{margin:2rem 0;padding:1.5rem;border:2px solid #238636;border-radius:12px;background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);text-align:center}
+.trust-seal .big-seal{font-size:4rem;margin-bottom:.5rem;filter:drop-shadow(0 0 12px #2ea043)}
+.trust-seal h2{color:#3fb950;margin:0 0 .5rem;font-size:1.3rem}
+.trust-seal .verified-line{color:#7ee787;font-weight:600;margin:.5rem 0}
+.trust-seal code{background:#0d1117;padding:.2rem .5rem;border-radius:4px;font-size:.85rem;color:#8b949e;display:inline-block;margin:.2rem}
+.action-card{display:flex;gap:1rem;justify-content:center;margin:2rem 0;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:8px;font-weight:600;text-decoration:none;transition:all .2s}
+.btn-primary{background:#238636;color:#fff;border:1px solid #2ea043}.btn-primary:hover{background:#2ea043}
+.btn-secondary{background:#21262d;color:#c9d1d9;border:1px solid #30363d}.btn-secondary:hover{background:#30363d;color:#fff}
+.card{border:1px solid #30363d;border-radius:8px;padding:1rem;margin:1rem 0;background:#161b22}
+li{margin:.25rem 0}
+footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}
+</style></head><body>
+<h1>NASA Open Science 101 <small>v1.0.0</small></h1>
+
+<div class="trust-seal">
+  <div class="big-seal">🛡️✅</div>
+  <h2>Verified · Cryptographically Pinned · Publicly Auditable</h2>
+  <div class="verified-line">Source: <a href="https://doi.org/10.5281/zenodo.10161527">Zenodo v1.0.0</a> · License: CC BY 4.0</div>
+  <div><code>MD5: ecde9587a3c95be40eb0eb3cfa083ea5</code> <code>SHA-256: ${ZIP_SHA}</code></div>
+  <div><code>Retrieved: ${STAMP}</code></div>
+  <p style="margin-top:1rem;font-size:.9rem;color:#8b949e">This archive is immutable. Any visitor can independently verify the checksums against the Zenodo API. Provenance manifest: <a href="../.provenance/nasa-os101/manifest.sha256">manifest.sha256</a></p>
+</div>
+
+<div class="action-card">
+  <a href="https://github.com/psivicom/psivicom.github.io/tree/main/nasa-open-science" class="btn btn-secondary" target="_blank">
+    📂 Browse Raw Files & Folders
+  </a>
+  <a href="https://github.com/psivicom/psivicom.github.io/tree/main/nasa-open-science" class="btn btn-primary" target="_blank">
+    ⬇️ Download Archive (.zip)
+  </a>
+</div>
+<p style="text-align:center;font-size:.9rem;color:#8b949e;margin-top:-1rem;margin-bottom:2rem;">
+  <em>(On GitHub, click the green "Code" button → "Download ZIP" to get the entire folder)</em>
+</p>
+
+<p>Archived from the immutable Zenodo version DOI <a href="https://doi.org/10.5281/zenodo.10161527">10.5281/zenodo.10161527</a>, checksum-verified. <a href="NOTICE.md">Attribution &amp; provenance</a>.</p>
+HEAD
 
           for m in "$DEST"/Module_*; do
             [[ -d "$m" ]] || continue
