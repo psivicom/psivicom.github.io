@@ -4,7 +4,6 @@
 │   └── workflows/
 │       ├── README.md
 │       ├── update-tree.yml
-│       ├── verify-os101.yml
 │       ├── wendy-autonomous-compile.yml
 │       ├── wendy-autonomous-evolution.yml
 │       ├── wendy-awaken.yml
@@ -93,5 +92,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-11 directories, 82 files
+11 directories, 81 files
 ```
