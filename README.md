@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-13T03:34:07.000Z -->
+<!-- Last updated: 2026-11-13T03:35:10.000Z -->
 ```text
 ./
 ├── .github/
@@ -151,8 +151,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── LICENSE-EUPL-1.2.md
 │   └── README.md
 ├── archive/
-│   ├── README.md
-│   └── deprecated_vendor-nasa-os101.yml
+│   └── README.md
 ├── nasa-open-science/
 │   ├── .github/
 │   │   └── workflows/
@@ -672,6 +671,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-56 directories, 493 files
+56 directories, 492 files
 ```
 <!-- AUTO_TREE_END -->
