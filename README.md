@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-13T00:23:42.000Z -->
+<!-- Last updated: 2026-11-13T02:37:06.000Z -->
 ```text
 ./
 ├── .github/
@@ -141,6 +141,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │       └── wendy_synapse.yml
 ├── .provenance/
 │   └── nasa-os101/
+│       ├── local-additions.txt
 │       ├── manifest.sha256
 │       ├── provenance.json
 │       └── record.json
@@ -599,8 +600,9 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── NOTICE.md
 │   ├── README.html
 │   ├── README.md
-│   ├── files.html
-│   └── index.html
+│   ├── catalogue.html
+│   ├── index.html
+│   └── provenance.html
 ├── raw_input_stream/
 │   ├── mobile_drops/
 │   │   └── qwen_task_01.txt
@@ -671,6 +673,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-56 directories, 492 files
+56 directories, 494 files
 ```
 <!-- AUTO_TREE_END -->
