@@ -1,13 +1,13 @@
 # Installing a Verified Open Science Archive
 
-**Worked example: `psivicom/psivicom.github.io` → https://psivi.com/nasa-open-science/**
+**Worked example:** `psivicom/psivicom.github.io` → https://psivi.com/nasa-open-science/
 
-This guide reproduces a cryptographically pinned, legally compliant mirror of the
-NASA TOPS Open Science 101 curriculum on your own GitHub Pages site. Everything runs
-from the GitHub web interface — **no terminal required**.
+Reproduce a cryptographically pinned, legally compliant mirror of the NASA TOPS
+Open Science 101 curriculum on your own GitHub Pages site. Everything runs from the
+GitHub web interface — no terminal required.
 
-Author of this guide and of the local packaging: Louis-Philippe Audette | PSIVI.COM
-Guide text: CC BY-SA 4.0 · Workflow code: EUPL 1.2 · Upstream curriculum: CC BY 4.0
+Guide author: Louis-Philippe Audette | PSIVI.COM
+Guide text CC BY-SA 4.0 · workflow code EUPL 1.2 · upstream curriculum CC BY 4.0
 
 ---
 
@@ -15,120 +15,176 @@ Guide text: CC BY-SA 4.0 · Workflow code: EUPL 1.2 · Upstream curriculum: CC B
 
 | Result | Detail |
 |---|---|
-| Verified mirror | 400+ upstream files, byte-for-byte identical to the Zenodo DOI |
+| Verified mirror | 400+ upstream files, byte-identical to the Zenodo version DOI |
 | Public website | Klein-blue landing page, descriptive catalogue, provenance map |
 | Readable lessons | Every `.md` rendered to HTML with an attribution banner |
-| Legal compliance | `NOTICE.md`, `CITATION.cff`, `REUSE.toml` annotation |
-| Tamper evidence | SHA-256 per file + CI guard that fails on any upstream edit |
-| One-click download | ZIP served directly by Zenodo (CERN) — no repo bloat |
+| Legal compliance | Archive `NOTICE.md`, `CITATION.cff`, `REUSE.toml` annotation |
+| Tamper evidence | Per-file SHA-256 + a CI guard that fails on any upstream edit |
+| One-click download | ZIP served by Zenodo (CERN) — no repository bloat |
 
-**Pinned source (do not substitute):**
+**Pinned source — do not substitute:**
 
-- Version DOI: `10.5281/zenodo.10161527` (immutable, v1.0.0, published 2023-12-06)
-- Concept DOI: `10.5281/zenodo.10161526` (always latest — never pin to this)
-- File: `open-science-101-v-1-0-0.zip` · `23311809` bytes
-- MD5: `ecde9587a3c95be40eb0eb3cfa083ea5`
-- License: CC BY 4.0
+- Version DOI `10.5281/zenodo.10161527` (immutable, v1.0.0, published 2023-12-06)
+- Concept DOI `10.5281/zenodo.10161526` (always latest — never pin to this)
+- File `open-science-101-v-1-0-0.zip` · `23311809` bytes
+- MD5 `ecde9587a3c95be40eb0eb3cfa083ea5`
+- Licence CC BY 4.0
 
 ---
 
 ## 1. Requirements
 
-1. A **public** GitHub repository (GitHub Pages on the free plan requires public).
-2. Pages enabled: **Settings → Pages → Build and deployment → Deploy from a branch → `main` → `/ (root)`**.
-3. Workflow write access: **Settings → Actions → General → Workflow permissions → Read and write permissions**.
-4. Nothing installed locally. The runner installs `pandoc` itself.
+1. A **public** GitHub repository (Pages on the free plan requires public).
+2. Pages enabled: **Settings → Pages → Deploy from a branch → `main` → `/ (root)`**.
+3. **Settings → Actions → General → Workflow permissions → Read and write permissions**.
+4. Nothing installed locally; the runner installs `pandoc` itself.
 
 ---
 
-## 2. File inventory — what you create vs what is generated
+## 2. READ FIRST — do you already have a licensing framework?
 
-### You create (5 files)
+**If your repository already has `REUSE.toml`, `NOTICE.md`, `LICENSES/`, or any
+domain-separated licensing model: create nothing in root.** Skip sections 4 and 5.
+Overwriting an existing `REUSE.toml` or `NOTICE.md` destroys your attribution terms.
 
-| # | Relative path | Purpose |
-|---|---|---|
-| 1 | `REUSE.toml` | Machine-readable licence boundaries |
-| 2 | `NOTICE.md` | Repo-wide human-readable attribution |
-| 3 | `.nojekyll` | Empty file — makes Pages serve dot-folders verbatim |
-| 4 | `.github/workflows/vendor-nasa-os101.yml` | The builder |
-| 5 | `.github/workflows/verify-os101.yml` | The CI guard |
+The builder is append-only and idempotent in root:
 
-### The builder generates (never edit by hand)
+| Root item | Behaviour |
+|---|---|
+| `index.html` | never touched |
+| `NOTICE.md` | never touched (the builder writes only the archive copy) |
+| `LICENSE`, `LICENSES/**`, licence texts | never touched |
+| `CITATION.cff` (root) | never touched (the archive gets its own) |
+| `docs/**`, `scripts/**`, other workflows | never touched |
+| `REUSE.toml` | one block appended **only if** the file exists and lacks the line `path = "nasa-open-science/**"`; otherwise a no-op |
+| `tpl.html` | deleted if present — obsolete leftover from an older pipeline, not a licence file |
+
+Everything else is written inside `nasa-open-science/` and `.provenance/nasa-os101/`.
+
+**Only for a brand-new repository with no licensing files** may you create the
+templates in sections 4 and 5.
+
+---
+
+## 3. File inventory
+
+### You create
+
+| Relative path | Needed when |
+|---|---|
+| `.github/workflows/vendor-nasa-os101.yml` | always |
+| `.github/workflows/verify-os101.yml` | always |
+| `REUSE.toml` | only if you have none |
+| `NOTICE.md` | only if you have none |
+
+### The builder generates — never edit by hand
 
 | Relative path | Tier | Author |
 |---|---|---|
-| `nasa-open-science/Module_1..5/**` | A · upstream | NASA TOPS team |
-| `nasa-open-science/README.md`, `LICENSE.md`, images | A · upstream | NASA TOPS team |
-| `nasa-open-science/**/*.html` (beside each `.md`) | B · render | text NASA, banner you |
-| `nasa-open-science/index.html` | C · local | you |
-| `nasa-open-science/catalogue.html` | C · local | you |
-| `nasa-open-science/provenance.html` | C · local | you |
-| `nasa-open-science/NOTICE.md` | C · local | you |
-| `nasa-open-science/CITATION.cff` | C · local | you |
-| `.provenance/nasa-os101/manifest.sha256` | C · local | you |
-| `.provenance/nasa-os101/record.json` | C · local | you |
-| `.provenance/nasa-os101/provenance.json` | C · local | you |
-| `.provenance/nasa-os101/local-additions.txt` | C · local | you |
+| `nasa-open-science/Module_1..5/**` | A | NASA TOPS team |
+| `nasa-open-science/README.md`, `LICENSE.md`, images | A | NASA TOPS team |
+| `nasa-open-science/**/*.html` beside each `.md` | B | text NASA, banner you |
+| `nasa-open-science/index.html` | C | you |
+| `nasa-open-science/catalogue.html` | C | you |
+| `nasa-open-science/provenance.html` | C | you |
+| `nasa-open-science/NOTICE.md` | C | you |
+| `nasa-open-science/CITATION.cff` | C | you |
+| `.provenance/nasa-os101/manifest.sha256` | C | you |
+| `.provenance/nasa-os101/record.json` | C | you |
+| `.provenance/nasa-os101/provenance.json` | C | you |
+| `.provenance/nasa-os101/local-additions.txt` | C | you |
 
-> `nasa-open-science/` is **machine-managed**. Re-running the builder deletes and
-> rebuilds it. Your own adaptations belong in a sibling folder, e.g.
-> `nasa-open-science-apiary/`.
+`nasa-open-science/` is machine-managed: each run deletes and rebuilds it. Your own
+adaptations belong in a sibling folder such as `nasa-open-science-apiary/`.
 
 ---
 
-## 3. Step 1 — `REUSE.toml`
+## 4. `REUSE.toml` — NEW REPOSITORIES ONLY
 
-**Create this BEFORE running the builder.** The builder only appends its annotation
-if `REUSE.toml` already exists; otherwise it silently skips it.
+Create this **before** running the builder; the builder appends its annotation only
+if the file already exists. Replace the copyright name with your own.
 
 ```toml
+# REUSE.toml - SPDX REUSE compliance
+# https://reuse.software/spec/
+
 version = 1
 
-# --- Your own documentation and data -------------------------------------
+# 1. SOFTWARE / CODE
 [[annotations]]
-path = ["docs/**", "**.md"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 Your Name"
-SPDX-License-Identifier = "CC-BY-SA-4.0"
-
-# --- Your own code, scripts and workflows --------------------------------
-[[annotations]]
-path = ["scripts/**", ".github/workflows/**", "**.py", "**.sh", "**.html"]
-precedence = "aggregate"
+path = [
+  "**/*.py", "**/*.sh", "**/*.js", "**/*.go", "**/*.c", "**/*.h",
+  "**/*.yml", "**/*.yaml", "scripts/**", "tools/**", ".github/**"
+]
+precedence = "closest"
 SPDX-FileCopyrightText = "2026 Your Name"
 SPDX-License-Identifier = "EUPL-1.2"
 
-# --- Vendored upstream archive (the builder appends this if missing) ------
+# 2. DOCUMENTATION, DATA & MEDIA
+[[annotations]]
+path = [
+  "README.md", "docs/**", "**/*.md", "index.html",
+  "**/*.csv", "**/*.json", "**/*.png", "**/*.jpg", "**/*.svg", "**/*.pdf"
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Your Name"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+# 3. LICENCE FILES THEMSELVES
+[[annotations]]
+path = ["LICENSE-EUPL-1.2.txt", "LICENSE"]
+SPDX-FileCopyrightText = "2026 Your Name"
+SPDX-License-Identifier = "EUPL-1.2"
+
+[[annotations]]
+path = ["LICENSE-CC-BY-SA-4.0.md"]
+SPDX-FileCopyrightText = "2026 Your Name"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+# 4. VENDORED UPSTREAM ARCHIVE (the builder appends this if missing)
 [[annotations]]
 path = "nasa-open-science/**"
 precedence = "override"
 SPDX-FileCopyrightText = "2023 NASA TOPS Open Science 101 Curriculum Development Team"
 SPDX-License-Identifier = "CC-BY-4.0"
+
+# 5. LOCAL AUTHORSHIP INSIDE THE MIRROR (add manually)
+[[annotations]]
+path = [
+  "nasa-open-science/index.html",
+  "nasa-open-science/catalogue.html",
+  "nasa-open-science/provenance.html",
+  "nasa-open-science/NOTICE.md",
+  "nasa-open-science/CITATION.cff",
+  ".provenance/**"
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Your Name"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
 ```
 
-**Two rules:**
+**Rules**
 
-- Keep the last block's path in the exact string form `path = "nasa-open-science/**"`.
-  The builder searches for that literal line to stay idempotent; a list form
-  (`path = [...]`) would cause a duplicate append.
-- `precedence = "override"` is what legally fences the archive off from your
-  repo-wide CC BY-SA / EUPL defaults.
+- Keep block 4's path in the exact string form `path = "nasa-open-science/**"`.
+  The builder searches for that literal line to stay idempotent; a list form causes
+  a duplicate append.
+- `precedence = "override"` fences the archive off from your repo-wide defaults.
+- Block 5 must come **after** block 4 so your own pages inside the mirror are not
+  attributed to NASA. Confirm with `reuse lint`.
 
-**Licence texts.** REUSE expects full texts under `LICENSES/` named by SPDX ID:
+**Licence texts** go under `LICENSES/`, named by SPDX ID:
 
+```text
+LICENSES/CC-BY-4.0.txt      https://creativecommons.org/licenses/by/4.0/legalcode.txt
+LICENSES/CC-BY-SA-4.0.txt   https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
+LICENSES/EUPL-1.2.txt       https://spdx.org/licenses/EUPL-1.2.html
 ```
-LICENSES/CC-BY-4.0.txt      ← https://creativecommons.org/licenses/by/4.0/legalcode.txt
-LICENSES/CC-BY-SA-4.0.txt   ← https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
-LICENSES/EUPL-1.2.txt       ← https://spdx.org/licenses/EUPL-1.2.html
-```
 
-The upstream archive also ships its own `nasa-open-science/LICENSE.md` — leave it untouched.
+The archive ships its own `nasa-open-science/LICENSE.md` — leave it untouched.
 
 ---
 
-## 4. Step 2 — root `NOTICE.md`
-
-The archive gets its own generated `NOTICE.md`. This root one covers the whole repo.
+## 5. Root `NOTICE.md` — NEW REPOSITORIES ONLY
 
 ```markdown
 # NOTICE
@@ -136,44 +192,47 @@ The archive gets its own generated `NOTICE.md`. This root one covers the whole r
 Copyright (c) 2026 Your Name | yourdomain.example
 
 ## Domain-separated licensing
-- Software, scripts, workflows, HTML: EUPL 1.2 — see LICENSES/EUPL-1.2.txt
-- Documentation, data, figures: CC BY-SA 4.0 — see LICENSES/CC-BY-SA-4.0.txt
+- Software, scripts, workflows: EUPL 1.2 — LICENSES/EUPL-1.2.txt
+- Documentation, data, figures: CC BY-SA 4.0 — LICENSES/CC-BY-SA-4.0.txt
 - Vendored third-party material: original licence, see REUSE.toml
 
 ## Vendored archive: NASA TOPS Open Science 101
 - Path: nasa-open-science/
-- Author: NASA TOPS Open Science 101 Curriculum Development Team (2023)
+- Upstream author: NASA TOPS Open Science 101 Curriculum Development Team (2023)
 - Source: https://doi.org/10.5281/zenodo.10161527 (version DOI, immutable)
 - Licence: CC BY 4.0
-- Status: unmodified upstream payload; HTML renders are format-only conversions
-- Local additions (index, catalogue, provenance, metadata) are by Your Name
-- This project is not endorsed by, or affiliated with, NASA.
+- Tier A upstream files unmodified; Tier B HTML renders are format-only conversions
+- Tier C local pages and provenance metadata are by Your Name
+- Not endorsed by, or affiliated with, NASA
 
-See nasa-open-science/NOTICE.md and .provenance/nasa-os101/ for the full
-provenance record and per-file SHA-256 hashes.
+See nasa-open-science/NOTICE.md and .provenance/nasa-os101/ for the full record.
 ```
 
----
-
-## 5. Step 3 — `.nojekyll`
-
-Create an **empty** file named `.nojekyll` at the repository root.
-
-Why: Jekyll (the Pages default) skips dot-folders, so `.provenance/` would not be
-published and the manifest links on your pages would 404. This file makes Pages
-serve every file verbatim.
+**Existing repository?** Do not replace your notice. Append a section describing the
+vendored archive instead, and leave your attribution clauses intact.
 
 ---
 
-## 6. Step 4 — the builder workflow
+## 6. Jekyll, dot-folders and `.nojekyll`
+
+- **Do not add `.nojekyll`** if Jekyll builds your site: it disables markdown
+  conversion and breaks rendered `docs/*.html` pages.
+- Jekyll skips dot-folders, so the on-site links to `../.provenance/...` may 404.
+  The files are always present in the repository and readable on GitHub — this is
+  cosmetic, and **no root change is required**.
+- If you want them served and you have a `_config.yml`, add one line:
+  `include: [".provenance"]`. If you have no `_config.yml`, you do not need one.
+
+---
+
+## 7. The builder workflow
 
 **Relative path: `.github/workflows/vendor-nasa-os101.yml`**
 
-Design notes for maintainers:
-- All build logic is Python carried inside a YAML `env` string. **Do not reintroduce
-  bash heredocs** — they caused `Invalid workflow file` and `here-document ... wanted 'TPL'`.
-- The pin is checked twice: against the live Zenodo API *and* against hardcoded constants.
-- Extraction is zip-slip guarded; the install is a clean rebuild.
+Maintenance notes: all build logic is Python carried inside a YAML `env` string.
+**Do not reintroduce bash heredocs** — they caused `Invalid workflow file` and
+`here-document ... wanted 'TPL'`. The pin is checked twice: against the live Zenodo
+API and against hardcoded constants. Extraction is zip-slip guarded.
 
 ```yaml
 name: Vendor NASA OS101 (Web-Based Build)
@@ -734,12 +793,11 @@ jobs:
 
 ---
 
-## 7. Step 5 — the CI guard
+## 8. The CI guard
 
 **Relative path: `.github/workflows/verify-os101.yml`**
 
-Read-only. No network. Fails any push or pull request that alters a single upstream byte.
-It checks only Tier A files, so your local pages never trigger a false alarm.
+Read-only, no network. Checks Tier A only, so your local pages never trigger a false alarm.
 
 ```yaml
 name: Verify OS101 Provenance
@@ -775,18 +833,18 @@ jobs:
 
 ---
 
-## 8. Step 6 — run it (web interface only)
+## 9. Run it
 
-1. Commit the five files above.
+1. Commit the workflow files (and the root files only if section 2 says you may).
 2. Open the **Actions** tab.
-3. Select **Vendor NASA OS101 (Web-Based Build)** in the left sidebar.
-   *Not* any other workflow — if the log shows `cargo build`, you picked the wrong one.
+3. Select **Vendor NASA OS101 (Web-Based Build)** — not any other workflow.
+   If the log shows `cargo build`, you picked the wrong one.
 4. **Run workflow → Branch: main → Run workflow**.
-5. Wait for the green check, then open `https://YOUR-DOMAIN/nasa-open-science/`.
+5. When the check turns green, open `https://YOUR-DOMAIN/nasa-open-science/`.
 
-Expected log lines:
+Expected log:
 
-```
+```text
 Querying Zenodo API
 Pin confirmed by API
 Downloading pinned archive
@@ -797,118 +855,105 @@ Rendered NN upstream pages (format-only)
 DONE - index, catalogue, provenance generated
 ```
 
-Optional terminal path (same result, run from the repo root):
-
-```bash
-sudo apt-get install -y pandoc
-python3 - <<'PY'
-# extract BUILDER_PY from the workflow, or simply trigger the workflow instead
-PY
-```
-
 ---
 
-## 9. Verify at any time
+## 10. Verify at any time
 
 ```bash
 cd nasa-open-science
 sha256sum -c ../.provenance/nasa-os101/manifest.sha256
 ```
 
-Every line must read `OK`. Independently re-check the source:
+Every line must read `OK`. Re-check the source independently:
 
 ```bash
 curl -s https://zenodo.org/api/records/10161527 | python3 -m json.tool | head -40
 ```
 
+Licence compliance, if you use the REUSE tool:
+
+```bash
+pipx run reuse lint
+```
+
 ---
 
-## 10. Make it yours
+## 11. Make it yours
 
-Keep the folder names unless you are prepared to edit every reference.
-
-| Variable / string | Example value | Change to |
+| Variable / string | Example | Change to |
 |---|---|---|
-| `AUTHOR` | `Louis-Philippe Audette` | your name |
-| `TREE` | `github.com/psivicom/psivicom.github.io/...` | your repo URL |
-| NAV hub link | `https://psivi.com/` | your site |
-| Top-bar / kicker text | `PSIVI.COM`, `Langford, BC` | your brand and place |
-| Footer copyright | `2026 ... PSIVI.COM` | your copyright |
-| CSS `#002FA7` | International Klein Blue | your accent colour |
+| `AUTHOR` | Louis-Philippe Audette | your name |
+| `TREE` | github.com/psivicom/psivicom.github.io/... | your repo URL |
+| NAV hub link | https://psivi.com/ | your site |
+| Top-bar and kicker text | PSIVI.COM, Langford BC | your brand and place |
+| Footer copyright | 2026 … PSIVI.COM | your copyright |
+| CSS `#002FA7` | International Klein Blue | your accent |
 
-**If you rename `DEST`, you must also change:** `BASE`, the hardcoded `marker`
-string, every `../.provenance/nasa-os101/...` link, the REUSE path, and both
-`paths:` filters plus the `cd` in the guard workflow. Renaming is deliberate work,
-not a one-line edit.
+Renaming `DEST` also requires changing `BASE`, the hardcoded `marker` string, every
+`../.provenance/nasa-os101/...` link, the REUSE paths, and both `paths:` filters plus
+the `cd` in the guard. Keep the default folder names unless you intend that work.
 
-**Never change** `REC_ID`, `PIN_MD5`, `PIN_SIZE`, `ZIP_NAME` — those are the pin.
-To follow a newer curriculum release, look up the new *version* DOI on Zenodo and
-update all four together.
+**Never change** `REC_ID`, `PIN_MD5`, `PIN_SIZE`, `ZIP_NAME` — those are the pin. To
+follow a newer release, read the new *version* record on Zenodo and update all four together.
 
 ---
 
-## 11. The legal model
+## 12. Legal model
 
-| Tier | Content | Author | Licence | Modified? |
+| Tier | Content | Author | Licence | Modified |
 |---|---|---|---|---|
-| **A** | Everything from the Zenodo zip | NASA TOPS OS101 Curriculum Development Team | CC BY 4.0 | No |
-| **B** | `.html` beside each `.md` | Text: NASA · Banner: you | CC BY 4.0 | Format only |
-| **C** | index / catalogue / provenance / NOTICE / CITATION / `.provenance` | you | your repo policy | New work |
+| A | Everything from the Zenodo zip | NASA TOPS OS101 Curriculum Development Team | CC BY 4.0 | no |
+| B | `.html` beside each `.md` | text NASA · banner you | CC BY 4.0 | format only |
+| C | index / catalogue / provenance / NOTICE / CITATION / `.provenance` | you | your repo policy | new work |
 
-CC BY 4.0 obligations you are satisfying automatically:
+CC BY 4.0 obligations satisfied automatically: attribution on every page; changes
+indicated (format + banner); upstream notices preserved; no added restrictions; no
+endorsement implied. NASA names and insignia are not used as branding — copyright
+permission is not trademark permission.
 
-1. **Attribution** — team name, title, version, DOI, licence on every page.
-2. **Indicate changes** — the banner states exactly what changed (format + banner).
-3. **Keep notices** — upstream `LICENSE.md` and third-party markings preserved.
-4. **No added restrictions** — the archive stays CC BY 4.0, fenced by `REUSE.toml`.
-5. **No endorsement** — "Not endorsed by NASA" appears site-wide. Do not use NASA
-   insignia as your branding; copyright permission is not trademark permission.
+A course certificate is a personal credential. The right to reuse comes from the licence.
 
-Your certificate or badge is a personal credential. The right to reuse comes from
-the licence, not from the badge.
-
-**Adaptations** (your apiary / Earth-observation lessons) go in a **sibling folder**
-such as `nasa-open-science-apiary/`, headed *"Adapted from NASA TOPS Open Science 101
-(CC BY 4.0)"*, under your own licence. The mirror is rebuilt from scratch each run —
-anything you place inside it will be erased.
+Adaptations go in a **sibling folder** such as `nasa-open-science-apiary/`, headed
+"Adapted from NASA TOPS Open Science 101 (CC BY 4.0)", under your own licence. The
+mirror is rebuilt from scratch each run; anything placed inside it is erased.
 
 ---
 
-## 12. Troubleshooting
+## 13. Troubleshooting
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `Invalid workflow file ... yaml syntax` | Unindented heredoc broke the YAML block | Use this Python-in-`env` version; never add bash heredocs |
-| `here-document ... wanted 'TPL'` | Same root cause | Same fix |
-| `FATAL: no manifest at .provenance/...` | Guard ran before the builder | Run the builder workflow first |
-| Log shows `cargo build` / `cargo test` | You triggered a different workflow | Pick **Vendor NASA OS101 (Web-Based Build)** |
-| `mv: cannot stat 'temp_extract/...'` | Obsolete bash script | Delete it; use this workflow |
-| `remote: Permission ... denied` (403) | Read-only workflow token | Settings → Actions → General → Read and write |
-| Manifest links 404 on the site | Jekyll skips dot-folders | Add empty `.nojekyll` at repo root |
-| REUSE annotation missing | `REUSE.toml` did not exist at build time | Create it, re-run |
-| Duplicate REUSE blocks | Path written as a list | Use `path = "nasa-open-science/**"` exactly |
-| `No changes to commit` | Archive already current | Normal; nothing to do |
+| `Invalid workflow file … yaml syntax` | unindented heredoc broke the YAML block | use this Python-in-`env` version; never add bash heredocs |
+| `here-document … wanted 'TPL'` | same root cause | same fix |
+| `FATAL: no manifest at .provenance/…` | guard ran before the builder | run the builder first |
+| log shows `cargo build` / `cargo test` | wrong workflow triggered | pick **Vendor NASA OS101 (Web-Based Build)** |
+| `mv: cannot stat 'temp_extract/…'` | obsolete bash script | delete it; use this workflow |
+| 403 on push | read-only workflow token | Settings → Actions → General → Read and write |
+| manifest links 404 on the site | Jekyll skips dot-folders | cosmetic; see section 6 — do not add `.nojekyll` |
+| REUSE annotation missing | `REUSE.toml` absent at build time | create it, re-run |
+| duplicate REUSE blocks | path written as a list | use `path = "nasa-open-science/**"` exactly |
+| your own pages attributed to NASA | archive override is blanket | add block 5 from section 4, then `reuse lint` |
+| `No changes to commit` | archive already current | normal |
 
 ---
 
-## 13. Updating, re-running, uninstalling
+## 14. Updating, re-running, uninstalling
 
-- **Re-run**: safe and idempotent. The mirror is deleted and rebuilt from the pin;
-  the timestamp refreshes; upstream hashes stay identical.
-- **Update to a new release**: change `REC_ID`, `ZIP_NAME`, `PIN_MD5`, `PIN_SIZE`
-  together from the new Zenodo *version* record.
-- **Uninstall**: delete `nasa-open-science/`, `.provenance/nasa-os101/`, both
-  workflows, and the `nasa-open-science/**` block in `REUSE.toml`.
+- **Re-run:** safe and idempotent. The mirror is rebuilt from the pin; the timestamp
+  refreshes; upstream hashes stay identical.
+- **Update:** change `REC_ID`, `ZIP_NAME`, `PIN_MD5`, `PIN_SIZE` together.
+- **Uninstall:** delete `nasa-open-science/`, `.provenance/nasa-os101/`, both
+  workflows, and the archive blocks in `REUSE.toml`. Your root licensing is unaffected.
 
 ---
 
-## 14. Reference
+## 15. Reference
 
-- Curriculum version DOI: https://doi.org/10.5281/zenodo.10161527
-- Zenodo record (CERN): https://zenodo.org/records/10161527
+- Version DOI: https://doi.org/10.5281/zenodo.10161527
+- Zenodo record: https://zenodo.org/records/10161527
 - Direct archive: https://zenodo.org/records/10161527/files/open-science-101-v-1-0-0.zip?download=1
 - Licence: https://creativecommons.org/licenses/by/4.0/
-- REUSE specification: https://reuse.software/spec/
+- REUSE spec: https://reuse.software/spec/
 - Live example: https://psivi.com/nasa-open-science/
 
 ---
