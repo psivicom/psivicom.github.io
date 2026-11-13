@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Random Mix</title>
+<style>
+body{background:#000;color:#ccc;font-family:monospace;margin:0;display:flex;flex-direction:column;align-items:center;padding:10px}
+canvas{border:1px solid #222}
+</style></head>
+<body>
+<canvas id="c" width="600" height="600"></canvas>
+<div id="hud"></div>
+<script>
+const c=document.getElementById('c'), g=c.getContext('2d');
+let t=0, L={x:0.1,y:0,z:0};
+
+// Pseudo-random hash for lattice points
+const hash=(x,y,z)=>{const s=Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453;return s-Math.floor(s);};
+const lerp=(a,b,k)=>a+(b-a)*k;
+
+// 3D value noise, trilinearly interpolated
+function vnoise(x,y,z){
+  const xi=Math.floor(x), yi=Math.floor(y), zi=Math.floor(z);
+  const xf=x-xi, yf=y-yi, zf=z-zi;
+  const u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf), w=zf*zf*(3-2*zf);
+  const c000=hash(xi,yi,zi), c100=hash(xi+1,yi,zi), c010=hash(xi,yi+1,zi), c110=hash(xi+1,yi+1,zi);
+  const c001=hash(xi,yi,zi+1), c101=hash(xi+1,yi,zi+1), c011=hash(xi,yi+1,zi+1), c111=hash(xi+1,yi+1,zi+1);
+  return lerp(lerp(lerp(c000,c100,u),lerp(c010,c110,u),v),
+              lerp(lerp(c001,c101,u),lerp(c011,c111,u),v), w);
+}
+
+// Fractal (fBm) noise: 4 octaves, each doubling frequency and halving amplitude
+function fbm(x,y,z){
+  let s=0,a=0.5,f=1;
+  for(let o=0;o<4;o++){ s+=a*vnoise(x*f,y*f,z*f); f*=2; a*=0.5; }
+  return s;
+}
+
+function frame(){
+  ctx_fade();
+  t+=0.016;
+
+  // Lorenz attractor: advance several small steps per frame
+  const dt=0.005;
+  for(let k=0;k<4;k++){
+    const dx=10*(L.y-L.x), dy=L.x*(28-L.z)-L.y, dz=L.x*L.y-(8/3)*L.z;
+    L.x+=dx*dt; L.y+=dy*dt; L.z+=dz*dt;
+  }
+
+  // Heartbeat envelope (lub-dub, ~72 bpm)
+  const phase=(t*1.2)%1;
+  const beat=Math.min(1, Math.exp(-Math.pow((phase-0.1)*15,2)) + 0.6*Math.exp(-Math.pow((phase-0.3)*20,2)));
+
+  // Chaos drives the stretch on each axis, scaled by the beat
+  const sx=1+0.25*beat*(L.x/20), sy=1+0.25*beat*(L.y/20), sz=1+0.25*beat*(L.z/30);
+  const spin=t*0.3, cs=Math.cos(spin), ss=Math.sin(spin);
+
+  g.save(); g.translate(300,300);
+  const LAYERS=20;
+  for(let i=1;i<=LAYERS;i++){
+    const v=i/LAYERS;
+    const baseR=Math.sin(v*Math.PI*0.85)*140+5;
+    g.beginPath();
+    for(let a=0;a<=Math.PI*2;a+=0.06){
+      // Fractal noise warps the radius; amplitude rises with the beat
+      const n=fbm(Math.cos(a)*1.5+t*0.2, Math.sin(a)*1.5+v*2, t*0.1);
+      const r=baseR+(n-0.5)*60*(0.3+beat);
+      let x=r*Math.cos(a)*sx, y=r*Math.sin(a)*sy, z=(-120+v*240)*sz;
+      // Rotate around the vertical axis
+      const xr=x*cs-z*ss, zr=x*ss+z*cs;
+      const s=500/Math.max(50,500+zr);
+      a===0 ? g.moveTo(xr*s,y*s) : g.lineTo(xr*s,y*s);
+    }
+    const hue=(180+L.z*4)%360;
+    g.strokeStyle=`hsla(${hue},100%,60%,${0.3+0.7*beat})`;
+    g.lineWidth=1+2*beat;
+    g.stroke();
+  }
+  g.restore();
+
+  document.getElementById('hud').textContent=
+    `LORENZ x:${L.x.toFixed(2)} y:${L.y.toFixed(2)} z:${L.z.toFixed(2)} | BEAT ${beat>0.2?'SYSTOLE':'DIASTOLE'} | STRAIN ${(beat*100).toFixed(0)}%`;
+  requestAnimationFrame(frame);
+}
+function ctx_fade(){ g.fillStyle='rgba(0,0,0,0.2)'; g.fillRect(0,0,600,600); }
+frame();
+</script>
+</body></html>
