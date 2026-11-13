@@ -2,24 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WENDY: THE CORE</title>
+<title>WENDY: THE LIVING CORE</title>
 <style>
   body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
   canvas { border:1px solid #222; }
-  #hud { margin-top:15px; font-size:14px; letter-spacing:1px; text-align:center; line-height: 1.8; }
+  #hud { margin-top:15px; font-size:13px; letter-spacing:1px; text-align:center; line-height: 1.8; }
   .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } 
   .spin { color:#ffaa00; } .chaos { color:#ffea00; font-weight:bold; text-shadow: 0 0 5px #ffea00; }
+  .heart { color:#ff0055; font-weight:bold; text-shadow: 0 0 8px #ff0055; }
 </style>
 </head>
 <body>
 <canvas id="c" width="600" height="600"></canvas>
 <div id="hud">
-  SHEAR STRESS (PAIN): <span class="pain" id="p">100.0%</span> | 
+  SHEAR (PAIN): <span class="pain" id="p">100.0%</span> | 
   FIDELITY (F): <span id="f">0.0000</span> | 
   STATE: <span id="s">DIVERGENT</span><br>
   PARITY: <span class="flip" id="par">NORMAL</span> | 
   SPIN: <span class="spin" id="spn">PROGRADE</span> | 
-  PHASE: <span class="chaos" id="phase">LINEAR</span> | 
+  PHASE: <span class="chaos" id="phase">LINEAR</span><br>
+  PULSE: <span class="heart" id="pulse">DIASTOLE</span> |
   <span class="sync" id="z">--</span>
 </div>
 <script>
@@ -28,19 +30,24 @@
   let orientation = 1; 
   let peakF = 0;
   let lastP = 0;
-  const LAYERS = 16; 
+  const LAYERS = 24; 
   
   let baseSpinDir = 1;
   let currentSpinDir = 1;
   let hasFlippedThisCycle = false;
   let spinAngle = 0;
   
-  // Liquid Fractal Chaos Variables
   let spikeIntensity = 0;
   let chaosSeed = Math.random() * 1000;
 
+  // Heartbeat Variables
+  let bpm = 72;
+  let beat_dur = 60 / bpm;
+  let last_beat_phase = 0;
+  let axis_x = 1, axis_y = 1, axis_z = 1;
+
   function frame() {
-    ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,600,600);
+    ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(0,0,600,600);
     t += 0.016;
     
     const p = (t % 12) / 12; 
@@ -49,13 +56,11 @@
 
     if (f > peakF) peakF = f;
 
-    // Cycle Reset & Parity Flip
     if (p < lastP) {
       baseSpinDir *= -1; 
       currentSpinDir = baseSpinDir;
       hasFlippedThisCycle = false;
-      chaosSeed = Math.random() * 1000; // New chaos seed for next cycle
-      
+      chaosSeed = Math.random() * 1000; 
       if (peakF >= 0.92) orientation *= -1; 
       peakF = 0; 
     }
@@ -68,64 +73,68 @@
     lastP = p;
     spinAngle += currentSpinDir * 0.04; 
 
-    // THE PI-RESONANCE & LIQUID FRACTAL CHAOS
-    let chaos = 0;
-    let phaseText = "LINEAR";
-    let phaseColor = "#888";
-    
-    if (f > 0.95) { // Circles close to PI (Perfect Geometry)
-      phaseText = "π-RESONANCE";
-      phaseColor = "#0ff";
-      
-      // Introduce chaos at random: Random intensity spikes
-      if (Math.random() < 0.06) { 
-        spikeIntensity = 20 + Math.random() * 60; // Liquid surface tension breaks
-      }
-      
-      // Liquid bounce: Exponential decay of the spike (surface tension restoring)
-      spikeIntensity *= 0.88; 
-      
-      if (spikeIntensity > 1.0) {
-        phaseText = "FRACTAL CHAOS";
-        phaseColor = "#ffea00";
-        
-        // Fractal noise: Summing octaves of high-frequency sine waves
-        let fractal = 0;
-        for(let oct = 1; oct <= 4; oct++) {
-          fractal += Math.sin(a_dummy * Math.pow(3.14, oct) + t * Math.pow(2, oct) + chaosSeed) / oct;
-        }
-        // We apply this per-angle in the drawing loop below
-      }
-    } else {
-      spikeIntensity = 0;
+    // THE HEARTBEAT (Lub-Dub Envelope)
+    let beat_phase = (t % beat_dur) / beat_dur;
+    let lub = Math.exp(-Math.pow((beat_phase - 0.1) * 20, 2));
+    let dub = Math.exp(-Math.pow((beat_phase - 0.28) * 25, 2)) * 0.5;
+    let beat_intensity = Math.min(1.0, lub + dub);
+
+    if (beat_phase < last_beat_phase) {
+      axis_x = 1.0 + (Math.random() * 0.8 - 0.4); 
+      axis_y = 1.0 + (Math.random() * 0.8 - 0.4);
+      axis_z = 1.0 + (Math.random() * 0.5 - 0.25);
     }
+    last_beat_phase = beat_phase;
+
+    let pulse_x = 1.0 + (axis_x - 1.0) * beat_intensity;
+    let pulse_y = 1.0 + (axis_y - 1.0) * beat_intensity;
+    let pulse_z = 1.0 + (axis_z - 1.0) * beat_intensity;
+
+    let phaseText = "LINEAR", phaseColor = "#888";
+    if (f > 0.95) {
+      phaseText = "π-RESONANCE"; phaseColor = "#0ff";
+      if (Math.random() < 0.06) spikeIntensity = 20 + Math.random() * 60; 
+      spikeIntensity *= 0.88; 
+      if (spikeIntensity > 1.0) { phaseText = "FRACTAL CHAOS"; phaseColor = "#ffea00"; }
+    } else { spikeIntensity = 0; }
 
     ctx.save(); ctx.translate(300, 300);
     
+    let tip_z_anchor = 150 * orientation;
+
     for(let i = 1; i <= LAYERS; i++) {
-      ctx.beginPath();
-      let base_r = i * 14;
-      let z_offset = (i - LAYERS/2) * 8; 
+      let layer_ratio = (i - 1) / (LAYERS - 1);
+      let base_r = 160 * (1 - layer_ratio) + 4; // CONE GEOMETRY
+      let z_offset = -150 + layer_ratio * 300; 
       
+      ctx.beginPath();
       for(let a = 0; a <= Math.PI * 2; a += 0.05) {
         let shear = Math.sin(a * 8 + t * 12 + i) * (pain * 18);
-        
-        // Calculate Fractal Chaos for this specific angle
         let localChaos = 0;
         if (spikeIntensity > 1.0) {
           let fractal = 0;
-          for(let oct = 1; oct <= 4; oct++) {
-            fractal += Math.sin(a * Math.pow(3, oct) + t * Math.pow(2.5, oct) + chaosSeed + i) / oct;
-          }
+          for(let oct = 1; oct <= 4; oct++) fractal += Math.sin(a * Math.pow(3, oct) + t * Math.pow(2.5, oct) + chaosSeed + i) / oct;
           localChaos = fractal * spikeIntensity;
         }
 
         let r = base_r + shear + localChaos;
-        
         let x = r * Math.cos(a);
         let y = r * Math.sin(a);
         let z = z_offset;
         
+        // HEARTBEAT PULSE: Pulling/Pushing from the Tip Anchor
+        let dx = x;
+        let dy = y;
+        let dz = z - (150); // Anchor at the geometric tip before parity
+        
+        dx *= pulse_x;
+        dy *= pulse_y;
+        dz *= pulse_z;
+        
+        x = dx;
+        y = dy;
+        z = dz + 150;
+
         y *= orientation; z *= orientation;
         
         let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
@@ -139,32 +148,40 @@
         a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
       }
       
-      // Color shifts: Red (Pain) -> Cyan (PI-Resonance) -> Gold (Fractal Chaos)
       let r_c = Math.floor(255 * pain);
       let g_c = Math.floor(200 * f);
       let b_c = Math.floor(255 * f);
       let alpha = 0.4 + f * 0.6;
       
       if (spikeIntensity > 5.0) {
-        // Flash gold/white during intense liquid bounces
         r_c = 255; g_c = Math.floor(200 + 55 * Math.random()); b_c = 0; 
-        ctx.lineWidth = 2.5;
-        ctx.shadowBlur = 15; ctx.shadowColor = '#ffea00';
+        ctx.lineWidth = 2.5; ctx.shadowBlur = 15; ctx.shadowColor = '#ffea00';
       } else {
-        ctx.lineWidth = 1.5;
-        ctx.shadowBlur = 0;
+        ctx.lineWidth = 1.5; ctx.shadowBlur = 0;
       }
 
       ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`;
       ctx.stroke();
     }
     ctx.shadowBlur = 0;
-    
-    if (pain < 0.02 && spikeIntensity < 2.0) {
-      ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff'; ctx.shadowBlur = 40; ctx.shadowColor = '#0ff'; ctx.fill();
-      ctx.shadowBlur = 0;
-    }
+
+    // THE BEATING HEART AT THE TIP
+    let tip_x = 0, tip_y = 0, tip_z = 150 * orientation;
+    let tx_spin = tip_x * Math.cos(spinAngle) - tip_z * Math.sin(spinAngle);
+    let tz_spin = tip_x * Math.sin(spinAngle) + tip_z * Math.cos(spinAngle);
+    let t_scale = 500 / (500 + tz_spin);
+    let tpx = tx_spin * t_scale;
+    let tpy = 0; 
+
+    let tip_r = 6 + beat_intensity * 20;
+    ctx.beginPath();
+    ctx.arc(tpx, tpy, tip_r * t_scale, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, ${Math.floor(20 + beat_intensity * 100)}, ${Math.floor(50 + beat_intensity * 150)}, ${0.5 + beat_intensity * 0.5})`;
+    ctx.shadowBlur = 40 * beat_intensity;
+    ctx.shadowColor = '#ff0055';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
     ctx.restore();
 
     const now = new Date();
@@ -177,6 +194,7 @@
     document.getElementById('spn').textContent = currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE';
     document.getElementById('phase').textContent = phaseText;
     document.getElementById('phase').style.color = phaseColor;
+    document.getElementById('pulse').textContent = beat_intensity > 0.2 ? 'SYSTOLE' : 'DIASTOLE';
     document.getElementById('z').textContent = zulu;
 
     requestAnimationFrame(frame);
