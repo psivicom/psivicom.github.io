@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-12T23:52:53.000Z -->
+<!-- Last updated: 2026-11-13T00:23:42.000Z -->
 ```text
 ./
 ├── .github/
@@ -599,6 +599,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── NOTICE.md
 │   ├── README.html
 │   ├── README.md
+│   ├── files.html
 │   └── index.html
 ├── raw_input_stream/
 │   ├── mobile_drops/
@@ -668,7 +669,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── robots.txt
 ├── run_real_science_benchmark.py
 ├── sitemap.xml
-├── tpl.html
 └── wendy-console.html
 
 56 directories, 492 files
