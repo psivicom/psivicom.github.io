@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        # Pinned to v4.2.2 commit SHA for supply-chain security
+        uses: actions/checkout@11bd5960a326750d5838078e36cf38b85af677262 
         with:
           fetch-depth: 0
 
