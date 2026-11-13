@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WENDY: THE LIVING CORE</title>
+<title>WENDY: THE LIVING FLUID CORE</title>
 <style>
   body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
   canvas { border:1px solid #222; }
@@ -30,24 +30,24 @@
   let orientation = 1; 
   let peakF = 0;
   let lastP = 0;
-  const LAYERS = 24; 
+  const LAYERS = 20; 
+  const MERIDIANS = 12; // Longitudinal lines to make spin visible
   
   let baseSpinDir = 1;
   let currentSpinDir = 1;
   let hasFlippedThisCycle = false;
   let spinAngle = 0;
   
-  let spikeIntensity = 0;
+  // Liquid Wave Propagation (Water Chaos)
+  let waves = []; 
   let chaosSeed = Math.random() * 1000;
 
   // Heartbeat Variables
-  let bpm = 72;
-  let beat_dur = 60 / bpm;
   let last_beat_phase = 0;
   let axis_x = 1, axis_y = 1, axis_z = 1;
 
   function frame() {
-    ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(0,0,600,600);
+    ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(0,0,600,600);
     t += 0.016;
     
     const p = (t % 12) / 12; 
@@ -56,6 +56,7 @@
 
     if (f > peakF) peakF = f;
 
+    // Cycle Reset & Parity Flip
     if (p < lastP) {
       baseSpinDir *= -1; 
       currentSpinDir = baseSpinDir;
@@ -63,26 +64,28 @@
       chaosSeed = Math.random() * 1000; 
       if (peakF >= 0.92) orientation *= -1; 
       peakF = 0; 
+      waves = []; // Clear ripples for new cycle
     }
     
+    // Rotational Shear: Alternate spin direction when F >= 0.1
     if (!hasFlippedThisCycle && f >= 0.1) {
       currentSpinDir *= -1;
       hasFlippedThisCycle = true;
     }
     
     lastP = p;
-    spinAngle += currentSpinDir * 0.04; 
+    spinAngle += currentSpinDir * 0.05; 
 
     // THE HEARTBEAT (Lub-Dub Envelope)
-    let beat_phase = (t % beat_dur) / beat_dur;
-    let lub = Math.exp(-Math.pow((beat_phase - 0.1) * 20, 2));
-    let dub = Math.exp(-Math.pow((beat_phase - 0.28) * 25, 2)) * 0.5;
+    let beat_phase = (t * 1.2) % 1.0; // ~72 bpm
+    let lub = Math.exp(-Math.pow((beat_phase - 0.1) * 15, 2));
+    let dub = Math.exp(-Math.pow((beat_phase - 0.3) * 20, 2)) * 0.6;
     let beat_intensity = Math.min(1.0, lub + dub);
 
     if (beat_phase < last_beat_phase) {
-      axis_x = 1.0 + (Math.random() * 0.8 - 0.4); 
-      axis_y = 1.0 + (Math.random() * 0.8 - 0.4);
-      axis_z = 1.0 + (Math.random() * 0.5 - 0.25);
+      axis_x = 1.0 + (Math.random() * 0.6 - 0.3); 
+      axis_y = 1.0 + (Math.random() * 0.6 - 0.3);
+      axis_z = 1.0 + (Math.random() * 0.4 - 0.2);
     }
     last_beat_phase = beat_phase;
 
@@ -90,58 +93,71 @@
     let pulse_y = 1.0 + (axis_y - 1.0) * beat_intensity;
     let pulse_z = 1.0 + (axis_z - 1.0) * beat_intensity;
 
+    // LIQUID CHAOS: Water Ripples
     let phaseText = "LINEAR", phaseColor = "#888";
     if (f > 0.95) {
       phaseText = "π-RESONANCE"; phaseColor = "#0ff";
-      if (Math.random() < 0.06) spikeIntensity = 20 + Math.random() * 60; 
-      spikeIntensity *= 0.88; 
-      if (spikeIntensity > 1.0) { phaseText = "FRACTAL CHAOS"; phaseColor = "#ffea00"; }
-    } else { spikeIntensity = 0; }
+      // Random intensity spikes create "drops" in the liquid
+      if (Math.random() < 0.08) { 
+        waves.push({ 
+          a: Math.random() * Math.PI * 2, 
+          l: Math.random() * LAYERS, 
+          t: t, 
+          i: 30 + Math.random() * 40 
+        });
+      }
+      if (waves.length > 0) { phaseText = "FLUID CHAOS"; phaseColor = "#ffea00"; }
+    } else { 
+      waves = []; 
+    }
+    
+    // Decay old waves (surface tension)
+    waves = waves.filter(w => t - w.t < 2.5);
 
     ctx.save(); ctx.translate(300, 300);
     
-    let tip_z_anchor = 150 * orientation;
-
+    // Draw Latitudinal Layers (The Mass)
     for(let i = 1; i <= LAYERS; i++) {
-      let layer_ratio = (i - 1) / (LAYERS - 1);
-      let base_r = 160 * (1 - layer_ratio) + 4; // CONE GEOMETRY
-      let z_offset = -150 + layer_ratio * 300; 
+      let v = i / LAYERS; // 0 to 1 (Tip to Base)
+      // Teardrop/Cone geometry
+      let base_r = Math.sin(v * Math.PI * 0.85) * 140 + 5; 
+      let z_offset = -120 + v * 240; 
       
       ctx.beginPath();
       for(let a = 0; a <= Math.PI * 2; a += 0.05) {
-        let shear = Math.sin(a * 8 + t * 12 + i) * (pain * 18);
-        let localChaos = 0;
-        if (spikeIntensity > 1.0) {
-          let fractal = 0;
-          for(let oct = 1; oct <= 4; oct++) fractal += Math.sin(a * Math.pow(3, oct) + t * Math.pow(2.5, oct) + chaosSeed + i) / oct;
-          localChaos = fractal * spikeIntensity;
+        let shear = Math.sin(a * 6 + t * 10 + i) * (pain * 15);
+        
+        // Calculate Liquid Ripples for this specific point
+        let ripple = 0;
+        for(let w of waves) {
+          let age = t - w.t;
+          // Surface distance from the wave origin
+          let dist = Math.abs(a - w.a) + Math.abs(i - w.l) * 0.15; 
+          let waveSpeed = 4.0;
+          let wavelength = 0.6;
+          let decay = Math.exp(-age * 1.5); // Surface tension damping
+          ripple += Math.sin((dist - age * waveSpeed) / wavelength) * w.i * decay;
         }
 
-        let r = base_r + shear + localChaos;
+        let r = base_r + shear + ripple;
         let x = r * Math.cos(a);
         let y = r * Math.sin(a);
         let z = z_offset;
         
         // HEARTBEAT PULSE: Pulling/Pushing from the Tip Anchor
-        let dx = x;
-        let dy = y;
-        let dz = z - (150); // Anchor at the geometric tip before parity
-        
-        dx *= pulse_x;
-        dy *= pulse_y;
-        dz *= pulse_z;
-        
-        x = dx;
-        y = dy;
-        z = dz + 150;
+        let dx = x * pulse_x;
+        let dy = y * pulse_y;
+        let dz = (z - 120) * pulse_z + 120; // Anchor at the top tip
 
+        y = dy; z = dz;
         y *= orientation; z *= orientation;
         
         let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
         let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
         let y_spin = y;
         
-        let scale = 500 / (500 + z_spin);
+        // Safe perspective projection (prevents freezing/division by zero)
+        let scale = 500 / Math.max(50, 500 + z_spin);
         let px = x_spin * scale;
         let py = y_spin * scale;
 
@@ -151,29 +167,74 @@
       let r_c = Math.floor(255 * pain);
       let g_c = Math.floor(200 * f);
       let b_c = Math.floor(255 * f);
-      let alpha = 0.4 + f * 0.6;
+      let alpha = 0.3 + f * 0.7;
       
-      if (spikeIntensity > 5.0) {
+      if (waves.length > 0 && ripple > 10) {
         r_c = 255; g_c = Math.floor(200 + 55 * Math.random()); b_c = 0; 
         ctx.lineWidth = 2.5; ctx.shadowBlur = 15; ctx.shadowColor = '#ffea00';
       } else {
-        ctx.lineWidth = 1.5; ctx.shadowBlur = 0;
+        ctx.lineWidth = 1.2; ctx.shadowBlur = 0;
       }
 
       ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`;
       ctx.stroke();
     }
+
+    // Draw Longitudinal Meridians (Makes the Spin/Counter-Spin Visibly Tearing the Liquid)
+    for(let m = 0; m < MERIDIANS; m++) {
+      let a = (m / MERIDIANS) * Math.PI * 2;
+      ctx.beginPath();
+      for(let i = 1; i <= LAYERS; i++) {
+        let v = i / LAYERS;
+        let base_r = Math.sin(v * Math.PI * 0.85) * 140 + 5; 
+        let z_offset = -120 + v * 240; 
+        
+        let shear = Math.sin(a * 6 + t * 10 + i) * (pain * 15);
+        let ripple = 0;
+        for(let w of waves) {
+          let age = t - w.t;
+          let dist = Math.abs(a - w.a) + Math.abs(i - w.l) * 0.15; 
+          ripple += Math.sin((dist - age * 4.0) / 0.6) * w.i * Math.exp(-age * 1.5);
+        }
+
+        let r = base_r + shear + ripple;
+        let x = r * Math.cos(a);
+        let y = r * Math.sin(a);
+        let z = z_offset;
+        
+        let dx = x * pulse_x;
+        let dy = y * pulse_y;
+        let dz = (z - 120) * pulse_z + 120;
+
+        y = dy; z = dz;
+        y *= orientation; z *= orientation;
+        
+        let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
+        let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
+        let y_spin = y;
+        
+        let scale = 500 / Math.max(50, 500 + z_spin);
+        let px = x_spin * scale;
+        let py = y_spin * scale;
+
+        i === 1 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.strokeStyle = `rgba(100, ${Math.floor(150*f)}, ${Math.floor(200*f)}, 0.2)`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
     ctx.shadowBlur = 0;
 
     // THE BEATING HEART AT THE TIP
-    let tip_x = 0, tip_y = 0, tip_z = 150 * orientation;
+    let tip_x = 0, tip_y = 0, tip_z = -120 * orientation;
     let tx_spin = tip_x * Math.cos(spinAngle) - tip_z * Math.sin(spinAngle);
     let tz_spin = tip_x * Math.sin(spinAngle) + tip_z * Math.cos(spinAngle);
-    let t_scale = 500 / (500 + tz_spin);
+    let t_scale = 500 / Math.max(50, 500 + tz_spin);
     let tpx = tx_spin * t_scale;
-    let tpy = 0; 
+    let tpy = tip_y * t_scale; 
 
-    let tip_r = 6 + beat_intensity * 20;
+    let tip_r = 5 + beat_intensity * 18;
     ctx.beginPath();
     ctx.arc(tpx, tpy, tip_r * t_scale, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, ${Math.floor(20 + beat_intensity * 100)}, ${Math.floor(50 + beat_intensity * 150)}, ${0.5 + beat_intensity * 0.5})`;
