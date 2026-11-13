@@ -27,7 +27,7 @@ jobs:
       - name: Build verified archive
         env:
           BUILDER_PY: |
-            import hashlib, json, shutil, subprocess, sys, time, urllib.request, zipfile
+            import hashlib, html, json, re, shutil, subprocess, sys, time, urllib.request, zipfile
             from datetime import datetime, timezone
             from pathlib import Path
 
@@ -41,7 +41,10 @@ jobs:
             PROV     = Path(".provenance/nasa-os101")
             DOI_URL  = "https://doi.org/" + DOI
             ZIP_URL  = "https://zenodo.org/records/" + REC_ID + "/files/" + ZIP_NAME + "?download=1"
-            TREE_URL = "https://github.com/psivicom/psivicom.github.io/tree/main/nasa-open-science"
+            TREE     = "https://github.com/psivicom/psivicom.github.io/tree/main/nasa-open-science"
+            TEAM     = "NASA TOPS Open Science 101 Curriculum Development Team"
+            AUTHOR   = "Louis-Philippe Audette"
+            BASE     = "/nasa-open-science/"
 
             def stamp():
                 n = datetime.now(timezone.utc)
@@ -108,45 +111,377 @@ jobs:
                 die("upstream LICENSE.md missing")
 
             if DEST.exists():
-                log("Clean rebuild: removing previous tree")
+                log("Clean rebuild of machine-managed mirror")
                 shutil.rmtree(DEST)
             shutil.copytree(SRC, DEST)
-            log("Installed upstream payload")
 
+            UP = sorted(p.relative_to(DEST).as_posix() for p in DEST.rglob("*") if p.is_file())
             PROV.mkdir(parents=True, exist_ok=True)
             rows = []
-            for p in sorted(DEST.rglob("*")):
-                if p.is_file():
-                    rows.append(hashlib.sha256(p.read_bytes()).hexdigest() + "  " + p.relative_to(DEST).as_posix())
+            for rel in UP:
+                rows.append(hashlib.sha256((DEST / rel).read_bytes()).hexdigest() + "  " + rel)
             (PROV / "manifest.sha256").write_text("\n".join(rows) + "\n", encoding="utf-8")
             shutil.copyfile(TMP / "record.json", PROV / "record.json")
-            (PROV / "provenance.json").write_text(json.dumps({
-                "source": "Zenodo (CERN)",
-                "record": REC_ID,
-                "version_doi": DOI,
-                "version": "1.0.0",
-                "license": "CC-BY-4.0",
-                "file": ZIP_NAME,
-                "size": PIN_SIZE,
-                "md5": PIN_MD5,
-                "sha256": SHA,
-                "retrieved_utc": STAMP,
-                "install_path": DEST.as_posix()
-            }, indent=2) + "\n", encoding="utf-8")
-            log("Provenance written: " + str(len(rows)) + " files hashed")
+            log("Upstream payload installed: " + str(len(UP)) + " unmodified files hashed")
+
+            def read(p):
+                return p.read_text(encoding="utf-8", errors="replace")
+
+            def title_of(p):
+                for line in read(p).splitlines():
+                    if line.startswith("# "):
+                        return line[2:].strip()
+                return p.parent.name.replace("_", " ")
+
+            def overview_of(p):
+                txt = read(p)
+                m = re.search(r"^##\s+Overview\s*$(.*?)(?=^##\s|\Z)", txt, re.S | re.M)
+                block = m.group(1) if m else txt
+                block = re.sub(r"```.*?```", " ", block, flags=re.S)
+                block = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", block)
+                block = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", block)
+                block = re.sub(r"<[^>]+>", " ", block)
+                paras = []
+                for q in block.split("\n\n"):
+                    q = q.strip()
+                    if q and q[0] not in "*-#|<>":
+                        paras.append(q)
+                if not paras:
+                    return ""
+                s = " ".join(paras[0].split())
+                if len(s) > 260:
+                    s = s[:260].rsplit(" ", 1)[0] + "..."
+                return s
+
+            CSS = (
+                "@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');"
+                ":root{font-family:'IBM Plex Serif',Georgia,serif}"
+                ".mono{font-family:'IBM Plex Mono',monospace}"
+                "body{margin:0;background:#f6f9ff;color:#18181b;line-height:1.7;-webkit-font-smoothing:antialiased}"
+                "body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(1200px 600px at 20% -10%,#dbeafe 0%,transparent 60%),radial-gradient(800px 400px at 90% 10%,#e0e7ff 0%,transparent 50%);pointer-events:none}"
+                "a{color:inherit;text-underline-offset:3px}a:hover{text-decoration-thickness:2px}"
+                ".topbar{background:#0A1931;color:#00D4FF;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:.05em;border-bottom:1px solid #00D4FF33}"
+                ".container{max-width:900px;margin:0 auto;padding:24px 24px 64px;background:#fff;border-radius:0 0 16px 16px;box-shadow:0 10px 40px #0A193133,0 1px 0 #e4e4e7}"
+                ".header{border-bottom:1px solid #e4e4e7;padding-bottom:32px}"
+                ".kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#71717a;font-weight:500}"
+                ".h1{font-size:42px;line-height:.95;letter-spacing:-.02em;font-weight:600;margin:12px 0 0}"
+                "@media(max-width:640px){.h1{font-size:32px}}"
+                ".sub{margin-top:12px;font-size:13px;color:#52525b;line-height:1.6}"
+                ".nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}"
+                ".nav a{border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none}"
+                ".nav a:hover{border-color:#002FA7;background:#002FA7;color:#fff}"
+                ".section{margin-top:56px;scroll-margin-top:60px}"
+                ".section-head{display:flex;align-items:center;gap:16px}"
+                ".section-head h2{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;color:#71717a;margin:0;line-height:1.4}"
+                ".line{flex:1;height:1px;background:linear-gradient(90deg,#0A1931,#00D4FF,#00FF9D);opacity:.5}"
+                "h3{font-size:16px;font-weight:600;line-height:1.4;color:#18181b;margin:0 0 8px}"
+                ".card{border:1px solid #e4e4e7;border-radius:12px;padding:20px;background:#fff;overflow-wrap:break-word}"
+                ".klein-box{background:#002FA7;color:#fff;border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(0,47,167,.2);overflow-wrap:break-word}"
+                ".klein-box-full{background:#002FA7;color:#fff;border-radius:12px;padding:32px;box-shadow:0 8px 24px rgba(0,47,167,.2);overflow-wrap:break-word}"
+                ".label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);font-family:'IBM Plex Mono',monospace;margin-bottom:8px}"
+                ".value{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-bottom:14px;color:#fff;line-height:1.2}"
+                ".desc{font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.9)}"
+                ".klein-box a,.klein-box-full a{color:#fff}"
+                ".grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}"
+                "@media(max-width:768px){.grid2{grid-template-columns:1fr}}"
+                ".tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:9999px;margin-bottom:10px}"
+                ".tag-up{background:#0B3D91;color:#fff}"
+                ".tag-render{background:#e0e7ff;color:#0B3D91;border:1px solid #c7d2fe}"
+                ".tag-local{background:#002FA7;color:#fff}"
+                ".ok{color:#00FF9D;font-weight:600}"
+                ". hashes{font-size:11.5px;word-break:break-all}"
+                "code,.hashes{font-family:'IBM Plex Mono',monospace}"
+                ".hashbox{background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;margin-top:12px;font-size:11.5px;word-break:break-all;line-height:1.8}"
+                "table{width:100%;border-collapse:collapse;font-size:12.5px}"
+                "th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#71717a;font-weight:500;text-align:left;background:#fafafa;border-bottom:1px solid #e4e4e7;padding:12px 14px}"
+                "td{padding:12px 14px;border-bottom:1px solid #f4f4f5;vertical-align:top}"
+                ".tablewrap{overflow:hidden;border:1px solid #e4e4e7;border-radius:12px;margin-top:20px}"
+                ".lesson{border-left:2px solid #002FA7;padding-left:18px;margin-bottom:22px}"
+                ".lesson .meta{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#71717a;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}"
+                ".lesson p{font-size:14.5px;color:#3f3f46;margin:8px 0 6px}"
+                ".lesson a{font-size:12px;font-family:'IBM Plex Mono',monospace}"
+                ".pill{display:inline-block;border:1px solid #e4e4e7;border-radius:9999px;padding:7px 16px;text-decoration:none;font-size:12px;font-family:'IBM Plex Mono',monospace;margin:4px 6px 4px 0}"
+                ".pill.primary{background:#002FA7;border-color:#002FA7;color:#fff}"
+                ".pill:hover{border-color:#002FA7}"
+                "img{max-width:100%}pre{background:#fafafa;border:1px solid #e4e4e7;border-radius:8px;padding:12px;overflow-x:auto;font-size:11.5px}"
+                "footer{margin-top:48px;border-top:1px solid #e4e4e7;padding-top:28px;font-size:11px;color:#71717a;line-height:1.7}"
+            ).replace(". hashes", ".hashes")
+
+            NAV = (
+                '<nav class="nav mono">'
+                '<a href="' + BASE + 'index.html">Archive home</a>'
+                '<a href="' + BASE + 'README.html">Course overview</a>'
+                '<a href="' + BASE + 'catalogue.html">Catalogue</a>'
+                '<a href="' + BASE + 'provenance.html">Upstream vs local</a>'
+                '<a href="' + ZIP_URL + '">Download .zip</a>'
+                '<a href="https://psivi.com/">PSIVI hub</a>'
+                "</nav>"
+            )
+            FOOTER = (
+                "<footer>Upstream text &copy; 2023 " + TEAM + " &mdash; CC BY 4.0 &mdash; "
+                '<a href="' + DOI_URL + '">' + DOI + "</a>.<br>"
+                "Local pages, HTML renders, provenance and packaging &copy; 2026 " + AUTHOR + " | PSIVI.COM "
+                "&mdash; code EUPL 1.2, text CC BY-SA 4.0.<br>"
+                "Retrieved " + STAMP + " &middot; Not endorsed by NASA.</footer>"
+            )
+
+            def page(title, kicker, h1, sub, body, badge):
+                return (
+                    '<!DOCTYPE html>\n<html lang="en-CA">\n<head>\n<meta charset="UTF-8">\n'
+                    '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+                    "<title>" + html.escape(title) + "</title>\n<style>" + CSS + "</style>\n</head>\n<body>\n"
+                    '<div class="topbar mono">PSIVI.COM &mdash; OPEN SCIENCE ARCHIVE &mdash; ' + badge + "</div>\n"
+                    '<div class="container">\n<header class="header">\n'
+                    '<div class="kicker mono">' + kicker + "</div>\n"
+                    '<h1 class="h1">' + h1 + "</h1>\n"
+                    '<div class="sub">' + sub + "</div>\n" + NAV + "\n</header>\n<main>" + body + "</main>\n" + FOOTER + "\n</div>\n</body>\n</html>\n"
+                )
+
+            def head(num, text):
+                return ('<section class="section"><div class="section-head"><h2 class="mono">' + num +
+                        " &mdash; " + text + '</h2><div class="line"></div></div>')
+
+            TPL = TMP / "tpl.html"
+            TPL.write_text(
+                '<!DOCTYPE html>\n<html lang="en-CA">\n<head>\n<meta charset="UTF-8">\n'
+                '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+                "<title>$title$</title>\n<style>" + CSS + "</style>\n</head>\n<body>\n"
+                '<div class="topbar mono">PSIVI.COM &mdash; OPEN SCIENCE ARCHIVE &mdash; UPSTREAM MIRROR</div>\n'
+                '<div class="container">\n'
+                '<div class="card" style="margin-top:24px;border-left:4px solid #0B3D91">'
+                '<span class="tag tag-up">Upstream &middot; unmodified text</span>'
+                '<span class="tag tag-render">Format-only render</span>'
+                "<p style=\"font-size:13.5px;color:#3f3f46;margin:6px 0 0\">"
+                "Written by <strong>" + TEAM + "</strong> (2023), licensed <strong>CC BY 4.0</strong>, "
+                'retrieved from <a href="' + DOI_URL + '">Zenodo ' + DOI + "</a>.<br>"
+                "<strong>Local change:</strong> file format converted Markdown &rarr; HTML and this banner added by "
+                + AUTHOR + ". <em>No wording, figure or data was altered.</em></p>"
+                '<div class="hashes" style="margin-top:10px;color:#71717a">MD5 ' + PIN_MD5 +
+                "<br>SHA-256 " + SHA + "<br>Retrieved " + STAMP + "</div>"
+                '<p style="margin:12px 0 0"><a class="pill" href="' + BASE + 'index.html">Archive home</a>'
+                '<a class="pill" href="' + BASE + 'provenance.html">What is upstream vs local</a></p>'
+                "</div>\n"
+                '<main class="section">$body$</main>\n' + FOOTER + "\n</div>\n</body>\n</html>\n",
+                encoding="utf-8")
+
+            mds = [p for p in sorted(DEST.rglob("*.md")) if p.name != "NOTICE.md"]
+            for p in mds:
+                r = subprocess.run(
+                    ["pandoc", str(p), "-f", "gfm", "-t", "html5", "-s",
+                     "--template", str(TPL.resolve()),
+                     "--metadata", "title=" + title_of(p),
+                     "-o", str(p.with_suffix(".html"))],
+                    capture_output=True, text=True)
+                if r.returncode != 0:
+                    die("pandoc failed on " + str(p) + ": " + r.stderr.strip())
+            log("Rendered " + str(len(mds)) + " upstream pages (format-only)")
+
+            modules = []
+            for m in sorted(DEST.glob("Module_*")):
+                if not m.is_dir():
+                    continue
+                mdesc = overview_of(m / "readme.md") if (m / "readme.md").exists() else ""
+                lessons = []
+                for l in sorted(m.glob("Lesson_*")):
+                    if not l.is_dir():
+                        continue
+                    md = l / "readme.md"
+                    lessons.append({
+                        "name": l.name.replace("_", " "),
+                        "title": title_of(md) if md.exists() else l.name,
+                        "desc": overview_of(md) if md.exists() else "",
+                        "html": l.relative_to(DEST).as_posix() + "/readme.html",
+                        "md": l.relative_to(DEST).as_posix() + "/readme.md"})
+                modules.append({"name": m.name.replace("_", " "), "desc": mdesc, "lessons": lessons})
+
+            def lesson_blocks(rel_prefix):
+                out = []
+                for mod in modules:
+                    out.append('<div class="card" style="margin-top:20px"><h3>' + html.escape(mod["name"]) + "</h3>")
+                    if mod["desc"]:
+                        out.append('<p style="font-size:14px;color:#52525b;margin:0 0 16px">' + html.escape(mod["desc"]) + "</p>")
+                    for ls in mod["lessons"]:
+                        out.append('<div class="lesson"><strong>' + html.escape(ls["title"]) + "</strong>"
+                                   '<div class="meta">' + html.escape(ls["name"]) + " &middot; upstream &middot; CC BY 4.0</div>")
+                        if ls["desc"]:
+                            out.append("<p>" + html.escape(ls["desc"]) + "</p>")
+                        out.append('<a href="' + rel_prefix + ls["html"] + '">Read lesson &rarr;</a> &nbsp; '
+                                   '<a href="' + rel_prefix + ls["md"] + '">source .md</a></div>')
+                    out.append("</div>")
+                return "".join(out)
+
+            verify_box = (
+                '<div class="klein-box-full" style="margin-top:24px">'
+                '<div class="label">Cryptographic provenance</div>'
+                '<div class="value"><span class="ok">&#10003;</span> Verified &middot; pinned v1.0.0</div>'
+                '<div class="desc">Byte-for-byte identical to the immutable Zenodo version DOI '
+                '<a href="' + DOI_URL + '">' + DOI + "</a>, published 2023-12-06 by " + TEAM + ".</div>"
+                '<div class="hashbox mono">ARCHIVE&nbsp;&nbsp;' + ZIP_NAME + " &middot; " + str(PIN_SIZE) + " bytes<br>"
+                "MD5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + PIN_MD5 + "<br>"
+                "SHA-256&nbsp;&nbsp;" + SHA + "<br>"
+                "RETRIEVED&nbsp;" + STAMP + "</div>"
+                '<div class="desc" style="margin-top:14px">Per-file hashes: '
+                '<a href="../.provenance/nasa-os101/manifest.sha256">manifest.sha256</a> &middot; '
+                '<a href="../.provenance/nasa-os101/provenance.json">provenance.json</a></div></div>'
+            )
+
+            tiers_table = (
+                '<div class="tablewrap"><table><thead><tr>'
+                "<th>Tier</th><th>What</th><th>Author</th><th>License</th></tr></thead><tbody>"
+                '<tr><td><span class="tag tag-up">A &middot; Upstream</span></td>'
+                "<td>Every file extracted from the Zenodo zip: <code>Module_1..5/**</code>, "
+                "<code>README.md</code>, <code>LICENSE.md</code>, all images. <strong>Unmodified.</strong></td>"
+                "<td>" + TEAM + "</td><td>CC BY 4.0</td></tr>"
+                '<tr><td><span class="tag tag-render">B &middot; Render</span></td>'
+                "<td>The <code>.html</code> beside each upstream <code>.md</code>. Same words; "
+                "format converted and a provenance banner added.</td>"
+                "<td>Text: NASA team<br>Banner: " + AUTHOR + "</td><td>CC BY 4.0</td></tr>"
+                '<tr><td><span class="tag tag-local">C &middot; Local</span></td>'
+                "<td><code>index.html</code>, <code>catalogue.html</code>, <code>provenance.html</code>, "
+                "<code>NOTICE.md</code>, <code>CITATION.cff</code>, <code>.provenance/**</code>. "
+                "<strong>Not part of the NASA archive.</strong></td>"
+                "<td>" + AUTHOR + "</td><td>Code EUPL 1.2<br>Text CC BY-SA 4.0</td></tr>"
+                "</tbody></table></div>"
+            )
+
+            index_body = (
+                head("01", "Verification") + verify_box + "</section>"
+                + head("02", "What is upstream, what is mine")
+                + '<div class="grid2" style="margin-top:24px">'
+                '<div class="card"><span class="tag tag-up">Upstream &middot; unmodified</span>'
+                "<h3>" + str(len(UP)) + " files from NASA / Zenodo</h3>"
+                '<p style="font-size:14px;color:#3f3f46;margin:0">Nothing rewritten, nothing removed. '
+                "Each file is hashed in the manifest so any later edit is detectable. "
+                'Attribution belongs to ' + TEAM + ".</p></div>"
+                '<div class="card"><span class="tag tag-local">Local &middot; ' + AUTHOR + "</span>"
+                "<h3>Pages and packaging added here</h3>"
+                '<p style="font-size:14px;color:#3f3f46;margin:0">This index, the catalogue, the provenance map, '
+                "the HTML renders and the verification metadata were produced locally for PSIVI.COM. "
+                "They carry my own attribution, not NASA's.</p></div></div>"
+                + tiers_table
+                + '<p style="margin-top:14px;font-size:13px;color:#52525b">'
+                'Future apiary / Earth-observation adaptations will live in a separate folder '
+                "<code>nasa-open-science-apiary/</code> so this mirror stays pristine. "
+                '<a href="provenance.html">Full provenance map &rarr;</a></p></section>'
+                + head("03", "Course contents")
+                + '<p style="margin-top:20px;font-size:14.5px;color:#3f3f46">'
+                'Prefer the original course overview? <a href="README.html"><strong>Read README.html</strong></a> '
+                "&mdash; the upstream introduction, rendered with its banner.</p>"
+                + lesson_blocks("") + "</section>"
+                + head("04", "Get the archive")
+                + '<div style="margin-top:20px">'
+                '<a class="pill primary" href="' + ZIP_URL + '">&#11015; Download full .zip (Zenodo)</a>'
+                '<a class="pill" href="catalogue.html">&#128218; Descriptive catalogue</a>'
+                '<a class="pill" href="provenance.html">&#128270; Provenance map</a>'
+                '<a class="pill" href="' + TREE + '">Source on GitHub</a>'
+                '<a class="pill" href="NOTICE.md">NOTICE.md</a>'
+                '<a class="pill" href="CITATION.cff">CITATION.cff</a></div>'
+                '<p style="margin-top:12px;font-size:12.5px;color:#71717a">'
+                "The ZIP is served by Zenodo (CERN) itself &mdash; the exact archive verified above.</p></section>"
+            )
+            (DEST / "index.html").write_text(
+                page("NASA Open Science 101 - PSIVI Open Science Archive",
+                     "PSIVI.COM &mdash; Open Science Archive &mdash; Langford, BC &mdash; Goldstream",
+                     "NASA Open<br>Science 101",
+                     "Version 1.0.0 &middot; mirrored from Zenodo (CERN) &middot; CC BY 4.0<br>"
+                     "Local packaging and verification by " + AUTHOR + " &mdash; <a href=\"https://psivi.com\">psivi.com</a>",
+                     index_body, "LOCAL PAGE &middot; VERIFIED MIRROR"),
+                encoding="utf-8")
+
+            cat_body = (
+                head("01", "How to read this catalogue")
+                + '<div class="card" style="margin-top:24px"><span class="tag tag-local">Local &middot; ' + AUTHOR + "</span>"
+                '<p style="font-size:14px;color:#3f3f46;margin:6px 0 0">'
+                "Every description below is quoted from the upstream lesson's own <em>Overview</em> section. "
+                "Nothing here is invented; the summaries belong to the NASA authors, the page belongs to me.</p></div></section>"
+                + head("02", "Modules and lessons") + lesson_blocks("") + "</section>"
+                + head("03", "Archive documents")
+                + '<div class="card" style="margin-top:20px">'
+                '<div class="lesson"><strong>Course overview (README)</strong>'
+                '<div class="meta">upstream &middot; CC BY 4.0</div>'
+                "<p>The NASA TOPS introduction: what Open Science 101 covers, the five-module workflow, "
+                "and how the digital badge is earned.</p>"
+                '<a href="README.html">Read &rarr;</a> &nbsp; <a href="README.md">source .md</a></div>'
+                '<div class="lesson"><strong>Upstream license</strong>'
+                '<div class="meta">upstream &middot; CC BY 4.0</div>'
+                "<p>The license text shipped inside the Zenodo archive, applying to all upstream material.</p>"
+                '<a href="LICENSE.html">Read &rarr;</a> &nbsp; <a href="LICENSE.md">source .md</a></div>'
+                '<div class="lesson"><strong>Attribution notice</strong>'
+                '<div class="meta">local &middot; ' + AUTHOR + "</div>"
+                "<p>Which parts are NASA's, which parts are mine, and what was changed.</p>"
+                '<a href="NOTICE.md">Read &rarr;</a></div></div></section>'
+            )
+            (DEST / "catalogue.html").write_text(
+                page("Catalogue - NASA Open Science 101",
+                     "PSIVI.COM &mdash; Descriptive catalogue",
+                     "Catalogue",
+                     "Titles and overviews quoted from the upstream lessons themselves.",
+                     cat_body, "LOCAL PAGE"),
+                encoding="utf-8")
+
+            prov_body = (
+                head("01", "The boundary")
+                + '<div class="klein-box-full" style="margin-top:24px">'
+                '<div class="label">Provenance map</div>'
+                '<div class="value">Upstream vs local</div>'
+                '<div class="desc">This folder mixes two authors. Tier A is NASA\'s, byte-for-byte. '
+                "Tier B is NASA's text in a new file format. Tier C is mine. "
+                "Nothing in Tier A has been edited.</div></div>"
+                + tiers_table + "</section>"
+                + head("02", "Evidence")
+                + '<div class="tablewrap"><table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>'
+                "<tr><td>Source record</td><td class=\"mono\">Zenodo " + REC_ID + " (CERN)</td></tr>"
+                '<tr><td>Version DOI</td><td class="mono"><a href="' + DOI_URL + '">' + DOI + "</a></td></tr>"
+                "<tr><td>Archive</td><td class=\"mono\">" + ZIP_NAME + " &middot; " + str(PIN_SIZE) + " bytes</td></tr>"
+                "<tr><td>MD5</td><td class=\"mono\">" + PIN_MD5 + "</td></tr>"
+                "<tr><td>SHA-256</td><td class=\"mono\">" + SHA + "</td></tr>"
+                "<tr><td>Retrieved (UTC)</td><td class=\"mono\">" + STAMP + "</td></tr>"
+                "<tr><td>Upstream files hashed</td><td class=\"mono\">" + str(len(UP)) + "</td></tr>"
+                "<tr><td>HTML renders produced</td><td class=\"mono\">" + str(len(mds)) + "</td></tr>"
+                "</tbody></table></div>"
+                '<p style="margin-top:16px;font-size:13.5px;color:#3f3f46">'
+                'Per-file hashes: <a href="../.provenance/nasa-os101/manifest.sha256">manifest.sha256</a>. '
+                'List of locally added files: <a href="../.provenance/nasa-os101/local-additions.txt">local-additions.txt</a>.</p>'
+                "<pre>cd nasa-open-science\nsha256sum -c ../.provenance/nasa-os101/manifest.sha256</pre></section>"
+                + head("03", "Rules for this mirror")
+                + '<div class="card" style="margin-top:20px;font-size:14px;color:#3f3f46">'
+                "<p style=\"margin:0 0 10px\"><strong>1.</strong> <code>nasa-open-science/</code> is machine-managed. "
+                "Re-running the builder rebuilds it from the pinned DOI.</p>"
+                "<p style=\"margin:0 0 10px\"><strong>2.</strong> Adaptations for apiary and Earth observation go in "
+                "<code>nasa-open-science-apiary/</code>, marked <em>adapted from</em>, under CC BY-SA 4.0.</p>"
+                "<p style=\"margin:0\"><strong>3.</strong> No NASA endorsement is implied anywhere.</p></div></section>"
+            )
+            (DEST / "provenance.html").write_text(
+                page("Provenance - NASA Open Science 101",
+                     "PSIVI.COM &mdash; Provenance map",
+                     "Upstream<br>vs local",
+                     "Exactly which bytes came from the Zenodo DOI, and which were added by " + AUTHOR + ".",
+                     prov_body, "LOCAL PAGE"),
+                encoding="utf-8")
 
             (DEST / "NOTICE.md").write_text(
                 "# Attribution Notice\n\n"
-                "This folder contains the NASA TOPS Open Science 101 Curriculum (Version 1.0.0).\n\n"
-                "- **Original Authors:** NASA TOPS Open Science 101 Curriculum Development Team (2023)\n"
-                "- **Source:** " + DOI_URL + "\n"
-                "- **License:** Creative Commons Attribution 4.0 International (CC BY 4.0)\n"
-                "- **Retrieved (UTC):** " + STAMP + "\n"
-                "- **Archive MD5:** " + PIN_MD5 + "\n"
-                "- **Archive SHA-256:** " + SHA + "\n\n"
-                "**Modifications:**\n"
-                "This copy has been archived for future reference and will be adapted for apiary and "
-                "Earth observation research by Louis-Philippe Audette. This adaptation is not endorsed by NASA.\n",
+                "This folder mixes upstream NASA material with local PSIVI additions.\n\n"
+                "## Tier A - Upstream, unmodified\n"
+                "- **Author:** " + TEAM + " (2023)\n"
+                "- **Source:** " + DOI_URL + " (Zenodo record " + REC_ID + ", version 1.0.0)\n"
+                "- **License:** CC BY 4.0\n"
+                "- **Files:** everything extracted from " + ZIP_NAME + " (" + str(len(UP)) + " files)\n"
+                "- **Changes:** none. Hashes: ../.provenance/nasa-os101/manifest.sha256\n\n"
+                "## Tier B - Format-only renders\n"
+                "- The .html file beside each upstream .md.\n"
+                "- Text, figures and data unchanged; Markdown converted to HTML and a provenance banner added.\n"
+                "- Text remains (c) " + TEAM + ", CC BY 4.0. Banner by " + AUTHOR + ".\n\n"
+                "## Tier C - Local additions\n"
+                "- index.html, catalogue.html, provenance.html, NOTICE.md, CITATION.cff, .provenance/**\n"
+                "- **Author:** " + AUTHOR + " | PSIVI.COM\n"
+                "- **License:** code EUPL 1.2, text CC BY-SA 4.0\n"
+                "- Not part of the NASA archive.\n\n"
+                "## Archive fingerprint\n"
+                "- MD5: " + PIN_MD5 + "\n- SHA-256: " + SHA + "\n- Retrieved (UTC): " + STAMP + "\n\n"
+                "**Modifications:** this copy is archived for reference and will be adapted for apiary and "
+                "Earth observation research by " + AUTHOR + " in a separate folder "
+                "`nasa-open-science-apiary/`. This adaptation is not endorsed by NASA.\n",
                 encoding="utf-8")
 
             (DEST / "CITATION.cff").write_text(
@@ -158,145 +493,48 @@ jobs:
                 "license: CC-BY-4.0\n"
                 'date-released: "2023-12-06"\n'
                 "authors:\n"
-                '  - name: "NASA TOPS Open Science 101 Curriculum Development Team"\n'
+                '  - name: "' + TEAM + '"\n'
                 'url: "' + DOI_URL + '"\n',
                 encoding="utf-8")
 
+            local = ["index.html", "catalogue.html", "provenance.html", "NOTICE.md", "CITATION.cff"]
+            local += [p.relative_to(DEST).as_posix() for p in sorted(DEST.rglob("*.html"))
+                      if p.relative_to(DEST).as_posix() not in local]
+            (PROV / "local-additions.txt").write_text("\n".join(sorted(set(local))) + "\n", encoding="utf-8")
+            (PROV / "provenance.json").write_text(json.dumps({
+                "source": "Zenodo (CERN)",
+                "record": REC_ID,
+                "version_doi": DOI,
+                "version": "1.0.0",
+                "license": "CC-BY-4.0",
+                "file": ZIP_NAME,
+                "size": PIN_SIZE,
+                "md5": PIN_MD5,
+                "sha256": SHA,
+                "retrieved_utc": STAMP,
+                "tier_A_upstream_files": len(UP),
+                "tier_B_html_renders": len(mds),
+                "tier_C_local_author": AUTHOR,
+                "install_path": DEST.as_posix()
+            }, indent=2) + "\n", encoding="utf-8")
+
             reuse = Path("REUSE.toml")
             marker = 'path = "nasa-open-science/**"'
-            if reuse.exists():
+            if reuse.exists() and marker not in reuse.read_text(encoding="utf-8"):
                 txt = reuse.read_text(encoding="utf-8")
-                if marker not in txt:
-                    reuse.write_text(txt.rstrip() + "\n\n[[annotations]]\n" + marker +
-                        '\nprecedence = "override"\n'
-                        'SPDX-FileCopyrightText = "2023 NASA TOPS Open Science 101 Curriculum Development Team"\n'
-                        'SPDX-License-Identifier = "CC-BY-4.0"\n', encoding="utf-8")
-                    log("REUSE.toml annotated")
-            else:
-                log("REUSE.toml absent - skipped")
+                reuse.write_text(txt.rstrip() + "\n\n[[annotations]]\n" + marker +
+                    '\nprecedence = "override"\n'
+                    'SPDX-FileCopyrightText = "2023 ' + TEAM + '"\n'
+                    'SPDX-License-Identifier = "CC-BY-4.0"\n', encoding="utf-8")
+                log("REUSE.toml annotated")
 
-            CSS = (
-                "body{max-width:60rem;margin:2rem auto;padding:0 1rem;background:#0d1117;color:#e6edf3;"
-                "font:16px/1.6 system-ui,sans-serif}a{color:#7ee787;text-decoration:none}a:hover{text-decoration:underline}"
-                "img{max-width:100%}table{border-collapse:collapse}td,th{border:1px solid #30363d;padding:.4rem}"
-                "h1{border-bottom:1px solid #30363d;padding-bottom:.5rem}"
-                ".trust-seal{margin:2rem 0;padding:1.5rem;border:2px solid #238636;border-radius:12px;"
-                "background:linear-gradient(135deg,#0d2818 0%,#161b22 100%);text-align:center}"
-                ".big-seal{font-size:4rem;filter:drop-shadow(0 0 12px #2ea043)}"
-                ".trust-seal h2{color:#3fb950;margin:.3rem 0;font-size:1.25rem}"
-                ".verified-line{color:#7ee787;font-weight:600;margin:.5rem 0}"
-                "code{background:#0d1117;padding:.2rem .5rem;border-radius:4px;font-size:.8rem;color:#8b949e;"
-                "display:inline-block;margin:.15rem;word-break:break-all}"
-                ".action-card{display:flex;gap:1rem;justify-content:center;margin:2rem 0;flex-wrap:wrap}"
-                ".btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.4rem;border-radius:8px;"
-                "font-weight:600;transition:all .2s}"
-                ".btn-primary{background:#238636;color:#fff;border:1px solid #2ea043}.btn-primary:hover{background:#2ea043}"
-                ".btn-secondary{background:#21262d;color:#c9d1d9;border:1px solid #30363d}"
-                ".btn-secondary:hover{background:#30363d;color:#fff}"
-                ".card{border:1px solid #30363d;border-radius:8px;padding:1rem;margin:1rem 0;background:#161b22}"
-                "li{margin:.25rem 0}small{color:#8b949e}"
-                "footer{margin-top:3rem;border-top:1px solid #30363d;padding-top:1rem;font-size:.85rem;color:#8b949e}"
-            )
+            for junk in [DEST / "files.html", Path("tpl.html")]:
+                if junk.exists():
+                    junk.unlink()
+                    log("Removed obsolete " + str(junk))
 
-            TPL = TMP / "tpl.html"
-            TPL.write_text(
-                '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
-                '<meta name="viewport" content="width=device-width,initial-scale=1">'
-                "<title>$title$ - NASA Open Science 101 - PSIVI</title><style>" + CSS + "</style></head><body>"
-                '<div class="trust-seal"><div class="big-seal">🛡️✅</div>'
-                "<h2>Verified - Cryptographically Pinned</h2>"
-                '<div class="verified-line">Source: <a href="' + DOI_URL + '">Zenodo v1.0.0</a> - License: CC BY 4.0</div>'
-                "<div><code>MD5: " + PIN_MD5 + "</code><code>SHA-256: " + SHA + "</code></div>"
-                "<div><code>Retrieved: " + STAMP + "</code></div></div>"
-                '<p><a href="' + ("../" * 0) + 'index.html">&larr; Back to archive index</a></p>'
-                "$body$"
-                "<footer>🔐 Part of the NASA TOPS Open Science 101 archive, retrieved " + STAMP +
-                ' from <a href="' + DOI_URL + '">' + DOI + "</a>. Integrity verified against MD5 + SHA-256. "
-                "Not endorsed by NASA.</footer></body></html>",
-                encoding="utf-8")
-
-            mds = [p for p in sorted(DEST.rglob("*.md")) if p.name != "NOTICE.md"]
-            for p in mds:
-                r = subprocess.run(
-                    ["pandoc", str(p), "-f", "gfm", "-t", "html5", "-s",
-                     "--template", str(TPL.resolve()),
-                     "--metadata", "title=" + p.parent.name.replace("_", " "),
-                     "-o", str(p.with_suffix(".html"))],
-                    capture_output=True, text=True)
-                if r.returncode != 0:
-                    die("pandoc failed on " + str(p) + ": " + r.stderr.strip())
-            log("Rendered " + str(len(mds)) + " HTML pages")
-
-            seal = (
-                '<div class="trust-seal"><div class="big-seal">🛡️✅</div>'
-                "<h2>Verified - Cryptographically Pinned - Publicly Auditable</h2>"
-                '<div class="verified-line">Source: <a href="' + DOI_URL + '">Zenodo v1.0.0</a> - License: CC BY 4.0</div>'
-                "<div><code>MD5: " + PIN_MD5 + "</code><code>SHA-256: " + SHA + "</code></div>"
-                "<div><code>Retrieved: " + STAMP + "</code></div>"
-                '<p style="margin-top:1rem;font-size:.9rem;color:#8b949e">Immutable pin. Anyone can re-verify these '
-                'checksums against the Zenodo API. Per-file hashes: '
-                '<a href="../.provenance/nasa-os101/manifest.sha256">manifest.sha256</a></p></div>'
-            )
-            actions = (
-                '<div class="action-card">'
-                '<a class="btn btn-primary" href="' + ZIP_URL + '">⬇️ Download full archive (.zip)</a>'
-                '<a class="btn btn-secondary" href="files.html">🗂️ Browse all files &amp; folders</a>'
-                '<a class="btn btn-secondary" href="' + TREE_URL + '" target="_blank">🐙 View source on GitHub</a>'
-                "</div>"
-                '<p style="text-align:center;font-size:.85rem;color:#8b949e;margin-top:-1rem">'
-                "ZIP is served directly by Zenodo (CERN) - the exact byte-for-byte archive verified above.</p>"
-            )
-
-            cards = []
-            for m in sorted(DEST.glob("Module_*")):
-                if not m.is_dir():
-                    continue
-                items = []
-                for l in sorted(m.glob("Lesson_*")):
-                    if l.is_dir():
-                        items.append('<li><a href="' + l.relative_to(DEST).as_posix() + '/readme.html">' +
-                                     l.name.replace("_", " ") + "</a></li>")
-                cards.append('<div class="card"><h2>' + m.name.replace("_", " ") + "</h2><ul>" +
-                             "".join(items) + "</ul></div>")
-
-            (DEST / "index.html").write_text(
-                '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
-                '<meta name="viewport" content="width=device-width,initial-scale=1">'
-                "<title>NASA Open Science 101 - PSIVI Open Science Hub</title><style>" + CSS +
-                "</style></head><body><h1>NASA Open Science 101 <small>v1.0.0</small></h1>" +
-                seal + actions + "".join(cards) +
-                '<p><a href="NOTICE.md">Attribution &amp; provenance</a> - '
-                '<a href="CITATION.cff">CITATION.cff</a> - <a href="LICENSE.md">License</a></p>'
-                "<footer>🔐 Retrieved " + STAMP + " - Not endorsed by NASA.</footer></body></html>",
-                encoding="utf-8")
-
-            groups = {}
-            for p in sorted(DEST.rglob("*")):
-                if p.is_file() and p.name not in ("index.html", "files.html"):
-                    groups.setdefault(p.parent, []).append(p)
-            listing = []
-            for d in sorted(groups, key=lambda q: q.as_posix()):
-                rel = d.relative_to(DEST).as_posix()
-                listing.append('<div class="card"><h3>📁 ' + ("archive root" if rel == "." else rel) + "</h3><ul>")
-                for p in groups[d]:
-                    listing.append('<li><a href="' + p.relative_to(DEST).as_posix() + '">' + p.name +
-                                   "</a> <small>" + str(p.stat().st_size) + " bytes</small></li>")
-                listing.append("</ul></div>")
-            (DEST / "files.html").write_text(
-                '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
-                '<meta name="viewport" content="width=device-width,initial-scale=1">'
-                "<title>Browse files - NASA Open Science 101</title><style>" + CSS +
-                "</style></head><body><h1>🗂️ Browse the archive</h1>"
-                '<p><a href="index.html">&larr; Back to index</a> - '
-                '<a href="' + ZIP_URL + '">⬇️ Download everything (.zip)</a></p>' +
-                "".join(listing) +
-                "<footer>🔐 Retrieved " + STAMP + " - Not endorsed by NASA.</footer></body></html>",
-                encoding="utf-8")
-            log("Public index + file browser generated")
-
-            Path("tpl.html").unlink(missing_ok=True)
             shutil.rmtree(TMP)
-            log("DONE")
+            log("DONE - index, catalogue, provenance generated")
         run: |
           printf '%s' "$BUILDER_PY" > "$RUNNER_TEMP/build_os101.py"
           python3 "$RUNNER_TEMP/build_os101.py"
@@ -311,6 +549,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore(os101): verified NASA TOPS OS101 v1.0.0 + file browser + direct ZIP download"
+            git commit -m "feat(os101): Klein-blue NASA styling, explicit upstream/local provenance tiers, descriptive catalogue"
             git push || { git pull --rebase origin main && git push; }
           fi
