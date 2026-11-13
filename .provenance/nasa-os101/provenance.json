@@ -8,6 +8,9 @@
   "size": 23311809,
   "md5": "ecde9587a3c95be40eb0eb3cfa083ea5",
   "sha256": "a40238e36b6efec82991e0c7ca8a8209603fce86c77f4f35cbf03b627623a8a2",
-  "retrieved_utc": "2026-11-12T23:55:37.405Z",
+  "retrieved_utc": "2026-11-13T00:24:32.463Z",
+  "tier_A_upstream_files": 368,
+  "tier_B_html_renders": 34,
+  "tier_C_local_author": "Louis-Philippe Audette",
   "install_path": "nasa-open-science"
 }
