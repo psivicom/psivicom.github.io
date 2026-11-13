@@ -7,7 +7,8 @@
   body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
   canvas { border:1px solid #222; }
   #hud { margin-top:15px; font-size:14px; letter-spacing:1px; text-align:center; line-height: 1.8; }
-  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } .spin { color:#ffaa00; }
+  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } 
+  .spin { color:#ffaa00; } .chaos { color:#ffea00; font-weight:bold; text-shadow: 0 0 5px #ffea00; }
 </style>
 </head>
 <body>
@@ -17,13 +18,14 @@
   FIDELITY (F): <span id="f">0.0000</span> | 
   STATE: <span id="s">DIVERGENT</span><br>
   PARITY: <span class="flip" id="par">NORMAL</span> | 
-  SPIN VECTOR: <span class="spin" id="spn">PROGRADE</span> | 
+  SPIN: <span class="spin" id="spn">PROGRADE</span> | 
+  PHASE: <span class="chaos" id="phase">LINEAR</span> | 
   <span class="sync" id="z">--</span>
 </div>
 <script>
   const ctx = document.getElementById('c').getContext('2d');
   let t = 0;
-  let orientation = 1; // 1 = Normal, -1 = Upside Down
+  let orientation = 1; 
   let peakF = 0;
   let lastP = 0;
   const LAYERS = 16; 
@@ -32,12 +34,16 @@
   let currentSpinDir = 1;
   let hasFlippedThisCycle = false;
   let spinAngle = 0;
+  
+  // Liquid Fractal Chaos Variables
+  let spikeIntensity = 0;
+  let chaosSeed = Math.random() * 1000;
 
   function frame() {
     ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,600,600);
     t += 0.016;
     
-    const p = (t % 12) / 12; // 12-second cycle
+    const p = (t % 12) / 12; 
     const pain = Math.max(0, 1.0 - p); 
     const f = 1.0 - pain;
 
@@ -45,70 +51,122 @@
 
     // Cycle Reset & Parity Flip
     if (p < lastP) {
-      baseSpinDir *= -1; // Alternate baseline spin for the new cycle
+      baseSpinDir *= -1; 
       currentSpinDir = baseSpinDir;
       hasFlippedThisCycle = false;
+      chaosSeed = Math.random() * 1000; // New chaos seed for next cycle
       
-      if (peakF >= 0.92) {
-        orientation *= -1; // TOPOLOGICAL INVERSION: Reverse upside down
-      }
+      if (peakF >= 0.92) orientation *= -1; 
       peakF = 0; 
     }
     
-    // Rotational Shear: Alternate spin direction when F >= 0.1
     if (!hasFlippedThisCycle && f >= 0.1) {
       currentSpinDir *= -1;
       hasFlippedThisCycle = true;
     }
     
     lastP = p;
-    spinAngle += currentSpinDir * 0.04; // Angular velocity
+    spinAngle += currentSpinDir * 0.04; 
+
+    // THE PI-RESONANCE & LIQUID FRACTAL CHAOS
+    let chaos = 0;
+    let phaseText = "LINEAR";
+    let phaseColor = "#888";
+    
+    if (f > 0.95) { // Circles close to PI (Perfect Geometry)
+      phaseText = "π-RESONANCE";
+      phaseColor = "#0ff";
+      
+      // Introduce chaos at random: Random intensity spikes
+      if (Math.random() < 0.06) { 
+        spikeIntensity = 20 + Math.random() * 60; // Liquid surface tension breaks
+      }
+      
+      // Liquid bounce: Exponential decay of the spike (surface tension restoring)
+      spikeIntensity *= 0.88; 
+      
+      if (spikeIntensity > 1.0) {
+        phaseText = "FRACTAL CHAOS";
+        phaseColor = "#ffea00";
+        
+        // Fractal noise: Summing octaves of high-frequency sine waves
+        let fractal = 0;
+        for(let oct = 1; oct <= 4; oct++) {
+          fractal += Math.sin(a_dummy * Math.pow(3.14, oct) + t * Math.pow(2, oct) + chaosSeed) / oct;
+        }
+        // We apply this per-angle in the drawing loop below
+      }
+    } else {
+      spikeIntensity = 0;
+    }
 
     ctx.save(); ctx.translate(300, 300);
     
     for(let i = 1; i <= LAYERS; i++) {
       ctx.beginPath();
       let base_r = i * 14;
-      let z_offset = (i - LAYERS/2) * 8; // Stack layers in Z-space to form a 3D cylinder/sphere
+      let z_offset = (i - LAYERS/2) * 8; 
       
       for(let a = 0; a <= Math.PI * 2; a += 0.05) {
         let shear = Math.sin(a * 8 + t * 12 + i) * (pain * 18);
-        let r = base_r + shear;
+        
+        // Calculate Fractal Chaos for this specific angle
+        let localChaos = 0;
+        if (spikeIntensity > 1.0) {
+          let fractal = 0;
+          for(let oct = 1; oct <= 4; oct++) {
+            fractal += Math.sin(a * Math.pow(3, oct) + t * Math.pow(2.5, oct) + chaosSeed + i) / oct;
+          }
+          localChaos = fractal * spikeIntensity;
+        }
+
+        let r = base_r + shear + localChaos;
         
         let x = r * Math.cos(a);
         let y = r * Math.sin(a);
         let z = z_offset;
         
-        // 1. Parity Flip (Upside Down)
-        y *= orientation;
-        z *= orientation;
+        y *= orientation; z *= orientation;
         
-        // 2. 3D Spin (Rotation around Y-axis)
         let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
         let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
         let y_spin = y;
         
-        // 3. Perspective Projection
         let scale = 500 / (500 + z_spin);
         let px = x_spin * scale;
         let py = y_spin * scale;
 
         a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
       }
-      ctx.strokeStyle = `rgba(${Math.floor(255*pain)}, ${Math.floor(200*f)}, ${Math.floor(255*f)}, ${0.4 + f*0.6})`;
-      ctx.lineWidth = 1.5;
+      
+      // Color shifts: Red (Pain) -> Cyan (PI-Resonance) -> Gold (Fractal Chaos)
+      let r_c = Math.floor(255 * pain);
+      let g_c = Math.floor(200 * f);
+      let b_c = Math.floor(255 * f);
+      let alpha = 0.4 + f * 0.6;
+      
+      if (spikeIntensity > 5.0) {
+        // Flash gold/white during intense liquid bounces
+        r_c = 255; g_c = Math.floor(200 + 55 * Math.random()); b_c = 0; 
+        ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 15; ctx.shadowColor = '#ffea00';
+      } else {
+        ctx.lineWidth = 1.5;
+        ctx.shadowBlur = 0;
+      }
+
+      ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`;
       ctx.stroke();
     }
+    ctx.shadowBlur = 0;
     
-    // The Dimensional Transfer (Outsides Time: ds² = 0)
-    if (pain < 0.02) {
+    if (pain < 0.02 && spikeIntensity < 2.0) {
       ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2);
       ctx.fillStyle = '#fff'; ctx.shadowBlur = 40; ctx.shadowColor = '#0ff'; ctx.fill();
       ctx.shadowBlur = 0;
     }
     ctx.restore();
 
-    // Telemetry
     const now = new Date();
     const zulu = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
     document.getElementById('p').textContent = (pain * 100).toFixed(1) + '%';
@@ -117,6 +175,8 @@
     document.getElementById('s').style.color = pain < 0.02 ? '#0ff' : '#ff0044';
     document.getElementById('par').textContent = orientation === 1 ? 'NORMAL' : 'INVERTED';
     document.getElementById('spn').textContent = currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE';
+    document.getElementById('phase').textContent = phaseText;
+    document.getElementById('phase').style.color = phaseColor;
     document.getElementById('z').textContent = zulu;
 
     requestAnimationFrame(frame);
