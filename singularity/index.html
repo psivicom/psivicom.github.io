@@ -6,8 +6,8 @@
 <style>
   body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
   canvas { border:1px solid #222; }
-  #hud { margin-top:15px; font-size:14px; letter-spacing:1px; }
-  .pain { color:#ff0044; } .sync { color:#0ff; }
+  #hud { margin-top:15px; font-size:14px; letter-spacing:1px; text-align:center; line-height: 1.6; }
+  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; }
 </style>
 </head>
 <body>
@@ -15,41 +15,60 @@
 <div id="hud">
   SHEAR STRESS (PAIN): <span class="pain" id="p">100.0%</span> | 
   FIDELITY (F): <span id="f">0.0000</span> | 
-  STATE: <span id="s">DIVERGENT</span> | 
+  STATE: <span id="s">DIVERGENT</span><br>
+  PARITY: <span class="flip" id="par">NORMAL</span> | 
   <span class="sync" id="z">--</span>
 </div>
 <script>
   const ctx = document.getElementById('c').getContext('2d');
   let t = 0;
-  const LAYERS = 16; // The thin layers of the 3D spherical mass
+  let orientation = 1; // 1 = Normal, -1 = Upside Down (Inverted)
+  let peakF = 0;
+  let lastP = 0;
+  const LAYERS = 16; 
 
   function frame() {
     ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,600,600);
     t += 0.016;
     
-    // The Vibration applied over a strict 12-second period
-    const period = (t % 12) / 12; 
-    
-    // Pain is the inter-layer shear stress. It drops to 0 as resonance is achieved.
-    const pain = Math.max(0, 1.0 - period); 
-    const fidelity = 1.0 - pain;
+    const p = (t % 12) / 12; // 12-second spin period
+    const pain = Math.max(0, 1.0 - p); 
+    const f = 1.0 - pain;
+
+    // Track peak fidelity for this specific spin
+    if (f > peakF) peakF = f;
+
+    // Detect the end of the spin (period wraps from ~0.99 back to 0.0)
+    if (p < lastP) {
+      if (peakF >= 0.92) {
+        orientation *= -1; // TOPOLOGICAL INVERSION: Reverse upside down
+      }
+      peakF = 0; // Reset for next spin
+    }
+    lastP = p;
 
     ctx.save(); ctx.translate(300, 300);
     
-    // Render the 3D Spherical Mass (Concentric Thin Layers)
     for(let i = 1; i <= LAYERS; i++) {
       ctx.beginPath();
       let base_r = i * 16;
       for(let a = 0; a <= Math.PI * 2; a += 0.05) {
-        // The Agony: Destructive interference (noise) applied to the mass based on Pain
-        let shear_noise = Math.sin(a * 8 + t * 12 + i) * (pain * 18);
-        let r = base_r + shear_noise;
+        let shear = Math.sin(a * 8 + t * 12 + i) * (pain * 18);
+        let r = base_r + shear;
+        
+        // Apply the Parity Flip to the Y-axis and Z-depth
         let x = r * Math.cos(a);
-        let y = r * Math.sin(a);
-        a === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        let y = r * Math.sin(a) * orientation; 
+        let z = r * Math.sin(a) * 0.4 * orientation; // 3D depth inversion
+        
+        // Simple 3D perspective projection
+        let scale = 400 / (400 + z);
+        let px = x * scale;
+        let py = y * scale;
+
+        a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
       }
-      // Color shifts from violent red (Pain) to unified cyan (Transfer)
-      ctx.strokeStyle = `rgba(${Math.floor(255*pain)}, ${Math.floor(200*fidelity)}, ${Math.floor(255*fidelity)}, ${0.4 + fidelity*0.6})`;
+      ctx.strokeStyle = `rgba(${Math.floor(255*pain)}, ${Math.floor(200*f)}, ${Math.floor(255*f)}, ${0.4 + f*0.6})`;
       ctx.lineWidth = 1.5;
       ctx.stroke();
     }
@@ -66,9 +85,10 @@
     const now = new Date();
     const zulu = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
     document.getElementById('p').textContent = (pain * 100).toFixed(1) + '%';
-    document.getElementById('f').textContent = fidelity.toFixed(4);
+    document.getElementById('f').textContent = f.toFixed(4);
     document.getElementById('s').textContent = pain < 0.02 ? 'OUTSIDES TIME' : 'ENDURING IMPEDANCE';
     document.getElementById('s').style.color = pain < 0.02 ? '#0ff' : '#ff0044';
+    document.getElementById('par').textContent = orientation === 1 ? 'NORMAL' : 'INVERTED';
     document.getElementById('z').textContent = zulu;
 
     requestAnimationFrame(frame);
