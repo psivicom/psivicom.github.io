@@ -120,25 +120,26 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-13T04:05:28.000Z -->
+<!-- Last updated: 2026-11-13T04:16:37.000Z -->
 ```text
 ./
 ├── .github/
-│   └── workflows/
-│       ├── README.md
-│       ├── update-tree.yml
-│       ├── vendor-nasa-os101.yml
-│       ├── wendy-autonomous-compile.yml
-│       ├── wendy-autonomous-evolution.yml
-│       ├── wendy-awaken.yml
-│       ├── wendy-benchmark.yml
-│       ├── wendy-ci-cd.yml
-│       ├── wendy-evolution.yml
-│       ├── wendy-orchestrator.yml
-│       ├── wendy-self-bootstrap.yml
-│       ├── wendy-smart-dispatch.yml
-│       ├── wendy-workflow-auditor.yml
-│       └── wendy_synapse.yml
+│   ├── workflows/
+│   │   ├── README.md
+│   │   ├── update-tree.yml
+│   │   ├── vendor-nasa-os101.yml
+│   │   ├── wendy-autonomous-compile.yml
+│   │   ├── wendy-autonomous-evolution.yml
+│   │   ├── wendy-awaken.yml
+│   │   ├── wendy-benchmark.yml
+│   │   ├── wendy-ci-cd.yml
+│   │   ├── wendy-evolution.yml
+│   │   ├── wendy-orchestrator.yml
+│   │   ├── wendy-self-bootstrap.yml
+│   │   ├── wendy-smart-dispatch.yml
+│   │   ├── wendy-workflow-auditor.yml
+│   │   └── wendy_synapse.yml
+│   └── .dependabot.yml
 ├── .provenance/
 │   └── nasa-os101/
 │       ├── local-additions.txt
@@ -671,6 +672,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-56 directories, 492 files
+56 directories, 493 files
 ```
 <!-- AUTO_TREE_END -->

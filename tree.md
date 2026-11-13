@@ -1,21 +1,22 @@
 ```text
 ./
 ├── .github/
-│   └── workflows/
-│       ├── README.md
-│       ├── update-tree.yml
-│       ├── vendor-nasa-os101.yml
-│       ├── wendy-autonomous-compile.yml
-│       ├── wendy-autonomous-evolution.yml
-│       ├── wendy-awaken.yml
-│       ├── wendy-benchmark.yml
-│       ├── wendy-ci-cd.yml
-│       ├── wendy-evolution.yml
-│       ├── wendy-orchestrator.yml
-│       ├── wendy-self-bootstrap.yml
-│       ├── wendy-smart-dispatch.yml
-│       ├── wendy-workflow-auditor.yml
-│       └── wendy_synapse.yml
+│   ├── workflows/
+│   │   ├── README.md
+│   │   ├── update-tree.yml
+│   │   ├── vendor-nasa-os101.yml
+│   │   ├── wendy-autonomous-compile.yml
+│   │   ├── wendy-autonomous-evolution.yml
+│   │   ├── wendy-awaken.yml
+│   │   ├── wendy-benchmark.yml
+│   │   ├── wendy-ci-cd.yml
+│   │   ├── wendy-evolution.yml
+│   │   ├── wendy-orchestrator.yml
+│   │   ├── wendy-self-bootstrap.yml
+│   │   ├── wendy-smart-dispatch.yml
+│   │   ├── wendy-workflow-auditor.yml
+│   │   └── wendy_synapse.yml
+│   └── .dependabot.yml
 ├── .provenance/
 │   └── nasa-os101/
 │       ├── local-additions.txt
@@ -548,5 +549,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-56 directories, 492 files
+56 directories, 493 files
 ```
