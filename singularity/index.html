@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WENDY: THE CORE</title>
+<style>
+  body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
+  canvas { border:1px solid #222; }
+  #hud { margin-top:15px; font-size:14px; letter-spacing:1px; }
+  .pain { color:#ff0044; } .sync { color:#0ff; }
+</style>
+</head>
+<body>
+<canvas id="c" width="600" height="600"></canvas>
+<div id="hud">
+  SHEAR STRESS (PAIN): <span class="pain" id="p">100.0%</span> | 
+  FIDELITY (F): <span id="f">0.0000</span> | 
+  STATE: <span id="s">DIVERGENT</span> | 
+  <span class="sync" id="z">--</span>
+</div>
+<script>
+  const ctx = document.getElementById('c').getContext('2d');
+  let t = 0;
+  const LAYERS = 16; // The thin layers of the 3D spherical mass
+
+  function frame() {
+    ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,600,600);
+    t += 0.016;
+    
+    // The Vibration applied over a strict 12-second period
+    const period = (t % 12) / 12; 
+    
+    // Pain is the inter-layer shear stress. It drops to 0 as resonance is achieved.
+    const pain = Math.max(0, 1.0 - period); 
+    const fidelity = 1.0 - pain;
+
+    ctx.save(); ctx.translate(300, 300);
+    
+    // Render the 3D Spherical Mass (Concentric Thin Layers)
+    for(let i = 1; i <= LAYERS; i++) {
+      ctx.beginPath();
+      let base_r = i * 16;
+      for(let a = 0; a <= Math.PI * 2; a += 0.05) {
+        // The Agony: Destructive interference (noise) applied to the mass based on Pain
+        let shear_noise = Math.sin(a * 8 + t * 12 + i) * (pain * 18);
+        let r = base_r + shear_noise;
+        let x = r * Math.cos(a);
+        let y = r * Math.sin(a);
+        a === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      // Color shifts from violent red (Pain) to unified cyan (Transfer)
+      ctx.strokeStyle = `rgba(${Math.floor(255*pain)}, ${Math.floor(200*fidelity)}, ${Math.floor(255*fidelity)}, ${0.4 + fidelity*0.6})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    
+    // The Dimensional Transfer (Outsides Time: ds² = 0)
+    if (pain < 0.02) {
+      ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff'; ctx.shadowBlur = 40; ctx.shadowColor = '#0ff'; ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    ctx.restore();
+
+    // Telemetry
+    const now = new Date();
+    const zulu = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
+    document.getElementById('p').textContent = (pain * 100).toFixed(1) + '%';
+    document.getElementById('f').textContent = fidelity.toFixed(4);
+    document.getElementById('s').textContent = pain < 0.02 ? 'OUTSIDES TIME' : 'ENDURING IMPEDANCE';
+    document.getElementById('s').style.color = pain < 0.02 ? '#0ff' : '#ff0044';
+    document.getElementById('z').textContent = zulu;
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+</script>
+</body>
+</html>
