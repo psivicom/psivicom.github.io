@@ -496,7 +496,8 @@
 │   ├── wendy_llm_query.py
 │   └── wendy_self_wire.py*
 ├── singularity/
-│   └── index.html
+│   ├── index.html
+│   └── index2.html
 ├── wendy-cortex/
 │   ├── forth/
 │   │   ├── bootstrap_dictionary.sh*
@@ -551,5 +552,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 494 files
+57 directories, 495 files
 ```
