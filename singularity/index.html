@@ -6,8 +6,8 @@
 <style>
   body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
   canvas { border:1px solid #222; }
-  #hud { margin-top:15px; font-size:14px; letter-spacing:1px; text-align:center; line-height: 1.6; }
-  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; }
+  #hud { margin-top:15px; font-size:14px; letter-spacing:1px; text-align:center; line-height: 1.8; }
+  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } .spin { color:#ffaa00; }
 </style>
 </head>
 <body>
@@ -17,54 +17,81 @@
   FIDELITY (F): <span id="f">0.0000</span> | 
   STATE: <span id="s">DIVERGENT</span><br>
   PARITY: <span class="flip" id="par">NORMAL</span> | 
+  SPIN VECTOR: <span class="spin" id="spn">PROGRADE</span> | 
   <span class="sync" id="z">--</span>
 </div>
 <script>
   const ctx = document.getElementById('c').getContext('2d');
   let t = 0;
-  let orientation = 1; // 1 = Normal, -1 = Upside Down (Inverted)
+  let orientation = 1; // 1 = Normal, -1 = Upside Down
   let peakF = 0;
   let lastP = 0;
   const LAYERS = 16; 
+  
+  let baseSpinDir = 1;
+  let currentSpinDir = 1;
+  let hasFlippedThisCycle = false;
+  let spinAngle = 0;
 
   function frame() {
     ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,600,600);
     t += 0.016;
     
-    const p = (t % 12) / 12; // 12-second spin period
+    const p = (t % 12) / 12; // 12-second cycle
     const pain = Math.max(0, 1.0 - p); 
     const f = 1.0 - pain;
 
-    // Track peak fidelity for this specific spin
     if (f > peakF) peakF = f;
 
-    // Detect the end of the spin (period wraps from ~0.99 back to 0.0)
+    // Cycle Reset & Parity Flip
     if (p < lastP) {
+      baseSpinDir *= -1; // Alternate baseline spin for the new cycle
+      currentSpinDir = baseSpinDir;
+      hasFlippedThisCycle = false;
+      
       if (peakF >= 0.92) {
         orientation *= -1; // TOPOLOGICAL INVERSION: Reverse upside down
       }
-      peakF = 0; // Reset for next spin
+      peakF = 0; 
     }
+    
+    // Rotational Shear: Alternate spin direction when F >= 0.1
+    if (!hasFlippedThisCycle && f >= 0.1) {
+      currentSpinDir *= -1;
+      hasFlippedThisCycle = true;
+    }
+    
     lastP = p;
+    spinAngle += currentSpinDir * 0.04; // Angular velocity
 
     ctx.save(); ctx.translate(300, 300);
     
     for(let i = 1; i <= LAYERS; i++) {
       ctx.beginPath();
-      let base_r = i * 16;
+      let base_r = i * 14;
+      let z_offset = (i - LAYERS/2) * 8; // Stack layers in Z-space to form a 3D cylinder/sphere
+      
       for(let a = 0; a <= Math.PI * 2; a += 0.05) {
         let shear = Math.sin(a * 8 + t * 12 + i) * (pain * 18);
         let r = base_r + shear;
         
-        // Apply the Parity Flip to the Y-axis and Z-depth
         let x = r * Math.cos(a);
-        let y = r * Math.sin(a) * orientation; 
-        let z = r * Math.sin(a) * 0.4 * orientation; // 3D depth inversion
+        let y = r * Math.sin(a);
+        let z = z_offset;
         
-        // Simple 3D perspective projection
-        let scale = 400 / (400 + z);
-        let px = x * scale;
-        let py = y * scale;
+        // 1. Parity Flip (Upside Down)
+        y *= orientation;
+        z *= orientation;
+        
+        // 2. 3D Spin (Rotation around Y-axis)
+        let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
+        let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
+        let y_spin = y;
+        
+        // 3. Perspective Projection
+        let scale = 500 / (500 + z_spin);
+        let px = x_spin * scale;
+        let py = y_spin * scale;
 
         a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
       }
@@ -89,6 +116,7 @@
     document.getElementById('s').textContent = pain < 0.02 ? 'OUTSIDES TIME' : 'ENDURING IMPEDANCE';
     document.getElementById('s').style.color = pain < 0.02 ? '#0ff' : '#ff0044';
     document.getElementById('par').textContent = orientation === 1 ? 'NORMAL' : 'INVERTED';
+    document.getElementById('spn').textContent = currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE';
     document.getElementById('z').textContent = zulu;
 
     requestAnimationFrame(frame);
