@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WENDY: K-POP TRANSCENDENCE</title>
+<style>
+  body { background:#0a0014; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; cursor:crosshair; }
+  canvas { border:2px solid #ff007f; box-shadow: 0 0 30px rgba(255,0,127,0.3); border-radius:8px; }
+  #hud { margin-top:15px; font-size:12px; letter-spacing:1px; text-align:center; line-height: 1.8; max-width: 600px; color:#ccc; }
+  .tension { color:#ff007f; font-weight:bold; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } 
+  .drop { color:#ffea00; font-weight:bold; text-shadow: 0 0 10px #ffea00; font-size: 14px; }
+  .bpm { color:#0f0; }
+  #audioPrompt { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:24px; color:#ff007f; text-shadow:0 0 20px #ff007f; pointer-events:none; animation: pulse 1s infinite; z-index:10; text-align:center; }
+  @keyframes pulse { 0%{opacity:0.3; transform:translate(-50%,-50%) scale(0.95)} 50%{opacity:1; transform:translate(-50%,-50%) scale(1.05)} 100%{opacity:0.3; transform:translate(-50%,-50%) scale(0.95)} }
+</style>
+</head>
+<body>
+<div id="audioPrompt">CLICK TO INITIATE THE DROP</div>
+<canvas id="c" width="600" height="600"></canvas>
+<div id="hud">
+  BUILD-UP TENSION: <span class="tension" id="p">0.0%</span> | 
+  FIDELITY (F): <span id="f">0.0000</span> | 
+  STATE: <span id="s">VERSE</span><br>
+  PARITY: <span class="flip" id="par">NORMAL</span> | 
+  BPM: <span class="bpm">128</span> | 
+  PHASE: <span class="drop" id="phase">SYNCOPATION</span><br>
+  CHORD: <span class="sync" id="chord">Cmaj7</span> | 
+  <span class="sync" id="z">--</span>
+</div>
+<script>
+  const c = document.getElementById('c'), g = c.getContext('2d');
+  let t = 0;
+  
+  let orientation = 1, peakF = 0, lastP = 0;
+  let spinAngle = 0;
+  let L = {x:0.1, y:0, z:0};
+  let rot = {xw:0, yz:0, wxw:0.3, wyz:0.2};
+
+  const hash = (x,y,z) => { const s = Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453; return s - Math.floor(s); };
+  const lerp = (a,b,k) => a+(b-a)*k;
+  function vnoise(x,y,z) {
+    const xi=Math.floor(x), yi=Math.floor(y), zi=Math.floor(z);
+    const xf=x-xi, yf=y-yi, zf=z-zi;
+    const u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf), w=zf*zf*(3-2*zf);
+    return lerp(lerp(lerp(hash(xi,yi,zi),hash(xi+1,yi,zi),u),lerp(hash(xi,yi+1,zi),hash(xi+1,yi+1,zi),u),v),
+                lerp(lerp(hash(xi,yi,zi+1),hash(xi+1,yi,zi+1),u),lerp(hash(xi,yi+1,zi+1),hash(xi+1,yi+1,zi+1),u),v),w);
+  }
+  function fbm(x,y,z) { let s=0,a=0.5,f=1; for(let o=0;o<4;o++){ s+=a*vnoise(x*f,y*f,z*f); f*=2; a*=0.5; } return s; }
+
+  // --- K-POP AUDIO ENGINE ---
+  let audioCtx, audioStarted = false;
+  let master, compressor, synthGroup, delay, delayFb;
+  
+  // 128 BPM = 0.46875 seconds per beat. 16th note = 0.1171875s
+  const BPM = 128;
+  const STEP_TIME = 60 / BPM / 4; 
+  let nextStepTime = 0;
+  let currentStep = 0;
+  let isDrop = false;
+  let buildUpTension = 0;
+
+  // K-Pop Progression: I - vi - IV - V (Cmaj7 - Am7 - Fmaj7 - G7)
+  const CHORDS = [
+    { name: "Cmaj7", freqs: [261.63, 329.63, 392.00, 493.88] },
+    { name: "Am7",   freqs: [220.00, 261.63, 329.63, 392.00] },
+    { name: "Fmaj7", freqs: [174.61, 220.00, 261.63, 329.63] },
+    { name: "G7",    freqs: [196.00, 246.94, 293.66, 349.23] }
+  ];
+  let currentChordIdx = 0;
+
+  function initAudio() {
+    if (audioStarted) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioStarted = true;
+    document.getElementById('audioPrompt').style.display = 'none';
+
+    master = audioCtx.createGain(); master.gain.value = 0.8;
+    compressor = audioCtx.createDynamicsCompressor();
+    compressor.threshold.value = -12; compressor.ratio.value = 8;
+    
+    synthGroup = audioCtx.createGain(); synthGroup.gain.value = 1.0;
+    
+    delay = audioCtx.createDelay(1.0); delay.delayTime.value = STEP_TIME * 3; // Dotted 8th
+    delayFb = audioCtx.createGain(); delayFb.gain.value = 0.3;
+    const delayWet = audioCtx.createGain(); delayWet.gain.value = 0.4;
+
+    synthGroup.connect(compressor);
+    compressor.connect(master); master.connect(audioCtx.destination);
+    
+    synthGroup.connect(delay); delay.connect(delayFb); delayFb.connect(delay);
+    delay.connect(delayWet); delayWet.connect(master);
+
+    nextStepTime = audioCtx.currentTime + 0.1;
+    scheduler();
+  }
+
+  // --- DRUM SYNTHESIS ---
+  function playKick(time) {
+    const osc = audioCtx.createOscillator(); osc.type = 'sine';
+    const gain = audioCtx.createGain();
+    osc.frequency.setValueAtTime(150, time);
+    osc.frequency.exponentialRampToValueAtTime(30, time + 0.05);
+    gain.gain.setValueAtTime(1.2, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+    osc.connect(gain); gain.connect(master);
+    osc.start(time); osc.stop(time + 0.3);
+
+    // Sidechain ducking on the synth group
+    synthGroup.gain.cancelScheduledValues(time);
+    synthGroup.gain.setValueAtTime(0.2, time); // Duck
+    synthGroup.gain.exponentialRampToValueAtTime(1.0, time + 0.15); // Release
+  }
+
+  function playSnare(time) {
+    const noise = audioCtx.createBufferSource();
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
+    const d = buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
+    noise.buffer = buf;
+    const nGain = audioCtx.createGain(); nGain.gain.setValueAtTime(0.6, time); nGain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+    const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1000;
+    noise.connect(hp); hp.connect(nGain); nGain.connect(master);
+    noise.start(time); noise.stop(time + 0.2);
+
+    const osc = audioCtx.createOscillator(); osc.type = 'triangle'; osc.frequency.value = 200;
+    const oGain = audioCtx.createGain(); oGain.gain.setValueAtTime(0.5, time); oGain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+    osc.connect(oGain); oGain.connect(master);
+    osc.start(time); osc.stop(time + 0.1);
+  }
+
+  function playHat(time) {
+    const noise = audioCtx.createBufferSource();
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.05, audioCtx.sampleRate);
+    const d = buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
+    noise.buffer = buf;
+    const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.2, time); gain.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
+    const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 6000;
+    noise.connect(hp); hp.connect(gain); gain.connect(master);
+    noise.start(time); noise.stop(time + 0.05);
+  }
+
+  // --- K-POP SUPERSAW SYNTH ---
+  function playSupersaw(time, freqs, duration) {
+    freqs.forEach(f => {
+      for(let d = -15; d <= 15; d+=10) { // 4 detuned saws per note
+        const osc = audioCtx.createOscillator(); osc.type = 'sawtooth';
+        osc.frequency.value = f; osc.detune.value = d;
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.04, time + 0.02);
+        gain.gain.linearRampToValueAtTime(0.03, time + duration * 0.8);
+        gain.gain.linearRampToValueAtTime(0, time + duration);
+        
+        const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2500; lp.Q.value = 2;
+        osc.connect(lp); lp.connect(gain); gain.connect(synthGroup);
+        osc.start(time); osc.stop(time + duration + 0.1);
+      }
+    });
+  }
+
+  // --- VOCAL CHOP LEAD (The Hook) ---
+  function playVocalChop(time, freq) {
+    const osc = audioCtx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.value = freq;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.15, time + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+    
+    // Formant filters to mimic human vowel sounds ("Ah" / "Oh")
+    const f1 = audioCtx.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 800; f1.Q.value = 10;
+    const f2 = audioCtx.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 1200; f2.Q.value = 10;
+    
+    osc.connect(f1); osc.connect(f2);
+    f1.connect(gain); f2.connect(gain);
+    gain.connect(synthGroup);
+    osc.start(time); osc.stop(time + 0.25);
+  }
+
+  // --- THE SEQUENCER ---
+  function scheduler() {
+    if (!audioStarted) return;
+    while (nextStepTime < audioCtx.currentTime + 0.1) {
+      playStep(currentStep, nextStepTime);
+      nextStepTime += STEP_TIME;
+      currentStep = (currentStep + 1) % 64; // 4 bar loop (16 steps * 4)
+      
+      if (currentStep % 16 === 0) {
+        currentChordIdx = (currentChordIdx + 1) % CHORDS.length;
+        document.getElementById('chord').textContent = CHORDS[currentChordIdx].name;
+      }
+    }
+    requestAnimationFrame(scheduler);
+  }
+
+  function playStep(step, time) {
+    const chord = CHORDS[currentChordIdx];
+    const isBuildUp = currentStep >= 48; // Last bar is the build-up
+    
+    if (isBuildUp) {
+      buildUpTension = (currentStep - 48) / 16;
+      // Snare roll accelerating
+      if (step % 2 === 0 || (buildUpTension > 0.5 && step % 1 === 0)) playSnare(time);
+      if (step === 63) {
+        isDrop = true; // THE DROP TRIGGERS THE PARITY FLIP
+        orientation *= -1; 
+      }
+    } else {
+      buildUpTension = 0;
+      isDrop = currentStep < 32; // First 2 bars are the heavy drop
+    }
+
+    // DRUMS
+    if (step % 4 === 0) playKick(time); // Four on the floor
+    if (step % 8 === 4) playSnare(time); // Snare on 2 and 4
+    if (step % 2 === 0) playHat(time); // 8th note hats
+
+    // SUPERSAW CHORDS (Syncopated K-Pop rhythm)
+    if (isDrop || !isBuildUp) {
+      if (step % 16 === 0 || step % 16 === 6 || step % 16 === 10) {
+        playSupersaw(time, chord.freqs, STEP_TIME * 4);
+      }
+    }
+
+    // VOCAL CHOP HOOK (Pentatonic melody during the drop)
+    if (isDrop) {
+      const pentatonic = [0, 3, 5, 7, 10]; // Minor pentatonic intervals
+      const melodyPattern = [0, 2, 4, 3, 4, 2, 0, -1];
+      if (step % 2 === 0) {
+        const noteIdx = melodyPattern[(step / 2) % melodyPattern.length];
+        const semitone = pentatonic[((noteIdx % 5) + 5) % 5];
+        const freq = chord.freqs[0] * 2 * Math.pow(2, semitone / 12);
+        playVocalChop(time, freq);
+      }
+    }
+  }
+
+  document.body.addEventListener('click', initAudio);
+
+  // --- VISUALS ---
+  function frame() {
+    g.fillStyle = 'rgba(10,0,20,0.2)'; g.fillRect(0,0,600,600);
+    t += 0.016;
+
+    // Sync visual tension to audio build-up
+    const pain = isDrop ? 0.1 : (1.0 - buildUpTension);
+    const f = isDrop ? 0.98 : buildUpTension;
+    
+    spinAngle += 0.08 + (buildUpTension * 0.2); // Spin faster during build-up
+
+    const chaos_scale = 0.005 * (0.2 + pain * 0.8);
+    for(let k=0; k<4; k++) {
+      const dx = 10*(L.y-L.x), dy = L.x*(28-L.z)-L.y, dz = L.x*L.y-(8/3)*L.z;
+      L.x += dx*chaos_scale; L.y += dy*chaos_scale; L.z += dz*chaos_scale;
+    }
+
+    rot.wxw = lerp(rot.wxw, (Math.random()-0.5)*0.5, 0.01);
+    rot.wyz = lerp(rot.wyz, (Math.random()-0.5)*0.5, 0.01);
+    rot.xw += rot.wxw * 0.016; rot.yz += rot.wyz * 0.016;
+    
+    const cxw=Math.cos(rot.xw), sxw=Math.sin(rot.xw), cyz=Math.cos(rot.yz), syz=Math.sin(rot.yz);
+    const cs=Math.cos(spinAngle), ss=Math.sin(spinAngle);
+
+    let phaseText = "SYNCOPATION", phaseColor = "#0ff";
+    if (buildUpTension > 0.5) { phaseText = "BUILD-UP"; phaseColor = "#ff007f"; }
+    if (isDrop) { phaseText = "★ THE DROP ★"; phaseColor = "#ffea00"; }
+
+    g.save(); g.translate(300, 300);
+    const LAYERS = 24, D = 300; 
+
+    // Pulse the entire geometry to the kick drum (128 BPM)
+    const kickPulse = Math.exp(-((t * (BPM/60)) % 1) * 8);
+    const globalScale = 1.0 + (kickPulse * 0.15);
+    g.scale(globalScale, globalScale);
+
+    for(let i = 1; i <= LAYERS; i++) {
+      const v = i / LAYERS;
+      const baseR = Math.sin(v * Math.PI * 0.85) * 140 + 5;
+      g.beginPath();
+      
+      for(let a = 0; a <= Math.PI * 2; a += 0.06) {
+        const instab = pain * 0.8 + 0.2;
+        const qx = fbm(Math.cos(a)*1.5, Math.sin(a)*1.5+v*2, t*0.15);
+        const qy = fbm(Math.cos(a)*1.5+5.2, Math.sin(a)*1.5+v*2+1.3, t*0.15);
+        const n = fbm(Math.cos(a)*1.5+instab*qx*2, Math.sin(a)*1.5+instab*qy*2, t*0.1);
+        
+        let r = baseR + (n - 0.5) * 60 * (0.3 + instab);
+        let x = r * Math.cos(a);
+        let y = r * Math.sin(a);
+        let z = (-120 + v * 240);
+        let w = (n - 0.5) * 120 * instab; 
+
+        y *= orientation; z *= orientation; w *= orientation;
+
+        let x1 = x*cxw - w*sxw, w1 = x*sxw + w*cxw;
+        let y1 = y*cyz - z*syz, z1 = y*syz + z*cyz;
+
+        const k4 = D / Math.max(50, D - w1);
+        let X = x1*k4, Y = y1*k4, Z = z1*k4;
+
+        let xr = X*cs - Z*ss, zr = X*ss + Z*cs;
+        
+        const s = 500 / Math.max(50, 500 + zr);
+        a === 0 ? g.moveTo(xr*s, Y*s) : g.lineTo(xr*s, Y*s);
+      }
+      
+      // K-Pop Neon Coloring
+      const hue = isDrop ? (t * 100 + i * 10) % 360 : (300 + L.z * 2 + i * 4) % 360;
+      const lightness = isDrop ? 60 : 40;
+      g.strokeStyle = `hsla(${hue}, 100%, ${lightness}%, ${0.4 + f*0.6})`;
+      g.lineWidth = isDrop ? 2.5 : 1.5;
+      if (isDrop) { g.shadowBlur = 15; g.shadowColor = `hsl(${hue}, 100%, 50%)`; } else { g.shadowBlur = 0; }
+      g.stroke();
+    }
+    g.shadowBlur = 0;
+    g.restore();
+
+    const now = new Date();
+    const zulu = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
+    document.getElementById('p').textContent = (buildUpTension * 100).toFixed(1) + '%';
+    document.getElementById('f').textContent = f.toFixed(4);
+    document.getElementById('s').textContent = isDrop ? 'EUPHORIA' : (buildUpTension > 0.5 ? 'RISING' : 'GROOVE');
+    document.getElementById('s').style.color = isDrop ? '#ffea00' : '#ff007f';
+    document.getElementById('par').textContent = orientation === 1 ? 'NORMAL' : 'INVERTED';
+    document.getElementById('phase').textContent = phaseText;
+    document.getElementById('phase').style.color = phaseColor;
+    document.getElementById('z').textContent = zulu;
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+</script>
+</body>
+</html>
