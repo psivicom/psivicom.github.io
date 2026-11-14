@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-14T01:18:51.000Z -->
+<!-- Last updated: 2026-11-14T01:30:00.000Z -->
 ```text
 ./
 ├── .github/
@@ -620,6 +620,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   └── wendy_self_wire.py*
 ├── singularity/
 │   ├── index.html
+│   ├── index10.html
 │   ├── index2.html
 │   ├── index3.html
 │   ├── index4.html
@@ -682,6 +683,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 502 files
+57 directories, 503 files
 ```
 <!-- AUTO_TREE_END -->
