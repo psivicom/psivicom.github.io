@@ -506,6 +506,7 @@
 │   ├── index1f.html
 │   ├── index1g.html
 │   ├── index1h.html
+│   ├── index1i.html
 │   ├── index2.html
 │   ├── index3.html
 │   ├── index4.html
@@ -568,5 +569,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 511 files
+57 directories, 512 files
 ```
