@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WENDY: TOPOLOGICAL HARMONIZER</title>
+<style>
+  body { background:#050508; color:#e0e0e0; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; cursor:crosshair; }
+  h1 { color:#0ff; letter-spacing:4px; font-size:18px; text-shadow:0 0 10px #0ff; }
+  canvas { border:1px solid #222; background:#000; border-radius:4px; }
+  #hud { margin-top:15px; font-size:12px; letter-spacing:1px; text-align:center; line-height: 1.8; max-width: 600px; color:#888; }
+  .melody { color:#ff0055; font-weight:bold; text-shadow:0 0 5px #ff0055; }
+  .harmony { color:#0ff; font-weight:bold; text-shadow:0 0 5px #0ff; }
+  .scale { color:#ffea00; }
+  #audioPrompt { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:20px; color:#0ff; text-shadow:0 0 20px #0ff; pointer-events:none; animation: pulse 1.5s infinite; z-index:10; }
+  @keyframes pulse { 0%{opacity:0.3} 50%{opacity:1} 100%{opacity:0.3} }
+</style>
+</head>
+<body>
+<div id="audioPrompt">CLICK TO WEAVE THE HARMONY</div>
+<h1>WENDY: TOPOLOGICAL HARMONIZER</h1>
+<canvas id="c" width="600" height="300"></canvas>
+<div id="hud">
+  MELODY NOTE: <span class="melody" id="melNote">--</span> | 
+  HARMONIC CONTEXT: <span class="harmony" id="chordName">--</span><br>
+  SCALE: <span class="scale" id="scaleName">C LYDIAN</span> | 
+  VOICE LEADING: <span class="harmony" id="voices">0</span> ACTIVE |
+  <span id="z">--</span>
+</div>
+
+<script>
+  const c = document.getElementById('c'), g = c.getContext('2d');
+  let audioCtx, audioStarted = false;
+  let masterGain, reverb, delay, delayFb;
+  
+  // --- WENDY'S MUSIC THEORY ENGINE ---
+  // C Lydian: Bright, floating, sci-fi (Root, 2, 3, #4, 5, 6, 7)
+  const SCALE = { name: "C LYDIAN", root: 261.63, intervals: [0, 2, 4, 6, 7, 9, 11] };
+  
+  // Extended Chords (Semitones from root)
+  const CHORDS = [
+    { name: "Cmaj9(#11)", notes: [0, 7, 14, 18, 23] },      // Root, 5, 9, 3, #11
+    { name: "Dadd9(13)",  notes: [2, 9, 16, 21, 26] },      // Root, 5, 7, 13, 9
+    { name: "Em11",       notes: [4, 11, 14, 21, 24] },     // Root, 5, b7, 9, 11
+    { name: "F#m7(b5)",   notes: [6, 10, 17, 20, 27] }      // Root, b5, b7, 9, 13
+  ];
+
+  let currentChordIdx = 0;
+  let melodyStep = 0;
+  let currentMelodyIdx = 4; // Start in the middle of the scale
+  let nextNoteTime = 0;
+  const SECONDS_PER_BEAT = 0.5; // 120 BPM
+
+  // Voice Leading State (Tracks the exact frequency of each pad voice to ensure smooth sliding)
+  let padVoices = [0, 0, 0, 0].map(() => ({ freq: 0, node: null, gain: null }));
+
+  function createReverbIR(ctx) {
+    const rate = ctx.sampleRate, length = rate * 4.5;
+    const impulse = ctx.createBuffer(2, length, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = impulse.getChannelData(ch);
+      for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
+    }
+    return impulse;
+  }
+
+  function initAudio() {
+    if (audioStarted) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioStarted = true;
+    document.getElementById('audioPrompt').style.display = 'none';
+
+    masterGain = audioCtx.createGain(); masterGain.gain.value = 0.6;
+    
+    reverb = audioCtx.createConvolver(); reverb.buffer = createReverbIR(audioCtx);
+    const wet = audioCtx.createGain(); wet.gain.value = 0.6;
+    const dry = audioCtx.createGain(); dry.gain.value = 0.4;
+    
+    delay = audioCtx.createDelay(1.0); delay.delayTime.value = 0.375;
+    delayFb = audioCtx.createGain(); delayFb.gain.value = 0.4;
+    const delayWet = audioCtx.createGain(); delayWet.gain.value = 0.3;
+
+    masterGain.connect(dry); dry.connect(audioCtx.destination);
+    masterGain.connect(reverb); reverb.connect(wet); wet.connect(audioCtx.destination);
+    masterGain.connect(delay); delay.connect(delayFb); delayFb.connect(delay);
+    delay.connect(delayWet); delayWet.connect(audioCtx.destination);
+
+    // Initialize Pad Voices (Sine + Triangle for lushness)
+    padVoices.forEach((v, i) => {
+      const osc1 = audioCtx.createOscillator(); osc1.type = 'sine';
+      const osc2 = audioCtx.createOscillator(); osc2.type = 'triangle';
+      const gain = audioCtx.createGain(); gain.gain.value = 0;
+      const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 1500; filter.Q.value = 0.5;
+      const pan = audioCtx.createStereoPanner(); pan.pan.value = (i - 1.5) * 0.6; // Spread across stereo field
+      
+      osc1.detune.value = -6; osc2.detune.value = 6; // Chorus effect
+      osc1.connect(gain); osc2.connect(gain);
+      gain.connect(filter); filter.connect(pan); pan.connect(masterGain);
+      osc1.start(); osc2.start();
+      
+      v.node1 = osc1; v.node2 = osc2; v.gain = gain;
+    });
+
+    nextNoteTime = audioCtx.currentTime + 0.1;
+    scheduler();
+  }
+
+  function getScaleFreq(scaleDegree, octaveMultiplier) {
+    // Wraps the degree around the scale intervals
+    const idx = ((scaleDegree % SCALE.intervals.length) + SCALE.intervals.length) % SCALE.intervals.length;
+    const octShift = Math.floor(scaleDegree / SCALE.intervals.length);
+    const semitones = SCALE.intervals[idx] + (octShift * 12);
+    return SCALE.root * Math.pow(2, semitones / 12) * octaveMultiplier;
+  }
+
+  function playMelodyNote(time, freq) {
+    // Plucky, bright melody voice (Harp/Bell-like)
+    const osc = audioCtx.createOscillator(); osc.type = 'sine';
+    const osc2 = audioCtx.createOscillator(); osc2.type = 'square';
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = 800;
+    
+    osc.frequency.setValueAtTime(freq, time);
+    osc2.frequency.setValueAtTime(freq * 2.01, time); // Slight inharmonic overtone
+    
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.25, time + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 1.5);
+    
+    osc.connect(gain); osc2.connect(gain);
+    gain.connect(filter); filter.connect(masterGain);
+    osc.start(time); osc2.start(time);
+    osc.stop(time + 1.6); osc2.stop(time + 1.6);
+  }
+
+  function updateHarmony(time, chord) {
+    // WENDY'S LIQUID VOICE LEADING ALGORITHM
+    // Instead of jumping to the new chord, we find the closest chord tone to the current voice
+    const targetNotes = chord.notes;
+    
+    padVoices.forEach((v, i) => {
+      // 1. Target frequency for this specific pad voice (spread across octaves)
+      const targetSemitone = targetNotes[i % targetNotes.length];
+      const targetFreq = SCALE.root * Math.pow(2, targetSemitone / 12) * (i < 2 ? 0.5 : 1.0);
+
+      // 2. If voice is uninitialized, snap to target. Otherwise, prepare to glide.
+      if (v.freq === 0) v.freq = targetFreq;
+
+      // 3. The Glide (Portamento): Liquid sliding to the new harmony
+      const glideTime = 1.2; // Seconds to slide to the new note
+      v.node1.frequency.cancelScheduledValues(time);
+      v.node2.frequency.cancelScheduledValues(time);
+      v.node1.frequency.setValueAtTime(v.freq, time);
+      v.node2.frequency.setValueAtTime(v.freq, time);
+      v.node1.frequency.exponentialRampToValueAtTime(targetFreq, time + glideTime);
+      v.node2.frequency.exponentialRampToValueAtTime(targetFreq, time + glideTime);
+      
+      v.freq = targetFreq;
+
+      // 4. Swell the volume gently
+      v.gain.gain.cancelScheduledValues(time);
+      v.gain.gain.setValueAtTime(v.gain.gain.value, time);
+      v.gain.gain.linearRampToValueAtTime(0.08, time + 0.8);
+    });
+  }
+
+  function scheduler() {
+    if (!audioStarted) return;
+    
+    while (nextNoteTime < audioCtx.currentTime + 0.1) {
+      // 1. Generate Melody (Random Walk for smooth, singable phrasing)
+      const step = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+      currentMelodyIdx += step;
+      if (currentMelodyIdx < 0) currentMelodyIdx = 0;
+      if (currentMelodyIdx > 14) currentMelodyIdx = 14;
+      
+      const melFreq = getScaleFreq(currentMelodyIdx, 2.0); // High octave
+      playMelodyNote(nextNoteTime, melFreq);
+      
+      document.getElementById('melNote').textContent = `Degree ${currentMelodyIdx} (${melFreq.toFixed(1)}Hz)`;
+
+      // 2. Update Harmony every 8 melody notes
+      if (melodyStep % 8 === 0) {
+        currentChordIdx = (currentChordIdx + 1) % CHORDS.length;
+        const chord = CHORDS[currentChordIdx];
+        updateHarmony(nextNoteTime, chord);
+        document.getElementById('chordName').textContent = chord.name;
+      }
+
+      nextNoteTime += SECONDS_PER_BEAT;
+      melodyStep++;
+    }
+    
+    document.getElementById('voices').textContent = padVoices.length + 1; // 4 pads + 1 melody
+    requestAnimationFrame(scheduler);
+  }
+
+  document.body.addEventListener('click', initAudio);
+
+  // --- VISUALIZATION ---
+  function draw() {
+    g.fillStyle = 'rgba(5,5,8,0.2)'; g.fillRect(0,0,600,300);
+    
+    if (audioStarted && padVoices[0].freq > 0) {
+      // Draw Pad Voices (The Harmony)
+      padVoices.forEach((v, i) => {
+        const x = 100 + i * 120;
+        const y = 150 + Math.sin(Date.now() * 0.001 + i) * 20;
+        const r = 15 + Math.sin(Date.now() * 0.002 + i) * 5;
+        
+        g.beginPath();
+        g.arc(x, y, r, 0, Math.PI * 2);
+        g.fillStyle = `rgba(0, 255, 255, ${0.3 + Math.sin(Date.now()*0.003)*0.2})`;
+        g.shadowBlur = 20; g.shadowColor = '#0ff';
+        g.fill();
+        g.shadowBlur = 0;
+      });
+
+      // Draw Melody Voice (The Core)
+      const melX = 300 + Math.sin(Date.now() * 0.0005) * 150;
+      const melY = 150 + Math.cos(Date.now() * 0.0008) * 80;
+      
+      g.beginPath();
+      g.arc(melX, melY, 8, 0, Math.PI * 2);
+      g.fillStyle = '#ff0055';
+      g.shadowBlur = 30; g.shadowColor = '#ff0055';
+      g.fill();
+      g.shadowBlur = 0;
+
+      // Draw Topological Tethers (Connecting Melody to Harmony)
+      g.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      g.lineWidth = 1;
+      padVoices.forEach((v, i) => {
+        const x = 100 + i * 120;
+        const y = 150 + Math.sin(Date.now() * 0.001 + i) * 20;
+        g.beginPath(); g.moveTo(melX, melY); g.lineTo(x, y); g.stroke();
+      });
+    }
+
+    const now = new Date();
+    document.getElementById('z').textContent = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+</body>
+</html>
