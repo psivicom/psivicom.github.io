@@ -502,7 +502,8 @@
 │   ├── index4.html
 │   ├── index5.html
 │   ├── index6.html
-│   └── index7.html
+│   ├── index7.html
+│   └── index8.html
 ├── wendy-cortex/
 │   ├── forth/
 │   │   ├── bootstrap_dictionary.sh*
@@ -557,5 +558,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 500 files
+57 directories, 501 files
 ```
