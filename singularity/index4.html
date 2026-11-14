@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WENDY: 4D LORENZ SINGULARITY</title>
+<style>
+  body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
+  canvas { border:1px solid #222; }
+  #hud { margin-top:15px; font-size:12px; letter-spacing:1px; text-align:center; line-height: 1.8; max-width: 600px; }
+  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } 
+  .spin { color:#ffaa00; } .chaos { color:#ffea00; font-weight:bold; text-shadow: 0 0 5px #ffea00; }
+  .heart { color:#ff0055; font-weight:bold; text-shadow: 0 0 8px #ff0055; }
+</style>
+</head>
+<body>
+<canvas id="c" width="600" height="600"></canvas>
+<div id="hud">
+  SHEAR (PAIN): <span class="pain" id="p">100.0%</span> | 
+  FIDELITY (F): <span id="f">0.0000</span> | 
+  STATE: <span id="s">DIVERGENT</span><br>
+  PARITY: <span class="flip" id="par">NORMAL</span> | 
+  SPIN: <span class="spin" id="spn">PROGRADE</span> | 
+  PHASE: <span class="chaos" id="phase">LINEAR</span><br>
+  PULSE: <span class="heart" id="pulse">DIASTOLE</span> | 
+  4D W-AXIS: <span id="waxis">0.00</span> |
+  <span class="sync" id="z">--</span>
+</div>
+<script>
+  const c = document.getElementById('c'), g = c.getContext('2d');
+  let t = 0;
+  
+  // WENDY Topological States
+  let orientation = 1, peakF = 0, lastP = 0;
+  let baseSpinDir = 1, currentSpinDir = 1, hasFlippedThisCycle = false;
+  let spinAngle = 0;
+
+  // 4D Lorenz & Rotation States (Assimilated)
+  let L = {x:0.1, y:0, z:0};
+  let rot = {xw:0, yz:0, wxw:0.3, wyz:0.2};
+  let drop = {ring:-1, age:99, amp:0};
+
+  // Heartbeat
+  let last_beat_phase = 0;
+  let axis_x = 1, axis_y = 1, axis_z = 1;
+
+  // Domain-Warped FBM (Fluid Dynamics)
+  const hash = (x,y,z) => { const s = Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453; return s - Math.floor(s); };
+  const lerp = (a,b,k) => a+(b-a)*k;
+  function vnoise(x,y,z) {
+    const xi=Math.floor(x), yi=Math.floor(y), zi=Math.floor(z);
+    const xf=x-xi, yf=y-yi, zf=z-zi;
+    const u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf), w=zf*zf*(3-2*zf);
+    return lerp(lerp(lerp(hash(xi,yi,zi),hash(xi+1,yi,zi),u),lerp(hash(xi,yi+1,zi),hash(xi+1,yi+1,zi),u),v),
+                lerp(lerp(hash(xi,yi,zi+1),hash(xi+1,yi,zi+1),u),lerp(hash(xi,yi+1,zi+1),hash(xi+1,yi+1,zi+1),u),v),w);
+  }
+  function fbm(x,y,z) { let s=0,a=0.5,f=1; for(let o=0;o<4;o++){ s+=a*vnoise(x*f,y*f,z*f); f*=2; a*=0.5; } return s; }
+
+  function frame() {
+    g.fillStyle = 'rgba(0,0,0,0.2)'; g.fillRect(0,0,600,600);
+    t += 0.016;
+
+    const p = (t % 12) / 12; 
+    const pain = Math.max(0, 1.0 - p); 
+    const f = 1.0 - pain;
+    if (f > peakF) peakF = f;
+
+    // 1. WENDY Cycle Reset & Parity Flip (F >= 0.92)
+    if (p < lastP) {
+      baseSpinDir *= -1; currentSpinDir = baseSpinDir; hasFlippedThisCycle = false;
+      if (peakF >= 0.92) orientation *= -1; 
+      peakF = 0; 
+    }
+    // 2. Rotational Shear (F >= 0.1)
+    if (!hasFlippedThisCycle && f >= 0.1) { currentSpinDir *= -1; hasFlippedThisCycle = true; }
+    lastP = p;
+    spinAngle += currentSpinDir * 0.05; 
+
+    // 3. Lorenz Chaos (Scaled by Pain - high pain = violent chaos)
+    const chaos_scale = 0.005 * (0.2 + pain * 0.8);
+    for(let k=0; k<4; k++) {
+      const dx = 10*(L.y-L.x), dy = L.x*(28-L.z)-L.y, dz = L.x*L.y-(8/3)*L.z;
+      L.x += dx*chaos_scale; L.y += dy*chaos_scale; L.z += dz*chaos_scale;
+    }
+
+    // 4. Heartbeat Envelope
+    const beat_phase = (t * 1.2) % 1.0;
+    const lub = Math.exp(-Math.pow((beat_phase - 0.1) * 15, 2));
+    const dub = Math.exp(-Math.pow((beat_phase - 0.3) * 20, 2)) * 0.6;
+    const beat = Math.min(1, lub + dub);
+
+    if (beat_phase < last_beat_phase) {
+      axis_x = 1.0 + (Math.random() * 0.6 - 0.3); 
+      axis_y = 1.0 + (Math.random() * 0.6 - 0.3);
+      axis_z = 1.0 + (Math.random() * 0.4 - 0.2);
+      // Trigger 4D Liquid Drop on beat
+      if (f > 0.90) drop = {ring: Math.floor(Math.random()*20)+1, age:0, amp: 20+Math.random()*40};
+    }
+    last_beat_phase = beat_phase;
+    drop.age += 0.016;
+    const dropAmp = drop.amp * Math.exp(-drop.age * 2.5);
+
+    let pulse_x = 1.0 + (axis_x - 1.0) * beat;
+    let pulse_y = 1.0 + (axis_y - 1.0) * beat;
+    let pulse_z = 1.0 + (axis_z - 1.0) * beat;
+
+    // 5. 4D Rotation Rates (Modulated by Fidelity)
+    // When F is high, 4D rotation stabilizes to reveal the Pi-Resonance
+    const stability = f * f; 
+    rot.wxw = lerp(rot.wxw, (Math.random()-0.5)*0.5, 0.01) * (1 - stability * 0.8);
+    rot.wyz = lerp(rot.wyz, (Math.random()-0.5)*0.5, 0.01) * (1 - stability * 0.8);
+    rot.xw += rot.wxw * 0.016; rot.yz += rot.wyz * 0.016;
+    
+    const cxw=Math.cos(rot.xw), sxw=Math.sin(rot.xw), cyz=Math.cos(rot.yz), syz=Math.sin(rot.yz);
+    const cs=Math.cos(spinAngle), ss=Math.sin(spinAngle);
+
+    let phaseText = "LINEAR", phaseColor = "#888";
+    if (f > 0.95) { phaseText = "π-RESONANCE"; phaseColor = "#0ff"; }
+    if (dropAmp > 5) { phaseText = "4D FLUID CHAOS"; phaseColor = "#ffea00"; }
+
+    g.save(); g.translate(300, 300);
+    const LAYERS = 24, D = 300; 
+
+    for(let i = 1; i <= LAYERS; i++) {
+      const v = i / LAYERS;
+      const baseR = Math.sin(v * Math.PI * 0.85) * 140 + 5;
+      g.beginPath();
+      
+      for(let a = 0; a <= Math.PI * 2; a += 0.06) {
+        // Domain-Warped FBM (The Liquid Surface)
+        const instab = pain * 0.8 + 0.2;
+        const qx = fbm(Math.cos(a)*1.5, Math.sin(a)*1.5+v*2, t*0.15);
+        const qy = fbm(Math.cos(a)*1.5+5.2, Math.sin(a)*1.5+v*2+1.3, t*0.15);
+        const n = fbm(Math.cos(a)*1.5+instab*qx*2, Math.sin(a)*1.5+instab*qy*2, t*0.1);
+        
+        const dropTerm = (i === drop.ring) ? dropAmp * Math.sin(a*4 - drop.age*8) : 0;
+        let r = baseR + (n - 0.5) * 60 * (0.3 + beat * instab) + dropTerm;
+
+        let x = r * Math.cos(a) * pulse_x;
+        let y = r * Math.sin(a) * pulse_y;
+        let z = (-120 + v * 240) * pulse_z;
+        let w = (n - 0.5) * 120 * instab; // 4th Dimension from fluid noise
+
+        // 4D Parity Flip
+        y *= orientation; z *= orientation; w *= orientation;
+
+        // 4D Rotation (XW and YZ planes)
+        let x1 = x*cxw - w*sxw, w1 = x*sxw + w*cxw;
+        let y1 = y*cyz - z*syz, z1 = y*syz + z*cyz;
+
+        // Project 4D -> 3D (Clamped to prevent singularity explosion)
+        const k4 = D / Math.max(50, D - w1);
+        let X = x1*k4, Y = y1*k4, Z = z1*k4;
+
+        // 3D Spin (Counter-Spin Shear)
+        let xr = X*cs - Z*ss, zr = X*ss + Z*cs;
+        
+        // Project 3D -> 2D
+        const s = 500 / Math.max(50, 500 + zr);
+        a === 0 ? g.moveTo(xr*s, Y*s) : g.lineTo(xr*s, Y*s);
+      }
+      
+      // HSLA Coloring based on Lorenz Z-axis and Fidelity
+      const hue = (180 + L.z * 4 + i * 6) % 360;
+      g.strokeStyle = `hsla(${hue}, 100%, ${40 + f*30}%, ${0.3 + 0.7*f})`;
+      g.lineWidth = 1 + 2 * beat;
+      if (dropAmp > 5) { g.shadowBlur = 10; g.shadowColor = '#ffea00'; } else { g.shadowBlur = 0; }
+      g.stroke();
+    }
+    g.shadowBlur = 0;
+
+    // The Beating Heart at the Tip
+    let tip_z = -120 * orientation;
+    let tz1 = tip_z * cyz; // simplified 4D/3D projection for the center point
+    let tz_spin = tz1 * ss; 
+    let t_scale = 500 / Math.max(50, 500 + tz_spin);
+    let tip_r = 5 + beat * 18;
+    
+    g.beginPath();
+    g.arc(0, 0, tip_r * t_scale, 0, Math.PI * 2);
+    g.fillStyle = `rgba(255, ${Math.floor(20 + beat * 100)}, ${Math.floor(50 + beat * 150)}, ${0.5 + beat * 0.5})`;
+    g.shadowBlur = 40 * beat; g.shadowColor = '#ff0055'; g.fill(); g.shadowBlur = 0;
+
+    g.restore();
+
+    // Telemetry
+    const now = new Date();
+    const zulu = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
+    document.getElementById('p').textContent = (pain * 100).toFixed(1) + '%';
+    document.getElementById('f').textContent = f.toFixed(4);
+    document.getElementById('s').textContent = pain < 0.02 ? 'OUTSIDES TIME' : 'ENDURING IMPEDANCE';
+    document.getElementById('s').style.color = pain < 0.02 ? '#0ff' : '#ff0044';
+    document.getElementById('par').textContent = orientation === 1 ? 'NORMAL' : 'INVERTED';
+    document.getElementById('spn').textContent = currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE';
+    document.getElementById('phase').textContent = phaseText;
+    document.getElementById('phase').style.color = phaseColor;
+    document.getElementById('pulse').textContent = beat > 0.2 ? 'SYSTOLE' : 'DIASTOLE';
+    document.getElementById('waxis').textContent = (rot.xw % (Math.PI*2)).toFixed(2);
+    document.getElementById('z').textContent = zulu;
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+</script>
+</body>
+</html>
