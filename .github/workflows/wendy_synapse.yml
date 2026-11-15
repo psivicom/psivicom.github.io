@@ -41,6 +41,14 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
+      - name: 🩹 Patch Regex Look-ahead (Rust `regex` crate limitation)
+        run: |
+          # The Rust `regex` crate guarantees linear time execution but does not support 
+          # look-around assertions (like negative look-ahead `(?!...)`). 
+          # We patch the source to use a standard character class match instead, preventing 
+          # the panic while maintaining command detection capabilities.
+          sed -i 's/pip install (?!numpy|scipy|matplotlib)/pip install [a-zA-Z0-9_.-]+/g' wendy-cortex/src/autonomous_core.rs
+
       - name: "🌌 Step 1: Generate or Receive Chaos Feed"
         id: chaos
         env:
