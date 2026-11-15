@@ -66,19 +66,15 @@ jobs:
       - name: 🩹 Patch Cargo.toml for syn `visit` feature
         run: |
           cd wendy-cortex
-          # Extract the current syn version constraint to prevent cargo add from bumping to 3.x
-          SYN_LINE=$(grep -E '^syn\s*=' Cargo.toml || true)
-          if [ -n "$SYN_LINE" ]; then
-              VERSION=$(echo "$SYN_LINE" | grep -oE '"[0-9\.x*]+"' | head -n 1 | tr -d '"')
-              if [ -n "$VERSION" ]; then
-                  echo "Pinning syn to version $VERSION and adding 'visit' feature..."
-                  cargo add syn@$VERSION --features visit
-              else
-                  echo "Adding 'visit' feature to syn..."
-                  cargo add syn --features visit
-              fi
+          # Extract the exact locked 2.x version of syn from Cargo.lock to prevent cargo add from bumping to 3.x
+          SYN_VERSION=$(grep -A 2 '^name = "syn"$' Cargo.lock | grep -E 'version = "2\.' | head -n 1 | awk -F'"' '{print $2}' || true)
+          
+          if [ -n "$SYN_VERSION" ]; then
+              echo "Pinning syn to locked version $SYN_VERSION and adding 'visit' feature..."
+              cargo add syn@$SYN_VERSION --features visit
           else
-              echo "syn dependency not found in Cargo.toml"
+              echo "syn 2.x not found in Cargo.lock, adding with default version..."
+              cargo add syn --features visit
           fi
 
       - name: 🏛️ Boot Rust Substrate (IPC Port 1966)
