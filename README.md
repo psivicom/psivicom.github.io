@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-15T19:22:11.000Z -->
+<!-- Last updated: 2026-11-15T19:30:30.000Z -->
 ```text
 ./
 ├── .github/
@@ -619,7 +619,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── wendy_llm_query.py
 │   └── wendy_self_wire.py*
 ├── singularity/
-│   ├── index.html
+│   ├── index1.html
 │   ├── index10.html
 │   ├── index1a.html
 │   ├── index1b.html
