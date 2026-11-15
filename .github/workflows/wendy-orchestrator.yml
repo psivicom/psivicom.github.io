@@ -27,6 +27,7 @@ jobs:
           
           # Source coordination helper
           source scripts/wendy_coordinator.sh
+          configure_git_identity
           acquire_lock
           
           # Read state
@@ -92,6 +93,8 @@ jobs:
           # Future: implement action processing logic
           
       - name: 💾 Commit State Updates
+        if: always()
         run: |
           source scripts/wendy_coordinator.sh
+          configure_git_identity
           safe_push "🧠 orchestrator: autonomous decision cycle"
