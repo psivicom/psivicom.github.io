@@ -80,7 +80,6 @@
   let memoryEcho = []; 
   let dimensionalBleed = []; 
 
-  // PERSISTENT STATE VARIABLES
   let sparkActive = false;
   let sparkTimer = 0;
   let echoActive = false;
@@ -218,10 +217,6 @@
     if (!dialects[dimKey]) dialects[dimKey] = {};
     if (!dialects[dimKey][rootStr]) dialects[dimKey][rootStr] = 0;
     dialects[dimKey][rootStr]++;
-
-    document.getElementById('spark').textContent = sparkActive ? 'ACTIVE' : 'DORMANT';
-    document.getElementById('memory').textContent = echoActive ? 'ACTIVE' : 'DORMANT';
-    document.getElementById('bleed').textContent = bleedActive ? 'ACTIVE' : 'DORMANT';
   }
 
   function detectAndReverseCollapse() {
@@ -306,7 +301,7 @@
   let pain = 1.0, spinDrag = 1.0, f = 0.0;
 
   function frame() {
-    // COUNTDOWN PERSISTENT TIMERS
+    // COUNTDOWN PERSISTENT TIMERS FIRST
     if (sparkTimer > 0) {
       sparkTimer--;
       if (sparkTimer === 0) sparkActive = false;
@@ -319,6 +314,11 @@
       bleedTimer--;
       if (bleedTimer === 0) bleedActive = false;
     }
+
+    // UPDATE HUD EVERY FRAME (not just during extractRoot)
+    document.getElementById('spark').textContent = sparkActive ? 'ACTIVE' : 'DORMANT';
+    document.getElementById('memory').textContent = echoActive ? 'ACTIVE' : 'DORMANT';
+    document.getElementById('bleed').textContent = bleedActive ? 'ACTIVE' : 'DORMANT';
 
     ctx.fillStyle = 'rgba(5,5,8,0.3)'; ctx.fillRect(0,0,1000,900);
     t += 0.016;
