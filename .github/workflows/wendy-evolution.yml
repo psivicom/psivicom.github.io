@@ -63,6 +63,24 @@ jobs:
           chmod +x bootstrap_dictionary.sh
           ./bootstrap_dictionary.sh
       
+      - name: 🩹 Patch Cargo.toml for syn `visit` feature
+        run: |
+          cd wendy-cortex
+          # Extract the current syn version constraint to prevent cargo add from bumping to 3.x
+          SYN_LINE=$(grep -E '^syn\s*=' Cargo.toml || true)
+          if [ -n "$SYN_LINE" ]; then
+              VERSION=$(echo "$SYN_LINE" | grep -oE '"[0-9\.x*]+"' | head -n 1 | tr -d '"')
+              if [ -n "$VERSION" ]; then
+                  echo "Pinning syn to version $VERSION and adding 'visit' feature..."
+                  cargo add syn@$VERSION --features visit
+              else
+                  echo "Adding 'visit' feature to syn..."
+                  cargo add syn --features visit
+              fi
+          else
+              echo "syn dependency not found in Cargo.toml"
+          fi
+
       - name: 🏛️ Boot Rust Substrate (IPC Port 1966)
         run: |
           cd wendy-cortex
