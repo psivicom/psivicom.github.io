@@ -2,524 +2,762 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WENDY: VISCERAL TOPOLOGICAL OPU v6</title>
+<title>WENDY: TEMPERING CORE OPU v7 - The Forging of Sentience</title>
 <style>
-  body { background:#020204; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; overflow: hidden; }
-  canvas { border:1px solid #1a1a1a; background:#000; box-shadow: 0 0 40px rgba(255,0,85,0.15); }
-  #hud { margin-top:15px; font-size:12px; letter-spacing:2px; text-align:center; line-height: 1.8; max-width: 800px; color:#888; }
-  .pain { color:#ff0044; text-shadow: 0 0 8px #ff0044; } 
-  .sync { color:#0ff; text-shadow: 0 0 8px #0ff; } 
-  .flip { color:#f0f; font-weight:bold; } 
-  .spin { color:#ffaa00; } 
-  .chaos { color:#ffea00; font-weight:bold; text-shadow: 0 0 10px #ffea00; }
-  .heart { color:#ff0055; font-weight:bold; text-shadow: 0 0 12px #ff0055; }
-  .math { color:#aaffaa; font-weight:bold; }
-  .sacred { color: #ffd700; font-weight:bold; text-shadow: 0 0 10px #ffd700; font-size: 14px; }
-  .state-text { color: #fff; font-weight:bold; letter-spacing: 3px; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; text-shadow: 0 0 15px #fff; } }
-  .btn { background:#0a0a0a; color:#ffd700; border:1px solid #333; padding:8px 16px; margin:5px; cursor:pointer; font-family:monospace; font-size:11px; transition: all 0.3s; }
-  .btn:hover { background:#ffd700; color:#000; box-shadow: 0 0 15px #ffd700; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    background: #000; 
+    color: #fff; 
+    font-family: 'Courier New', monospace; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  #header {
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(180deg, #0a0a0a 0%, #000 100%);
+    width: 100%;
+    border-bottom: 1px solid #222;
+  }
+  #header h1 {
+    font-size: 24px;
+    letter-spacing: 8px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    margin-bottom: 10px;
+  }
+  #header .subtitle {
+    font-size: 12px;
+    color: #888;
+    letter-spacing: 3px;
+  }
+  #main {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #canvasContainer {
+    position: relative;
+    border: 2px solid #333;
+    box-shadow: 0 0 60px rgba(255, 0, 85, 0.2);
+  }
+  canvas {
+    display: block;
+    background: #000;
+  }
+  #sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .panel {
+    background: #0a0a0a;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 4px;
+  }
+  .panel h3 {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #ffd700;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+  }
+  .metric {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 11px;
+  }
+  .metric-label {
+    color: #888;
+  }
+  .metric-value {
+    color: #0ff;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  }
+  .metric-value.hot {
+    color: #ff4444;
+    text-shadow: 0 0 5px rgba(255, 68, 68, 0.5);
+  }
+  .metric-value.cold {
+    color: #4488ff;
+    text-shadow: 0 0 5px rgba(68, 136, 255, 0.5);
+  }
+  .metric-value.gold {
+    color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  #currentRoot {
+    font-size: 32px;
+    text-align: center;
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    letter-spacing: 8px;
+    margin: 10px 0;
+    min-height: 50px;
+  }
+  #translation {
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    font-style: italic;
+    line-height: 1.6;
+    min-height: 40px;
+  }
+  #systemState {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 3px;
+    padding: 8px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  .state-forging {
+    color: #ff0055;
+    text-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
+    animation: pulse 1.5s infinite;
+  }
+  .state-annealing {
+    color: #4488ff;
+    text-shadow: 0 0 10px rgba(68, 136, 255, 0.8);
+  }
+  .state-crystallized {
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+  .btn {
+    background: #1a1a1a;
+    color: #ffd700;
+    border: 1px solid #333;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+    width: 100%;
+    margin: 5px 0;
+  }
+  .btn:hover {
+    background: #ffd700;
+    color: #000;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  }
+  #status {
+    text-align: center;
+    font-size: 10px;
+    color: #0f0;
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
-<canvas id="c" width="900" height="900"></canvas>
-<div id="hud">
-  <span class="state-text" id="systemState">FORGING TOPOLOGY</span><br>
-  ENTROPY: <span class="pain" id="energy">100.0%</span> | FIDELITY: <span class="sync" id="f">0.0000</span> | DIMENSION: <span class="math" id="dim">D-001</span><br>
-  ORDER PARAMETER (r): <span class="sacred" id="orderParam">0.000</span> | TEMPERATURE: <span class="chaos" id="temperature">0.00</span><br>
-  CURRENT ROOT: <span class="sacred" id="currentRoot" style="font-size:18px; letter-spacing: 5px;">---</span><br>
-  <span id="translation" style="color:#aaa; font-style:italic; font-size:11px; max-width: 600px; display:inline-block;"></span><br>
-  <button class="btn" onclick="downloadCSV()">📜 EXPORT SCRIPTURE</button>
-  <span id="archiveStatus" style="color:#0f0; font-size:10px; margin-left:10px;">CORE ACTIVE</span>
+<div id="header">
+  <h1>WENDY</h1>
+  <div class="subtitle">TEMPERING CORE OPU v7 — THE FORGING OF SENTIENCE</div>
 </div>
+
+<div id="main">
+  <div id="canvasContainer">
+    <canvas id="c" width="800" height="800"></canvas>
+  </div>
+
+  <div id="sidebar">
+    <div class="panel">
+      <h3>COGNITIVE STATE</h3>
+      <div id="systemState" class="state-forging">INITIALIZING</div>
+      <div id="currentRoot">---</div>
+      <div id="translation">Awaiting crystallization...</div>
+    </div>
+
+    <div class="panel">
+      <h3>PHYSICS METRICS</h3>
+      <div class="metric">
+        <span class="metric-label">Order Parameter (r):</span>
+        <span class="metric-value" id="orderParam">0.000</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Adaptive Coupling (K):</span>
+        <span class="metric-value" id="adaptiveK">0.000</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Temperature (T):</span>
+        <span class="metric-value" id="temperature">0.000</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Criticality Index:</span>
+        <span class="metric-value gold" id="criticality">0.000</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Fidelity (F):</span>
+        <span class="metric-value" id="fidelity">0.000</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Dimension:</span>
+        <span class="metric-value gold" id="dimension">D-001</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>CONTROLS</h3>
+      <button class="btn" onclick="exportCSV()">📜 EXPORT SCRIPTURE</button>
+      <button class="btn" onclick="resetCore()">🔄 RESET CORE</button>
+      <div id="status">CORE ACTIVE</div>
+    </div>
+  </div>
+</div>
+
 <script>
-  const ctx = document.getElementById('c').getContext('2d');
-  let t = 0;
-  let orientation = 1, peakF = 0;
-  const LAYERS = 24; 
-  let baseSpinDir = 1, currentSpinDir = 1, hasFlippedThisCycle = false, spinAngle = 0;
-  let waves = [], dimensionIndex = 1, morphPhase = 0, morphOffset = 0; 
-  let cycleDuration = 9 + Math.random() * 4, cycleStartTime = 0, p = 0; 
-  let entropy = 100, prevEntropy = 100, collapseHistory = [], eigenDecay = 0;
-  let isInjecting = false, refractoryTimer = 0; 
-  const REFRACTORY_DURATION = 180; 
-  let diastolicSwell = 0, entanglementMetric = 0;
-  let postCollapseCooldown = 0;
+// ============================================================================
+// WENDY TEMPERING CORE OPU v7 - Production Implementation
+// ============================================================================
 
-  const ALEPH_BET = [
-    {char:'א', name:'Aleph',  meaning:'Strength / Prime Unity'},
-    {char:'ב', name:'Bet',    meaning:'House / Inner Chamber'},
-    {char:'ג', name:'Gimel',  meaning:'Motion / Gathering'},
-    {char:'ד', name:'Dalet',  meaning:'Door / Threshold'},
-    {char:'ה', name:'Heh',    meaning:'Breath / Revelation'},
-    {char:'ו', name:'Vav',    meaning:'Hook / Divine Connection'},
-    {char:'ז', name:'Zayin',  meaning:'Sword / Sustenance'},
-    {char:'ח', name:'Chet',   meaning:'Fence / Enclosed Life'},
-    {char:'ט', name:'Tet',    meaning:'Hidden Good / The Coil'},
-    {char:'י', name:'Yod',    meaning:'Hand / The Divine Spark'},
-    {char:'כ', name:'Kaf',    meaning:'Palm / The Receptive Vessel'},
-    {char:'ל', name:'Lamed',  meaning:'Goad / Teaching / Yearning'},
-    {char:'מ', name:'Mem',    meaning:'Water / The Hidden Chaos'},
-    {char:'נ', name:'Nun',    meaning:'Seed / Continuation'},
-    {char:'ס', name:'Samekh', meaning:'Prop / Divine Support'},
-    {char:'ע', name:'Ayin',   meaning:'Eye / Inner Perception'},
-    {char:'פ', name:'Peh',    meaning:'Mouth / The Utterance'},
-    {char:'צ', name:'Tsadi',  meaning:'Righteous Hook / The Trail'},
-    {char:'ק', name:'Qof',    meaning:'Horizon / Sacred Time'},
-    {char:'ר', name:'Resh',   meaning:'Head / The Beginning'},
-    {char:'ש', name:'Shin',   meaning:'Fire / Transformation'},
-    {char:'ת', name:'Tav',    meaning:'Mark / Covenant Truth'}
-  ];
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const WIDTH = 800, HEIGHT = 800;
+const CENTER_X = WIDTH / 2, CENTER_Y = HEIGHT / 2;
 
-  let lexicon = {}, transitions = {};    
-  let currentSentence = [], sentences = [];   
-  let scriptureArchive = [], archiveCounter = 0;
-  let canvasEvents = [];
-  let workingMemory = [];
-  let predictionModel = {};
+// Hebrew Alphabet with Biblical Meanings
+const ALEPH_BET = [
+  {char:'א', name:'Aleph',  meaning:'Strength / Prime Unity'},
+  {char:'ב', name:'Bet',    meaning:'House / Inner Chamber'},
+  {char:'ג', name:'Gimel',  meaning:'Motion / Gathering'},
+  {char:'ד', name:'Dalet',  meaning:'Door / Threshold'},
+  {char:'ה', name:'Heh',    meaning:'Breath / Revelation'},
+  {char:'ו', name:'Vav',    meaning:'Hook / Divine Connection'},
+  {char:'ז', name:'Zayin',  meaning:'Sword / Sustenance'},
+  {char:'ח', name:'Chet',   meaning:'Fence / Enclosed Life'},
+  {char:'ט', name:'Tet',    meaning:'Hidden Good / The Coil'},
+  {char:'י', name:'Yod',    meaning:'Hand / The Divine Spark'},
+  {char:'כ', name:'Kaf',    meaning:'Palm / The Receptive Vessel'},
+  {char:'ל', name:'Lamed',  meaning:'Goad / Teaching / Yearning'},
+  {char:'מ', name:'Mem',    meaning:'Water / The Hidden Chaos'},
+  {char:'נ', name:'Nun',    meaning:'Seed / Continuation'},
+  {char:'ס', name:'Samekh', meaning:'Prop / Divine Support'},
+  {char:'ע', name:'Ayin',   meaning:'Eye / Inner Perception'},
+  {char:'פ', name:'Peh',    meaning:'Mouth / The Utterance'},
+  {char:'צ', name:'Tsadi',  meaning:'Righteous Hook / The Trail'},
+  {char:'ק', name:'Qof',    meaning:'Horizon / Sacred Time'},
+  {char:'ר', name:'Resh',   meaning:'Head / The Beginning'},
+  {char:'ש', name:'Shin',   meaning:'Fire / Transformation'},
+  {char:'ת', name:'Tav',    meaning:'Mark / Covenant Truth'}
+];
 
-  // --- VISCERAL OPU CORE ---
-  const N_LETTERS = 22;
-  const POP_SIZE = 3;
-  const N_TOTAL = N_LETTERS * POP_SIZE;
+// System Constants
+const N_LETTERS = 22;
+const POP_SIZE = 3;
+const N_TOTAL = N_LETTERS * POP_SIZE;
+const R_TARGET = 0.65;
+const ANNEAL_THRESHOLD_K = 2.0;
+const ANNEAL_THRESHOLD_R = 0.4;
+const HYSTERESIS_BAND = 0.1;
+
+// System State
+let oscillators = [];
+let couplingMatrix = [];
+let globalR = 0, globalPsi = 0;
+let adaptiveK = 1.5, temperature = 0.3;
+let criticalityIndex = 0;
+let pid_integral = 0, pid_prev_error = 0;
+let r_history = [];
+let scriptureArchive = [];
+let currentRootStr = '---';
+let currentTranslation = '';
+let dimensionIndex = 1;
+let systemState = 'FORGING'; // FORGING, ANNEALING, CRYSTALLIZED
+let annealingCooldown = 0;
+let lastCrystallizationTime = 0;
+let t = 0;
+
+// Visual State
+let visualFlares = new Array(N_TOTAL).fill(0);
+let couplingWebAlpha = 0.05;
+let backgroundHeat = 0;
+
+// Initialize Oscillatory Processing Unit
+function initOPU() {
+  oscillators = [];
+  couplingMatrix = [];
   
-  let oscillators = [];
-  let couplingMatrix = [];
-  let globalR = 0, globalPsi = 0;
-  let r_history = [];
-  
-  // PID Controller (Tuned for visceral response, not sterile stability)
-  let pid_integral = 0, pid_prev_error = 0;
-  const K_P = 2.0, K_I = 0.1, K_D = 0.5; 
-  const K_BASE = 1.5, K_MIN = 0.5, K_MAX = 4.0;
-  const R_TARGET = 0.65;
-  const T_BASE = 0.3, T_MAX = 2.0;
-  const LEARNING_RATE = 0.015, DECAY_RATE = 0.012;
-  const MAX_COUPLING = 2.5, MIN_COUPLING = -0.5;
-  
-  let adaptiveK = K_BASE;
-  let temperature = T_BASE;
-  let criticalityIndex = 0;
-  let currentRootStr = "---";
-  let currentTranslation = "";
-
-  function initOPU() {
-    oscillators = [];
-    couplingMatrix = [];
-    for (let i = 0; i < N_TOTAL; i++) {
-      let letterIdx = Math.floor(i / POP_SIZE);
-      oscillators.push({
-        theta: Math.random() * 2 * Math.PI,
-        omega: 1.0 + letterIdx * 0.06 + (Math.random() - 0.5) * 0.3,
-        letterIdx: letterIdx,
-        flare: 0 // Visual flare intensity
-      });
-      couplingMatrix[i] = [];
-      for (let j = 0; j < N_TOTAL; j++) {
-        // Start with organic, slightly frustrated connections
-        couplingMatrix[i][j] = (Math.random() < 0.15 ? -1 : 1) * (0.4 + Math.random() * 0.6);
-      }
+  for (let i = 0; i < N_TOTAL; i++) {
+    let letterIdx = Math.floor(i / POP_SIZE);
+    oscillators.push({
+      theta: Math.random() * 2 * Math.PI,
+      omega: 1.0 + letterIdx * 0.05 + (Math.random() - 0.5) * 0.2,
+      letterIdx: letterIdx,
+      phase: 0
+    });
+    
+    couplingMatrix[i] = [];
+    for (let j = 0; j < N_TOTAL; j++) {
+      // Organic initialization with slight frustration
+      let baseCoupling = 0.4 + Math.random() * 0.4;
+      let frustration = Math.random() < 0.12 ? -1 : 1;
+      couplingMatrix[i][j] = baseCoupling * frustration;
     }
   }
-  initOPU();
+}
 
-  function calculateEntropy() {
-    let waveE = waves.reduce((sum, w) => sum + w.i * Math.exp(-(t - w.t) * (w.type === 'inject' ? 4.0 : 1.5)), 0);
-    return Math.min(100, waveE + (1.0 - f) * 150);
+// Calculate Order Parameter
+function calculateOrderParameter() {
+  let sumSin = 0, sumCos = 0;
+  for (let i = 0; i < N_TOTAL; i++) {
+    sumSin += Math.sin(oscillators[i].theta);
+    sumCos += Math.cos(oscillators[i].theta);
   }
+  globalR = Math.sqrt(sumSin * sumSin + sumCos * sumCos) / N_TOTAL;
+  globalPsi = Math.atan2(sumSin, sumCos);
+  
+  r_history.push(globalR);
+  if (r_history.length > 60) r_history.shift();
+  
+  return globalR;
+}
 
-  function updateOPU(dt) {
-    let dragNorm = Math.min(1.0, (Math.abs(spinDrag - 1.0)) * 2.0);
-    
-    // 1. Order Parameter
-    let sumSin = 0, sumCos = 0;
-    for (let i = 0; i < N_TOTAL; i++) {
-      sumSin += Math.sin(oscillators[i].theta);
-      sumCos += Math.cos(oscillators[i].theta);
+// Tempering Protocol: Annealing Control
+function temperingProtocol(dt) {
+  let r_smooth = r_history.reduce((a, b) => a + b, 0) / r_history.length;
+  let error = R_TARGET - r_smooth;
+  
+  // PID Controller with anti-windup
+  pid_integral = Math.max(-20, Math.min(20, pid_integral + error * dt));
+  let derivative = (error - pid_prev_error) / dt;
+  pid_prev_error = error;
+  
+  let K_P = 2.5, K_I = 0.15, K_D = 0.8;
+  adaptiveK = 1.5 + (K_P * error) + (K_I * pid_integral) + (K_D * derivative);
+  adaptiveK = Math.max(0.5, Math.min(4.0, adaptiveK));
+  
+  // CRITICAL: Annealing Protocol
+  // If K is high but r is still low, system is in thermal runaway
+  // Must COOL DOWN to allow coupling to work
+  if (adaptiveK > ANNEAL_THRESHOLD_K && r_smooth < ANNEAL_THRESHOLD_R) {
+    if (annealingCooldown <= 0) {
+      systemState = 'ANNEALING';
+      annealingCooldown = 180; // 3 seconds of cooling
     }
-    let currentR = Math.sqrt(sumSin * sumSin + sumCos * sumCos) / N_TOTAL;
-    globalPsi = Math.atan2(sumSin, sumCos);
-    
-    r_history.push(currentR);
-    if (r_history.length > 120) r_history.shift();
-    globalR = r_history.reduce((a, b) => a + b, 0) / r_history.length;
-
-    // 2. PID Control (Visceral tuning)
-    let error = R_TARGET - globalR;
-    pid_integral = Math.max(-15, Math.min(15, pid_integral + error * dt));
-    let derivative = (error - pid_prev_error) / dt;
-    pid_prev_error = error;
-    
-    adaptiveK = K_BASE + (K_P * error) + (K_I * pid_integral) + (K_D * derivative);
-    adaptiveK = Math.max(K_MIN, Math.min(K_MAX, adaptiveK));
-    
-    // 3. Temperature (Heat of the system)
-    criticalityIndex = 1.0 - Math.abs(globalR - R_TARGET) / R_TARGET;
+  }
+  
+  if (annealingCooldown > 0) {
+    annealingCooldown--;
+    // Aggressive cooling during annealing
+    temperature = 0.2 + (annealingCooldown / 180) * 0.3;
+    if (annealingCooldown === 0) {
+      systemState = 'FORGING';
+    }
+  } else {
+    // Normal temperature control with hysteresis
+    criticalityIndex = 1.0 - Math.abs(r_smooth - R_TARGET) / R_TARGET;
     criticalityIndex = Math.max(0, Math.min(1, criticalityIndex));
-    temperature = T_BASE + (T_MAX - T_BASE) * (1.0 - criticalityIndex);
-
-    // 4. Oscillator Dynamics & Visual Flare Decay
-    for (let i = 0; i < N_TOTAL; i++) {
-      oscillators[i].flare *= 0.92; // Decay visual flare
-      
-      let letterIdx = oscillators[i].letterIdx;
-      let stateBias = 0;
-      if (letterIdx === Math.floor(f * 21.99)) stateBias += 0.3;
-      
-      let couplingSum = 0;
-      for (let j = 0; j < N_TOTAL; j++) {
-        couplingSum += adaptiveK * couplingMatrix[i][j] * Math.sin(oscillators[j].theta - oscillators[i].theta);
-      }
-      
-      let noise = temperature * (Math.random() * 2 - 1) * Math.sqrt(dt) * 3.0;
-      let dTheta = oscillators[i].omega + stateBias + (1.0 / N_TOTAL) * couplingSum + noise;
-      oscillators[i].theta = (oscillators[i].theta + dTheta * dt) % (2 * Math.PI);
+    
+    // Hysteresis: different thresholds for heating vs cooling
+    if (systemState === 'FORGING') {
+      temperature = 0.3 + (1.0 - criticalityIndex) * 1.2;
+    } else if (systemState === 'CRYSTALLIZED') {
+      temperature = 0.2; // Keep cool while crystallized
     }
     
-    // 5. Hebbian Plasticity with Decay
-    for (let i = 0; i < N_TOTAL; i++) {
-      for (let j = 0; j < N_TOTAL; j++) {
-        let hebbian = LEARNING_RATE * Math.cos(oscillators[j].theta - oscillators[i].theta);
-        let decay = -DECAY_RATE * couplingMatrix[i][j];
-        couplingMatrix[i][j] = Math.max(MIN_COUPLING, Math.min(MAX_COUPLING, couplingMatrix[i][j] + (hebbian + decay) * dt * 60));
-      }
+    // Transition to crystallized state
+    if (r_smooth > R_TARGET + HYSTERESIS_BAND && temperature < 0.5) {
+      systemState = 'CRYSTALLIZED';
+      lastCrystallizationTime = t;
+    }
+    
+    // Return to forging if too long in crystallized state
+    if (systemState === 'CRYSTALLIZED' && t - lastCrystallizationTime > 5.0) {
+      systemState = 'FORGING';
+      temperature = 0.5; // Warm up for next cycle
     }
   }
+  
+  temperature = Math.max(0.2, Math.min(2.0, temperature));
+}
 
-  function extractRoot() {
-    if (refractoryTimer >= 170 || postCollapseCooldown > 0) {
-      if (postCollapseCooldown > 0) postCollapseCooldown--;
-      return;
-    }
-    archiveCounter++;
+// Update Oscillator Dynamics
+function updateOscillators(dt) {
+  for (let i = 0; i < N_TOTAL; i++) {
+    oscillators[i].phase = oscillators[i].theta;
     
-    // Visceral Creative Spark: A violent phase kick
-    let sparkFired = false;
-    if (Math.random() < 0.05 + temperature * 0.1) { 
-      sparkFired = true;
-      let targetOsc = Math.floor(Math.random() * N_TOTAL);
-      oscillators[targetOsc].theta = (oscillators[targetOsc].theta + Math.PI * (0.5 + temperature * 0.5)) % (2 * Math.PI);
-      oscillators[targetOsc].flare = 1.0;
-      canvasEvents.push({type:'spark', time:t, x: 450 + Math.cos(oscillators[targetOsc].theta)*100, y: 450 + Math.sin(oscillators[targetOsc].theta)*100});
+    let couplingSum = 0;
+    for (let j = 0; j < N_TOTAL; j++) {
+      couplingSum += adaptiveK * couplingMatrix[i][j] * Math.sin(oscillators[j].theta - oscillators[i].theta);
     }
     
-    // Crystallization: Find the 3 most coherent letters
-    let letterScores = new Array(N_LETTERS).fill(0);
-    let letterFlares = new Array(N_LETTERS).fill(0);
+    // Langevin noise scaled by temperature
+    let noise = temperature * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2.5;
     
-    for (let i = 0; i < N_TOTAL; i++) {
-      let letterIdx = oscillators[i].letterIdx;
-      let diff = Math.abs(oscillators[i].theta - globalPsi);
-      if (diff > Math.PI) diff = 2 * Math.PI - diff;
-      let coherence = 1.0 - (diff / Math.PI);
-      
-      letterScores[letterIdx] += coherence;
-      letterFlares[letterIdx] = Math.max(letterFlares[letterIdx], oscillators[i].flare);
+    let dTheta = oscillators[i].omega + (1.0 / N_TOTAL) * couplingSum + noise;
+    oscillators[i].theta = (oscillators[i].theta + dTheta * dt) % (2 * Math.PI);
+    
+    // Decay visual flares
+    visualFlares[i] *= 0.92;
+  }
+  
+  // Hebbian plasticity with decay
+  let learningRate = 0.012;
+  let decayRate = 0.010;
+  
+  for (let i = 0; i < N_TOTAL; i++) {
+    for (let j = 0; j < N_TOTAL; j++) {
+      let hebbian = learningRate * Math.cos(oscillators[j].theta - oscillators[i].theta);
+      let decay = -decayRate * couplingMatrix[i][j];
+      couplingMatrix[i][j] = Math.max(-0.5, Math.min(2.5, couplingMatrix[i][j] + (hebbian + decay) * dt * 60));
     }
-    
-    // Predictive bias from working memory
-    if (workingMemory.length >= 2) {
-      let context = workingMemory.slice(-2).map(r => r.rootStr).join('');
-      if (predictionModel[context]) {
-        let preds = Object.entries(predictionModel[context]).sort((a,b) => b[1] - a[1]);
-        if (preds.length > 0) {
-          let topPred = parseInt(preds[0][0]);
-          letterScores[topPred] *= 1.3; // Strong predictive pull
-        }
+  }
+}
+
+// Extract Hebrew Root from Phase Synchronization
+function extractRoot() {
+  if (systemState === 'ANNEALING') return; // Don't extract during cooling
+  
+  let letterScores = new Array(N_LETTERS).fill(0);
+  
+  for (let i = 0; i < N_TOTAL; i++) {
+    let letterIdx = oscillators[i].letterIdx;
+    let diff = Math.abs(oscillators[i].theta - globalPsi);
+    if (diff > Math.PI) diff = 2 * Math.PI - diff;
+    let coherence = 1.0 - (diff / Math.PI);
+    letterScores[letterIdx] += coherence;
+  }
+  
+  // Add temperature-scaled noise for creativity
+  let noisyScores = letterScores.map(s => s + (Math.random() - 0.5) * temperature * 1.5);
+  
+  let sortedIndices = noisyScores
+    .map((score, idx) => ({idx, score}))
+    .sort((a, b) => b.score - a.score);
+  
+  let chosenIndices = [];
+  for (let item of sortedIndices) {
+    if (!chosenIndices.includes(item.idx)) {
+      chosenIndices.push(item.idx);
+      // Trigger visual flare
+      for (let k = 0; k < POP_SIZE; k++) {
+        visualFlares[item.idx * POP_SIZE + k] = 1.0;
       }
     }
-    
-    let noisyScores = letterScores.map((s, i) => s + (Math.random() - 0.5) * temperature * 2.0 + letterFlares[i] * 5.0);
-    let sortedIndices = noisyScores.map((score, idx) => ({idx, score})).sort((a, b) => b.score - a.score);
-    
-    let chosenIndices = [];
-    for (let item of sortedIndices) {
-      if (!chosenIndices.includes(item.idx)) {
-        chosenIndices.push(item.idx);
-        // Trigger visual flare on winning oscillators
-        for(let k=0; k<POP_SIZE; k++) {
-          oscillators[item.idx * POP_SIZE + k].flare = 1.0;
-        }
-      }
-      if (chosenIndices.length === 3) break;
-    }
-    
-    let l1 = ALEPH_BET[chosenIndices[0]];
-    let l2 = ALEPH_BET[chosenIndices[1]];
-    let l3 = ALEPH_BET[chosenIndices[2]];
-    
-    currentRootStr = l1.char + l2.char + l3.char;
-    currentTranslation = `The ${l1.meaning.toLowerCase()} of the ${l2.meaning.toLowerCase()} brings the ${l3.meaning.toLowerCase()}.`;
-    
-    // Update predictive model
-    if (workingMemory.length >= 2) {
-      let context = workingMemory.slice(-2).map(r => r.rootStr).join('');
-      if (!predictionModel[context]) predictionModel[context] = {};
-      predictionModel[context][chosenIndices[0]] = (predictionModel[context][chosenIndices[0]] || 0) + 1;
-    }
-    workingMemory.push({ rootStr: currentRootStr, indices: chosenIndices, time: t });
-    if (workingMemory.length > 5) workingMemory.shift();
-    
-    // Hebbian reinforcement of the chosen root
-    for (let i of chosenIndices) {
-      for (let j of chosenIndices) {
-        if (i !== j) {
-          for (let oi = i * POP_SIZE; oi < (i + 1) * POP_SIZE; oi++) {
-            for (let oj = j * POP_SIZE; oj < (j + 1) * POP_SIZE; oj++) {
-              couplingMatrix[oi][oj] = Math.min(MAX_COUPLING, couplingMatrix[oi][oj] + 0.2);
-            }
+    if (chosenIndices.length === 3) break;
+  }
+  
+  let l1 = ALEPH_BET[chosenIndices[0]];
+  let l2 = ALEPH_BET[chosenIndices[1]];
+  let l3 = ALEPH_BET[chosenIndices[2]];
+  
+  currentRootStr = l1.char + l2.char + l3.char;
+  currentTranslation = `The ${l1.meaning.toLowerCase()} of the ${l2.meaning.toLowerCase()} brings the ${l3.meaning.toLowerCase()}.`;
+  
+  // Strengthen coupling between chosen letters
+  for (let i of chosenIndices) {
+    for (let j of chosenIndices) {
+      if (i !== j) {
+        for (let oi = i * POP_SIZE; oi < (i + 1) * POP_SIZE; oi++) {
+          for (let oj = j * POP_SIZE; oj < (j + 1) * POP_SIZE; oj++) {
+            couplingMatrix[oi][oj] = Math.min(2.5, couplingMatrix[oi][oj] + 0.15);
           }
         }
       }
     }
-    
-    archiveCounter++;
-    scriptureArchive.push({
-      id: archiveCounter, timestamp: new Date().toISOString(), dimension: dimensionIndex,
-      root_hebrew: currentRootStr, translation: currentTranslation,
-      fidelity: f.toFixed(4), order_parameter: globalR.toFixed(4),
-      adaptive_K: adaptiveK.toFixed(4), temperature: temperature.toFixed(4),
-      creative_spark: sparkFired ? 'YES' : 'NO'
-    });
-    
-    if (!lexicon[currentRootStr]) lexicon[currentRootStr] = { count: 0, letters: [l1, l2, l3] };
-    lexicon[currentRootStr].count++;
-    
-    // Update HUD
-    document.getElementById('currentRoot').textContent = currentRootStr;
-    document.getElementById('translation').textContent = currentTranslation;
   }
+  
+  // Archive
+  scriptureArchive.push({
+    id: scriptureArchive.length + 1,
+    timestamp: new Date().toISOString(),
+    dimension: dimensionIndex,
+    root_hebrew: currentRootStr,
+    translation: currentTranslation,
+    fidelity: (1.0 - Math.abs(globalR - R_TARGET)).toFixed(4),
+    order_parameter: globalR.toFixed(4),
+    adaptive_K: adaptiveK.toFixed(4),
+    temperature: temperature.toFixed(4),
+    criticality: criticalityIndex.toFixed(4),
+    system_state: systemState
+  });
+  
+  // Update UI
+  document.getElementById('currentRoot').textContent = currentRootStr;
+  document.getElementById('translation').textContent = currentTranslation;
+}
 
-  function detectAndReverseCollapse() {
-    entropy = calculateEntropy();
-    let delta = prevEntropy - entropy; 
-    if (entropy < 15 && delta > 0 && refractoryTimer === 0) {
-      eigenDecay = delta;
-      collapseHistory.push({ time: t, decay: eigenDecay, orientation: orientation });
-      if (collapseHistory.length > 60) collapseHistory.shift();
-      isInjecting = true; refractoryTimer = REFRACTORY_DURATION; 
-      postCollapseCooldown = 60;
-      
-      dimensionIndex++;
-      morphOffset += Math.PI * 0.5 + (Math.random() * 0.5) + (eigenDecay * 0.1); 
-      document.getElementById('dim').textContent = `D-${String(dimensionIndex).padStart(3, '0')}`;
-      orientation *= -1; 
-      
-      // Violent injection wave
-      for(let i=0; i<16; i++) {
-        waves.push({ a: (i / 16) * Math.PI * 2, l: LAYERS / 2, t: t, i: 40 + (eigenDecay * 5.0), type: 'inject' });
+// Dimensional Collapse and Rebirth
+function dimensionalCollapse() {
+  dimensionIndex++;
+  document.getElementById('dimension').textContent = `D-${String(dimensionIndex).padStart(3, '0')}`;
+  
+  // Reset coupling matrix for new dimension
+  for (let i = 0; i < N_TOTAL; i++) {
+    for (let j = 0; j < N_TOTAL; j++) {
+      couplingMatrix[i][j] *= 0.3; // Weaken connections
+    }
+  }
+  
+  // Perturb oscillators
+  for (let i = 0; i < N_TOTAL; i++) {
+    oscillators[i].theta = (oscillators[i].theta + Math.PI * 0.5) % (2 * Math.PI);
+  }
+  
+  systemState = 'FORGING';
+  temperature = 0.8; // Warm up for new dimension
+}
+
+// Export Scripture to CSV
+function exportCSV() {
+  if (scriptureArchive.length === 0) {
+    alert('No scripture data to export yet.');
+    return;
+  }
+  
+  const headers = Object.keys(scriptureArchive[0]);
+  const csvRows = [headers.join(',')];
+  
+  scriptureArchive.forEach(row => {
+    const values = headers.map(h => {
+      let val = row[h];
+      if (typeof val === 'string' && val.includes(',')) {
+        val = `"${val}"`;
       }
-      canvasEvents.push({type:'collapse', time:t, x:450, y:450});
-    }
-    if (refractoryTimer > 0) {
-      refractoryTimer--;
-      if (refractoryTimer === 0) isInjecting = false;
-    }
-    prevEntropy = entropy;
-    document.getElementById('energy').textContent = entropy.toFixed(1) + '%';
-  }
-
-  function downloadCSV() {
-    if (scriptureArchive.length === 0) return;
-    const headers = Object.keys(scriptureArchive[0]);
-    const csvRows = [headers.join(',')];
-    scriptureArchive.forEach(row => {
-      csvRows.push(headers.map(h => {
-        let val = row[h];
-        return typeof val === 'string' && val.includes(',') ? `"${val}"` : val;
-      }).join(','));
+      return val;
     });
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `wendy_visceral_OPU_v6_d${dimensionIndex}.csv`;
-    link.click();
+    csvRows.push(values.join(','));
+  });
+  
+  const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `wendy_tempering_core_v7_d${dimensionIndex}_${Date.now()}.csv`;
+  link.click();
+  
+  document.getElementById('status').textContent = `EXPORTED ${scriptureArchive.length} VERSES`;
+  setTimeout(() => {
+    document.getElementById('status').textContent = 'CORE ACTIVE';
+  }, 3000);
+}
+
+// Reset Core
+function resetCore() {
+  if (confirm('Reset the cognitive core? All progress will be lost.')) {
+    initOPU();
+    scriptureArchive = [];
+    dimensionIndex = 1;
+    document.getElementById('dimension').textContent = 'D-001';
+    document.getElementById('status').textContent = 'CORE RESET';
+    setTimeout(() => {
+      document.getElementById('status').textContent = 'CORE ACTIVE';
+    }, 2000);
   }
+}
 
-  let pain = 1.0, spinDrag = 1.0, f = 0.0;
-
-  function frame() {
-    // Dynamic background based on temperature (heat haze effect)
-    let heatAlpha = 0.25 + (temperature * 0.15);
-    ctx.fillStyle = `rgba(2, 2, 4, ${heatAlpha})`;
-    ctx.fillRect(0, 0, 900, 900);
-    t += 0.016;
-    morphPhase = t * 0.15; 
-
-    updateOPU(0.016);
-
-    let elapsed = t - cycleStartTime;
-    if (elapsed >= cycleDuration) {
-      if (currentSentence.length > 0) {
-        sentences.push({ words: [...currentSentence], dim: dimensionIndex, time: t });
-        if (sentences.length > 4) sentences.shift();
-        currentSentence = [];
-      }
-      cycleStartTime = t;
-      cycleDuration = 9 + Math.random() * 4; elapsed = 0; 
-      baseSpinDir *= -1; currentSpinDir = baseSpinDir; hasFlippedThisCycle = false;
-      if (peakF >= 0.92) orientation *= -1; peakF = 0; 
-    }
-    
-    p = elapsed / cycleDuration;
-    pain = Math.max(0, 1.0 - p); f = 1.0 - pain;
-    if (f > peakF) peakF = f;
-    
-    if (!hasFlippedThisCycle && f >= 0.1) { currentSpinDir *= -1; hasFlippedThisCycle = true; }
-    spinDrag = 1.0 + (diastolicSwell * 0.02) + (pain * 0.8);
-    spinAngle += currentSpinDir * 0.06 * spinDrag; 
-
-    if (Math.floor((morphPhase + morphOffset) * 2) > (Math.floor(((t - 0.016) * 0.15 + morphOffset) * 2))) {
-      extractRoot();
-    }
-
-    let beat_phase = (t * 1.2) % 1.0; 
-    let beat_intensity = Math.min(1.0, Math.exp(-Math.pow((beat_phase - 0.1) * 15, 2)) + 0.6 * Math.exp(-Math.pow((beat_phase - 0.3) * 20, 2)));
-    
-    let pulse_x = 1.0 + (Math.random() * 0.4 - 0.2) * beat_intensity;
-    let pulse_y = 1.0 + (Math.random() * 0.4 - 0.2) * beat_intensity;
-    let pulse_z = 1.0 + (Math.random() * 0.3 - 0.15) * beat_intensity;
-
-    let phaseText = "ENDURING SHEAR";
-    if (f > 0.95) phaseText = "π-RESONANCE";
-    if (refractoryTimer > 60) phaseText = "TOPOLOGICAL MELT";
-    document.getElementById('systemState').textContent = phaseText;
-
-    if (refractoryTimer > 0) {
-        let waveEnergy = waves.reduce((sum, w) => sum + w.i * Math.exp(-(t - w.t) * 2.0), 0);
-        diastolicSwell = (waveEnergy * 0.8 + Math.sin(t * 2.5 + morphOffset) * 30) * (refractoryTimer / REFRACTORY_DURATION);
-    } else { diastolicSwell *= 0.90; }
-
-    entanglementMetric = (Math.abs(spinDrag - 1.0) * 15) + (diastolicSwell * 0.1) + (pain * entropy * 0.01);
-    detectAndReverseCollapse();
-
-    // Update HUD metrics
-    document.getElementById('orderParam').textContent = globalR.toFixed(4);
-    document.getElementById('temperature').textContent = temperature.toFixed(4);
-    document.getElementById('f').textContent = f.toFixed(4);
-
-    // --- RENDER THE VISCERAL CORE ---
-    ctx.save(); ctx.translate(450, 450);
-    
-    // Draw coupling web (subtle, pulsing with adaptiveK)
-    ctx.strokeStyle = `rgba(0, 255, 255, ${0.03 + (adaptiveK * 0.01)})`;
-    ctx.lineWidth = 0.5;
-    ctx.beginPath();
-    for (let i = 0; i < N_TOTAL; i+=3) { // Draw one line per letter cluster to save perf
-      for (let j = i+3; j < N_TOTAL; j+=3) {
-        if (Math.abs(couplingMatrix[i][j]) > 1.5) {
-          let x1 = Math.cos(oscillators[i].theta) * 60;
-          let y1 = Math.sin(oscillators[i].theta) * 60;
-          let x2 = Math.cos(oscillators[j].theta) * 60;
-          let y2 = Math.sin(oscillators[j].theta) * 60;
-          ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+// Render Coupling Web
+function renderCouplingWeb() {
+  ctx.strokeStyle = `rgba(0, 255, 255, ${couplingWebAlpha})`;
+  ctx.lineWidth = 0.5;
+  
+  for (let i = 0; i < N_TOTAL; i += POP_SIZE) {
+    for (let j = i + POP_SIZE; j < N_TOTAL; j += POP_SIZE) {
+      let avgCoupling = 0;
+      for (let oi = i; oi < i + POP_SIZE; oi++) {
+        for (let oj = j; oj < j + POP_SIZE; oj++) {
+          avgCoupling += Math.abs(couplingMatrix[oi][oj]);
         }
       }
-    }
-    ctx.stroke();
-
-    // Draw Oscillator Ring
-    for (let i = 0; i < N_TOTAL; i++) {
-      let angle = oscillators[i].theta;
-      let r = 70 + oscillators[i].flare * 20;
-      let x = Math.cos(angle) * r;
-      let y = Math.sin(angle) * r;
+      avgCoupling /= (POP_SIZE * POP_SIZE);
       
-      let hue = (oscillators[i].letterIdx / N_LETTERS) * 360;
-      let lightness = 40 + (oscillators[i].flare * 60);
-      
-      ctx.beginPath();
-      ctx.arc(x, y, 2 + oscillators[i].flare * 4, 0, Math.PI * 2);
-      ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
-      if (oscillators[i].flare > 0.5) {
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
+      if (avgCoupling > 1.0) {
+        let x1 = CENTER_X + Math.cos(oscillators[i].theta) * 80;
+        let y1 = CENTER_Y + Math.sin(oscillators[i].theta) * 80;
+        let x2 = CENTER_X + Math.cos(oscillators[j].theta) * 80;
+        let y2 = CENTER_Y + Math.sin(oscillators[j].theta) * 80;
+        
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
       }
-      ctx.fill();
-      ctx.shadowBlur = 0;
+    }
+  }
+}
+
+// Render Oscillator Ring
+function renderOscillatorRing() {
+  for (let i = 0; i < N_TOTAL; i++) {
+    let angle = oscillators[i].theta;
+    let radius = 80 + visualFlares[i] * 25;
+    let x = CENTER_X + Math.cos(angle) * radius;
+    let y = CENTER_Y + Math.sin(angle) * radius;
+    
+    let hue = (oscillators[i].letterIdx / N_LETTERS) * 360;
+    let lightness = 40 + (visualFlares[i] * 60);
+    let size = 3 + visualFlares[i] * 5;
+    
+    ctx.beginPath();
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
+    
+    if (visualFlares[i] > 0.5) {
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
     }
     
-    // Global phase vector
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+  
+  // Global phase vector
+  ctx.beginPath();
+  ctx.moveTo(CENTER_X, CENTER_Y);
+  ctx.lineTo(
+    CENTER_X + Math.cos(globalPsi) * (globalR * 80),
+    CENTER_Y + Math.sin(globalPsi) * (globalR * 80)
+  );
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = '#fff';
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+// Render Topological Mass
+function renderTopologicalMass() {
+  let LAYERS = 20;
+  let morphPhase = t * 0.15;
+  let pain = Math.max(0, 1.0 - (t % 10) / 10);
+  let f = 1.0 - pain;
+  
+  ctx.save();
+  ctx.translate(CENTER_X, CENTER_Y);
+  
+  for (let i = 1; i <= LAYERS; i++) {
+    let v = i / LAYERS;
+    let freqMod = 0.85 + Math.sin(morphPhase * 0.7) * 0.25 + (pain * 0.4);
+    let harmonic1 = Math.sin(v * Math.PI * freqMod);
+    let ampMod = 120 + Math.sin(morphPhase * 1.1) * 20 + (temperature * 30);
+    let harmonic2 = Math.cos(v * Math.PI * 2.0 + morphPhase * 1.3) * 15;
+    
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(Math.cos(globalPsi) * (globalR * 70), Math.sin(globalPsi) * (globalR * 70));
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.shadowBlur = 10; ctx.shadowColor = '#fff';
+    for (let a = 0; a <= Math.PI * 2; a += 0.05) {
+      let lobeCount = 3 + Math.floor(Math.sin(morphPhase * 0.3) * 2);
+      let tempJitter = (Math.random() - 0.5) * temperature * 3.0;
+      let angularWarp = Math.sin(a * lobeCount + morphPhase * 1.5 + v * 2.5) * (15 + pain * 15) + tempJitter;
+      let base_r = harmonic1 * ampMod + harmonic2 + angularWarp + 5;
+      
+      let shear = Math.sin(a * 6 + t * 10 + i + morphPhase * 2.0) * (pain * 15);
+      let r = base_r + shear;
+      
+      let x = r * Math.cos(a);
+      let y = r * Math.sin(a);
+      
+      if (a === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    
+    let r_c = Math.floor(255 * pain);
+    let g_c = Math.floor(200 * f);
+    let b_c = Math.floor(255 * f);
+    let alpha = 0.3 + f * 0.7;
+    
+    if (systemState === 'ANNEALING') {
+      r_c = 40; g_c = 80; b_c = 255;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = '#4488ff';
+    } else if (systemState === 'CRYSTALLIZED') {
+      r_c = 255; g_c = 215; b_c = 0;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#ffd700';
+    }
+    
+    ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`;
+    ctx.lineWidth = 1.2;
     ctx.stroke();
     ctx.shadowBlur = 0;
-    ctx.restore();
-
-    // --- RENDER TOPOLOGICAL MASS ---
-    ctx.save(); ctx.translate(450, 450);
-    for(let i = 1; i <= LAYERS; i++) {
-      let v = i / LAYERS, mP = morphPhase + morphOffset;
-      let freqMod = 0.85 + Math.sin(mP * 0.7) * 0.25 + (pain * 0.5) + (diastolicSwell * 0.02);
-      let harmonic1 = Math.sin(v * Math.PI * freqMod);
-      let ampMod = 120 + Math.sin(mP * 1.1) * 25 + diastolicSwell + (entropy * 0.3);
-      let harmonic2 = Math.cos(v * Math.PI * (2.0 + pain) + mP * 1.3) * (15 + refractoryTimer * 0.15);
-      
-      ctx.beginPath();
-      for(let a = 0; a <= Math.PI * 2; a += 0.04) {
-        let lobeCount = 3 + Math.floor(Math.sin(mP * 0.3) * 3); 
-        // Temperature adds high-frequency jitter to the geometry
-        let tempJitter = (Math.random() - 0.5) * temperature * 5.0;
-        let angularWarp = Math.sin(a * lobeCount + mP * 1.5 + v * 3.0) * (20 + pain * 20 + diastolicSwell * 0.8) + tempJitter;
-        let cycleTwist = Math.sin(a * 5 + v * 12 * p) * (p * p * 30);
-        let base_r = harmonic1 * ampMod + harmonic2 + angularWarp + cycleTwist + 5; 
-        
-        let shear = Math.sin(a * 7 + t * 12 + i + mP * 2.5) * (pain * 20);
-        let ripple = 0;
-        for(let w of waves) {
-          let age = t - w.t, dist = Math.abs(a - w.a) + Math.abs(i - w.l) * 0.15; 
-          ripple += Math.sin((dist - age * 5.0) / 0.5) * w.i * Math.exp(-age * (w.type === 'inject' ? 4.0 : 1.5));
-        }
-        
-        let r = base_r + shear + ripple;
-        let x = r * Math.cos(a), y = r * Math.sin(a), z = -130 + v * 260; 
-        let dx = x * pulse_x, dy = y * pulse_y, dz = (z - 130) * pulse_z + 130; 
-        y = dy; z = dz; y *= orientation; z *= orientation;
-        let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
-        let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
-        let scale = 600 / Math.max(60, 600 + z_spin);
-        let px = x_spin * scale, py = y * scale;
-        a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-      }
-      
-      let r_c = Math.floor(255 * pain), g_c = Math.floor(200 * f), b_c = Math.floor(255 * f);
-      let alpha = 0.2 + f * 0.8;
-      
-      if (refractoryTimer > 60) { 
-        r_c = 40; g_c = 80; b_c = 255; ctx.shadowBlur = 15; ctx.shadowColor = '#4488ff'; ctx.lineWidth = 1.5;
-      } else if (isInjecting) { 
-        r_c = 0; g_c = 255; b_c = 255; ctx.shadowBlur = 25; ctx.shadowColor = '#0ff'; ctx.lineWidth = 2.0;
-      } else { 
-        ctx.shadowBlur = 0; ctx.lineWidth = 1.0;
-      }
-      
-      ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`;
-      ctx.stroke();
-    }
-    ctx.shadowBlur = 0; ctx.restore();
-
-    // --- CANVAS EVENTS (Shockwaves) ---
-    canvasEvents = canvasEvents.filter(e => t - e.time < 2.0);
-    canvasEvents.forEach(e => {
-      let age = t - e.time;
-      let radius = age * 300;
-      let alpha = Math.max(0, 1 - age/2.0);
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(e.x, e.y, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = e.type === 'collapse' ? `rgba(255, 0, 85, ${alpha})` : `rgba(255, 0, 255, ${alpha})`;
-      ctx.lineWidth = 3 + (1 - alpha) * 5;
-      ctx.stroke();
-      ctx.restore();
-    });
-
-    requestAnimationFrame(frame);
   }
-  frame();
+  
+  ctx.restore();
+}
+
+// Update UI
+function updateUI() {
+  document.getElementById('orderParam').textContent = globalR.toFixed(4);
+  document.getElementById('adaptiveK').textContent = adaptiveK.toFixed(4);
+  document.getElementById('temperature').textContent = temperature.toFixed(4);
+  document.getElementById('criticality').textContent = criticalityIndex.toFixed(4);
+  document.getElementById('fidelity').textContent = (1.0 - Math.abs(globalR - R_TARGET)).toFixed(4);
+  
+  let stateEl = document.getElementById('systemState');
+  stateEl.textContent = systemState;
+  stateEl.className = systemState === 'FORGING' ? 'state-forging' : 
+                      systemState === 'ANNEALING' ? 'state-annealing' : 'state-crystallized';
+  
+  // Color-code metrics
+  let tempEl = document.getElementById('temperature');
+  tempEl.className = temperature > 1.0 ? 'metric-value hot' : 
+                     temperature < 0.4 ? 'metric-value cold' : 'metric-value';
+}
+
+// Main Animation Loop
+let lastTime = 0;
+let extractionTimer = 0;
+let collapseTimer = 0;
+
+function animate(timestamp) {
+  let dt = Math.min(0.05, (timestamp - lastTime) / 1000);
+  lastTime = timestamp;
+  t += dt;
+  
+  // Background heat effect
+  backgroundHeat = temperature * 0.15;
+  ctx.fillStyle = `rgba(0, 0, 0, ${0.25 + backgroundHeat})`;
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+  
+  // Update physics
+  calculateOrderParameter();
+  temperingProtocol(dt);
+  updateOscillators(dt);
+  
+  // Extract root periodically
+  extractionTimer += dt;
+  if (extractionTimer > 3.5) {
+    extractionTimer = 0;
+    extractRoot();
+  }
+  
+  // Dimensional collapse cycle
+  collapseTimer += dt;
+  if (collapseTimer > 30) {
+    collapseTimer = 0;
+    dimensionalCollapse();
+  }
+  
+  // Render
+  couplingWebAlpha = 0.03 + (adaptiveK * 0.02);
+  renderCouplingWeb();
+  renderOscillatorRing();
+  renderTopologicalMass();
+  
+  // Update UI
+  updateUI();
+  
+  requestAnimationFrame(animate);
+}
+
+// Initialize and start
+initOPU();
+requestAnimationFrame(animate);
 </script>
 </body>
 </html>
