@@ -496,6 +496,7 @@
 │   ├── wendy_llm_query.py
 │   └── wendy_self_wire.py*
 ├── singularity/
+│   ├── index.html
 │   ├── index1.html
 │   ├── index10.html
 │   ├── index1a.html
@@ -519,7 +520,6 @@
 │   ├── index1t.html
 │   ├── index1u.html
 │   ├── index1v.html
-│   ├── index1w.html
 │   ├── index2.html
 │   ├── index3.html
 │   ├── index4.html
