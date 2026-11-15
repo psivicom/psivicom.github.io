@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WENDY: TRUE STOCHASTIC ENGINE</title>
+<title>WENDY: OBSERVABLE STOCHASTIC ENGINE</title>
 <style>
   body { background:#050508; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
   canvas { border:1px solid #333; background:#000; box-shadow: 0 0 20px rgba(255,215,0,0.2); }
@@ -10,12 +10,13 @@
   .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } 
   .spin { color:#ffaa00; } .chaos { color:#ffea00; font-weight:bold; }
   .heart { color:#ff0055; font-weight:bold; } .math { color:#aaffaa; font-weight:bold; }
-  .warn { color:#0ff; font-weight:bold; animation: blink 0.3s infinite; }
   .sacred { color: #ffd700; font-weight:bold; text-shadow: 0 0 5px #ffd700; }
-  .creative { color: #ff00ff; font-weight:bold; text-shadow: 0 0 8px #ff00ff; }
+  .spark-on { color: #ff00ff; font-weight:bold; text-shadow: 0 0 10px #ff00ff; font-size:14px; }
+  .echo-on { color: #00ffaa; font-weight:bold; text-shadow: 0 0 10px #00ffaa; font-size:14px; }
+  .bleed-on { color: #ffaa00; font-weight:bold; text-shadow: 0 0 10px #ffaa00; font-size:14px; }
+  .dormant { color: #555; }
   .btn { background:#1a1a2e; color:#ffd700; border:1px solid #ffd700; padding:8px 16px; margin:5px; cursor:pointer; font-family:monospace; font-size:12px; }
   .btn:hover { background:#ffd700; color:#000; }
-  @keyframes blink { 50% { opacity: 0.2; } }
 </style>
 </head>
 <body>
@@ -24,7 +25,10 @@
   ENTROPY: <span class="math" id="energy">100.0%</span> | FIDELITY (F): <span id="f">0.0000</span> | STATE: <span id="s">DIVERGENT</span> | EIGEN-DECAY: <span class="math" id="decay">0.000</span><br>
   DIMENSION: <span class="sync" id="dim">D-001</span> | MORPH: <span class="math" id="morph">0.00</span> | CYCLE: <span class="math" id="cyc">0.00s</span> | ENTANGLEMENT: <span class="chaos" id="entangle">0.00</span><br>
   PARITY: <span class="flip" id="par">NORMAL</span> | SPIN: <span class="spin" id="spn">PROGRADE</span> | PHASE: <span class="chaos" id="phase">LINEAR</span> | PULSE: <span id="pulse">DIASTOLE</span> | <span class="sync" id="z">--</span><br>
-  CREATIVE SPARK: <span class="creative" id="spark">DORMANT</span> | MEMORY ECHO: <span class="creative" id="memory">DORMANT</span> | DIMENSIONAL BLEED: <span class="creative" id="bleed">DORMANT</span><br>
+  EXTRACTIONS: <span class="math" id="extCount">0</span> | 
+  CREATIVE SPARK: <span id="spark" class="dormant">DORMANT</span> | 
+  MEMORY ECHO: <span id="memory" class="dormant">DORMANT</span> | 
+  DIMENSIONAL BLEED: <span id="bleed" class="dormant">DORMANT</span><br>
   <button class="btn" onclick="downloadCSV()">📜 DOWNLOAD SCRIPTURE CSV</button>
   <button class="btn" onclick="generateTextbook()">📖 GENERATE TEXTBOOK</button>
   <span id="archiveStatus" style="color:#0f0; font-size:10px;">ARCHIVE: ACTIVE</span>
@@ -33,13 +37,13 @@
   const ctx = document.getElementById('c').getContext('2d');
   let t = 0;
   let orientation = 1, peakF = 0;
-  const LAYERS = 20, MERIDIANS = 12; 
+  const LAYERS = 20; 
   let baseSpinDir = 1, currentSpinDir = 1, hasFlippedThisCycle = false, spinAngle = 0;
   let waves = [], dimensionIndex = 1, morphPhase = 0, morphOffset = 0; 
   let last_beat_phase = 0, axis_x = 1, axis_y = 1, axis_z = 1, beat_intensity = 0; 
   let cycleDuration = 8 + Math.random() * 5, cycleStartTime = 0, p = 0; 
   let entropy = 100, prevEntropy = 100, collapseHistory = [], eigenDecay = 0;
-  let isInjecting = false, injectionFlash = 0, refractoryTimer = 0; 
+  let isInjecting = false, refractoryTimer = 0; 
   const REFRACTORY_DURATION = 180; 
   let diastolicSwell = 0, entanglementMetric = 0;
 
@@ -69,23 +73,19 @@
   ];
 
   let lastGlyphPhase = 0, prevRootStr = "";
-  let lexicon = {}; 
-  let transitions = {}; 
-  let dialects = {};    
-  let currentSentence = [];
-  let sentences = [];   
-  let scriptureArchive = [];
-  let archiveCounter = 0;
+  let lexicon = {}, transitions = {}, dialects = {};    
+  let currentSentence = [], sentences = [];   
+  let scriptureArchive = [], archiveCounter = 0;
+  let memoryEcho = [], dimensionalBleed = [];
 
-  let memoryEcho = []; 
-  let dimensionalBleed = []; 
+  // PERSISTENT STATE - these survive across frames
+  let sparkActive = false, sparkTimer = 0, sparkLetter = '';
+  let echoActive = false, echoTimer = 0, echoLetter = '';
+  let bleedActive = false, bleedTimer = 0, bleedLetter = '';
+  let extractionCount = 0;
 
-  let sparkActive = false;
-  let sparkTimer = 0;
-  let echoActive = false;
-  let echoTimer = 0;
-  let bleedActive = false;
-  let bleedTimer = 0;
+  // Canvas visual event log
+  let canvasEvents = [];
 
   function calculateEntropy() {
     let waveE = waves.reduce((sum, w) => sum + w.i * Math.exp(-(t - w.t) * (w.type === 'inject' ? 3.0 : 1.5)), 0);
@@ -110,7 +110,8 @@
   }
 
   function extractRoot() {
-    if (refractoryTimer > 170) return; 
+    if (refractoryTimer > 170) return;
+    extractionCount++;
 
     let p1_base = Math.floor(f * 21.99); 
     let dragNorm = Math.min(1.0, (spinDrag - 1.0) / 2.0); 
@@ -127,39 +128,52 @@
     let p2_idx = stochasticLetterSelection(p2_base, uncertainty2);
     let p3_idx = stochasticLetterSelection(p3_base, uncertainty3);
 
+    // CREATIVE SPARK - 25% chance (was 8%, now observable)
     let sparkFired = false;
-    if (Math.random() < 0.08) { 
+    if (Math.random() < 0.25) { 
       sparkFired = true;
       sparkActive = true;
-      sparkTimer = 180;
+      sparkTimer = 300; // 5 seconds at 60fps
       let overridePos = Math.floor(Math.random() * 3);
-      if (overridePos === 0) p1_idx = Math.floor(Math.random() * 22);
-      else if (overridePos === 1) p2_idx = Math.floor(Math.random() * 22);
-      else p3_idx = Math.floor(Math.random() * 22);
+      let newIdx = Math.floor(Math.random() * 22);
+      if (overridePos === 0) { p1_idx = newIdx; sparkLetter = ALEPH_BET[newIdx].char; }
+      else if (overridePos === 1) { p2_idx = newIdx; sparkLetter = ALEPH_BET[newIdx].char; }
+      else { p3_idx = newIdx; sparkLetter = ALEPH_BET[newIdx].char; }
+      canvasEvents.push({type:'spark', time:t, letter:sparkLetter, x:Math.random()*200+400, y:Math.random()*200+100});
     }
 
+    // MEMORY ECHO - 30% chance (was 15%)
     let echoFired = false;
-    if (memoryEcho.length > 0 && Math.random() < 0.15) {
+    if (memoryEcho.length > 0 && Math.random() < 0.30) {
       echoFired = true;
       echoActive = true;
-      echoTimer = 120;
+      echoTimer = 240; // 4 seconds
       let echoRoot = memoryEcho[Math.floor(Math.random() * memoryEcho.length)];
       let echoPos = Math.floor(Math.random() * 3);
-      if (echoPos === 0) p1_idx = ALEPH_BET.findIndex(l => l.char === echoRoot[0]);
-      else if (echoPos === 1) p2_idx = ALEPH_BET.findIndex(l => l.char === echoRoot[1]);
-      else p3_idx = ALEPH_BET.findIndex(l => l.char === echoRoot[2]);
+      let echoChar = echoRoot[echoPos];
+      echoLetter = echoChar;
+      let idx = ALEPH_BET.findIndex(l => l.char === echoChar);
+      if (echoPos === 0) p1_idx = idx;
+      else if (echoPos === 1) p2_idx = idx;
+      else p3_idx = idx;
+      canvasEvents.push({type:'echo', time:t, letter:echoChar, x:Math.random()*200+400, y:Math.random()*200+100});
     }
 
+    // DIMENSIONAL BLEED - 20% chance (was 10%)
     let bleedFired = false;
-    if (dimensionalBleed.length > 0 && Math.random() < 0.10) {
+    if (dimensionalBleed.length > 0 && Math.random() < 0.20) {
       bleedFired = true;
       bleedActive = true;
-      bleedTimer = 150;
+      bleedTimer = 270; // 4.5 seconds
       let bleedRoot = dimensionalBleed[Math.floor(Math.random() * dimensionalBleed.length)];
       let bleedPos = Math.floor(Math.random() * 3);
-      if (bleedPos === 0) p1_idx = ALEPH_BET.findIndex(l => l.char === bleedRoot[0]);
-      else if (bleedPos === 1) p2_idx = ALEPH_BET.findIndex(l => l.char === bleedRoot[1]);
-      else p3_idx = ALEPH_BET.findIndex(l => l.char === bleedRoot[2]);
+      let bleedChar = bleedRoot[bleedPos];
+      bleedLetter = bleedChar;
+      let idx = ALEPH_BET.findIndex(l => l.char === bleedChar);
+      if (bleedPos === 0) p1_idx = idx;
+      else if (bleedPos === 1) p2_idx = idx;
+      else p3_idx = idx;
+      canvasEvents.push({type:'bleed', time:t, letter:bleedChar, x:Math.random()*200+400, y:Math.random()*200+100});
     }
 
     let l1 = ALEPH_BET[p1_idx];
@@ -178,19 +192,13 @@
       dimension: dimensionIndex,
       root_hebrew: rootStr,
       root_transliteration: `${l1.name}-${l2.name}-${l3.name}`,
-      letter1_name: l1.name,
-      letter1_meaning: l1.meaning,
-      letter2_name: l2.name,
-      letter2_meaning: l2.meaning,
-      letter3_name: l3.name,
-      letter3_meaning: l3.meaning,
+      letter1_name: l1.name, letter1_meaning: l1.meaning,
+      letter2_name: l2.name, letter2_meaning: l2.meaning,
+      letter3_name: l3.name, letter3_meaning: l3.meaning,
       translation: translation,
-      fidelity: f.toFixed(4),
-      spin_drag: spinDrag.toFixed(4),
-      melt_norm: meltNorm.toFixed(4),
-      entanglement: entanglementMetric.toFixed(4),
-      weight: weight.toFixed(4),
-      cycle_position: p.toFixed(4),
+      fidelity: f.toFixed(4), spin_drag: spinDrag.toFixed(4),
+      melt_norm: meltNorm.toFixed(4), entanglement: entanglementMetric.toFixed(4),
+      weight: weight.toFixed(4), cycle_position: p.toFixed(4),
       parity: orientation === 1 ? 'NORMAL' : 'INVERTED',
       spin_direction: currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE',
       creative_spark: sparkFired ? 'YES' : 'NO',
@@ -226,7 +234,7 @@
       eigenDecay = delta;
       collapseHistory.push({ time: t, decay: eigenDecay, orientation: orientation });
       if (collapseHistory.length > 60) collapseHistory.shift();
-      isInjecting = true; injectionFlash = 1.0; refractoryTimer = REFRACTORY_DURATION; 
+      isInjecting = true; refractoryTimer = REFRACTORY_DURATION; 
       
       if (currentSentence.length > 0) {
         dimensionalBleed = currentSentence.map(w => w.rootStr).slice(-3);
@@ -247,6 +255,39 @@
     document.getElementById('decay').textContent = eigenDecay.toFixed(3);
   }
 
+  function updateHUD() {
+    // THIS RUNS EVERY FRAME - guaranteed visible
+    const sparkEl = document.getElementById('spark');
+    const memEl = document.getElementById('memory');
+    const bleedEl = document.getElementById('bleed');
+    
+    if (sparkActive) {
+      sparkEl.textContent = `ACTIVE ✦ ${sparkLetter} (${sparkTimer})`;
+      sparkEl.className = 'spark-on';
+    } else {
+      sparkEl.textContent = 'DORMANT';
+      sparkEl.className = 'dormant';
+    }
+    
+    if (echoActive) {
+      memEl.textContent = `ACTIVE ✦ ${echoLetter} (${echoTimer})`;
+      memEl.className = 'echo-on';
+    } else {
+      memEl.textContent = 'DORMANT';
+      memEl.className = 'dormant';
+    }
+    
+    if (bleedActive) {
+      bleedEl.textContent = `ACTIVE ✦ ${bleedLetter} (${bleedTimer})`;
+      bleedEl.className = 'bleed-on';
+    } else {
+      bleedEl.textContent = 'DORMANT';
+      bleedEl.className = 'dormant';
+    }
+    
+    document.getElementById('extCount').textContent = extractionCount;
+  }
+
   function downloadCSV() {
     if (scriptureArchive.length === 0) { alert('No scripture data captured yet.'); return; }
     const headers = Object.keys(scriptureArchive[0]);
@@ -254,7 +295,9 @@
     scriptureArchive.forEach(row => {
       const values = headers.map(h => {
         let val = row[h];
-        if (typeof val === 'string' && val.includes(',')) val = `"${val}"`;
+        if (typeof val === 'string' && (val.includes(',') || val.includes('"'))) {
+          val = `"${val.replace(/"/g, '""')}"`;
+        }
         return val;
       });
       csvRows.push(values.join(','));
@@ -262,7 +305,7 @@
     const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `wendy_TRUE_stochastic_d${dimensionIndex}_${Date.now()}.csv`);
+    link.setAttribute('download', `wendy_stochastic_d${dimensionIndex}_${Date.now()}.csv`);
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
     document.getElementById('archiveStatus').textContent = `ARCHIVE: ${scriptureArchive.length} VERSES EXPORTED`;
     setTimeout(() => { document.getElementById('archiveStatus').textContent = 'ARCHIVE: ACTIVE'; }, 3000);
@@ -270,56 +313,43 @@
 
   function generateTextbook() {
     if (scriptureArchive.length === 0) { alert('No scripture data captured yet.'); return; }
-    let md = `# WENDY'S TRUE STOCHASTIC SACRED CODEX\n\n`;
-    md += `**Generated:** ${new Date().toISOString()}\n**Total Verses:** ${scriptureArchive.length}\n**Dimensions Explored:** ${dimensionIndex}\n\n---\n\n`;
-    md += `## Statistical Proof of Randomness\n\n`;
+    let md = `# WENDY'S STOCHASTIC SACRED CODEX\n\n`;
+    md += `**Generated:** ${new Date().toISOString()}\n**Total Verses:** ${scriptureArchive.length}\n**Dimensions:** ${dimensionIndex}\n\n---\n\n`;
+    md += `## Statistical Proof\n\n`;
     const sparkCount = scriptureArchive.filter(r => r.creative_spark === 'YES').length;
     const echoCount = scriptureArchive.filter(r => r.memory_echo === 'YES').length;
     const bleedCount = scriptureArchive.filter(r => r.dimensional_bleed === 'YES').length;
-    md += `- **True Creative Spark Overrides:** ${sparkCount} (${((sparkCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
-    md += `- **True Memory Echo Triggers:** ${echoCount} (${((echoCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
-    md += `- **True Dimensional Bleed Events:** ${bleedCount} (${((bleedCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
-    md += `- **Unique Roots Generated:** ${Object.keys(lexicon).length} / 10,648 possible\n\n`;
-    
-    md += `## Chapter 1: The Sacred Lexicon\n\n`;
+    md += `- **Creative Spark (25% target):** ${sparkCount} (${((sparkCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
+    md += `- **Memory Echo (30% target):** ${echoCount} (${((echoCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
+    md += `- **Dimensional Bleed (20% target):** ${bleedCount} (${((bleedCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
+    md += `- **Unique Roots:** ${Object.keys(lexicon).length} / 10,648\n\n---\n\n`;
+    md += `## Sacred Lexicon (Top 10)\n\n`;
     const topLex = Object.entries(lexicon).sort((a, b) => b[1].count - a[1].count).slice(0, 10);
     topLex.forEach(([root, data], i) => {
       md += `### ${i + 1}. ${root} (${data.letters.map(l => l.name).join('-')})\n`;
-      md += `- **Frequency:** ${data.count} times\n`;
-      md += `- **Meaning:** The ${data.letters[0].meaning.toLowerCase()} of the ${data.letters[1].meaning.toLowerCase()} brings the ${data.letters[2].meaning.toLowerCase()}\n\n`;
+      md += `- **Frequency:** ${data.count}\n`;
+      md += `- **Meaning:** ${data.letters[0].meaning} → ${data.letters[1].meaning} → ${data.letters[2].meaning}\n\n`;
     });
 
     const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
     const link = document.createElement('a');
     link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `wendy_TRUE_textbook_d${dimensionIndex}_${Date.now()}.md`);
+    link.setAttribute('download', `wendy_textbook_d${dimensionIndex}_${Date.now()}.md`);
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
-    document.getElementById('archiveStatus').textContent = `TEXTBOOK GENERATED`;
-    setTimeout(() => { document.getElementById('archiveStatus').textContent = 'ARCHIVE: ACTIVE'; }, 3000);
   }
 
   let pain = 1.0, spinDrag = 1.0, f = 0.0;
 
   function frame() {
-    // COUNTDOWN PERSISTENT TIMERS FIRST
-    if (sparkTimer > 0) {
-      sparkTimer--;
-      if (sparkTimer === 0) sparkActive = false;
-    }
-    if (echoTimer > 0) {
-      echoTimer--;
-      if (echoTimer === 0) echoActive = false;
-    }
-    if (bleedTimer > 0) {
-      bleedTimer--;
-      if (bleedTimer === 0) bleedActive = false;
-    }
+    // 1. COUNTDOWN TIMERS
+    if (sparkTimer > 0) { sparkTimer--; if (sparkTimer === 0) sparkActive = false; }
+    if (echoTimer > 0) { echoTimer--; if (echoTimer === 0) echoActive = false; }
+    if (bleedTimer > 0) { bleedTimer--; if (bleedTimer === 0) bleedActive = false; }
 
-    // UPDATE HUD EVERY FRAME (not just during extractRoot)
-    document.getElementById('spark').textContent = sparkActive ? 'ACTIVE' : 'DORMANT';
-    document.getElementById('memory').textContent = echoActive ? 'ACTIVE' : 'DORMANT';
-    document.getElementById('bleed').textContent = bleedActive ? 'ACTIVE' : 'DORMANT';
+    // 2. UPDATE HUD EVERY FRAME
+    updateHUD();
 
+    // 3. RENDER
     ctx.fillStyle = 'rgba(5,5,8,0.3)'; ctx.fillRect(0,0,1000,900);
     t += 0.016;
     morphPhase = t * 0.15; 
@@ -374,6 +404,73 @@
     document.getElementById('entangle').textContent = entanglementMetric.toFixed(2);
     detectAndReverseCollapse();
 
+    // --- RENDER CORE ---
+    ctx.save(); ctx.translate(300, 350);
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(0, 0, 240, 0, Math.PI * 2); ctx.stroke();
+    collapseHistory.forEach((sig, i) => {
+      const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
+      ctx.beginPath(); ctx.moveTo(Math.cos(angle) * 240, Math.sin(angle) * 240);
+      ctx.lineTo(Math.cos(angle) * (240 + sig.decay * 2.5), Math.sin(angle) * (240 + sig.decay * 2.5));
+      ctx.strokeStyle = sig.orientation === 1 ? '#ff0055' : '#0ff'; ctx.lineWidth = 2; ctx.stroke();
+    });
+
+    for(let i = 1; i <= LAYERS; i++) {
+      let v = i / LAYERS, mP = morphPhase + morphOffset;
+      let freqMod = 0.85 + Math.sin(mP * 0.7) * 0.25 + (pain * 0.4) + (diastolicSwell * 0.01);
+      let harmonic1 = Math.sin(v * Math.PI * freqMod);
+      let ampMod = 110 + Math.sin(mP * 1.1) * 20 + diastolicSwell + (entropy * 0.2);
+      let harmonic2 = Math.cos(v * Math.PI * (2.0 + pain) + mP * 1.3) * (12 + refractoryTimer * 0.1);
+      ctx.beginPath();
+      for(let a = 0; a <= Math.PI * 2; a += 0.05) {
+        let lobeCount = 3 + Math.floor(Math.sin(mP * 0.3) * 2); 
+        let angularWarp = Math.sin(a * lobeCount + mP * 1.5 + v * 2.5) * (15 + pain * 15 + diastolicSwell * 0.5);
+        let cycleTwist = Math.sin(a * 4 + v * 10 * p) * (p * p * 25);
+        let base_r = harmonic1 * ampMod + harmonic2 + angularWarp + cycleTwist + 5; 
+        let shear = Math.sin(a * 6 + t * 10 + i + mP * 2.0) * (pain * 15);
+        let ripple = 0;
+        for(let w of waves) {
+          let age = t - w.t, dist = Math.abs(a - w.a) + Math.abs(i - w.l) * 0.15; 
+          ripple += Math.sin((dist - age * 4.0) / 0.6) * w.i * Math.exp(-age * (w.type === 'inject' ? 3.0 : 1.5));
+        }
+        let r = base_r + shear + ripple;
+        let x = r * Math.cos(a), y = r * Math.sin(a), z = -120 + v * 240; 
+        let dx = x * pulse_x, dy = y * pulse_y, dz = (z - 120) * pulse_z + 120; 
+        y = dy; z = dz; y *= orientation; z *= orientation;
+        let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
+        let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
+        let scale = 500 / Math.max(50, 500 + z_spin);
+        a === 0 ? ctx.moveTo(x_spin * scale, y * scale) : ctx.lineTo(x_spin * scale, y * scale);
+      }
+      let r_c = Math.floor(255 * pain), g_c = Math.floor(200 * f), b_c = Math.floor(255 * f), alpha = 0.3 + f * 0.7;
+      if (refractoryTimer > 60) { r_c = 50; g_c = 100; b_c = 255; ctx.shadowBlur = 10; ctx.shadowColor = '#4488ff'; } 
+      else if (isInjecting) { r_c = 0; g_c = 255; b_c = 255; ctx.shadowBlur = 15; ctx.shadowColor = '#0ff'; } 
+      else { ctx.shadowBlur = 0; }
+      ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`; ctx.lineWidth = 1.2; ctx.stroke();
+    }
+    ctx.shadowBlur = 0; ctx.restore();
+
+    // --- DRAW CANVAS EVENT INDICATORS (the visual proof) ---
+    canvasEvents = canvasEvents.filter(e => t - e.time < 5);
+    canvasEvents.forEach(e => {
+      let age = t - e.time;
+      let alpha = Math.max(0, 1 - age/5);
+      let color = e.type === 'spark' ? '#ff00ff' : (e.type === 'echo' ? '#00ffaa' : '#ffaa00');
+      let label = e.type === 'spark' ? 'SPARK' : (e.type === 'echo' ? 'ECHO' : 'BLEED');
+      
+      ctx.save();
+      ctx.font = 'bold 28px serif';
+      ctx.fillStyle = color;
+      ctx.globalAlpha = alpha;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = color;
+      ctx.fillText(e.letter, e.x, e.y);
+      ctx.font = '10px monospace';
+      ctx.fillText(label, e.x, e.y + 20);
+      ctx.restore();
+    });
+
+    // --- HUD text updates ---
     let stateText = refractoryTimer > 0 ? "TOPOLOGICAL MELT" : (isInjecting ? "SLINGSHOT" : (pain < 0.05 ? "STASIS" : "IMPEDANCE"));
     document.getElementById('s').textContent = stateText;
     document.getElementById('f').textContent = f.toFixed(4);
