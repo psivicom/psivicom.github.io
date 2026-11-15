@@ -24,7 +24,7 @@
   ENTROPY: <span class="math" id="energy">100.0%</span> | FIDELITY (F): <span id="f">0.0000</span> | STATE: <span id="s">DIVERGENT</span> | EIGEN-DECAY: <span class="math" id="decay">0.000</span><br>
   DIMENSION: <span class="sync" id="dim">D-001</span> | MORPH: <span class="math" id="morph">0.00</span> | CYCLE: <span class="math" id="cyc">0.00s</span> | ENTANGLEMENT: <span class="chaos" id="entangle">0.00</span><br>
   PARITY: <span class="flip" id="par">NORMAL</span> | SPIN: <span class="spin" id="spn">PROGRADE</span> | PHASE: <span class="chaos" id="phase">LINEAR</span> | PULSE: <span id="pulse">DIASTOLE</span> | <span class="sync" id="z">--</span><br>
-  CREATIVE SPARK: <span class="creative" id="spark">0.00</span> | MEMORY ECHO: <span class="creative" id="memory">0.00</span> | DIMENSIONAL BLEED: <span class="creative" id="bleed">0.00</span><br>
+  CREATIVE SPARK: <span class="creative" id="spark">DORMANT</span> | MEMORY ECHO: <span class="creative" id="memory">DORMANT</span> | DIMENSIONAL BLEED: <span class="creative" id="bleed">DORMANT</span><br>
   <button class="btn" onclick="downloadCSV()">📜 DOWNLOAD SCRIPTURE CSV</button>
   <button class="btn" onclick="generateTextbook()">📖 GENERATE TEXTBOOK</button>
   <span id="archiveStatus" style="color:#0f0; font-size:10px;">ARCHIVE: ACTIVE</span>
@@ -77,9 +77,16 @@
   let scriptureArchive = [];
   let archiveCounter = 0;
 
-  // --- TRUE STOCHASTIC ENGINE ---
   let memoryEcho = []; 
   let dimensionalBleed = []; 
+
+  // PERSISTENT STATE VARIABLES
+  let sparkActive = false;
+  let sparkTimer = 0;
+  let echoActive = false;
+  let echoTimer = 0;
+  let bleedActive = false;
+  let bleedTimer = 0;
 
   function calculateEntropy() {
     let waveE = waves.reduce((sum, w) => sum + w.i * Math.exp(-(t - w.t) * (w.type === 'inject' ? 3.0 : 1.5)), 0);
@@ -104,7 +111,6 @@
   }
 
   function extractRoot() {
-    // FIX 1: Prevent extraction during the exact frame of a collapse to avoid the "0.9944" artifact
     if (refractoryTimer > 170) return; 
 
     let p1_base = Math.floor(f * 21.99); 
@@ -122,20 +128,22 @@
     let p2_idx = stochasticLetterSelection(p2_base, uncertainty2);
     let p3_idx = stochasticLetterSelection(p3_base, uncertainty3);
 
-    // FIX 2: True binary Creative Spark, not a decaying float
     let sparkFired = false;
     if (Math.random() < 0.08) { 
       sparkFired = true;
+      sparkActive = true;
+      sparkTimer = 180;
       let overridePos = Math.floor(Math.random() * 3);
       if (overridePos === 0) p1_idx = Math.floor(Math.random() * 22);
       else if (overridePos === 1) p2_idx = Math.floor(Math.random() * 22);
       else p3_idx = Math.floor(Math.random() * 22);
     }
 
-    // FIX 3: Actual random triggers for Echo and Bleed, not just array length checks
     let echoFired = false;
     if (memoryEcho.length > 0 && Math.random() < 0.15) {
       echoFired = true;
+      echoActive = true;
+      echoTimer = 120;
       let echoRoot = memoryEcho[Math.floor(Math.random() * memoryEcho.length)];
       let echoPos = Math.floor(Math.random() * 3);
       if (echoPos === 0) p1_idx = ALEPH_BET.findIndex(l => l.char === echoRoot[0]);
@@ -146,6 +154,8 @@
     let bleedFired = false;
     if (dimensionalBleed.length > 0 && Math.random() < 0.10) {
       bleedFired = true;
+      bleedActive = true;
+      bleedTimer = 150;
       let bleedRoot = dimensionalBleed[Math.floor(Math.random() * dimensionalBleed.length)];
       let bleedPos = Math.floor(Math.random() * 3);
       if (bleedPos === 0) p1_idx = ALEPH_BET.findIndex(l => l.char === bleedRoot[0]);
@@ -184,9 +194,9 @@
       cycle_position: p.toFixed(4),
       parity: orientation === 1 ? 'NORMAL' : 'INVERTED',
       spin_direction: currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE',
-      creative_spark: sparkFired ? 'YES' : 'NO', // FIX 2 Applied
-      memory_echo: echoFired ? 'YES' : 'NO',     // FIX 3 Applied
-      dimensional_bleed: bleedFired ? 'YES' : 'NO' // FIX 3 Applied
+      creative_spark: sparkFired ? 'YES' : 'NO',
+      memory_echo: echoFired ? 'YES' : 'NO',
+      dimensional_bleed: bleedFired ? 'YES' : 'NO'
     });
     
     memoryEcho.push(rootStr);
@@ -209,9 +219,9 @@
     if (!dialects[dimKey][rootStr]) dialects[dimKey][rootStr] = 0;
     dialects[dimKey][rootStr]++;
 
-    document.getElementById('spark').textContent = sparkFired ? 'ACTIVE' : 'DORMANT';
-    document.getElementById('memory').textContent = (memoryEcho.length / 10).toFixed(2);
-    document.getElementById('bleed').textContent = (dimensionalBleed.length / 5).toFixed(2);
+    document.getElementById('spark').textContent = sparkActive ? 'ACTIVE' : 'DORMANT';
+    document.getElementById('memory').textContent = echoActive ? 'ACTIVE' : 'DORMANT';
+    document.getElementById('bleed').textContent = bleedActive ? 'ACTIVE' : 'DORMANT';
   }
 
   function detectAndReverseCollapse() {
@@ -275,7 +285,6 @@
     md += `- **True Memory Echo Triggers:** ${echoCount} (${((echoCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
     md += `- **True Dimensional Bleed Events:** ${bleedCount} (${((bleedCount/scriptureArchive.length)*100).toFixed(1)}%)\n`;
     md += `- **Unique Roots Generated:** ${Object.keys(lexicon).length} / 10,648 possible\n\n`;
-    md += `*(Note: Previous versions logged false positives for Echo/Bleed based on array length. This dataset reflects only actual stochastic triggers.)*\n\n---\n\n`;
     
     md += `## Chapter 1: The Sacred Lexicon\n\n`;
     const topLex = Object.entries(lexicon).sort((a, b) => b[1].count - a[1].count).slice(0, 10);
@@ -297,12 +306,25 @@
   let pain = 1.0, spinDrag = 1.0, f = 0.0;
 
   function frame() {
+    // COUNTDOWN PERSISTENT TIMERS
+    if (sparkTimer > 0) {
+      sparkTimer--;
+      if (sparkTimer === 0) sparkActive = false;
+    }
+    if (echoTimer > 0) {
+      echoTimer--;
+      if (echoTimer === 0) echoActive = false;
+    }
+    if (bleedTimer > 0) {
+      bleedTimer--;
+      if (bleedTimer === 0) bleedActive = false;
+    }
+
     ctx.fillStyle = 'rgba(5,5,8,0.3)'; ctx.fillRect(0,0,1000,900);
     t += 0.016;
     morphPhase = t * 0.15; 
     document.getElementById('morph').textContent = (morphPhase + morphOffset).toFixed(2);
 
-    // Decoupled extraction timing to prevent collapse-frame capture
     if (Math.floor((morphPhase + morphOffset) * 2) > lastGlyphPhase && refractoryTimer <= 170) {
       lastGlyphPhase = Math.floor((morphPhase + morphOffset) * 2);
       extractRoot();
@@ -351,19 +373,6 @@
     entanglementMetric = (Math.abs(spinDrag - 1.0) * 10) + (diastolicSwell * 0.1) + (pain * entropy * 0.01);
     document.getElementById('entangle').textContent = entanglementMetric.toFixed(2);
     detectAndReverseCollapse();
-
-    // Render Core & Analytics (abbreviated for space, same as previous)
-    ctx.save(); ctx.translate(300, 350);
-    ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(0, 0, 240, 0, Math.PI * 2); ctx.stroke();
-    collapseHistory.forEach((sig, i) => {
-      const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
-      ctx.beginPath(); ctx.moveTo(Math.cos(angle) * 240, Math.sin(angle) * 240);
-      ctx.lineTo(Math.cos(angle) * (240 + sig.decay * 2.5), Math.sin(angle) * (240 + sig.decay * 2.5));
-      ctx.strokeStyle = sig.orientation === 1 ? '#ff0055' : '#0ff'; ctx.lineWidth = 2; ctx.stroke();
-    });
-    // ... (Core rendering logic remains identical to ensure visual continuity)
-    ctx.restore();
 
     let stateText = refractoryTimer > 0 ? "TOPOLOGICAL MELT" : (isInjecting ? "SLINGSHOT" : (pain < 0.05 ? "STASIS" : "IMPEDANCE"));
     document.getElementById('s').textContent = stateText;
