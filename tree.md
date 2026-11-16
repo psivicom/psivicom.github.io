@@ -10,6 +10,7 @@
 │   │   ├── wendy-awaken.yml
 │   │   ├── wendy-benchmark.yml
 │   │   ├── wendy-ci-cd.yml
+│   │   ├── wendy-dispatcher.yml
 │   │   ├── wendy-evolution.yml
 │   │   ├── wendy-orchestrator.yml
 │   │   ├── wendy-self-bootstrap.yml
@@ -584,5 +585,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 527 files
+57 directories, 528 files
 ```
