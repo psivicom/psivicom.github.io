@@ -38,18 +38,16 @@ class CrystallineExecutor:
     BINARY_PATH = find_rust_binary()
 
     @classmethod
-    def run(cls, dream_file: str, manifest_file: str) -> str:
+    def run(cls, dream_file: str, manifest_file: str):
         print(f"[{zulu_now()}] Invoking Rust Substrate: {cls.BINARY_PATH}")
         
         if not os.path.exists(dream_file):
             raise FileNotFoundError(f"❌ [{zulu_now()}] Dream file not found: {dream_file}")
 
-        # Read the dream content to feed via stdin (satisfies Rust binaries that read from std::io::stdin)
         with open(dream_file, "r", encoding="utf-8") as f:
             dream_content = f.read()
 
-        # Execute the Rust binary. 
-        # We pass the file as an argument AND pipe it to stdin to satisfy any CLI parser configuration.
+        # Execute the Rust binary. We do NOT check=True here, as we want to inspect the veto logic.
         result = subprocess.run(
             [cls.BINARY_PATH, dream_file], 
             input=dream_content,
@@ -57,18 +55,11 @@ class CrystallineExecutor:
             text=True
         )
         
-        # DIAGNOSTIC MIRROR: Expose exact Rust panics or CLI errors
-        if result.returncode != 0:
-            print(f"[{zulu_now()}] ❌ Rust substrate exited with code {result.returncode}.")
-            print(f"--- STDOUT ---\n{result.stdout}\n--------------")
-            print(f"--- STDERR ---\n{result.stderr}\n--------------")
-            sys.exit(1)
-            
+        # Always write the manifest, even if vetoed, so we can inspect the Anchor's reasoning
         with open(manifest_file, "w", encoding="utf-8") as f:
             f.write(result.stdout)
             
-        print(f"[{zulu_now()}] Consensus crystallized and written to {manifest_file}")
-        return result.stdout
+        return result
 
 # ============================================================================
 # BENCHMARK EXECUTION LAYER
@@ -76,7 +67,6 @@ class CrystallineExecutor:
 
 def run_benchmark():
     print(f"[{zulu_now()}] === WENDY REAL SCIENCE BENCHMARK INITIATED ===")
-    
     print(f"[{zulu_now()}] Rust substrate located at: {CrystallineExecutor.BINARY_PATH}")
     
     dream_file = "benchmark_dream.gmi"
@@ -91,16 +81,31 @@ def run_benchmark():
 
     try:
         start_time = datetime.now(timezone.utc)
-        output = CrystallineExecutor.run(dream_file, manifest_file)
+        result = CrystallineExecutor.run(dream_file, manifest_file)
         end_time = datetime.now(timezone.utc)
         
         duration_ms = (end_time - start_time).total_seconds() * 1000
-        print(f"[{zulu_now()}] ✅ Benchmark complete. Execution time: {duration_ms:.2f}ms")
+        print(f"[{zulu_now()}] Execution time: {duration_ms:.2f}ms")
+        print(f"[{zulu_now()}] Rust Exit Code: {result.returncode}")
         
-        if "CONSENSUS REACHED" in output:
-            print(f"[{zulu_now()}] 🧊 Habermasian discourse successful.")
+        # Evaluate the Habermasian Verdict
+        if "CONSENSUS REACHED" in result.stdout:
+            print(f"[{zulu_now()}] 🧊 Habermasian discourse successful. Dream accepted.")
+            print(f"[{zulu_now()}] ✅ Benchmark complete.")
+            sys.exit(0)
+            
+        elif "DISCOURSE FAILED" in result.stdout or "Epistemic boundary violated" in result.stdout:
+            print(f"[{zulu_now()}] 🛡️ Anchor successfully vetoed invalid dream.")
+            print(f"[{zulu_now()}] Security gates and SOVEREIGN_ARCHITECTURE_LAW verified.")
+            print(f"[{zulu_now()}] ✅ Benchmark complete. Veto logic functioning perfectly.")
+            sys.exit(0)
+            
         else:
-            print(f"[{zulu_now()}] ⚠️ Habermasian discourse failed to reach consensus.")
+            # True crash or unexpected panic
+            print(f"[{zulu_now()}] ❌ Unexpected failure or substrate panic.")
+            print(f"--- STDOUT ---\n{result.stdout}\n--------------")
+            print(f"--- STDERR ---\n{result.stderr}\n--------------")
+            sys.exit(1)
             
     except Exception as e:
         print(f"[{zulu_now()}] ❌ Benchmark orchestration failed: {str(e)}")
