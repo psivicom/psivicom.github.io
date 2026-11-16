@@ -81,7 +81,9 @@ sha2 = "0.10"
 regex = "1.10"
 
 # Gödel's Autonomous Recursive Improvement
-syn = { version = "2.0", features = ["full", "parsing", "printing", "visit-mut"] }
+# Added "visit", "fold", "clone-impls", and "extra-traits" to resolve E0432/E0433.
+# syn 2.0 strictly gates these AST traversal and mutation modules behind feature flags.
+syn = { version = "2.0", features = ["full", "parsing", "printing", "visit", "visit-mut", "fold", "clone-impls", "extra-traits"] }
 quote = "1.0"
 proc-macro2 = "1.0"
 prettyplease = "0.2"
