@@ -10,9 +10,6 @@ license = "EUPL-1.2"
 # BINARIES: The Pillars of the WENDY Organism
 # =========================================================================
 
-# Primary IPC Daemon (main.rs) — listens on port 1966
-# Automatically compiled from src/main.rs
-
 [[bin]]
 name = "wendy-crystalline-executor"
 path = "src/crystalline_executor.rs"
@@ -46,43 +43,23 @@ name = "wendy-godel"
 path = "src/recursive_self_improvement.rs"
 
 # =========================================================================
-# SHARED MODULES
-# =========================================================================
-# src/ipc_client.rs — Shared IPC client used by multiple binaries
-# (Rust automatically discovers modules via `mod ipc_client;` in each binary)
-
-# =========================================================================
 # DEPENDENCIES
 # =========================================================================
 
 [dependencies]
-# Async runtime for the IPC server, airgap watcher, and Gemini daemon
 tokio = { version = "1.36", features = ["full"] }
-
-# Strict Zulu time formatting with millisecond precision
 time = { version = "0.3", features = ["macros", "formatting"] }
 chrono = "0.4"
-
-# Structured logging and environment filtering
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "time", "json"] }
-
-# JSON serialization for the IPC Payload bridge
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-
-# Error handling and context propagation
 anyhow = "1.0"
-
-# Cryptographic hashing for epistemic verification
 sha2 = "0.10"
-
-# Regular expressions for boundary validation and pattern matching
 regex = "1.10"
 
 # Gödel's Autonomous Recursive Improvement
-# Added "visit", "fold", "clone-impls", and "extra-traits" to resolve E0432/E0433.
-# syn 2.0 strictly gates these AST traversal and mutation modules behind feature flags.
+# Strictly includes "visit", "fold", "clone-impls", and "extra-traits" for syn 2.0 compliance.
 syn = { version = "2.0", features = ["full", "parsing", "printing", "visit", "visit-mut", "fold", "clone-impls", "extra-traits"] }
 quote = "1.0"
 proc-macro2 = "1.0"
@@ -93,17 +70,13 @@ prettyplease = "0.2"
 # =========================================================================
 
 [profile.release]
-opt-level = 3              # Maximum optimization level
-lto = "fat"                # Link-time optimization across all crates
-codegen-units = 1          # Single codegen unit for better optimization
-panic = "abort"            # Abort on panic (no unwinding, smaller binary)
-strip = true               # Strip debug symbols from release binary
-
-# =========================================================================
-# DEV PROFILE: Debug builds with full information
-# =========================================================================
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
 
 [profile.dev]
-opt-level = 0              # No optimization for fast compilation
-debug = true               # Full debug information
-lto = false                # No LTO for faster builds
+opt-level = 0
+debug = true
+lto = false
