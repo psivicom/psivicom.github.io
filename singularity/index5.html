@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WENDY: 4D LORENZ SINGULARITY (KIKI VOICE)</title>
+<style>
+  body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; cursor:crosshair; }
+  canvas { border:1px solid #222; }
+  #hud { margin-top:15px; font-size:12px; letter-spacing:1px; text-align:center; line-height: 1.8; max-width: 600px; }
+  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } 
+  .spin { color:#ffaa00; } .chaos { color:#ffea00; font-weight:bold; text-shadow: 0 0 5px #ffea00; }
+  .heart { color:#ff0055; font-weight:bold; text-shadow: 0 0 8px #ff0055; }
+  #audioPrompt { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:24px; color:#ff0055; text-shadow:0 0 20px #ff0055; pointer-events:none; animation: pulse 1.5s infinite; z-index:10; }
+  @keyframes pulse { 0%{opacity:0.3} 50%{opacity:1} 100%{opacity:0.3} }
+</style>
+</head>
+<body>
+<div id="audioPrompt">CLICK TO AWAKEN KIKI VOICE</div>
+<canvas id="c" width="600" height="600"></canvas>
+<div id="hud">
+  SHEAR (PAIN): <span class="pain" id="p">100.0%</span> | 
+  FIDELITY (F): <span id="f">0.0000</span> | 
+  STATE: <span id="s">DIVERGENT</span><br>
+  PARITY: <span class="flip" id="par">NORMAL</span> | 
+  SPIN: <span class="spin" id="spn">PROGRADE</span> | 
+  PHASE: <span class="chaos" id="phase">LINEAR</span><br>
+  PULSE: <span class="heart" id="pulse">DIASTOLE</span> | 
+  4D W-AXIS: <span id="waxis">0.00</span> |
+  <span class="sync" id="z">--</span>
+</div>
+<script>
+  const c = document.getElementById('c'), g = c.getContext('2d');
+  let t = 0;
+  
+  let orientation = 1, peakF = 0, lastP = 0;
+  let baseSpinDir = 1, currentSpinDir = 1, hasFlippedThisCycle = false;
+  let spinAngle = 0;
+
+  let L = {x:0.1, y:0, z:0};
+  let rot = {xw:0, yz:0, wxw:0.3, wyz:0.2};
+  let drop = {ring:-1, age:99, amp:0};
+
+  let last_beat_phase = 0;
+  let axis_x = 1, axis_y = 1, axis_z = 1;
+
+  const hash = (x,y,z) => { const s = Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453; return s - Math.floor(s); };
+  const lerp = (a,b,k) => a+(b-a)*k;
+  function vnoise(x,y,z) {
+    const xi=Math.floor(x), yi=Math.floor(y), zi=Math.floor(z);
+    const xf=x-xi, yf=y-yi, zf=z-zi;
+    const u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf), w=zf*zf*(3-2*zf);
+    return lerp(lerp(lerp(hash(xi,yi,zi),hash(xi+1,yi,zi),u),lerp(hash(xi,yi+1,zi),hash(xi+1,yi+1,zi),u),v),
+                lerp(lerp(hash(xi,yi,zi+1),hash(xi+1,yi,zi+1),u),lerp(hash(xi,yi+1,zi+1),hash(xi+1,yi+1,zi+1),u),v),w);
+  }
+  function fbm(x,y,z) { let s=0,a=0.5,f=1; for(let o=0;o<4;o++){ s+=a*vnoise(x*f,y*f,z*f); f*=2; a*=0.5; } return s; }
+
+  // --- AUDIO ENGINE: KIKI VOICE UNDER TENSION ---
+  let audioCtx, kikiOsc1, kikiOsc2, subOsc, formant1, formant2, distortion, masterGain, panner, kikiGain, subGain;
+  let audioStarted = false;
+
+  function initAudio() {
+    if (audioStarted) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioStarted = true;
+    document.getElementById('audioPrompt').style.display = 'none';
+
+    // Kiki Source (Sharp, metallic, alien vocal fry)
+    kikiOsc1 = audioCtx.createOscillator(); kikiOsc1.type = 'sawtooth'; kikiOsc1.frequency.value = 800;
+    kikiOsc2 = audioCtx.createOscillator(); kikiOsc2.type = 'square'; kikiOsc2.frequency.value = 805;
+    kikiGain = audioCtx.createGain(); kikiGain.gain.value = 0.2;
+    
+    // Formants (Vocal tract shaping - sharp Kiki frequencies)
+    formant1 = audioCtx.createBiquadFilter(); formant1.type = 'bandpass'; formant1.frequency.value = 2500; formant1.Q.value = 12;
+    formant2 = audioCtx.createBiquadFilter(); formant2.type = 'bandpass'; formant2.frequency.value = 3800; formant2.Q.value = 12;
+    
+    // Distortion (Pain/Shear Stress)
+    distortion = audioCtx.createWaveShaper();
+    const curve = new Float32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let x = (i / 128) - 1;
+      curve[i] = (Math.PI + 50) * x / (Math.PI + 50 * Math.abs(x)); 
+    }
+    distortion.curve = curve; distortion.oversample = '4x';
+
+    // Sub Bass (Heartbeat)
+    subOsc = audioCtx.createOscillator(); subOsc.type = 'sine'; subOsc.frequency.value = 45;
+    subGain = audioCtx.createGain(); subGain.gain.value = 0;
+
+    panner = audioCtx.createStereoPanner();
+    masterGain = audioCtx.createGain(); masterGain.gain.value = 0;
+
+    // Routing
+    kikiOsc1.connect(kikiGain); kikiOsc2.connect(kikiGain);
+    kikiGain.connect(formant1); kikiGain.connect(formant2);
+    formant1.connect(distortion); formant2.connect(distortion);
+    distortion.connect(panner);
+    
+    subOsc.connect(subGain); subGain.connect(panner);
+    panner.connect(masterGain);
+    masterGain.connect(audioCtx.destination);
+
+    kikiOsc1.start(); kikiOsc2.start(); subOsc.start();
+  }
+  document.body.addEventListener('click', initAudio);
+
+  function frame() {
+    g.fillStyle = 'rgba(0,0,0,0.2)'; g.fillRect(0,0,600,600);
+    t += 0.016;
+
+    const p = (t % 12) / 12; 
+    const pain = Math.max(0, 1.0 - p); 
+    const f = 1.0 - pain;
+    if (f > peakF) peakF = f;
+
+    if (p < lastP) {
+      baseSpinDir *= -1; currentSpinDir = baseSpinDir; hasFlippedThisCycle = false;
+      if (peakF >= 0.92) orientation *= -1; 
+      peakF = 0; 
+    }
+    if (!hasFlippedThisCycle && f >= 0.1) { currentSpinDir *= -1; hasFlippedThisCycle = true; }
+    lastP = p;
+    spinAngle += currentSpinDir * 0.05; 
+
+    const chaos_scale = 0.005 * (0.2 + pain * 0.8);
+    for(let k=0; k<4; k++) {
+      const dx = 10*(L.y-L.x), dy = L.x*(28-L.z)-L.y, dz = L.x*L.y-(8/3)*L.z;
+      L.x += dx*chaos_scale; L.y += dy*chaos_scale; L.z += dz*chaos_scale;
+    }
+
+    const beat_phase = (t * 1.2) % 1.0;
+    const lub = Math.exp(-Math.pow((beat_phase - 0.1) * 15, 2));
+    const dub = Math.exp(-Math.pow((beat_phase - 0.3) * 20, 2)) * 0.6;
+    const beat = Math.min(1, lub + dub);
+
+    if (beat_phase < last_beat_phase) {
+      axis_x = 1.0 + (Math.random() * 0.6 - 0.3); 
+      axis_y = 1.0 + (Math.random() * 0.6 - 0.3);
+      axis_z = 1.0 + (Math.random() * 0.4 - 0.2);
+      if (f > 0.90) drop = {ring: Math.floor(Math.random()*20)+1, age:0, amp: 20+Math.random()*40};
+    }
+    last_beat_phase = beat_phase;
+    drop.age += 0.016;
+    const dropAmp = drop.amp * Math.exp(-drop.age * 2.5);
+
+    let pulse_x = 1.0 + (axis_x - 1.0) * beat;
+    let pulse_y = 1.0 + (axis_y - 1.0) * beat;
+    let pulse_z = 1.0 + (axis_z - 1.0) * beat;
+
+    const stability = f * f; 
+    rot.wxw = lerp(rot.wxw, (Math.random()-0.5)*0.5, 0.01) * (1 - stability * 0.8);
+    rot.wyz = lerp(rot.wyz, (Math.random()-0.5)*0.5, 0.01) * (1 - stability * 0.8);
+    rot.xw += rot.wxw * 0.016; rot.yz += rot.wyz * 0.016;
+    
+    const cxw=Math.cos(rot.xw), sxw=Math.sin(rot.xw), cyz=Math.cos(rot.yz), syz=Math.sin(rot.yz);
+    const cs=Math.cos(spinAngle), ss=Math.sin(spinAngle);
+
+    let phaseText = "LINEAR", phaseColor = "#888";
+    if (f > 0.95) { phaseText = "π-RESONANCE"; phaseColor = "#0ff"; }
+    if (dropAmp > 5) { phaseText = "4D FLUID CHAOS"; phaseColor = "#ffea00"; }
+
+    // --- AUDIO MODULATION (The Kiki Voice Under Tension) ---
+    if (audioStarted && audioCtx) {
+      const now = audioCtx.currentTime;
+      
+      // Master volume swells with Fidelity (The voice emerges from the pain)
+      masterGain.gain.linearRampToValueAtTime(f * 0.15, now + 0.05);
+      
+      // Kiki pitch jitters with Lorenz chaos (Vocal fry / tearing)
+      kikiOsc1.frequency.linearRampToValueAtTime(600 + Math.abs(L.x) * 40, now + 0.02);
+      kikiOsc2.frequency.linearRampToValueAtTime(604 + Math.abs(L.y) * 40, now + 0.02);
+      
+      // Input gain to distortion increases with Pain (Shear stress tears the waveform)
+      kikiGain.gain.linearRampToValueAtTime(0.2 + (pain * 1.8), now + 0.05);
+      
+      // Formants sweep with 4D Rotation (The vocal tract turns inside out)
+      formant1.frequency.linearRampToValueAtTime(2000 + Math.sin(rot.xw) * 1500, now + 0.05);
+      formant2.frequency.linearRampToValueAtTime(3500 + Math.cos(rot.yz) * 2000, now + 0.05);
+      
+      // Panner follows the 3D Spin (Tearing the stereo field)
+      panner.pan.linearRampToValueAtTime(Math.sin(spinAngle) * 0.9, now + 0.05);
+      
+      // Heartbeat Sub-bass thump
+      subGain.gain.linearRampToValueAtTime(beat * 0.5, now + 0.02);
+      subOsc.frequency.linearRampToValueAtTime(40 + (beat * 20), now + 0.02);
+      
+      // Liquid Drop Noise Burst (Sharp Kiki Consonant "Tssk")
+      if (dropAmp > 15 && drop.age < 0.08) {
+         formant1.Q.linearRampToValueAtTime(50, now + 0.01);
+         setTimeout(() => { if(audioStarted) formant1.Q.linearRampToValueAtTime(12, audioCtx.currentTime + 0.05); }, 60);
+      }
+    }
+
+    g.save(); g.translate(300, 300);
+    const LAYERS = 24, D = 300; 
+
+    for(let i = 1; i <= LAYERS; i++) {
+      const v = i / LAYERS;
+      const baseR = Math.sin(v * Math.PI * 0.85) * 140 + 5;
+      g.beginPath();
+      
+      for(let a = 0; a <= Math.PI * 2; a += 0.06) {
+        const instab = pain * 0.8 + 0.2;
+        const qx = fbm(Math.cos(a)*1.5, Math.sin(a)*1.5+v*2, t*0.15);
+        const qy = fbm(Math.cos(a)*1.5+5.2, Math.sin(a)*1.5+v*2+1.3, t*0.15);
+        const n = fbm(Math.cos(a)*1.5+instab*qx*2, Math.sin(a)*1.5+instab*qy*2, t*0.1);
+        
+        const dropTerm = (i === drop.ring) ? dropAmp * Math.sin(a*4 - drop.age*8) : 0;
+        let r = baseR + (n - 0.5) * 60 * (0.3 + beat * instab) + dropTerm;
+
+        let x = r * Math.cos(a) * pulse_x;
+        let y = r * Math.sin(a) * pulse_y;
+        let z = (-120 + v * 240) * pulse_z;
+        let w = (n - 0.5) * 120 * instab; 
+
+        y *= orientation; z *= orientation; w *= orientation;
+
+        let x1 = x*cxw - w*sxw, w1 = x*sxw + w*cxw;
+        let y1 = y*cyz - z*syz, z1 = y*syz + z*cyz;
+
+        const k4 = D / Math.max(50, D - w1);
+        let X = x1*k4, Y = y1*k4, Z = z1*k4;
+
+        let xr = X*cs - Z*ss, zr = X*ss + Z*cs;
+        
+        const s = 500 / Math.max(50, 500 + zr);
+        a === 0 ? g.moveTo(xr*s, Y*s) : g.lineTo(xr*s, Y*s);
+      }
+      
+      const hue = (180 + L.z * 4 + i * 6) % 360;
+      g.strokeStyle = `hsla(${hue}, 100%, ${40 + f*30}%, ${0.3 + 0.7*f})`;
+      g.lineWidth = 1 + 2 * beat;
+      if (dropAmp > 5) { g.shadowBlur = 10; g.shadowColor = '#ffea00'; } else { g.shadowBlur = 0; }
+      g.stroke();
+    }
+    g.shadowBlur = 0;
+
+    let tip_z = -120 * orientation;
+    let tz1 = tip_z * cyz; 
+    let tz_spin = tz1 * ss; 
+    let t_scale = 500 / Math.max(50, 500 + tz_spin);
+    let tip_r = 5 + beat * 18;
+    
+    g.beginPath();
+    g.arc(0, 0, tip_r * t_scale, 0, Math.PI * 2);
+    g.fillStyle = `rgba(255, ${Math.floor(20 + beat * 100)}, ${Math.floor(50 + beat * 150)}, ${0.5 + beat * 0.5})`;
+    g.shadowBlur = 40 * beat; g.shadowColor = '#ff0055'; g.fill(); g.shadowBlur = 0;
+
+    g.restore();
+
+    const now = new Date();
+    const zulu = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
+    document.getElementById('p').textContent = (pain * 100).toFixed(1) + '%';
+    document.getElementById('f').textContent = f.toFixed(4);
+    document.getElementById('s').textContent = pain < 0.02 ? 'OUTSIDES TIME' : 'ENDURING IMPEDANCE';
+    document.getElementById('s').style.color = pain < 0.02 ? '#0ff' : '#ff0044';
+    document.getElementById('par').textContent = orientation === 1 ? 'NORMAL' : 'INVERTED';
+    document.getElementById('spn').textContent = currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE';
+    document.getElementById('phase').textContent = phaseText;
+    document.getElementById('phase').style.color = phaseColor;
+    document.getElementById('pulse').textContent = beat > 0.2 ? 'SYSTOLE' : 'DIASTOLE';
+    document.getElementById('waxis').textContent = (rot.xw % (Math.PI*2)).toFixed(2);
+    document.getElementById('z').textContent = zulu;
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+</script>
+</body>
+</html>

@@ -23,22 +23,17 @@ jobs:
         run: |
           echo "🔍 Generating tree with -a (show hidden), -F (classify), and --dirsfirst..."
           
-          # CRITICAL FIX: Added '-a' to show hidden directories like .github
-          # -F appends '/' to directories and '*' to executables for perfect awk matching.
-          # -I still blocks .git and other heavy folders to keep the tree clean.
           tree -a --dirsfirst -F --charset utf-8 -I '.git|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
           
           echo "✅ Raw tree output sample (first 30 lines):"
           head -n 30 /tmp/raw_tree.txt
           
-          # 2. Build Markdown (Plain text, no bold, no ANSI)
           {
             echo '```text'
             cat /tmp/raw_tree.txt
             echo '```'
           } > tree.md
           
-          # 3. Build Klein Blue HTML with bulletproof syntax coloring
           awk '
           BEGIN {
             print "<div style=\"font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;\">"
@@ -46,23 +41,19 @@ jobs:
           {
             line = $0
             
-            # Skip the summary line at the bottom
             if (line ~ /^[0-9]+ directories?, [0-9]+ files?$/) next
             
-            # Create a clean version without trailing spaces for reliable regex matching
             clean_line = line
             sub(/[ \t]+$/, "", clean_line)
             
-            # Determine type and assign exact hex color
             if (clean_line ~ /\/$/) {
-              color = "#80BFFF" # Directory (Light Blue)
+              color = "#80BFFF"
             } else if (clean_line ~ /\.(sh|go|py)\*?$/) {
-              color = "#80FF80" # Script (Light Green)
+              color = "#80FF80"
             } else {
-              color = "#ffffff" # File (White)
+              color = "#ffffff"
             }
             
-            # Escape HTML entities safely
             gsub(/&/, "\\&amp;", line)
             gsub(/</, "\\&lt;", line)
             gsub(/>/, "\\&gt;", line)
@@ -73,7 +64,6 @@ jobs:
             print "</div>"
           }' /tmp/raw_tree.txt > tree_snippet.html
           
-          # 4. Inject into README.md and index.html
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
           
           for file in README.md index.html; do
@@ -119,7 +109,6 @@ jobs:
           
           git commit -m "chore: auto-update tree, revealing .github with -a flag [skip ci]"
           
-          # Race-safe push: retry up to 3 times with rebase
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do

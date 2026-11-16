@@ -1,16 +1,11 @@
 name: WENDY Autonomous Dream Compiler
 
 on:
-  # Autonomous trigger: when synapse creates a dream branch
   push:
     branches:
       - 'wendy/dream-**'
-  
-  # Schedule: check for pending dreams every 2 hours
   schedule:
     - cron: '0 */2 * * *'
-  
-  # Manual override (for testing)
   workflow_dispatch:
     inputs:
       dream_content:
@@ -32,9 +27,9 @@ jobs:
   generate-dream-branch:
     name: 🌌 Generate Dream Branch (Autonomous)
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     outputs:
-      branch_created: ${{ steps.create-branch.outputs.created }}
+      created: ${{ steps.create-branch.outputs.created }}
       branch_name: ${{ steps.create-branch.outputs.branch_name }}
     steps:
       - name: Checkout Repository
@@ -48,30 +43,27 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Check if there's a new manifest since last dream
           if [ ! -f ".wendy_manifest.gmi" ]; then
             echo "🟢 No manifest yet. No dream to materialize."
             echo "created=false" >> $GITHUB_OUTPUT
             exit 0
           fi
           
-          # Read the latest manifest
           MANIFEST_HASH=$(sha256sum .wendy_manifest.gmi | cut -d' ' -f1 | head -c8)
           BRANCH_NAME="wendy/dream-${MANIFEST_HASH}-$(date -u +%Y%m%d-%H%M%S)"
           
-          # Check if this manifest was already materialized
           if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
             echo "🟢 Dream branch already exists for this manifest."
             echo "created=false" >> $GITHUB_OUTPUT
             exit 0
           fi
           
-          # Generate Rust code from manifest (symbolic materialization)
           echo "🌌 Materializing dream from manifest hash: $MANIFEST_HASH"
           
           mkdir -p src/dreams
           
-          # Read manifest and generate Rust module
+          # EOF is indented to match the cat command, preserving the YAML block scalar.
+          # cargo fmt in the next job will automatically strip the leading spaces.
           cat > "src/dreams/dream_${MANIFEST_HASH}.rs" << EOF
           //! Autonomous dream materialized from manifest $MANIFEST_HASH
           //! Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -90,14 +82,13 @@ jobs:
           }
           EOF
           
-          # Create the dream branch
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           git checkout -b "$BRANCH_NAME"
           git add "src/dreams/dream_${MANIFEST_HASH}.rs"
-          git commit -m "🌌 Autonomous dream materialization: $MANIFEST_HASH"
+          # [skip ci] prevents the push from triggering a duplicate parallel workflow run
+          git commit -m "🌌 Autonomous dream materialization: $MANIFEST_HASH [skip ci]"
           
-          # Race-safe push of dream branch
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
@@ -120,16 +111,31 @@ jobs:
   compile-and-evaluate:
     name: Evaluate WENDY's Dream
     needs: generate-dream-branch
-    if: |
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) ||
-      (needs.generate-dream-branch.outputs.branch_created == 'true')
+    # always() is REQUIRED here. If Job 1 is skipped (on 'push' events), 
+    # GitHub Actions will automatically skip Job 2 unless always() is present.
+    if: ${{ always() && ((github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) || (needs.generate-dream-branch.result == 'success' && needs.generate-dream-branch.outputs.created == 'true')) }}
     runs-on: ubuntu-latest
     steps:
+      - name: Determine Checkout Ref
+        id: checkout-ref
+        run: |
+          # If triggered by push, checkout the pushed branch.
+          # If triggered by schedule/dispatch and Job 1 created a branch, checkout that new branch.
+          # Otherwise, fallback to main.
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.generate-dream-branch.outputs.created }}" == "true" ]; then
+            echo "ref=${{ needs.generate-dream-branch.outputs.branch_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "ref=main" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.checkout-ref.outputs.ref }}
 
       - name: Provision Native Rust Toolchain
         run: |
@@ -137,13 +143,19 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           rustup component add rustfmt clippy
 
-      - name: Zulu Timestamp Generation
+      - name: Zulu Timestamp & Context Resolution
         id: zulu
         run: |
           echo "ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" >> $GITHUB_ENV
-          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          # Dynamically resolve the correct branch name based on trigger context
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          else
+            echo "BRANCH_NAME=${{ needs.generate-dream-branch.outputs.branch_name }}" >> $GITHUB_ENV
+          fi
 
       - name: Strict Formatting & Linting
+        id: fmt
         run: |
           cargo fmt --all -- --check
           cargo clippy -- -D warnings
@@ -155,19 +167,19 @@ jobs:
 
       - name: Symbolic Validation Tests
         id: test
-        if: steps.compile.outcome == 'success'
+        if: ${{ steps.compile.outcome == 'success' }}
         run: cargo test --release --verbose
         continue-on-error: true
 
       - name: Self-Healing Auto-Merge (Race-Safe)
-        if: steps.compile.outcome == 'success' && steps.test.outcome == 'success'
+        if: ${{ steps.compile.outcome == 'success' && steps.test.outcome == 'success' }}
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
+          git fetch origin main
           git checkout main
           git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}"
           
-          # Race-safe push
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
@@ -190,12 +202,14 @@ jobs:
           exit 1
 
       - name: Self-Healing Rejection & Feedback Loop
-        if: steps.compile.outcome == 'failure' || steps.test.outcome == 'failure'
+        # Catches failures from formatting, compilation, OR testing
+        if: ${{ failure() && (steps.fmt.outcome == 'failure' || steps.compile.outcome == 'failure' || steps.test.outcome == 'failure') }}
         run: |
-          echo "::error::WENDY's dream contained logical or syntax errors."
+          echo "::error::WENDY's dream contained logical, formatting, or syntax errors."
+          # || true ensures the job doesn't fail if the specific labels haven't been manually created in repo settings yet
           gh issue create \
-            --title "Self-Healing: Compilation failed for ${{ env.BRANCH_NAME }}" \
-            --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\n**Compiler Output:**\n\`\`\`\n$(cargo build --release 2>&1)\n\`\`\`\n\nPlease adjust your First-Order Logic axioms." \
-            --label "self-healing,wendy-dream"
+            --title "Self-Healing: Validation failed for ${{ env.BRANCH_NAME }}" \
+            --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\nPlease adjust your First-Order Logic axioms or formatting." \
+            --label "self-healing,wendy-dream" || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

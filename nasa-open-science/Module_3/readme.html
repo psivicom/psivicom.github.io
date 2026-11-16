@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OS101 Module 3: Open Data</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');:root{font-family:'IBM Plex Serif',Georgia,serif}.mono{font-family:'IBM Plex Mono',monospace}body{margin:0;background:#f6f9ff;color:#18181b;line-height:1.7;-webkit-font-smoothing:antialiased}body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(1200px 600px at 20% -10%,#dbeafe 0%,transparent 60%),radial-gradient(800px 400px at 90% 10%,#e0e7ff 0%,transparent 50%);pointer-events:none}a{color:inherit;text-underline-offset:3px}a:hover{text-decoration-thickness:2px}.topbar{background:#0A1931;color:#00D4FF;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:.05em;border-bottom:1px solid #00D4FF33}.container{max-width:900px;margin:0 auto;padding:24px 24px 64px;background:#fff;border-radius:0 0 16px 16px;box-shadow:0 10px 40px #0A193133,0 1px 0 #e4e4e7}.header{border-bottom:1px solid #e4e4e7;padding-bottom:32px}.kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#71717a;font-weight:500}.h1{font-size:42px;line-height:.95;letter-spacing:-.02em;font-weight:600;margin:12px 0 0}@media(max-width:640px){.h1{font-size:32px}}.sub{margin-top:12px;font-size:13px;color:#52525b;line-height:1.6}.nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}.nav a{border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none}.nav a:hover{border-color:#002FA7;background:#002FA7;color:#fff}.section{margin-top:56px;scroll-margin-top:60px}.section-head{display:flex;align-items:center;gap:16px}.section-head h2{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;color:#71717a;margin:0;line-height:1.4}.line{flex:1;height:1px;background:linear-gradient(90deg,#0A1931,#00D4FF,#00FF9D);opacity:.5}h3{font-size:16px;font-weight:600;line-height:1.4;color:#18181b;margin:0 0 8px}.card{border:1px solid #e4e4e7;border-radius:12px;padding:20px;background:#fff;overflow-wrap:break-word}.klein-box{background:#002FA7;color:#fff;border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(0,47,167,.2);overflow-wrap:break-word}.klein-box-full{background:#002FA7;color:#fff;border-radius:12px;padding:32px;box-shadow:0 8px 24px rgba(0,47,167,.2);overflow-wrap:break-word}.label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);font-family:'IBM Plex Mono',monospace;margin-bottom:8px}.value{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-bottom:14px;color:#fff;line-height:1.2}.desc{font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.9)}.klein-box a,.klein-box-full a{color:#fff}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:768px){.grid2{grid-template-columns:1fr}}.tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:9999px;margin-bottom:10px}.tag-up{background:#0B3D91;color:#fff}.tag-render{background:#e0e7ff;color:#0B3D91;border:1px solid #c7d2fe}.tag-local{background:#002FA7;color:#fff}.ok{color:#00FF9D;font-weight:600}.hashes{font-size:11.5px;word-break:break-all}code,.hashes{font-family:'IBM Plex Mono',monospace}.hashbox{background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;margin-top:12px;font-size:11.5px;word-break:break-all;line-height:1.8}table{width:100%;border-collapse:collapse;font-size:12.5px}th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#71717a;font-weight:500;text-align:left;background:#fafafa;border-bottom:1px solid #e4e4e7;padding:12px 14px}td{padding:12px 14px;border-bottom:1px solid #f4f4f5;vertical-align:top}.tablewrap{overflow:hidden;border:1px solid #e4e4e7;border-radius:12px;margin-top:20px}.lesson{border-left:2px solid #002FA7;padding-left:18px;margin-bottom:22px}.lesson .meta{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#71717a;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}.lesson p{font-size:14.5px;color:#3f3f46;margin:8px 0 6px}.lesson a{font-size:12px;font-family:'IBM Plex Mono',monospace}.pill{display:inline-block;border:1px solid #e4e4e7;border-radius:9999px;padding:7px 16px;text-decoration:none;font-size:12px;font-family:'IBM Plex Mono',monospace;margin:4px 6px 4px 0}.pill.primary{background:#002FA7;border-color:#002FA7;color:#fff}.pill:hover{border-color:#002FA7}img{max-width:100%}pre{background:#fafafa;border:1px solid #e4e4e7;border-radius:8px;padding:12px;overflow-x:auto;font-size:11.5px}footer{margin-top:48px;border-top:1px solid #e4e4e7;padding-top:28px;font-size:11px;color:#71717a;line-height:1.7}</style>
+</head>
+<body>
+<div class="topbar mono">PSIVI.COM &mdash; OPEN SCIENCE ARCHIVE &mdash; UPSTREAM MIRROR</div>
+<div class="container">
+<div class="card" style="margin-top:24px;border-left:4px solid #0B3D91"><span class="tag tag-up">Upstream &middot; unmodified text</span><span class="tag tag-render">Format-only render</span><p style="font-size:13.5px;color:#3f3f46;margin:6px 0 0">Written by <strong>NASA TOPS Open Science 101 Curriculum Development Team</strong> (2023), licensed <strong>CC BY 4.0</strong>, retrieved from <a href="https://doi.org/10.5281/zenodo.10161527">Zenodo 10.5281/zenodo.10161527</a>.<br><strong>Local change:</strong> file format converted Markdown &rarr; HTML and this banner added by Louis-Philippe Audette. <em>No wording, figure or data was altered.</em></p><div class="hashes" style="margin-top:10px;color:#71717a">MD5 ecde9587a3c95be40eb0eb3cfa083ea5<br>SHA-256 a40238e36b6efec82991e0c7ca8a8209603fce86c77f4f35cbf03b627623a8a2<br>Retrieved 2026-11-13T00:24:32.463Z</div><p style="margin:12px 0 0"><a class="pill" href="/nasa-open-science/index.html">Archive home</a><a class="pill" href="/nasa-open-science/provenance.html">What is upstream vs local</a></p></div>
+<main class="section"><h1 id="os101-module-3-open-data">OS101 Module 3:
+Open Data</h1>
+<p><strong>Welcome to Open Science 101: Open Data</strong></p>
+<h2 id="about-this-module">About This Module</h2>
+<p>This module focuses on the practice and application of open science
+for data. It provides a 'how to' process for finding and assessing open
+data for use, for making open data and for sharing open data. The
+step-by-step flows are easy to follow and can be used as checklists
+after you complete the module. Some of the key topics discussed include:
+data management plans, the process for assessing data for reuse,
+creating a plan for making data including choosing open formats and
+adding documentation, and the considerations for sharing data and making
+your data citable.</p>
+<h3 id="module-learning-objectives">Module Learning Objectives</h3>
+<p>After completing this module you should be able to:</p>
+<ul>
+<li>Describe the meaning and purpose of open data, its benefits, and how
+FAIR principles are used.</li>
+<li>Recall methods to assess the reusability of data based on its
+documentation, and cite the data as instructed.</li>
+<li>Implement an open data management plan, select open data formats,
+add the needed documentation, including metadata, README files and
+version control, to make the data reusable and findable.</li>
+<li>Evaluate whether your data should and can be shared.</li>
+<li>Recall practices to make data more accessible, including the
+registration of an affiliated DOI and the inclusion of citation
+instructions in documentation.</li>
+</ul>
+<h2 id="key-terms">Key Terms</h2>
+<p>These key terms are important topics for this module. Select the term
+to see the description.</p>
+<p><strong>Copyright</strong> – A type of intellectual property that
+protects original works of authorship as soon as an author fixes the
+work in a tangible form of expression. Many different types of works are
+covered by copyright law including data products and software. (As well
+as books, poems, paintings, photographs, illustrations, musical
+compositions, and many more.)</p>
+<p><strong>Data</strong> – Any type of information, recordable, or
+observable facts. Data are now most commonly stored electronically.</p>
+<p><strong>Data License</strong> – Data licenses give any data creator a
+way to grant the public permission to use their products under copyright
+law. Similarly, data licenses give data users clear guidelines regarding
+how they can reuse the material.</p>
+<p><strong>CC-BY and CC0 License</strong> – CC-BY and CC0 are Creative
+Commons data licenses. CC-BY allows reusers to distribute, remix, adapt,
+and build upon the material in any medium or format so long as
+attribution is given to the creator. The license allows for commercial
+use. CC0 allows creators to give up their copyright and put their works
+into the worldwide public domain. CC0 allows reusers to distribute,
+remix, adapt, and build upon the material in any medium or format, with
+no conditions.</p>
+<p><strong>Data Management Plan</strong> – A data management plan (DMP)
+describes the what, where, when, and who for data that will be created
+during a research project. Common components of data management plans
+include a description of the type, volume, and format of the data; where
+and when the data will be made available, and who will make the data
+available. The plan can also describe data variables, sources, accuracy,
+and precision if that information is available.</p>
+<p><strong>Metadata</strong> – Data that describes data. It can be
+global – describing the overall contents of a single file or collection
+of files – or local – describing an individual variable within the file.
+Typically, global metadata offers information about who created the
+file, information about the data set, what satellite/instrument/lab/etc.
+created the set, the DOI, and file format information, among other
+metadata fields. Local metadata about variables contains information
+such as the full/long name of the variable, any scaling factors or
+uncertainty information, and measurement units.</p>
+<p><strong>Machine-Readable Persistent Identiﬁers (PID)</strong> – A
+unique string that identifies an object, such as a dataset. Though the
+online location of the object may change, the PID will not, and will
+also lead back to the data, ensuring that citations referencing the PID
+will always be valid.</p>
+<p><strong>Findable (data)</strong> – Data that is readily discoverable
+to both humans and machines. It should include a unique persistent
+identifier and rich metadata describing the data and context and be
+registered in an index that is searchable.</p>
+<p><strong>Accessible (data)</strong> – Data that can be accessed over
+standard communication protocols, with metadata that can be accessed
+even if the data itself is no longer available.</p>
+<p><strong>Interoperable</strong> (data) – Data that uses controlled
+ontologies and vocabularies so that it can be used and/or combined with
+other relevant data sets in different applications.</p>
+<p><strong>Reusable (data)</strong> – Data that has a clear license,
+detailed provenance, adequate description/definition and meets
+community/domain standards, and can be replicated or combined with other
+data.</p>
+<p><strong>Dataﬂow</strong> – The data workflow that includes how data
+are used, made, and shared. Different actors will have different (or
+multiple) roles in this workflow.</p>
+<h2 id="navigation">Navigation</h2>
+<h3 id="lesson-1-introduction-to-open-data"><a href="./Lesson_1">Lesson
+1: Introduction to Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_1#overview">Overview</a></li>
+<li><a href="./Lesson_1#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_1#introduction">Introduction</a></li>
+<li><a
+href="./Lesson_1#definition-and-considerations-of-open-data">Definition
+and Considerations of Open Data</a></li>
+<li><a href="./Lesson_1#benefits-of-open-data">Benefits of Open
+Data</a></li>
+<li><a href="./Lesson_1#challenges-of-open-data">Challenges of Open
+Data</a></li>
+<li><a href="./Lesson_1#applying-fair-principles">Applying FAIR
+Principles</a></li>
+<li><a
+href="./Lesson_1#planning-for-openness-using-the-use-make-share-framework-for-open-data">Planning
+for Openness: Using the Use, Make, Share Framework for Open
+Data</a></li>
+<li><a href="./Lesson_1#lesson-1-summary">Lesson 1: Summary</a></li>
+<li><a href="./Lesson_1#lesson-1-knowledge-check">Lesson 1: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-2-using-open-data"><a href="./Lesson_2">Lesson 2: Using
+Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_2#overview">Overview</a></li>
+<li><a href="./Lesson_2#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_2#introduction">Introduction</a></li>
+<li><a href="./Lesson_2#discovering-open-data">Discovering Open
+Data</a></li>
+<li><a href="./Lesson_2#assessing-open-data">Assessing Open
+Data</a></li>
+<li><a href="./Lesson_2#using-open-data">Using Open Data</a></li>
+<li><a href="./Lesson_2#lesson-2-summary">Lesson 2: Summary</a></li>
+<li><a href="./Lesson_2#lesson-2-knowledge-check">Lesson 2: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-3-making-open-data"><a href="./Lesson_3">Lesson 3: Making
+Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_3#overview">Overview</a></li>
+<li><a href="./Lesson_3#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_3#planning-for-open-data">Planning for Open
+Data</a></li>
+<li><a
+href="./Lesson_3#selecting-data-formats-and-tools-for-interoperability">Selecting
+Data Formats and Tools for Interoperability</a></li>
+<li><a
+href="./Lesson_3#making-the-data-reusable-through-documentation">Making
+the Data Reusable Through Documentation</a></li>
+<li><a
+href="./Lesson_3#making-the-data-reusable-through-licensing">Making the
+Data Reusable Through Licensing</a></li>
+<li><a href="./Lesson_3#lesson-3-summary">Lesson 3: Summary</a></li>
+<li><a href="./Lesson_3#lesson-3-knowledge-check">Lesson 3: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-4-sharing-open-data"><a href="./Lesson_4">Lesson 4:
+Sharing Open Data</a></h3>
+<ul>
+<li><a href="./Lesson_4#overview">Overview</a></li>
+<li><a href="./Lesson_4#learning-objectives">Learning
+Objectives</a></li>
+<li><a href="./Lesson_4#when-and-if-to-share-data">When and If to Share
+Data</a></li>
+<li><a href="./Lesson_4#where-to-share-data">Where to Share
+Data</a></li>
+<li><a href="./Lesson_4#how-to-enable-reuse-of-data">How to Enable Reuse
+of Data</a></li>
+<li><a href="./Lesson_4#who-is-responsible-for-sharing-data">Who is
+Responsible for Sharing Data</a></li>
+<li><a href="./Lesson_4#lesson-4-summary">Lesson 4: Summary</a></li>
+<li><a href="./Lesson_4#lesson-4-knowledge-check">Lesson 4: Knowledge
+Check</a></li>
+</ul>
+<h3 id="lesson-5-from-theory-to-practice"><a href="./Lesson_5">Lesson 5:
+From Theory to Practice</a></h3>
+<ul>
+<li><a href="./Lesson_5#overview">Overview</a></li>
+<li><a href="./Lesson_5#learning-objectives">Learning
+Objectives</a></li>
+<li><a
+href="./Lesson_5#writing-an-open-science-and-data-management-plan">Writing
+an Open Science and Data Management Plan</a></li>
+<li><a href="./Lesson_5#open-data-communities-and-you">Open Data
+Communities and You</a></li>
+<li><a href="./Lesson_5#additional-resources">Additional
+Resources</a></li>
+<li><a href="./Lesson_5#lesson-5-summary">Lesson 5: Summary</a></li>
+<li><a href="./Lesson_5#lesson-5-knowledge-check">Lesson 5: Knowledge
+Check</a></li>
+<li><a href="./Lesson_5#open-data-summary">Open Data Summary</a></li>
+</ul></main>
+<footer>Upstream text &copy; 2023 NASA TOPS Open Science 101 Curriculum Development Team &mdash; CC BY 4.0 &mdash; <a href="https://doi.org/10.5281/zenodo.10161527">10.5281/zenodo.10161527</a>.<br>Local pages, HTML renders, provenance and packaging &copy; 2026 Louis-Philippe Audette | PSIVI.COM &mdash; code EUPL 1.2, text CC BY-SA 4.0.<br>Retrieved 2026-11-13T00:24:32.463Z &middot; Not endorsed by NASA.</footer>
+</div>
+</body>
+</html>
