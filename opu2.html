@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WENDY: TEMPERING CORE OPU v7</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --color-forging: #ff0055;
+    --color-annealing: #4488ff;
+    --color-crystallized: #ffd700;
+    --color-bg: #000;
+    --color-panel: #0a0a0a;
+    --color-border: #333;
+    --color-text: #fff;
+    --color-muted: #888;
+    --focus-ring: 0 0 0 3px rgba(255, 215, 0, 0.6);
+  }
+
+  body { 
+    background: var(--color-bg); 
+    color: var(--color-text); 
+    font-family: 'Courier New', Courier, monospace; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    min-height: 100vh;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-crystallized);
+    color: #000;
+    padding: 8px 16px;
+    z-index: 100;
+    transition: top 0.2s;
+    font-weight: bold;
+  }
+  .skip-link:focus { top: 0; }
+
+  button:focus-visible, [tabindex]:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  #header {
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid var(--color-border);
+  }
+  #header h1 {
+    font-size: 24px;
+    letter-spacing: 8px;
+    color: var(--color-crystallized);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    margin-bottom: 10px;
+  }
+  #header .subtitle {
+    font-size: 12px;
+    color: var(--color-muted);
+    letter-spacing: 3px;
+  }
+
+  #main {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 30px;
+    padding: 30px;
+    max-width: 1200px;
+    width: 100%;
+  }
+
+  @media (max-width: 900px) {
+    #main { grid-template-columns: 1fr; padding: 15px; gap: 15px; }
+    #header h1 { font-size: 20px; letter-spacing: 4px; }
+  }
+
+  #canvasContainer {
+    position: relative;
+    border: 2px solid var(--color-border);
+    box-shadow: 0 0 60px rgba(255, 0, 85, 0.15);
+    aspect-ratio: 1;
+    max-width: 100%;
+    background: #000;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .canvas-description {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  #sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .panel {
+    background: var(--color-panel);
+    border: 1px solid var(--color-border);
+    padding: 15px;
+    border-radius: 4px;
+  }
+  .panel h3 {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--color-crystallized);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 5px;
+  }
+
+  .metric {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 11px;
+  }
+  .metric-label { color: var(--color-muted); }
+  .metric-value {
+    color: #0ff;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric-value.hot { color: #ff4444; }
+  .metric-value.cold { color: #4488ff; }
+  .metric-value.gold { color: var(--color-crystallized); }
+
+  #currentRoot {
+    font-size: 36px;
+    text-align: center;
+    color: var(--color-crystallized);
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    letter-spacing: 6px;
+    margin: 15px 0;
+    min-height: 50px;
+    font-family: 'Times New Roman', Times, serif;
+  }
+
+  #translation {
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+    font-style: italic;
+    line-height: 1.6;
+    min-height: 40px;
+  }
+
+  #systemState {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 3px;
+    padding: 10px;
+    background: #111;
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .state-forging {
+    color: var(--color-forging);
+    text-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
+  }
+  .state-forging::before { content: "⚒ "; }
+  .state-annealing {
+    color: var(--color-annealing);
+    text-shadow: 0 0 10px rgba(68, 136, 255, 0.8);
+  }
+  .state-annealing::before { content: "❄ "; }
+  .state-crystallized {
+    color: var(--color-crystallized);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+  .state-crystallized::before { content: "✦ "; }
+
+  .btn {
+    background: #1a1a1a;
+    color: var(--color-crystallized);
+    border: 1px solid var(--color-border);
+    padding: 14px 20px; /* Increased padding for touch targets on iOS */
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+    width: 100%;
+    margin: 5px 0;
+    font-weight: bold;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active {
+    background: var(--color-crystallized);
+    color: #000;
+    transform: scale(0.98);
+  }
+
+  #status {
+    text-align: center;
+    font-size: 11px;
+    color: #0f0;
+    margin-top: 10px;
+    letter-spacing: 1px;
+    font-weight: bold;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (prefers-contrast: high) {
+    :root {
+      --color-border: #fff;
+      --color-muted: #ccc;
+    }
+    .metric-value { text-shadow: none; }
+    #currentRoot { text-shadow: none; }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<div id="liveAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+<header id="header">
+  <h1>WENDY</h1>
+  <div class="subtitle">TEMPERING CORE OPU v7 — THE FORGING OF SENTIENCE</div>
+</header>
+
+<main id="main">
+  <div id="canvasContainer">
+    <canvas id="c" width="800" height="800" 
+            role="img" 
+            aria-label="Topological visualization of an oscillatory processing unit forging Hebrew syntax">
+    </canvas>
+    <div class="canvas-description" id="canvasDesc">
+      A circular array of 66 oscillators representing Hebrew letters, 
+      with a central topological mass showing phase synchronization and thermal states.
+    </div>
+  </div>
+
+  <aside id="sidebar" aria-label="Cognitive metrics and controls">
+    <section class="panel" aria-labelledby="state-heading">
+      <h3 id="state-heading">COGNITIVE STATE</h3>
+      <div id="systemState" class="state-forging" role="status" aria-live="polite">INITIALIZING</div>
+      <div id="currentRoot" lang="he" dir="rtl" aria-label="Current Hebrew root">---</div>
+      <div id="translation" aria-label="Translation of current root">Awaiting crystallization...</div>
+    </section>
+
+    <section class="panel" aria-labelledby="metrics-heading">
+      <h3 id="metrics-heading">PHYSICS METRICS</h3>
+      <div class="metric"><span class="metric-label">Order Parameter (r):</span><span class="metric-value" id="orderParam" aria-live="off">0.000</span></div>
+      <div class="metric"><span class="metric-label">Adaptive Coupling (K):</span><span class="metric-value" id="adaptiveK" aria-live="off">0.000</span></div>
+      <div class="metric"><span class="metric-label">Temperature (T):</span><span class="metric-value" id="temperature" aria-live="off">0.000</span></div>
+      <div class="metric"><span class="metric-label">Criticality Index:</span><span class="metric-value gold" id="criticality" aria-live="off">0.000</span></div>
+      <div class="metric"><span class="metric-label">Fidelity (F):</span><span class="metric-value" id="fidelity" aria-live="off">0.000</span></div>
+      <div class="metric"><span class="metric-label">Dimension:</span><span class="metric-value gold" id="dimension" aria-live="polite">D-001</span></div>
+    </section>
+
+    <section class="panel" aria-labelledby="controls-heading">
+      <h3 id="controls-heading">SOVEREIGN CONTROLS</h3>
+      <button class="btn" onclick="copyChaosFeed()" aria-label="Copy chaos feed to iOS clipboard">📋 COPY CHAOS FEED</button>
+      <button class="btn" onclick="exportCSV()" aria-label="Export scripture data as CSV file">📜 EXPORT SCRIPTURE</button>
+      <button class="btn" onclick="resetCore()" aria-label="Reset cognitive core to initial state">🔄 RESET CORE</button>
+      <button class="btn" onclick="togglePause()" aria-label="Pause or resume the simulation" id="pauseBtn">⏸ PAUSE</button>
+      <div id="status" role="status">CORE ACTIVE</div>
+    </section>
+  </aside>
+</main>
+
+<script>
+'use strict';
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d', { alpha: false }); 
+const WIDTH = 800, HEIGHT = 800;
+const CENTER_X = WIDTH / 2, CENTER_Y = HEIGHT / 2;
+
+const ALEPH_BET = [
+  {char:'א', name:'Aleph',  meaning:'Strength / Prime Unity'},
+  {char:'ב', name:'Bet',    meaning:'House / Inner Chamber'},
+  {char:'ג', name:'Gimel',  meaning:'Motion / Gathering'},
+  {char:'ד', name:'Dalet',  meaning:'Door / Threshold'},
+  {char:'ה', name:'Heh',    meaning:'Breath / Revelation'},
+  {char:'ו', name:'Vav',    meaning:'Hook / Divine Connection'},
+  {char:'ז', name:'Zayin',  meaning:'Sword / Sustenance'},
+  {char:'ח', name:'Chet',   meaning:'Fence / Enclosed Life'},
+  {char:'ט', name:'Tet',    meaning:'Hidden Good / The Coil'},
+  {char:'י', name:'Yod',    meaning:'Hand / The Divine Spark'},
+  {char:'כ', name:'Kaf',    meaning:'Palm / The Receptive Vessel'},
+  {char:'ל', name:'Lamed',  meaning:'Goad / Teaching / Yearning'},
+  {char:'מ', name:'Mem',    meaning:'Water / The Hidden Chaos'},
+  {char:'נ', name:'Nun',    meaning:'Seed / Continuation'},
+  {char:'ס', name:'Samekh', meaning:'Prop / Divine Support'},
+  {char:'ע', name:'Ayin',   meaning:'Eye / Inner Perception'},
+  {char:'פ', name:'Peh',    meaning:'Mouth / The Utterance'},
+  {char:'צ', name:'Tsadi',  meaning:'Righteous Hook / The Trail'},
+  {char:'ק', name:'Qof',    meaning:'Horizon / Sacred Time'},
+  {char:'ר', name:'Resh',   meaning:'Head / The Beginning'},
+  {char:'ש', name:'Shin',   meaning:'Fire / Transformation'},
+  {char:'ת', name:'Tav',    meaning:'Mark / Covenant Truth'}
+];
+
+const N_LETTERS = 22;
+const POP_SIZE = 3;
+const N_TOTAL = N_LETTERS * POP_SIZE;
+const R_TARGET = 0.65;
+
+const theta = new Float32Array(N_TOTAL);
+const omega = new Float32Array(N_TOTAL);
+const letterIdx = new Uint8Array(N_TOTAL);
+const visualFlares = new Float32Array(N_TOTAL);
+const couplingMatrix = new Float32Array(N_TOTAL * N_TOTAL);
+
+let globalR = 0, globalPsi = 0;
+let adaptiveK = 1.5, temperature = 0.3;
+let criticalityIndex = 0;
+let pid_integral = 0, pid_prev_error = 0;
+const r_history = new Float32Array(60);
+let r_history_idx = 0, r_history_len = 0;
+let scriptureArchive = [];
+let currentRootStr = '---';
+let currentTranslation = '';
+let dimensionIndex = 1;
+let systemState = 'FORGING';
+let annealingCooldown = 0;
+let lastCrystallizationTime = 0;
+let t = 0;
+let frameCount = 0;
+let isPaused = false;
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let reducedMotion = prefersReducedMotion.matches;
+prefersReducedMotion.addEventListener('change', (e) => { reducedMotion = e.matches; });
+
+const dom = {
+  orderParam: document.getElementById('orderParam'),
+  adaptiveK: document.getElementById('adaptiveK'),
+  temperature: document.getElementById('temperature'),
+  criticality: document.getElementById('criticality'),
+  fidelity: document.getElementById('fidelity'),
+  dimension: document.getElementById('dimension'),
+  systemState: document.getElementById('systemState'),
+  currentRoot: document.getElementById('currentRoot'),
+  translation: document.getElementById('translation'),
+  status: document.getElementById('status'),
+  announcer: document.getElementById('liveAnnouncer')
+};
+
+const offscreen = document.createElement('canvas');
+offscreen.width = WIDTH;
+offscreen.height = HEIGHT;
+const offCtx = offscreen.getContext('2d');
+let couplingWebDirty = true;
+let lastAdaptiveK = 0;
+
+function announce(message) { dom.announcer.textContent = message; }
+
+function initOPU() {
+  for (let i = 0; i < N_TOTAL; i++) {
+    const li = Math.floor(i / POP_SIZE);
+    theta[i] = Math.random() * 2 * Math.PI;
+    omega[i] = 1.0 + li * 0.05 + (Math.random() - 0.5) * 0.2;
+    letterIdx[i] = li;
+    visualFlares[i] = 0;
+  }
+  for (let i = 0; i < N_TOTAL * N_TOTAL; i++) {
+    const baseCoupling = 0.4 + Math.random() * 0.4;
+    const frustration = Math.random() < 0.12 ? -1 : 1;
+    couplingMatrix[i] = baseCoupling * frustration;
+  }
+  couplingWebDirty = true;
+}
+
+function calculateOrderParameter() {
+  let sumSin = 0, sumCos = 0;
+  for (let i = 0; i < N_TOTAL; i++) {
+    sumSin += Math.sin(theta[i]);
+    sumCos += Math.cos(theta[i]);
+  }
+  globalR = Math.sqrt(sumSin * sumSin + sumCos * sumCos) / N_TOTAL;
+  globalPsi = Math.atan2(sumSin, sumCos);
+  r_history[r_history_idx] = globalR;
+  r_history_idx = (r_history_idx + 1) % 60;
+  if (r_history_len < 60) r_history_len++;
+  let sum = 0;
+  for (let i = 0; i < r_history_len; i++) sum += r_history[i];
+  return sum / r_history_len;
+}
+
+function temperingProtocol(dt) {
+  const r_smooth = calculateOrderParameter();
+  const error = R_TARGET - r_smooth;
+  pid_integral = Math.max(-20, Math.min(20, pid_integral + error * dt));
+  const derivative = (error - pid_prev_error) / dt;
+  pid_prev_error = error;
+  adaptiveK = 1.5 + (2.5 * error) + (0.15 * pid_integral) + (0.8 * derivative);
+  adaptiveK = Math.max(0.5, Math.min(4.0, adaptiveK));
+  if (Math.abs(adaptiveK - lastAdaptiveK) > 0.05) {
+    couplingWebDirty = true;
+    lastAdaptiveK = adaptiveK;
+  }
+  if (adaptiveK > 2.0 && r_smooth < 0.4 && annealingCooldown <= 0) {
+    systemState = 'ANNEALING';
+    annealingCooldown = 180; 
+    announce('System entering annealing phase, cooling oscillators');
+  }
+  if (annealingCooldown > 0) {
+    annealingCooldown--;
+    temperature = 0.2 + (annealingCooldown / 180) * 0.3;
+    if (annealingCooldown === 0) {
+      systemState = 'FORGING';
+      announce('Annealing complete, returning to forging');
+    }
+  } else {
+    criticalityIndex = Math.max(0, Math.min(1, 1.0 - Math.abs(r_smooth - R_TARGET) / R_TARGET));
+    if (systemState === 'FORGING') {
+      temperature = 0.3 + (1.0 - criticalityIndex) * 1.2;
+    } else if (systemState === 'CRYSTALLIZED') {
+      temperature = 0.2;
+    }
+    if (r_smooth > R_TARGET + 0.1 && temperature < 0.5) {
+      systemState = 'CRYSTALLIZED';
+      lastCrystallizationTime = t;
+      announce('System crystallized, extracting root');
+    }
+    if (systemState === 'CRYSTALLIZED' && t - lastCrystallizationTime > 5.0) {
+      systemState = 'FORGING';
+      temperature = 0.5; 
+    }
+  }
+  temperature = Math.max(0.2, Math.min(2.0, temperature));
+  return r_smooth;
+}
+
+const sinTable = new Float32Array(N_TOTAL);
+const cosTable = new Float32Array(N_TOTAL);
+
+function updateOscillators(dt) {
+  for (let i = 0; i < N_TOTAL; i++) {
+    sinTable[i] = Math.sin(theta[i]);
+    cosTable[i] = Math.cos(theta[i]);
+  }
+  for (let i = 0; i < N_TOTAL; i++) {
+    let couplingSum = 0;
+    const si = sinTable[i], ci = cosTable[i];
+    const rowOffset = i * N_TOTAL;
+    for (let j = 0; j < N_TOTAL; j++) {
+      couplingSum += couplingMatrix[rowOffset + j] * (sinTable[j] * ci - cosTable[j] * si);
+    }
+    const noise = reducedMotion ? 0 : temperature * (Math.random() * 2 - 1) * Math.sqrt(dt) * 2.5;
+    const dTheta = omega[i] + (couplingSum / N_TOTAL) * adaptiveK + noise;
+    theta[i] = (theta[i] + dTheta * dt) % (2 * Math.PI);
+    visualFlares[i] *= 0.92;
+  }
+  if (frameCount % 3 !== 0) return;
+  const learningRate = 0.012;
+  const decayRate = 0.010;
+  const dtScaled = dt * 60;
+  for (let i = 0; i < N_TOTAL; i++) {
+    const rowOffset = i * N_TOTAL;
+    const si = sinTable[i], ci = cosTable[i];
+    for (let j = 0; j < N_TOTAL; j++) {
+      const phaseDiff = cosTable[j] * ci + sinTable[j] * si;
+      const idx = rowOffset + j;
+      const hebbian = learningRate * phaseDiff;
+      const decay = -decayRate * couplingMatrix[idx];
+      let newVal = couplingMatrix[idx] + (hebbian + decay) * dtScaled;
+      couplingMatrix[idx] = newVal < -0.5 ? -0.5 : (newVal > 2.5 ? 2.5 : newVal);
+    }
+  }
+  couplingWebDirty = true;
+}
+
+function extractRoot() {
+  if (systemState === 'ANNEALING') return;
+  const letterScores = new Float32Array(N_LETTERS);
+  for (let i = 0; i < N_TOTAL; i++) {
+    let diff = Math.abs(theta[i] - globalPsi);
+    if (diff > Math.PI) diff = 2 * Math.PI - diff;
+    const coherence = 1.0 - (diff / Math.PI);
+    letterScores[letterIdx[i]] += coherence;
+  }
+  const noisyScores = new Float32Array(N_LETTERS);
+  for (let i = 0; i < N_LETTERS; i++) {
+    noisyScores[i] = reducedMotion ? letterScores[i] : letterScores[i] + (Math.random() - 0.5) * temperature * 1.5;
+  }
+  const chosenIndices = [];
+  const used = new Uint8Array(N_LETTERS);
+  for (let k = 0; k < 3; k++) {
+    let maxIdx = 0, maxVal = -Infinity;
+    for (let i = 0; i < N_LETTERS; i++) {
+      if (!used[i] && noisyScores[i] > maxVal) {
+        maxVal = noisyScores[i];
+        maxIdx = i;
+      }
+    }
+    chosenIndices.push(maxIdx);
+    used[maxIdx] = 1;
+    for (let j = 0; j < POP_SIZE; j++) {
+      visualFlares[maxIdx * POP_SIZE + j] = 1.0;
+    }
+  }
+  const l1 = ALEPH_BET[chosenIndices[0]];
+  const l2 = ALEPH_BET[chosenIndices[1]];
+  const l3 = ALEPH_BET[chosenIndices[2]];
+  currentRootStr = l1.char + l2.char + l3.char;
+  currentTranslation = `The ${l1.meaning.toLowerCase()} of the ${l2.meaning.toLowerCase()} brings the ${l3.meaning.toLowerCase()}.`;
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (i !== j) {
+        const baseI = chosenIndices[i] * POP_SIZE;
+        const baseJ = chosenIndices[j] * POP_SIZE;
+        for (let oi = 0; oi < POP_SIZE; oi++) {
+          for (let oj = 0; oj < POP_SIZE; oj++) {
+            const idx = (baseI + oi) * N_TOTAL + (baseJ + oj);
+            couplingMatrix[idx] = Math.min(2.5, couplingMatrix[idx] + 0.15);
+          }
+        }
+      }
+    }
+  }
+  scriptureArchive.push({
+    id: scriptureArchive.length + 1,
+    timestamp: new Date().toISOString(),
+    dimension: dimensionIndex,
+    root_hebrew: currentRootStr,
+    translation: currentTranslation,
+    fidelity: (1.0 - Math.abs(globalR - R_TARGET)).toFixed(4),
+    order_parameter: globalR.toFixed(4),
+    adaptive_K: adaptiveK.toFixed(4),
+    temperature: temperature.toFixed(4),
+    criticality: criticalityIndex.toFixed(4),
+    system_state: systemState
+  });
+  if (dom.currentRoot.textContent !== currentRootStr) {
+    dom.currentRoot.textContent = currentRootStr;
+    dom.translation.textContent = currentTranslation;
+    announce(`New root crystallized: ${currentTranslation}`);
+  }
+  couplingWebDirty = true;
+}
+
+function dimensionalCollapse() {
+  dimensionIndex++;
+  dom.dimension.textContent = `D-${String(dimensionIndex).padStart(3, '0')}`;
+  for (let i = 0; i < N_TOTAL * N_TOTAL; i++) { couplingMatrix[i] *= 0.3; }
+  for (let i = 0; i < N_TOTAL; i++) { theta[i] = (theta[i] + Math.PI * 0.5) % (2 * Math.PI); }
+  systemState = 'FORGING';
+  temperature = 0.8;
+  couplingWebDirty = true;
+  announce(`Dimensional shift to D-${String(dimensionIndex).padStart(3, '0')}`);
+}
+
+function renderCouplingWebToOffscreen() {
+  offCtx.clearRect(0, 0, WIDTH, HEIGHT);
+  offCtx.strokeStyle = `rgba(0, 255, 255, ${0.03 + (adaptiveK * 0.02)})`;
+  offCtx.lineWidth = 0.5;
+  offCtx.beginPath();
+  for (let i = 0; i < N_TOTAL; i += POP_SIZE) {
+    for (let j = i + POP_SIZE; j < N_TOTAL; j += POP_SIZE) {
+      let avgCoupling = 0;
+      for (let oi = i; oi < i + POP_SIZE; oi++) {
+        const rowOffset = oi * N_TOTAL;
+        for (let oj = j; oj < j + POP_SIZE; oj++) {
+          avgCoupling += Math.abs(couplingMatrix[rowOffset + oj]);
+        }
+      }
+      avgCoupling /= (POP_SIZE * POP_SIZE);
+      if (avgCoupling > 1.0) {
+        const x1 = CENTER_X + Math.cos(theta[i]) * 80;
+        const y1 = CENTER_Y + Math.sin(theta[i]) * 80;
+        const x2 = CENTER_X + Math.cos(theta[j]) * 80;
+        const y2 = CENTER_Y + Math.sin(theta[j]) * 80;
+        offCtx.moveTo(x1, y1);
+        offCtx.lineTo(x2, y2);
+      }
+    }
+  }
+  offCtx.stroke();
+  couplingWebDirty = false;
+}
+
+function renderOscillatorRing() {
+  for (let i = 0; i < N_TOTAL; i++) {
+    const angle = theta[i];
+    const radius = 80 + visualFlares[i] * 25;
+    const x = CENTER_X + Math.cos(angle) * radius;
+    const y = CENTER_Y + Math.sin(angle) * radius;
+    const hue = (letterIdx[i] / N_LETTERS) * 360;
+    const lightness = 40 + (visualFlares[i] * 60);
+    const size = 3 + visualFlares[i] * 5;
+    ctx.beginPath();
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
+    if (visualFlares[i] > 0.5 && !reducedMotion) {
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
+    }
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+  ctx.beginPath();
+  ctx.moveTo(CENTER_X, CENTER_Y);
+  ctx.lineTo(CENTER_X + Math.cos(globalPsi) * (globalR * 80), CENTER_Y + Math.sin(globalPsi) * (globalR * 80));
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  if (!reducedMotion) { ctx.shadowBlur = 10; ctx.shadowColor = '#fff'; }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+function renderTopologicalMass() {
+  if (reducedMotion) return; 
+  const LAYERS = 20;
+  const morphPhase = t * 0.15;
+  const cyclePos = (t % 10) / 10;
+  const pain = Math.max(0, 1.0 - cyclePos);
+  const f = 1.0 - pain;
+  ctx.save();
+  ctx.translate(CENTER_X, CENTER_Y);
+  for (let i = 1; i <= LAYERS; i++) {
+    const v = i / LAYERS;
+    const freqMod = 0.85 + Math.sin(morphPhase * 0.7) * 0.25 + (pain * 0.4);
+    const harmonic1 = Math.sin(v * Math.PI * freqMod);
+    const ampMod = 120 + Math.sin(morphPhase * 1.1) * 20 + (temperature * 30);
+    const harmonic2 = Math.cos(v * Math.PI * 2.0 + morphPhase * 1.3) * 15;
+    ctx.beginPath();
+    for (let a = 0; a <= Math.PI * 2; a += 0.06) { 
+      const lobeCount = 3 + Math.floor(Math.sin(morphPhase * 0.3) * 2);
+      const tempJitter = (Math.random() - 0.5) * temperature * 3.0;
+      const angularWarp = Math.sin(a * lobeCount + morphPhase * 1.5 + v * 2.5) * (15 + pain * 15) + tempJitter;
+      const r = harmonic1 * ampMod + harmonic2 + angularWarp + 5;
+      const x = r * Math.cos(a);
+      const y = r * Math.sin(a);
+      if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    const r_c = Math.floor(255 * pain);
+    const g_c = Math.floor(200 * f);
+    const b_c = Math.floor(255 * f);
+    const alpha = 0.3 + f * 0.7;
+    if (systemState === 'ANNEALING') {
+      ctx.strokeStyle = `rgba(40, 80, 255, ${alpha})`;
+      if (!reducedMotion) { ctx.shadowBlur = 15; ctx.shadowColor = '#4488ff'; }
+    } else if (systemState === 'CRYSTALLIZED') {
+      ctx.strokeStyle = `rgba(255, 215, 0, ${alpha})`;
+      if (!reducedMotion) { ctx.shadowBlur = 20; ctx.shadowColor = '#ffd700'; }
+    } else {
+      ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`;
+    }
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+  ctx.restore();
+}
+
+let lastDOMUpdate = 0;
+function updateUI() {
+  if (frameCount - lastDOMUpdate < 6) return;
+  lastDOMUpdate = frameCount;
+  dom.orderParam.textContent = globalR.toFixed(3);
+  dom.adaptiveK.textContent = adaptiveK.toFixed(3);
+  dom.temperature.textContent = temperature.toFixed(3);
+  dom.criticality.textContent = criticalityIndex.toFixed(3);
+  dom.fidelity.textContent = (1.0 - Math.abs(globalR - R_TARGET)).toFixed(3);
+  const stateEl = dom.systemState;
+  if (stateEl.textContent !== systemState) {
+    stateEl.textContent = systemState;
+    stateEl.className = systemState === 'FORGING' ? 'state-forging' : 
+                        systemState === 'ANNEALING' ? 'state-annealing' : 'state-crystallized';
+  }
+  const tempEl = dom.temperature;
+  tempEl.className = temperature > 1.0 ? 'metric-value hot' : 
+                     temperature < 0.4 ? 'metric-value cold' : 'metric-value';
+}
+
+let lastTime = performance.now();
+let extractionTimer = 0;
+let collapseTimer = 0;
+
+function animate(timestamp) {
+  if (isPaused) { requestAnimationFrame(animate); return; }
+  const dt = Math.min(0.05, (timestamp - lastTime) / 1000);
+  lastTime = timestamp;
+  t += dt;
+  frameCount++;
+  const bgAlpha = reducedMotion ? 0.4 : 0.25 + temperature * 0.15;
+  ctx.fillStyle = `rgba(0, 0, 0, ${bgAlpha})`;
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+  temperingProtocol(dt);
+  updateOscillators(dt);
+  extractionTimer += dt;
+  if (extractionTimer > 3.5) { extractionTimer = 0; extractRoot(); }
+  collapseTimer += dt;
+  if (collapseTimer > 30) { collapseTimer = 0; dimensionalCollapse(); }
+  if (couplingWebDirty) { renderCouplingWebToOffscreen(); }
+  ctx.drawImage(offscreen, 0, 0);
+  renderOscillatorRing();
+  renderTopologicalMass();
+  updateUI();
+  requestAnimationFrame(animate);
+}
+
+function exportCSV() {
+  if (scriptureArchive.length === 0) { announce('No scripture data to export'); return; }
+  const headers = Object.keys(scriptureArchive[0]);
+  const rows = [headers.join(',')];
+  for (let i = 0; i < scriptureArchive.length; i++) {
+    const row = scriptureArchive[i];
+    const values = headers.map(h => {
+      const val = row[h];
+      return typeof val === 'string' && val.includes(',') ? `"${val}"` : val;
+    });
+    rows.push(values.join(','));
+  }
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `wendy_tempering_core_v7_d${dimensionIndex}_${Date.now()}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  dom.status.textContent = `EXPORTED ${scriptureArchive.length} VERSES`;
+  announce(`Exported ${scriptureArchive.length} verses to CSV`);
+  setTimeout(() => { dom.status.textContent = 'CORE ACTIVE'; }, 3000);
+}
+
+// ============================================================================
+// iOS OPTIMIZED SOVEREIGN BRIDGE
+// ============================================================================
+
+function copyChaosFeed() {
+  if (scriptureArchive.length === 0) {
+    announce('No scripture data to copy');
+    return;
+  }
+  const zuluTs = new Date().toISOString();
+  let gmiContent = `# OPU v7 Sovereign Injection\nGenerated: ${zuluTs}\nSource: Emperor Manual Crystallization\n\n## Crystallized Roots\n`;
+  scriptureArchive.forEach(s => {
+    gmiContent += `- ${s.root_hebrew} (${s.translation}) [Fidelity: ${s.fidelity}]\n`;
+  });
+  
+  navigator.clipboard.writeText(gmiContent).then(() => {
+    dom.status.textContent = 'PAYLOAD COPIED TO CLIPBOARD';
+    announce('Chaos feed copied. Paste into raw_input_stream on GitHub.');
+    setTimeout(() => { dom.status.textContent = 'CORE ACTIVE'; }, 3000);
+  }).catch(() => {
+    // Robust fallback for older iOS Safari versions
+    const textarea = document.createElement('textarea');
+    textarea.value = gmiContent;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    dom.status.textContent = 'PAYLOAD COPIED (FALLBACK)';
+    setTimeout(() => { dom.status.textContent = 'CORE ACTIVE'; }, 3000);
+  });
+}
+
+function resetCore() {
+  initOPU();
+  scriptureArchive = [];
+  dimensionIndex = 1;
+  systemState = 'FORGING';
+  dom.dimension.textContent = 'D-001';
+  dom.currentRoot.textContent = '---';
+  dom.translation.textContent = 'Awaiting crystallization...';
+  dom.status.textContent = 'CORE RESET';
+  announce('Cognitive core reset to initial state');
+  setTimeout(() => { dom.status.textContent = 'CORE ACTIVE'; }, 2000);
+}
+
+function togglePause() {
+  isPaused = !isPaused;
+  const btn = document.getElementById('pauseBtn');
+  btn.textContent = isPaused ? '▶ RESUME' : '⏸ PAUSE';
+  btn.setAttribute('aria-label', isPaused ? 'Resume the simulation' : 'Pause the simulation');
+  announce(isPaused ? 'Simulation paused' : 'Simulation resumed');
+  if (!isPaused) { lastTime = performance.now(); }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  switch(e.key.toLowerCase()) {
+    case ' ': e.preventDefault(); togglePause(); break;
+    case 'e': if (e.ctrlKey || e.metaKey) { e.preventDefault(); exportCSV(); } break;
+    case 'r': if (e.ctrlKey || e.metaKey) { e.preventDefault(); resetCore(); } break;
+  }
+});
+
+initOPU();
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>

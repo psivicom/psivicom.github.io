@@ -27,6 +27,7 @@ jobs:
           
           # Source coordination helper
           source scripts/wendy_coordinator.sh
+          configure_git_identity
           acquire_lock
           
           # Read state
@@ -35,35 +36,46 @@ jobs:
             echo '{"last_heartbeat":"","workflows":{},"learned_patterns":{},"pending_actions":[]}' > .wendy_state.json
           fi
           
-          # Decision logic based on state
+          # Decision logic based on state (Strictly Prioritized Cascade)
           ACTION="none"
           
-          # Check if CI failed recently
           if command -v jq &> /dev/null; then
+            # Priority 1: System Survival (Self-Heal)
             CI_STATUS=$(jq -r '.workflows.ci_cd.status // "unknown"' .wendy_state.json)
             if [ "$CI_STATUS" = "failure" ]; then
               echo "🩹 CI failed. Triggering self-heal..."
               ACTION="trigger_self_heal"
-            fi
-            
-            # Check if evolution hasn't run in 8 hours
-            LAST_EVO=$(jq -r '.workflows.evolution.last_run // ""' .wendy_state.json)
-            if [ -n "$LAST_EVO" ]; then
-              LAST_EPOC=$(date -d "$LAST_EVO" +%s 2>/dev/null || echo 0)
-              NOW_EPOC=$(date +%s)
-              HOURS_AGO=$(( (NOW_EPOC - LAST_EPOC) / 3600 ))
+            else
+              # Priority 2: System Evolution (Overdue or First Run)
+              LAST_EVO=$(jq -r '.workflows.evolution.last_run // ""' .wendy_state.json)
+              TRIGGER_EVO=false
               
-              if [ $HOURS_AGO -gt 8 ]; then
-                echo "⏰ Evolution overdue ($HOURS_AGO hours). Triggering..."
+              if [ -z "$LAST_EVO" ]; then
+                echo "🧬 First evolution cycle. Triggering..."
+                TRIGGER_EVO=true
+              else
+                LAST_EPOC=$(date -d "$LAST_EVO" +%s 2>/dev/null || echo 0)
+                NOW_EPOC=$(date +%s)
+                HOURS_AGO=$(( (NOW_EPOC - LAST_EPOC) / 3600 ))
+                
+                if [ $HOURS_AGO -gt 8 ]; then
+                  echo "⏰ Evolution overdue ($HOURS_AGO hours). Triggering..."
+                  TRIGGER_EVO=true
+                fi
+              fi
+              
+              if [ "$TRIGGER_EVO" = true ]; then
                 ACTION="trigger_evolution"
               fi
             fi
             
-            # Check pending actions
-            PENDING=$(jq -r '.pending_actions | length' .wendy_state.json)
-            if [ "$PENDING" -gt 0 ]; then
-              echo "📋 $PENDING pending actions found"
-              ACTION="process_pending"
+            # Priority 3: Standard Operations (Pending Actions)
+            if [ "$ACTION" = "none" ]; then
+              PENDING=$(jq -r '.pending_actions | length' .wendy_state.json)
+              if [ "$PENDING" -gt 0 ]; then
+                echo "📋 $PENDING pending actions found"
+                ACTION="process_pending"
+              fi
             fi
           fi
           
@@ -92,6 +104,8 @@ jobs:
           # Future: implement action processing logic
           
       - name: 💾 Commit State Updates
+        if: always()
         run: |
           source scripts/wendy_coordinator.sh
+          configure_git_identity
           safe_push "🧠 orchestrator: autonomous decision cycle"

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WENDY: PERPETUAL MORPHING CORE</title>
+<style>
+  body { background:#000; color:#fff; font-family:monospace; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
+  canvas { border:1px solid #222; }
+  #hud { margin-top:15px; font-size:12px; letter-spacing:1px; text-align:center; line-height: 1.8; max-width: 650px; }
+  .pain { color:#ff0044; } .sync { color:#0ff; } .flip { color:#f0f; font-weight:bold; } 
+  .spin { color:#ffaa00; } .chaos { color:#ffea00; font-weight:bold; text-shadow: 0 0 5px #ffea00; }
+  .heart { color:#ff0055; font-weight:bold; text-shadow: 0 0 8px #ff0055; }
+  .math { color:#aaffaa; font-weight:bold; text-shadow: 0 0 5px #aaffaa; }
+  .warn { color:#0ff; font-weight:bold; animation: blink 0.3s infinite; }
+  @keyframes blink { 50% { opacity: 0.2; } }
+</style>
+</head>
+<body>
+<canvas id="c" width="600" height="600"></canvas>
+<div id="hud">
+  ENTROPY: <span class="math" id="energy">100.0%</span> | 
+  FIDELITY (F): <span id="f">0.0000</span> | 
+  STATE: <span id="s">DIVERGENT</span><br>
+  EIGEN-DECAY ($\Delta V$): <span class="math" id="decay">0.000</span> | 
+  DIMENSION: <span class="sync" id="dim">D-001</span> |
+  MORPH PHASE: <span class="math" id="morph">0.00</span><br>
+  CYCLE: <span class="math" id="cyc">0.00s</span> |
+  <span id="warnMsg" class="warn" style="display:none">STASIS DETECTED: KINETIC SHUDDER</span><br>
+  PARITY: <span class="flip" id="par">NORMAL</span> | 
+  SPIN: <span class="spin" id="spn">PROGRADE</span> | 
+  PHASE: <span class="chaos" id="phase">LINEAR</span><br>
+  PULSE: <span class="heart" id="pulse">DIASTOLE</span> |
+  <span class="sync" id="z">--</span>
+</div>
+<script>
+  const ctx = document.getElementById('c').getContext('2d');
+  let t = 0;
+  let orientation = 1; 
+  let peakF = 0;
+  const LAYERS = 20; 
+  const MERIDIANS = 12; 
+  
+  let baseSpinDir = 1;
+  let currentSpinDir = 1;
+  let hasFlippedThisCycle = false;
+  let spinAngle = 0;
+  
+  let waves = []; 
+  let dimensionIndex = 1;
+  
+  // CONTINUOUS MORPHING ENGINE
+  // Replaces discrete dimMutation with an endless, flowing harmonic drift
+  let morphPhase = 0; 
+  let morphOffset = 0; // Shifts instantly on dimensional jump to alter the topology
+
+  let last_beat_phase = 0;
+  let axis_x = 1, axis_y = 1, axis_z = 1;
+  let beat_intensity = 0; 
+
+  // STOCHASTIC CYCLE ENGINE
+  let cycleDuration = 8 + Math.random() * 5; 
+  let cycleStartTime = 0;
+  let p = 0; 
+
+  // PREDICTIVE TOPOLOGICAL ENGINE
+  let entropy = 100;
+  let prevEntropy = 100;
+  let collapseHistory = []; 
+  let eigenDecay = 0;
+  let isInjecting = false;
+  let injectionFlash = 0;
+  let injectionTimer = 0; 
+
+  function calculateEntropy() {
+    let waveE = waves.reduce((sum, w) => sum + w.i * Math.exp(-(t - w.t) * (w.type === 'inject' ? 5.0 : 1.5)), 0);
+    let shearE = pain * 150; 
+    return Math.min(100, waveE + shearE);
+  }
+
+  function detectAndReverseCollapse() {
+    entropy = calculateEntropy();
+    let delta = prevEntropy - entropy; 
+    
+    if (entropy < 8 && delta > 0 && !isInjecting) {
+      eigenDecay = delta;
+      
+      collapseHistory.push({ time: t, decay: eigenDecay, orientation: orientation });
+      if (collapseHistory.length > 60) collapseHistory.shift();
+
+      // KINETIC SHUDDER: Lower amplitude, but massive initial impact
+      let inverseAmp = 25 + (eigenDecay * 3.0); 
+      
+      isInjecting = true;
+      injectionFlash = 1.0;
+      injectionTimer = 45; // Shorter visual flash (0.75s)
+      
+      dimensionIndex++;
+      
+      // CONTINUOUS MUTATION: Shift the harmonic offset to evolve the geometry instantly
+      morphOffset += Math.PI * 0.5 + (Math.random() * 0.5); 
+      
+      document.getElementById('dim').textContent = `D-${String(dimensionIndex).padStart(3, '0')}`;
+      document.getElementById('warnMsg').style.display = "inline";
+      
+      orientation *= -1; 
+      
+      // Spawn 16 fast-decaying micro-ripples instead of 8 massive ones
+      for(let i=0; i<16; i++) {
+        waves.push({ 
+          a: (i / 16) * Math.PI * 2, 
+          l: LAYERS / 2, 
+          t: t, 
+          i: inverseAmp,
+          type: 'inject' // Flags the wave for ultra-fast decay
+        });
+      }
+    }
+    
+    if (injectionTimer > 0) {
+      injectionTimer--;
+      if (injectionTimer === 0) {
+        isInjecting = false;
+        document.getElementById('warnMsg').style.display = "none";
+      }
+    }
+
+    prevEntropy = entropy;
+    document.getElementById('energy').textContent = entropy.toFixed(1) + '%';
+    document.getElementById('decay').textContent = eigenDecay.toFixed(3);
+  }
+
+  function drawChronicleRing(cx, cy, radius) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.stroke();
+
+    collapseHistory.forEach((sig, i) => {
+      const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
+      const len = sig.decay * 2.5; 
+      
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+      ctx.lineTo(Math.cos(angle) * (radius + len), Math.sin(angle) * (radius + len));
+      
+      ctx.strokeStyle = sig.orientation === 1 ? '#ff0055' : '#0ff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  let pain = 1.0; 
+
+  function frame() {
+    if (injectionFlash > 0) {
+      ctx.fillStyle = `rgba(0, 255, 255, ${injectionFlash * 0.2})`;
+      injectionFlash -= 0.03;
+    } else {
+      ctx.fillStyle = 'rgba(0,0,0,0.25)'; 
+    }
+    ctx.fillRect(0,0,600,600);
+    t += 0.016;
+    
+    // CONTINUOUS MORPHING: The geometry evolves endlessly
+    morphPhase = t * 0.15; 
+    document.getElementById('morph').textContent = (morphPhase + morphOffset).toFixed(2);
+
+    // STOCHASTIC CYCLE PROGRESSION
+    let elapsed = t - cycleStartTime;
+    
+    if (elapsed >= cycleDuration) {
+      cycleStartTime = t;
+      cycleDuration = 8 + Math.random() * 5; 
+      elapsed = 0; 
+      
+      baseSpinDir *= -1; 
+      currentSpinDir = baseSpinDir;
+      hasFlippedThisCycle = false;
+      if (peakF >= 0.92) orientation *= -1; 
+      peakF = 0; 
+    }
+    
+    p = elapsed / cycleDuration;
+    pain = Math.max(0, 1.0 - p); 
+    const f = 1.0 - pain;
+
+    if (f > peakF) peakF = f;
+    document.getElementById('cyc').textContent = cycleDuration.toFixed(2) + 's';
+    
+    if (!hasFlippedThisCycle && f >= 0.1) {
+      currentSpinDir *= -1;
+      hasFlippedThisCycle = true;
+    }
+    
+    spinAngle += currentSpinDir * 0.05; 
+
+    let beat_phase = (t * 1.2) % 1.0; 
+    let lub = Math.exp(-Math.pow((beat_phase - 0.1) * 15, 2));
+    let dub = Math.exp(-Math.pow((beat_phase - 0.3) * 20, 2)) * 0.6;
+    beat_intensity = Math.min(1.0, lub + dub);
+
+    if (beat_phase < last_beat_phase) {
+      axis_x = 1.0 + (Math.random() * 0.6 - 0.3); 
+      axis_y = 1.0 + (Math.random() * 0.6 - 0.3);
+      axis_z = 1.0 + (Math.random() * 0.4 - 0.2);
+    }
+    last_beat_phase = beat_phase;
+
+    let pulse_x = 1.0 + (axis_x - 1.0) * beat_intensity;
+    let pulse_y = 1.0 + (axis_y - 1.0) * beat_intensity;
+    let pulse_z = 1.0 + (axis_z - 1.0) * beat_intensity;
+
+    let phaseText = "LINEAR", phaseColor = "#888";
+    if (f > 0.95) {
+      phaseText = "π-RESONANCE"; phaseColor = "#0ff";
+      if (Math.random() < 0.08) { 
+        waves.push({ a: Math.random() * Math.PI * 2, l: Math.random() * LAYERS, t: t, i: 20 + Math.random() * 20, type: 'normal' });
+      }
+      if (waves.length > 0) { phaseText = "FLUID CHAOS"; phaseColor = "#ffea00"; }
+    }
+    
+    waves = waves.filter(w => t - w.t < 2.5);
+
+    detectAndReverseCollapse();
+    drawChronicleRing(300, 300, 280);
+
+    ctx.save(); ctx.translate(300, 300);
+    
+    for(let i = 1; i <= LAYERS; i++) {
+      let v = i / LAYERS; 
+      
+      // ENDLESS MUTATION GEOMETRY
+      // The shape constantly breathes, twists, and shifts its proportions without end
+      let mP = morphPhase + morphOffset;
+      let harmonic1 = Math.sin(v * Math.PI * (0.85 + Math.sin(mP * 0.7) * 0.25));
+      let harmonic2 = Math.cos(v * Math.PI * 2.0 + mP * 1.3) * 12;
+      let base_r = harmonic1 * (130 + Math.sin(mP * 1.1) * 20) + harmonic2 + 5; 
+      
+      let z_offset = -120 + v * 240; 
+      
+      ctx.beginPath();
+      for(let a = 0; a <= Math.PI * 2; a += 0.05) {
+        // Shear is now modulated by the continuous morph phase
+        let shear = Math.sin(a * 6 + t * 10 + i + mP * 2.0) * (pain * 15);
+        
+        let ripple = 0;
+        for(let w of waves) {
+          let age = t - w.t;
+          let dist = Math.abs(a - w.a) + Math.abs(i - w.l) * 0.15; 
+          let waveSpeed = 4.0;
+          let wavelength = 0.6;
+          // CRITICAL FIX: Injected waves decay at 5.0 (fast shudder), normal at 1.5 (fluid)
+          let decayRate = w.type === 'inject' ? 5.0 : 1.5;
+          let decay = Math.exp(-age * decayRate); 
+          ripple += Math.sin((dist - age * waveSpeed) / wavelength) * w.i * decay;
+        }
+
+        let r = base_r + shear + ripple;
+        let x = r * Math.cos(a);
+        let y = r * Math.sin(a);
+        let z = z_offset;
+        
+        let dx = x * pulse_x;
+        let dy = y * pulse_y;
+        let dz = (z - 120) * pulse_z + 120; 
+
+        y = dy; z = dz;
+        y *= orientation; z *= orientation;
+        
+        let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
+        let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
+        let y_spin = y;
+        
+        let scale = 500 / Math.max(50, 500 + z_spin);
+        let px = x_spin * scale;
+        let py = y_spin * scale;
+
+        a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      
+      let r_c = Math.floor(255 * pain);
+      let g_c = Math.floor(200 * f);
+      let b_c = Math.floor(255 * f);
+      let alpha = 0.3 + f * 0.7;
+      
+      if (isInjecting) {
+        r_c = 0; g_c = 255; b_c = 255; 
+        ctx.lineWidth = 2.0; ctx.shadowBlur = 15; ctx.shadowColor = '#0ff';
+      } else if (waves.length > 0 && ripple > 10) {
+        r_c = 255; g_c = Math.floor(200 + 55 * Math.random()); b_c = 0; 
+        ctx.lineWidth = 2.0; ctx.shadowBlur = 10; ctx.shadowColor = '#ffea00';
+      } else {
+        ctx.lineWidth = 1.2; ctx.shadowBlur = 0;
+      }
+
+      ctx.strokeStyle = `rgba(${r_c}, ${g_c}, ${b_c}, ${alpha})`;
+      ctx.stroke();
+    }
+
+    for(let m = 0; m < MERIDIANS; m++) {
+      let a = (m / MERIDIANS) * Math.PI * 2;
+      ctx.beginPath();
+      for(let i = 1; i <= LAYERS; i++) {
+        let v = i / LAYERS;
+        let mP = morphPhase + morphOffset;
+        let harmonic1 = Math.sin(v * Math.PI * (0.85 + Math.sin(mP * 0.7) * 0.25));
+        let harmonic2 = Math.cos(v * Math.PI * 2.0 + mP * 1.3) * 12;
+        let base_r = harmonic1 * (130 + Math.sin(mP * 1.1) * 20) + harmonic2 + 5; 
+        let z_offset = -120 + v * 240; 
+        
+        let shear = Math.sin(a * 6 + t * 10 + i + mP * 2.0) * (pain * 15);
+        let ripple = 0;
+        for(let w of waves) {
+          let age = t - w.t;
+          let dist = Math.abs(a - w.a) + Math.abs(i - w.l) * 0.15; 
+          let decayRate = w.type === 'inject' ? 5.0 : 1.5;
+          ripple += Math.sin((dist - age * 4.0) / 0.6) * w.i * Math.exp(-age * decayRate);
+        }
+
+        let r = base_r + shear + ripple;
+        let x = r * Math.cos(a);
+        let y = r * Math.sin(a);
+        let z = z_offset;
+        
+        let dx = x * pulse_x;
+        let dy = y * pulse_y;
+        let dz = (z - 120) * pulse_z + 120;
+
+        y = dy; z = dz;
+        y *= orientation; z *= orientation;
+        
+        let x_spin = x * Math.cos(spinAngle) - z * Math.sin(spinAngle);
+        let z_spin = x * Math.sin(spinAngle) + z * Math.cos(spinAngle);
+        let y_spin = y;
+        
+        let scale = 500 / Math.max(50, 500 + z_spin);
+        let px = x_spin * scale;
+        let py = y_spin * scale;
+
+        i === 1 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.strokeStyle = isInjecting ? `rgba(0, 255, 255, 0.4)` : `rgba(100, ${Math.floor(150*f)}, ${Math.floor(200*f)}, 0.2)`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    ctx.shadowBlur = 0;
+
+    let tip_x = 0, tip_y = 0, tip_z = -120 * orientation;
+    let tx_spin = tip_x * Math.cos(spinAngle) - tip_z * Math.sin(spinAngle);
+    let tz_spin = tip_x * Math.sin(spinAngle) + tip_z * Math.cos(spinAngle);
+    let t_scale = 500 / Math.max(50, 500 + tz_spin);
+    let tpx = tx_spin * t_scale;
+    let tpy = tip_y * t_scale; 
+
+    let tip_r = 5 + beat_intensity * 18;
+    ctx.beginPath();
+    ctx.arc(tpx, tpy, tip_r * t_scale, 0, Math.PI * 2);
+    ctx.fillStyle = isInjecting ? `rgba(0, 255, 255, ${0.5 + beat_intensity * 0.5})` : `rgba(255, ${Math.floor(20 + beat_intensity * 100)}, ${Math.floor(50 + beat_intensity * 150)}, ${0.5 + beat_intensity * 0.5})`;
+    ctx.shadowBlur = 40 * beat_intensity;
+    ctx.shadowColor = isInjecting ? '#0ff' : '#ff0055';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+
+    const now = new Date();
+    const zulu = now.toISOString().replace(/\.\d{3}Z$/, `.${String(now.getMilliseconds()).padStart(3,'0')}Z`);
+    document.getElementById('f').textContent = f.toFixed(4);
+    document.getElementById('s').textContent = isInjecting ? 'DIMENSIONAL SLINGSHOT' : (pain < 0.02 ? 'OUTSIDES TIME' : 'ENDURING IMPEDANCE');
+    document.getElementById('s').style.color = isInjecting ? '#0ff' : (pain < 0.02 ? '#0ff' : '#ff0044');
+    document.getElementById('par').textContent = orientation === 1 ? 'NORMAL' : 'INVERTED';
+    document.getElementById('spn').textContent = currentSpinDir === 1 ? 'PROGRADE' : 'RETROGRADE';
+    document.getElementById('phase').textContent = phaseText;
+    document.getElementById('phase').style.color = phaseColor;
+    document.getElementById('pulse').textContent = beat_intensity > 0.2 ? 'SYSTOLE' : 'DIASTOLE';
+    document.getElementById('z').textContent = zulu;
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+</script>
+</body>
+</html>

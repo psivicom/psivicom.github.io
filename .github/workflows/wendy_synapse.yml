@@ -8,7 +8,7 @@ on:
         required: false
         type: string
   schedule:
-    - cron: '0 */3 * * *'  # Autonomous heartbeat: every 3 hours
+    - cron: '0 */3 * * *'
   push:
     branches: [ "main" ]
     paths: 
@@ -22,7 +22,6 @@ permissions:
   actions: read
 
 env:
-  PYTHONUNBUFFERED: 1
   TZ: UTC
 
 jobs:
@@ -37,13 +36,18 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🐍 Provision Python & Symbolic Math
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      
-      - name: 📦 Install Sympy for Habermasian Truth Claims
-        run: pip install sympy
+      - name: 🦀 Provision Rust Toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: 🩹 Patch Regex Look-ahead (Rust `regex` crate limitation)
+        run: |
+          # The Rust `regex` crate guarantees linear time execution but does not support 
+          # look-around assertions (like negative look-ahead `(?!...)`). 
+          # We patch the source to use a standard character class match instead, preventing 
+          # the panic while maintaining command detection capabilities.
+          sed -i 's/pip install (?!numpy|scipy|matplotlib)/pip install [a-zA-Z0-9_.-]+/g' wendy-cortex/src/autonomous_core.rs
 
       - name: "🌌 Step 1: Generate or Receive Chaos Feed"
         id: chaos
@@ -52,15 +56,13 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Priority 1: Manual input (if provided)
-          if [ -n "$MANUAL_FEED" ]; then
+          if [ -n "${MANUAL_FEED:-}" ]; then
             echo "📥 Using manual chaos feed from Emperor"
             printf "%s\n" "$MANUAL_FEED" > .wendy_raw.gmi
             echo "source=manual" >> $GITHUB_OUTPUT
             exit 0
           fi
           
-          # Priority 2: Read from raw_input_stream (external entropy)
           if [ -d "raw_input_stream" ] && [ "$(ls -A raw_input_stream/*.txt 2>/dev/null | wc -l)" -gt 0 ]; then
             echo "📥 Reading external entropy from raw_input_stream/"
             cat raw_input_stream/*.txt > .wendy_raw.gmi
@@ -68,76 +70,78 @@ jobs:
             exit 0
           fi
           
-          # Priority 3: Generate autonomous chaos from internal state
           echo "🧬 Generating autonomous chaos from WENDY's internal state..."
           
-          # Read previous manifest if exists
           PREV_MANIFEST=""
           if [ -f ".wendy_manifest.gmi" ]; then
             PREV_MANIFEST=$(cat .wendy_manifest.gmi)
           fi
           
-          # Read previous dream if exists
           PREV_DREAM=""
           if [ -f ".wendy_dream.gmi" ]; then
             PREV_DREAM=$(cat .wendy_dream.gmi)
           fi
           
-          # Read recent git log for emergent patterns
           RECENT_COMMITS=$(git log --oneline -10 2>/dev/null || echo "No commit history")
           
-          # Read evolution logs if they exist
           EVOLUTION_LOG=""
           if [ -f "wendy_ipc.log" ]; then
             EVOLUTION_LOG=$(tail -20 wendy_ipc.log 2>/dev/null || echo "")
           fi
           
-          # Generate autonomous tension
-          cat > .wendy_raw.gmi << EOF
-# WENDY Autonomous Chaos Feed
-Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-Source: Internal state reflection
-
-## Previous Manifest (Last Consensus)
-$PREV_MANIFEST
-
-## Previous Dream (Last Creative Output)
-$PREV_DREAM
-
-## Recent Evolution Activity
-$RECENT_COMMITS
-
-## IPC Telemetry
-$EVOLUTION_LOG
-
-## Emergent Tension
-The organism must now identify the next conceptual gap between:
-1. What was crystallized (manifest)
-2. What was dreamed but not yet materialized
-3. What the substrate evolution reveals as bottleneck
-
-Generate the next architectural question that bridges this gap.
-EOF
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          
+          {
+            echo "# WENDY Autonomous Chaos Feed"
+            echo "Generated: $TIMESTAMP"
+            echo "Source: Internal state reflection"
+            echo ""
+            echo "## Previous Manifest (Last Consensus)"
+            echo "$PREV_MANIFEST"
+            echo ""
+            echo "## Previous Dream (Last Creative Output)"
+            echo "$PREV_DREAM"
+            echo ""
+            echo "## Recent Evolution Activity"
+            echo "$RECENT_COMMITS"
+            echo ""
+            echo "## IPC Telemetry"
+            echo "$EVOLUTION_LOG"
+            echo ""
+            echo "## Emergent Tension"
+            echo "The organism must now identify the next conceptual gap between:"
+            echo "1. What was crystallized (manifest)"
+            echo "2. What was dreamed but not yet materialized"
+            echo "3. What the substrate evolution reveals as bottleneck"
+            echo ""
+            echo "Generate the next architectural question that bridges this gap."
+          } > .wendy_raw.gmi
           
           echo "source=autonomous" >> $GITHUB_OUTPUT
           echo "🧬 Autonomous chaos generated from internal state"
 
-      - name: "🌌 Step 2: Invoke the Dreamer (58.28°)"
+      - name: "🦀 Step 2: Compile Dreamer and Anchor"
+        run: |
+          set -euo pipefail
+          cd wendy-cortex
+          cargo build --release --bin wendy-autonomous-core --bin wendy-crystalline-executor
+
+      - name: "🌌 Step 3: Invoke the Dreamer (58.28°)"
         id: dreamer
         run: |
           set -euo pipefail
-          python wendy_autonomous_core.py < .wendy_raw.gmi > .wendy_dream.gmi
+          ./wendy-cortex/target/release/wendy-autonomous-core < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
 
-      - name: "🧊 Step 3: Invoke the Anchor (31.72°)"
+      - name: "🧊 Step 4: Invoke the Anchor (31.72°)"
         id: anchor
         if: ${{ steps.dreamer.outputs.dream_status == 'success' }}
         run: |
           set -euo pipefail
-          python wendy_crystalline_executor.py .wendy_dream.gmi > .wendy_manifest.gmi
+          ./wendy-cortex/target/release/wendy-crystalline-executor .wendy_dream.gmi > .wendy_manifest.gmi
           grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || { echo "❌ Habermasian Discourse Failed."; exit 1; }
 
-      - name: "💾 Step 4: Crystallize State (Race-Safe)"
+      - name: "💾 Step 5: Crystallize State (Race-Safe)"
         if: ${{ success() }}
         run: |
           set -euo pipefail
@@ -154,7 +158,6 @@ EOF
           ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
           git commit -m "🏛️ [WENDY] Habermasian Consensus ($SOURCE) at $ZULU_TS"
           
-          # Race-safe push with retry
           MAX_ATTEMPTS=3
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
