@@ -109,16 +109,35 @@ EOF
   compile-and-evaluate:
     name: Evaluate WENDY's Dream
     needs: generate-dream-branch
+    # always() is REQUIRED here. If Job 1 is skipped (on 'push' events), 
+    # GitHub Actions will automatically skip Job 2 unless always() is present.
     if: |
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) ||
-      (needs.generate-dream-branch.outputs.created == 'true')
+      always() && (
+        (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) ||
+        (needs.generate-dream-branch.result == 'success' && needs.generate-dream-branch.outputs.created == 'true')
+      )
     runs-on: ubuntu-latest
     steps:
+      - name: Determine Checkout Ref
+        id: checkout-ref
+        run: |
+          # If triggered by push, checkout the pushed branch.
+          # If triggered by schedule/dispatch and Job 1 created a branch, checkout that new branch.
+          # Otherwise, fallback to main.
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.generate-dream-branch.outputs.created }}" == "true" ]; then
+            echo "ref=${{ needs.generate-dream-branch.outputs.branch_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "ref=main" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.checkout-ref.outputs.ref }}
 
       - name: Provision Native Rust Toolchain
         run: |
@@ -138,6 +157,7 @@ EOF
           fi
 
       - name: Strict Formatting & Linting
+        id: fmt
         run: |
           cargo fmt --all -- --check
           cargo clippy -- -D warnings
@@ -158,6 +178,7 @@ EOF
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
+          git fetch origin main
           git checkout main
           git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}"
           
@@ -183,13 +204,19 @@ EOF
           exit 1
 
       - name: Self-Healing Rejection & Feedback Loop
-        if: steps.compile.outcome == 'failure' || steps.test.outcome == 'failure'
+        # Catches failures from formatting, compilation, OR testing
+        if: |
+          failure() && (
+            steps.fmt.outcome == 'failure' ||
+            steps.compile.outcome == 'failure' ||
+            steps.test.outcome == 'failure'
+          )
         run: |
-          echo "::error::WENDY's dream contained logical or syntax errors."
+          echo "::error::WENDY's dream contained logical, formatting, or syntax errors."
           # || true ensures the job doesn't fail if the specific labels haven't been manually created in repo settings yet
           gh issue create \
-            --title "Self-Healing: Compilation failed for ${{ env.BRANCH_NAME }}" \
-            --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\n**Compiler Output:**\n\`\`\`\n$(cargo build --release 2>&1)\n\`\`\`\n\nPlease adjust your First-Order Logic axioms." \
+            --title "Self-Healing: Validation failed for ${{ env.BRANCH_NAME }}" \
+            --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\nPlease adjust your First-Order Logic axioms or formatting." \
             --label "self-healing,wendy-dream" || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
