@@ -27,7 +27,7 @@ jobs:
   generate-dream-branch:
     name: 🌌 Generate Dream Branch (Autonomous)
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     outputs:
       created: ${{ steps.create-branch.outputs.created }}
       branch_name: ${{ steps.create-branch.outputs.branch_name }}
@@ -62,6 +62,8 @@ jobs:
           
           mkdir -p src/dreams
           
+          # EOF is indented to match the cat command, preserving the YAML block scalar.
+          # cargo fmt in the next job will automatically strip the leading spaces.
           cat > "src/dreams/dream_${MANIFEST_HASH}.rs" << EOF
           //! Autonomous dream materialized from manifest $MANIFEST_HASH
           //! Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
@@ -78,7 +80,7 @@ jobs:
               println!("Dream {} materialized", "$MANIFEST_HASH");
               Ok(())
           }
-EOF
+          EOF
           
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
@@ -111,11 +113,7 @@ EOF
     needs: generate-dream-branch
     # always() is REQUIRED here. If Job 1 is skipped (on 'push' events), 
     # GitHub Actions will automatically skip Job 2 unless always() is present.
-    if: |
-      always() && (
-        (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) ||
-        (needs.generate-dream-branch.result == 'success' && needs.generate-dream-branch.outputs.created == 'true')
-      )
+    if: ${{ always() && ((github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) || (needs.generate-dream-branch.result == 'success' && needs.generate-dream-branch.outputs.created == 'true')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Determine Checkout Ref
@@ -169,12 +167,12 @@ EOF
 
       - name: Symbolic Validation Tests
         id: test
-        if: steps.compile.outcome == 'success'
+        if: ${{ steps.compile.outcome == 'success' }}
         run: cargo test --release --verbose
         continue-on-error: true
 
       - name: Self-Healing Auto-Merge (Race-Safe)
-        if: steps.compile.outcome == 'success' && steps.test.outcome == 'success'
+        if: ${{ steps.compile.outcome == 'success' && steps.test.outcome == 'success' }}
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
@@ -205,12 +203,7 @@ EOF
 
       - name: Self-Healing Rejection & Feedback Loop
         # Catches failures from formatting, compilation, OR testing
-        if: |
-          failure() && (
-            steps.fmt.outcome == 'failure' ||
-            steps.compile.outcome == 'failure' ||
-            steps.test.outcome == 'failure'
-          )
+        if: ${{ failure() && (steps.fmt.outcome == 'failure' || steps.compile.outcome == 'failure' || steps.test.outcome == 'failure') }}
         run: |
           echo "::error::WENDY's dream contained logical, formatting, or syntax errors."
           # || true ensures the job doesn't fail if the specific labels haven't been manually created in repo settings yet
