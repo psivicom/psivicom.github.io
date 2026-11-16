@@ -63,18 +63,32 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
+          cache: false # Prevents "Dependencies file is not found" warning when go.sum is absent in root
       
       - name: 🔨 Build x86_64 Artifacts
         run: |
+          set -e # Fail immediately on any command error (Exit Code 101 isolation)
           cd wendy-cortex
           mkdir -p artifacts
-          cargo build --release
-          zig build-exe -O ReleaseFast src/hot_path.zig
-          go build -o artifacts/wendy_mesh mesh/main.go
           
-          # Consolidate polyglot artifacts into the Rust release directory for upload
-          mv hot_path* target/release/ 2>/dev/null || true
-          mv artifacts/wendy_mesh target/release/ 2>/dev/null || true
+          echo "🦀 Building Rust (Primary Substrate)..."
+          cargo build --release
+          
+          echo "⚡ Building Zig (Hot Path)..."
+          if [ -f "src/hot_path.zig" ]; then
+            zig build-exe -O ReleaseFast src/hot_path.zig
+            mv hot_path* target/release/ 2>/dev/null || true
+          else
+            echo "⚠️  src/hot_path.zig not found, skipping."
+          fi
+          
+          echo "🐹 Building Go (Mesh)..."
+          if [ -f "mesh/main.go" ]; then
+            go build -o artifacts/wendy_mesh mesh/main.go
+            mv artifacts/wendy_mesh target/release/ 2>/dev/null || true
+          else
+            echo "⚠️  mesh/main.go not found, skipping."
+          fi
       
       - name: 📦 Upload Ubuntu Artifacts
         uses: actions/upload-artifact@v4
@@ -98,7 +112,9 @@ jobs:
       
       - name: 🔨 Build ARM64 Edge Artifacts
         run: |
+          set -e
           cd wendy-cortex
+          echo "🦀 Building Rust (ARM64 Edge)..."
           cargo build --release --target aarch64-apple-darwin
       
       - name: 📦 Upload macOS Artifacts
@@ -138,7 +154,8 @@ jobs:
           git config --global user.email "wendy@psivi.com"
           
           # Fix detached HEAD state from actions/checkout to allow pushing to a branch
-          git checkout -b wendy-build-results
+          # Use -B to force reset the local branch if it somehow persists in the runner cache
+          git checkout -B wendy-build-results
           
           git add PRIDE.gmi
           
