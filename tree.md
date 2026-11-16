@@ -575,6 +575,7 @@
 ├── gemini_client.py
 ├── index.html
 ├── openscience.html
+├── opu.html
 ├── requirements-core.txt
 ├── requirements.txt
 ├── robots.txt
@@ -582,5 +583,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 525 files
+57 directories, 526 files
 ```
