@@ -576,6 +576,7 @@
 ├── index.html
 ├── openscience.html
 ├── opu.html
+├── opu2.html
 ├── requirements-core.txt
 ├── requirements.txt
 ├── robots.txt
@@ -583,5 +584,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 526 files
+57 directories, 527 files
 ```
