@@ -51,3 +51,4 @@ comptime {
     @export(variance, .{ .name = "wendy_variance", .linkage = .strong });
     @export(dot_product, .{ .name = "wendy_dot_product", .linkage = .strong });
 }
+// UNROLLED BY WENDY
