@@ -12,6 +12,10 @@ on:
         required: false
         default: ''
 
+# Strictly scoped permissions for secure token execution
+permissions:
+  contents: write
+
 jobs:
   detect-targets:
     name: 🎯 Analyze Code Changes
@@ -26,7 +30,8 @@ jobs:
       - name: 📖 Read Runner Matrix
         id: detect
         run: |
-          if grep -q "aarch64\|arm64\|ios\|edge" wendy-cortex/RUNNERS.toml; then
+          # Strict existence check to prevent grep failures on missing files
+          if [ -f wendy-cortex/RUNNERS.toml ] && grep -q "aarch64\|arm64\|ios\|edge" wendy-cortex/RUNNERS.toml; then
             echo "macos=true" >> $GITHUB_OUTPUT
           else
             echo "macos=false" >> $GITHUB_OUTPUT
@@ -62,9 +67,14 @@ jobs:
       - name: 🔨 Build x86_64 Artifacts
         run: |
           cd wendy-cortex
+          mkdir -p artifacts
           cargo build --release
           zig build-exe -O ReleaseFast src/hot_path.zig
           go build -o artifacts/wendy_mesh mesh/main.go
+          
+          # Consolidate polyglot artifacts into the Rust release directory for upload
+          mv hot_path* target/release/ 2>/dev/null || true
+          mv artifacts/wendy_mesh target/release/ 2>/dev/null || true
       
       - name: 📦 Upload Ubuntu Artifacts
         uses: actions/upload-artifact@v4
@@ -113,6 +123,7 @@ jobs:
       - name: 🏛️ Update Pride Log
         run: |
           echo "# WENDY Polyglot Build Results" > PRIDE.gmi
+          # Zulu (UTC) format with millisecond precision
           echo "Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" >> PRIDE.gmi
           echo "" >> PRIDE.gmi
           echo "## Ubuntu (x86_64) Artifacts" >> PRIDE.gmi
@@ -125,6 +136,10 @@ jobs:
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
+          
+          # Fix detached HEAD state from actions/checkout to allow pushing to a branch
+          git checkout -b wendy-build-results
+          
           git add PRIDE.gmi
           
           if git diff --staged --quiet; then
@@ -138,16 +153,21 @@ jobs:
           ATTEMPT=1
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
             echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
-            if git push origin main 2>&1; then
+            # Push local branch to remote main branch
+            if git push origin wendy-build-results:main 2>&1; then
               echo "✅ Push succeeded on attempt $ATTEMPT"
               exit 0
             fi
             echo "⚠️ Push rejected (race condition). Rebasing..."
-            git pull --rebase --autostash origin main || {
+            
+            # Fetch latest main and rebase current branch on top of it
+            git fetch origin main
+            git rebase origin/main || {
               echo "❌ Rebase failed. Aborting."
               git rebase --abort
               exit 1
             }
+            
             ATTEMPT=$((ATTEMPT + 1))
             sleep $((ATTEMPT * 2))
           done
