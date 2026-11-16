@@ -14,19 +14,16 @@ def zulu_now() -> str:
 
 def find_rust_binary() -> str:
     """Dynamically locates the compiled Rust binary regardless of CWD."""
-    # 1. Check for explicit override from GitHub Actions environment
     env_bin = os.environ.get("WENDY_CORTEX_BIN")
     if env_bin and os.path.isfile(env_bin):
         return env_bin
 
-    # 2. Walk up the directory tree to find the repository root (looking for wendy-cortex)
     current_dir = Path(__file__).resolve().parent
     for parent in [current_dir] + list(current_dir.parents):
         candidate = parent / "wendy-cortex" / "target" / "release" / "wendy-crystalline-executor"
         if candidate.is_file():
             return str(candidate)
         
-        # Fallback for debug builds if release isn't present
         candidate_debug = parent / "wendy-cortex" / "target" / "debug" / "wendy-crystalline-executor"
         if candidate_debug.is_file():
             return str(candidate_debug)
@@ -47,15 +44,26 @@ class CrystallineExecutor:
         if not os.path.exists(dream_file):
             raise FileNotFoundError(f"❌ [{zulu_now()}] Dream file not found: {dream_file}")
 
-        # Execute the Rust binary, capturing the Habermasian consensus
+        # Read the dream content to feed via stdin (satisfies Rust binaries that read from std::io::stdin)
+        with open(dream_file, "r", encoding="utf-8") as f:
+            dream_content = f.read()
+
+        # Execute the Rust binary. 
+        # We pass the file as an argument AND pipe it to stdin to satisfy any CLI parser configuration.
         result = subprocess.run(
             [cls.BINARY_PATH, dream_file], 
+            input=dream_content,
             capture_output=True, 
-            text=True, 
-            check=True
+            text=True
         )
         
-        # Write the crystallized output to the manifest file
+        # DIAGNOSTIC MIRROR: Expose exact Rust panics or CLI errors
+        if result.returncode != 0:
+            print(f"[{zulu_now()}] ❌ Rust substrate exited with code {result.returncode}.")
+            print(f"--- STDOUT ---\n{result.stdout}\n--------------")
+            print(f"--- STDERR ---\n{result.stderr}\n--------------")
+            sys.exit(1)
+            
         with open(manifest_file, "w", encoding="utf-8") as f:
             f.write(result.stdout)
             
@@ -69,14 +77,11 @@ class CrystallineExecutor:
 def run_benchmark():
     print(f"[{zulu_now()}] === WENDY REAL SCIENCE BENCHMARK INITIATED ===")
     
-    # 1. Locate the binary
     print(f"[{zulu_now()}] Rust substrate located at: {CrystallineExecutor.BINARY_PATH}")
     
-    # 2. Define benchmark inputs/outputs
     dream_file = "benchmark_dream.gmi"
     manifest_file = "benchmark_manifest.gmi"
     
-    # If no benchmark dream exists, generate a synthetic one for testing
     if not os.path.exists(dream_file):
         print(f"[{zulu_now()}] Generating synthetic dream for benchmark...")
         with open(dream_file, "w", encoding="utf-8") as f:
@@ -84,7 +89,6 @@ def run_benchmark():
             f.write("This is a generated chaos feed to test the crystalline executor's throughput and logic verification.\n")
             f.write("The organism must prove it can parse arbitrary entropy and reach consensus.\n")
 
-    # 3. Execute the crucible
     try:
         start_time = datetime.now(timezone.utc)
         output = CrystallineExecutor.run(dream_file, manifest_file)
@@ -98,12 +102,8 @@ def run_benchmark():
         else:
             print(f"[{zulu_now()}] ⚠️ Habermasian discourse failed to reach consensus.")
             
-    except subprocess.CalledProcessError as e:
-        print(f"[{zulu_now()}] ❌ Rust substrate panicked or returned non-zero exit code.")
-        print(f"STDERR:\n{e.stderr}")
-        sys.exit(1)
     except Exception as e:
-        print(f"[{zulu_now()}] ❌ Benchmark failed: {str(e)}")
+        print(f"[{zulu_now()}] ❌ Benchmark orchestration failed: {str(e)}")
         sys.exit(1)
 
 if __name__ == "__main__":
