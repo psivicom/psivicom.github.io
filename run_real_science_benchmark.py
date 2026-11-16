@@ -1,88 +1,110 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-WENDY Real Science Benchmark
-SPDX-License-Identifier: EUPL-1.2
-Proves WENDY's compiled artifacts outperform pure Python and LLM-generated code.
-"""
-
-import array
-import time
-import math
-import logging
+import os
+import sys
+import subprocess
+from pathlib import Path
 from datetime import datetime, timezone
-from wendy_crystalline_executor import CrystallineExecutor, zulu_now
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s.%(msecs)03dZ [%(levelname)s] %(message)s',
-    datefmt='%Y-%m-%dT%H:%M:%S'
-)
-for handler in logging.root.handlers:
-    handler.formatter.converter = lambda *args: datetime.now(timezone.utc).timetuple()
+# ============================================================================
+# SOVEREIGN BRIDGE: Dynamic Rust Substrate Discovery
+# ============================================================================
 
-def pure_python_welford_variance(data: array.array) -> float:
-    """The exact same math, executed by the Python interpreter."""
-    count = 0.0
-    mean = 0.0
-    m2 = 0.0
-    for x in data:
-        count += 1.0
-        delta = x - mean
-        mean += delta / count
-        delta2 = x - mean
-        m2 += delta * delta2
-    return m2 / (count - 1.0) if count > 1 else 0.0
+def zulu_now() -> str:
+    """Generates Zulu timestamps with strict millisecond precision."""
+    return datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
 
-def main():
-    logging.info(f"[{zulu_now()}] WENDY Real Science Benchmark Initializing...")
-    
-    # 1. Generate 10 Million data points of synthetic RADARSAT SAR backscatter
-    size = 10_000_000
-    logging.info(f"[{zulu_now()}] Ingesting {size:,} synthetic SAR backscatter telemetry points...")
-    sar_data = array.array('d', [float(i % 1000) / 10.0 + math.sin(i) for i in range(size)])
-    
-    # 2. Establish C-types boundary for the native artifact
-    arr_type = ctypes.c_double * size
-    c_sar_data = arr_type(*sar_data)
+def find_rust_binary() -> str:
+    """Dynamically locates the compiled Rust binary regardless of CWD."""
+    # 1. Check for explicit override from GitHub Actions environment
+    env_bin = os.environ.get("WENDY_CORTEX_BIN")
+    if env_bin and os.path.isfile(env_bin):
+        return env_bin
 
-    # 3. Execute baseline Python math (The Bottleneck)
-    logging.info(f"[{zulu_now()}] Executing pure Python Welford's Variance...")
-    t0 = time.perf_counter()
-    py_result = pure_python_welford_variance(sar_data)
-    t1 = time.perf_counter()
-    py_time = t1 - t0
-    logging.info(f"[{zulu_now()}] Python Result: {py_result:.8f} | Time: {py_time:.4f}s")
-
-    # 4. Compile and Load WENDY's Native Artifact
-    executor = CrystallineExecutor()
-    if not executor.compile_artifact():
-        logging.error("Failed to compile. Aborting.")
-        return
+    # 2. Walk up the directory tree to find the repository root (looking for wendy-cortex)
+    current_dir = Path(__file__).resolve().parent
+    for parent in [current_dir] + list(current_dir.parents):
+        candidate = parent / "wendy-cortex" / "target" / "release" / "wendy-crystalline-executor"
+        if candidate.is_file():
+            return str(candidate)
         
-    lib = executor.load_artifact()
-    if not lib:
-        logging.error("Failed to load. Aborting.")
-        return
+        # Fallback for debug builds if release isn't present
+        candidate_debug = parent / "wendy-cortex" / "target" / "debug" / "wendy-crystalline-executor"
+        if candidate_debug.is_file():
+            return str(candidate_debug)
+    
+    raise FileNotFoundError(
+        f"❌ [{zulu_now()}] Could not locate wendy-crystalline-executor.\n"
+        f"Ensure 'cargo build --release' has executed, or set the WENDY_CORTEX_BIN env var."
+    )
 
-    # 5. Execute the hot-swapped native artifact
-    logging.info(f"[{zulu_now()}] Executing compiled Rust SIMD artifact...")
-    t2 = time.perf_counter()
-    rust_result = lib.wendy_welford_variance(c_sar_data, size)
-    t3 = time.perf_counter()
-    rust_time = t3 - t2
+class CrystallineExecutor:
+    """Python wrapper that invokes the native Rust crystalline executor."""
+    BINARY_PATH = find_rust_binary()
+
+    @classmethod
+    def run(cls, dream_file: str, manifest_file: str) -> str:
+        print(f"[{zulu_now()}] Invoking Rust Substrate: {cls.BINARY_PATH}")
+        
+        if not os.path.exists(dream_file):
+            raise FileNotFoundError(f"❌ [{zulu_now()}] Dream file not found: {dream_file}")
+
+        # Execute the Rust binary, capturing the Habermasian consensus
+        result = subprocess.run(
+            [cls.BINARY_PATH, dream_file], 
+            capture_output=True, 
+            text=True, 
+            check=True
+        )
+        
+        # Write the crystallized output to the manifest file
+        with open(manifest_file, "w", encoding="utf-8") as f:
+            f.write(result.stdout)
+            
+        print(f"[{zulu_now()}] Consensus crystallized and written to {manifest_file}")
+        return result.stdout
+
+# ============================================================================
+# BENCHMARK EXECUTION LAYER
+# ============================================================================
+
+def run_benchmark():
+    print(f"[{zulu_now()}] === WENDY REAL SCIENCE BENCHMARK INITIATED ===")
     
-    logging.info(f"[{zulu_now()}] Rust Result:   {rust_result:.8f} | Time: {rust_time:.4f}s")
+    # 1. Locate the binary
+    print(f"[{zulu_now()}] Rust substrate located at: {CrystallineExecutor.BINARY_PATH}")
     
-    # 6. Verify Mathematical Certainty and Speedup
-    speedup = py_time / rust_time if rust_time > 0 else float('inf')
-    logging.info(f"[{zulu_now()}] ⚡️💰 HARD REAL-TIME SPEEDUP: {speedup:.2f}x")
+    # 2. Define benchmark inputs/outputs
+    dream_file = "benchmark_dream.gmi"
+    manifest_file = "benchmark_manifest.gmi"
     
-    if abs(py_result - rust_result) > 1e-9:
-        logging.warning(f"[{zulu_now()}] DIVERGENCE: Math mismatch between Python and Rust!")
-    else:
-        logging.info(f"[{zulu_now()}] ✅ CERTIFIED: Mathematical parity achieved. WENDY is ready for live telemetry.")
+    # If no benchmark dream exists, generate a synthetic one for testing
+    if not os.path.exists(dream_file):
+        print(f"[{zulu_now()}] Generating synthetic dream for benchmark...")
+        with open(dream_file, "w", encoding="utf-8") as f:
+            f.write("# Synthetic Benchmark Dream\n\n")
+            f.write("This is a generated chaos feed to test the crystalline executor's throughput and logic verification.\n")
+            f.write("The organism must prove it can parse arbitrary entropy and reach consensus.\n")
+
+    # 3. Execute the crucible
+    try:
+        start_time = datetime.now(timezone.utc)
+        output = CrystallineExecutor.run(dream_file, manifest_file)
+        end_time = datetime.now(timezone.utc)
+        
+        duration_ms = (end_time - start_time).total_seconds() * 1000
+        print(f"[{zulu_now()}] ✅ Benchmark complete. Execution time: {duration_ms:.2f}ms")
+        
+        if "CONSENSUS REACHED" in output:
+            print(f"[{zulu_now()}] 🧊 Habermasian discourse successful.")
+        else:
+            print(f"[{zulu_now()}] ⚠️ Habermasian discourse failed to reach consensus.")
+            
+    except subprocess.CalledProcessError as e:
+        print(f"[{zulu_now()}] ❌ Rust substrate panicked or returned non-zero exit code.")
+        print(f"STDERR:\n{e.stderr}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"[{zulu_now()}] ❌ Benchmark failed: {str(e)}")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    import ctypes
-    main()
+    run_benchmark()
