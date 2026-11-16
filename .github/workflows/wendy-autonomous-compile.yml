@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     outputs:
-      branch_created: ${{ steps.create-branch.outputs.created }}
+      created: ${{ steps.create-branch.outputs.created }}
       branch_name: ${{ steps.create-branch.outputs.branch_name }}
     steps:
       - name: Checkout Repository
@@ -84,7 +84,8 @@ EOF
           git config --global user.email "wendy@psivi.com"
           git checkout -b "$BRANCH_NAME"
           git add "src/dreams/dream_${MANIFEST_HASH}.rs"
-          git commit -m "🌌 Autonomous dream materialization: $MANIFEST_HASH"
+          # [skip ci] prevents the push from triggering a duplicate parallel workflow run
+          git commit -m "🌌 Autonomous dream materialization: $MANIFEST_HASH [skip ci]"
           
           MAX_ATTEMPTS=3
           ATTEMPT=1
@@ -110,7 +111,7 @@ EOF
     needs: generate-dream-branch
     if: |
       (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) ||
-      (needs.generate-dream-branch.outputs.branch_created == 'true')
+      (needs.generate-dream-branch.outputs.created == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -125,11 +126,16 @@ EOF
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           rustup component add rustfmt clippy
 
-      - name: Zulu Timestamp Generation
+      - name: Zulu Timestamp & Context Resolution
         id: zulu
         run: |
           echo "ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" >> $GITHUB_ENV
-          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          # Dynamically resolve the correct branch name based on trigger context
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          else
+            echo "BRANCH_NAME=${{ needs.generate-dream-branch.outputs.branch_name }}" >> $GITHUB_ENV
+          fi
 
       - name: Strict Formatting & Linting
         run: |
@@ -180,9 +186,10 @@ EOF
         if: steps.compile.outcome == 'failure' || steps.test.outcome == 'failure'
         run: |
           echo "::error::WENDY's dream contained logical or syntax errors."
+          # || true ensures the job doesn't fail if the specific labels haven't been manually created in repo settings yet
           gh issue create \
             --title "Self-Healing: Compilation failed for ${{ env.BRANCH_NAME }}" \
             --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\n**Compiler Output:**\n\`\`\`\n$(cargo build --release 2>&1)\n\`\`\`\n\nPlease adjust your First-Order Logic axioms." \
-            --label "self-healing,wendy-dream"
+            --label "self-healing,wendy-dream" || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
