@@ -32,6 +32,10 @@
 │   └── README.md
 ├── archive/
 │   └── README.md
+├── etc/
+│   └── systemd/
+│       └── system/
+│           └── wendy-godmode.service
 ├── nasa-open-science/
 │   ├── .github/
 │   │   └── workflows/
@@ -589,5 +593,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 532 files
+60 directories, 533 files
 ```
