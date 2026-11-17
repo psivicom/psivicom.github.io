@@ -19,71 +19,76 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Setup Go Environment
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.23'
-
-      - name: Execute Go Tree Generator (Diagnostic Mode)
+      - name: Generate and Inject Tree (Pure Bash)
         run: |
           set -euo pipefail
           
-          echo "🔍 Analyzing Go module topology..."
+          echo "🔍 Generating tree with -a (show hidden), -F (classify), and --dirsfirst..."
           
-          EXEC_CMD="go run ./cmd/update-tree"
+          # Ensure tree is available on the runner
+          command -v tree >/dev/null 2>&1 || { echo "❌ tree command not found"; exit 1; }
           
-          if [ -f "./cmd/update-tree/go.mod" ]; then
-            echo "📂 Found isolated module in ./cmd/update-tree. Shifting context."
-            cd ./cmd/update-tree
-            EXEC_CMD="go run ."
-          elif [ -f "go.mod" ]; then
-            echo "📂 Found root module. Executing ./cmd/update-tree."
-          else
-            echo "⚠️ No go.mod detected. Initializing ephemeral module..."
-            go mod init local.dev/update-tree
-            go mod tidy || true
-          fi
+          tree -a --dirsfirst -F --charset utf-8 -I '.git|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
           
-          echo "🚀 Compiling and running Go code..."
-          if ! $EXEC_CMD > /tmp/go_stdout.log 2> /tmp/go_stderr.log; then
-            echo "::error::❌ GO EXECUTION FAILED! Check the compiler errors or runtime panics below."
-            echo "--- STDOUT ---"
-            cat /tmp/go_stdout.log
-            echo "--- STDERR ---"
-            cat /tmp/go_stderr.log
-            echo "--------------"
-            echo "💡 ACTION REQUIRED: The Go code inside ./cmd/update-tree failed to compile or panicked at runtime."
-            exit 1
-          fi
+          echo "✅ Raw tree output sample (first 30 lines):"
+          head -n 30 /tmp/raw_tree.txt
           
-          echo "✅ Go execution successful. Verifying output files..."
-          if [ ! -f "tree.md" ] || [ ! -f "tree_snippet.html" ]; then
-            echo "::warning::⚠️ Go code ran, but did not generate tree.md or tree_snippet.html in the root directory."
-            echo "💡 ACTION REQUIRED: Ensure your Go code writes these files to the current working directory (./)."
-          fi
-
-      - name: Inject Tree into Markdown and HTML (Safety Fallback)
-        run: |
-          set -euo pipefail
+          # Generate Markdown version
+          {
+            echo '```text'
+            cat /tmp/raw_tree.txt
+            echo '```'
+          } > tree.md
           
-          if [ ! -f "tree.md" ] || [ ! -f "tree_snippet.html" ]; then
-            echo "⏭️ Skipping injection: Required tree files not found."
-            exit 0
-          fi
+          # Generate HTML version with color coding
+          awk '
+          BEGIN {
+            print "<div style=\"font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;\">"
+          }
+          {
+            line = $0
+            sub(/\r$/, "", line) # Sanitize Windows line endings to protect regex matching
+            
+            if (line ~ /^[0-9]+ directories?, [0-9]+ files?$/) next
+            
+            clean_line = line
+            sub(/[ \t]+$/, "", clean_line)
+            
+            if (clean_line ~ /\/$/) {
+              color = "#80BFFF"
+            } else if (clean_line ~ /\.(sh|go|py)\*?$/) {
+              color = "#80FF80"
+            } else {
+              color = "#ffffff"
+            }
+            
+            gsub(/&/, "\\&amp;", line)
+            gsub(/</, "\\&lt;", line)
+            gsub(/>/, "\\&gt;", line)
+            
+            printf "  <span style=\"color:%s\">%s</span><br>\n", color, line
+          }
+          END {
+            print "</div>"
+          }' /tmp/raw_tree.txt > tree_snippet.html
           
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
-          INJECTED=0
           
+          # Inject into target files
           for file in README.md index.html; do
-            if [ ! -f "$file" ]; then continue; fi
+            if [ ! -f "$file" ]; then 
+              echo "⏭️ Skipping $file: File not found."
+              continue
+            fi
+            
             if ! grep -q "<!-- AUTO_TREE_START -->" "$file"; then 
               echo "⏭️ Skipping $file: Missing <!-- AUTO_TREE_START --> marker."
               continue
             fi
             
-            if [ "$file" = "README.md" ]; then 
+            if [ "$file" = "README.md" ]; then
               TREE_FILE="tree.md"
-            else 
+            else
               TREE_FILE="tree_snippet.html"
             fi
             
@@ -92,11 +97,13 @@ jobs:
                 print "<!-- AUTO_TREE_START -->"
                 print "<!-- Auto-updated by .github/workflows/update-tree.yml -->"
                 print "<!-- Last updated: " ts " -->"
+                
                 while ((getline line < tree_file) > 0) {
                   sub(/\r$/, "", line)
                   print line
                 }
                 close(tree_file)
+                
                 print "<!-- AUTO_TREE_END -->"
                 skip = 1
                 next
@@ -104,12 +111,10 @@ jobs:
               /<!-- AUTO_TREE_END -->/ { skip = 0; next }
               !skip { print }
             ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
-            INJECTED=1
           done
           
-          if [ $INJECTED -eq 0 ]; then
-            echo "::warning::⚠️ No files were injected. Ensure README.md or index.html contain the <!-- AUTO_TREE_START --> markers."
-          fi
+          rm -f /tmp/raw_tree.txt
+          echo "🎉 Tree generation and injection complete."
 
       - name: Commit and Push (Race-Safe)
         run: |
@@ -121,6 +126,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
+          # Force add to bypass potential .gitignore rules on generated files
           git add -f README.md index.html tree.md tree_snippet.html 2>/dev/null || true
           
           if git diff --cached --quiet; then
@@ -128,7 +134,7 @@ jobs:
             exit 0
           fi
           
-          git commit -m "chore: auto-update tree via Go [skip ci]"
+          git commit -m "chore: auto-update tree via bash [skip ci]"
           
           MAX_ATTEMPTS=3
           ATTEMPT=1
@@ -138,9 +144,9 @@ jobs:
               echo "✅ Push succeeded on attempt $ATTEMPT"
               exit 0
             fi
-            echo "⚠️ Push rejected. Rebasing..."
+            echo "⚠️ Push rejected (race condition). Rebasing and retrying..."
             git pull --rebase --autostash origin "$BRANCH_NAME" || {
-              echo "❌ Rebase failed."
+              echo "❌ Rebase failed. Aborting."
               git rebase --abort || true
               exit 1
             }
