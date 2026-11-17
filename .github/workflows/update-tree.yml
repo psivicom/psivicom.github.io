@@ -24,70 +24,92 @@ jobs:
         with:
           go-version: '1.23'
 
-      - name: Execute Go Tree Generator (Self-Healing)
+      - name: Execute Go Tree Generator (Diagnostic Mode)
         run: |
           set -euo pipefail
           
           echo "🔍 Analyzing Go module topology..."
           
-          # Scenario A: The module lives inside the cmd directory
+          EXEC_CMD="go run ./cmd/update-tree"
+          
           if [ -f "./cmd/update-tree/go.mod" ]; then
             echo "📂 Found isolated module in ./cmd/update-tree. Shifting context."
             cd ./cmd/update-tree
-            go run .
-            
-          # Scenario B: The module lives in the repository root
+            EXEC_CMD="go run ."
           elif [ -f "go.mod" ]; then
             echo "📂 Found root module. Executing ./cmd/update-tree."
-            go run ./cmd/update-tree
-            
-          # Scenario C: No module exists (Ephemeral Initialization)
           else
-            echo "⚠️ No go.mod detected. Initializing ephemeral module to satisfy Go toolchain..."
+            echo "⚠️ No go.mod detected. Initializing ephemeral module..."
             go mod init local.dev/update-tree
-            go mod tidy || echo "⚠️ go mod tidy skipped (no external deps)."
-            echo "🚀 Executing ./cmd/update-tree"
-            go run ./cmd/update-tree
+            go mod tidy || true
+          fi
+          
+          echo "🚀 Compiling and running Go code..."
+          # Capture both stdout and stderr to diagnose panics or compile errors
+          if ! $EXEC_CMD > /tmp/go_stdout.log 2> /tmp/go_stderr.log; then
+            echo "::error::❌ GO EXECUTION FAILED! Check the compiler errors or runtime panics below."
+            echo "--- STDOUT ---"
+            cat /tmp/go_stdout.log
+            echo "--- STDERR ---"
+            cat /tmp/go_stderr.log
+            echo "--------------"
+            echo "💡 ACTION REQUIRED: The Go code inside ./cmd/update-tree failed to compile or panicked at runtime."
+            exit 1
+          fi
+          
+          echo "✅ Go execution successful. Verifying output files..."
+          if [ ! -f "tree.md" ] || [ ! -f "tree_snippet.html" ]; then
+            echo "::warning::⚠️ Go code ran, but did not generate tree.md or tree_snippet.html in the root directory."
+            echo "💡 ACTION REQUIRED: Ensure your Go code writes these files to the current working directory (./)."
           fi
 
       - name: Inject Tree into Markdown and HTML (Safety Fallback)
         run: |
           set -euo pipefail
           
-          # Only run injection if the Go program generated the files and didn't already inject them
-          if [ -f "tree.md" ] && [ -f "tree_snippet.html" ]; then
-            TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+          if [ ! -f "tree.md" ] || [ ! -f "tree_snippet.html" ]; then
+            echo "⏭️ Skipping injection: Required tree files not found."
+            exit 0
+          fi
+          
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+          INJECTED=0
+          
+          for file in README.md index.html; do
+            if [ ! -f "$file" ]; then continue; fi
+            if ! grep -q "<!-- AUTO_TREE_START -->" "$file"; then 
+              echo "⏭️ Skipping $file: Missing <!-- AUTO_TREE_START --> marker."
+              continue
+            fi
             
-            for file in README.md index.html; do
-              if [ ! -f "$file" ]; then continue; fi
-              if ! grep -q "<!-- AUTO_TREE_START -->" "$file"; then continue; fi
-              
-              if [ "$file" = "README.md" ]; then 
-                TREE_FILE="tree.md"
-              else 
-                TREE_FILE="tree_snippet.html"
-              fi
-              
-              awk -v ts="$TIMESTAMP" -v tree_file="$TREE_FILE" '
-                /<!-- AUTO_TREE_START -->/ {
-                  print "<!-- AUTO_TREE_START -->"
-                  print "<!-- Auto-updated by .github/workflows/update-tree.yml -->"
-                  print "<!-- Last updated: " ts " -->"
-                  
-                  while ((getline line < tree_file) > 0) {
-                    sub(/\r$/, "", line)
-                    print line
-                  }
-                  close(tree_file)
-                  
-                  print "<!-- AUTO_TREE_END -->"
-                  skip = 1
-                  next
+            if [ "$file" = "README.md" ]; then 
+              TREE_FILE="tree.md"
+            else 
+              TREE_FILE="tree_snippet.html"
+            fi
+            
+            awk -v ts="$TIMESTAMP" -v tree_file="$TREE_FILE" '
+              /<!-- AUTO_TREE_START -->/ {
+                print "<!-- AUTO_TREE_START -->"
+                print "<!-- Auto-updated by .github/workflows/update-tree.yml -->"
+                print "<!-- Last updated: " ts " -->"
+                while ((getline line < tree_file) > 0) {
+                  sub(/\r$/, "", line)
+                  print line
                 }
-                /<!-- AUTO_TREE_END -->/ { skip = 0; next }
-                !skip { print }
-              ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
-            done
+                close(tree_file)
+                print "<!-- AUTO_TREE_END -->"
+                skip = 1
+                next
+              }
+              /<!-- AUTO_TREE_END -->/ { skip = 0; next }
+              !skip { print }
+            ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+            INJECTED=1
+          done
+          
+          if [ $INJECTED -eq 0 ]; then
+            echo "::warning::⚠️ No files were injected. Ensure README.md or index.html contain the <!-- AUTO_TREE_START --> markers."
           fi
 
       - name: Commit and Push (Race-Safe)
@@ -100,11 +122,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Add all potential output files. '|| true' prevents failure if some are gitignored.
-          git add README.md index.html tree.md tree_snippet.html || true
+          # Force add to bypass .gitignore if necessary
+          git add -f README.md index.html tree.md tree_snippet.html 2>/dev/null || true
           
           if git diff --cached --quiet; then
-            echo "✅ No tree changes to commit"
+            echo "✅ No tree changes to commit. Files are already up to date."
             exit 0
           fi
           
@@ -118,9 +140,9 @@ jobs:
               echo "✅ Push succeeded on attempt $ATTEMPT"
               exit 0
             fi
-            echo "⚠️ Push rejected (race condition). Rebasing and retrying..."
+            echo "⚠️ Push rejected. Rebasing..."
             git pull --rebase --autostash origin "$BRANCH_NAME" || {
-              echo "❌ Rebase failed. Aborting."
+              echo "❌ Rebase failed."
               git rebase --abort || true
               exit 1
             }
