@@ -575,6 +575,7 @@
 ├── WENDY_HOMOICONIC_CORTEX.md
 ├── codemeta.json
 ├── gemini_client.py
+├── genesis.sh
 ├── index.html
 ├── make
 ├── openscience.html
@@ -587,5 +588,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 530 files
+57 directories, 531 files
 ```
