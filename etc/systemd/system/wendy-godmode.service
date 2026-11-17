@@ -1,0 +1,16 @@
+[Unit]
+Description=WENDY Sovereign Core (GODMODE)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/path/to/psivicom.github.io
+ExecStart=/path/to/psivicom.github.io/GODMODE
+Restart=always
+RestartSec=3
+# Zero-bloat environment
+Environment="RUST_BACKTRACE=0" "PYTHONUNBUFFERED=1"
+
+[Install]
+WantedBy=multi-user.target
