@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-16T03:30:57.000Z -->
+<!-- Last updated: 2026-11-17T04:53:34.000Z -->
 ```text
 ./
 ├── .github/
@@ -683,6 +683,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── CONTRIBUTING.md
 ├── Cargo.toml
 ├── DISCLAIMER.md
+├── GODMODE.c
 ├── LICENSE
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
@@ -708,6 +709,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 528 files
+57 directories, 529 files
 ```
 <!-- AUTO_TREE_END -->

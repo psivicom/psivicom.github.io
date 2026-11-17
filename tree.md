@@ -560,6 +560,7 @@
 ├── CONTRIBUTING.md
 ├── Cargo.toml
 ├── DISCLAIMER.md
+├── GODMODE.c
 ├── LICENSE
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
@@ -585,5 +586,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 528 files
+57 directories, 529 files
 ```
