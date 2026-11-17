@@ -5,6 +5,7 @@
 │   │   ├── README.md
 │   │   ├── update-tree.yml
 │   │   ├── vendor-nasa-os101.yml
+│   │   ├── volunteer-ingest.yml
 │   │   ├── wendy-autonomous-compile.yml
 │   │   ├── wendy-autonomous-evolution.yml
 │   │   ├── wendy-awaken.yml
@@ -588,5 +589,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 531 files
+57 directories, 532 files
 ```
