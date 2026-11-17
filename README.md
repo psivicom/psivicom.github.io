@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-17T04:53:34.000Z -->
+<!-- Last updated: 2026-11-17T04:55:16.000Z -->
 ```text
 ./
 ├── .github/
@@ -699,6 +699,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── codemeta.json
 ├── gemini_client.py
 ├── index.html
+├── make
 ├── openscience.html
 ├── opu.html
 ├── opu2.html
@@ -709,6 +710,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 529 files
+57 directories, 530 files
 ```
 <!-- AUTO_TREE_END -->

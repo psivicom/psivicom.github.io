@@ -576,6 +576,7 @@
 ├── codemeta.json
 ├── gemini_client.py
 ├── index.html
+├── make
 ├── openscience.html
 ├── opu.html
 ├── opu2.html
@@ -586,5 +587,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-57 directories, 529 files
+57 directories, 530 files
 ```
