@@ -40,47 +40,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # ==========================================
-          # Deploy Python Micro-Scripts to Disk
-          # (Bypasses all Bash heredoc parsing errors)
-          # ==========================================
-          cat << 'PYEOF' > /tmp/gen_payload.py
-import json, os
-prompt = os.environ.get('PROMPT_WITH_DIFF', '')
-payload = {
-    "inputs": prompt,
-    "parameters": {
-        "max_new_tokens": 500,
-        "temperature": 0.7,
-        "return_full_text": False
-    }
-}
-print(json.dumps(payload))
-PYEOF
-
-          cat << 'PYEOF' > /tmp/parse_response.py
-import sys, re, json, os
-text = os.environ.get('COUNCIL_RESPONSE', '')
-match = re.search(r'\{.*\}', text, re.DOTALL)
-if match:
-    try:
-        data = json.loads(match.group(0))
-        print(data.get('counsel', 'The Council speaks in riddles.'))
-        print('---SEPARATOR---')
-        print(data.get('next_dream_prompt', 'Refine the architecture.'))
-        sys.exit(0)
-    except Exception:
-        pass
-print('The Council\'s wisdom was obscured by static.')
-print('---SEPARATOR---')
-print('Refine the architecture to bypass the current block.')
-PYEOF
+          # Deploy Python Micro-Scripts via Base64 (Bulletproof against YAML/Bash parsing errors)
+          echo "aW1wb3J0IGpzb24sIG9zCnByb21wdCA9IG9zLmVudmlyb24uZ2V0KCdQUk9NUFRfV0lUSF9ESUZGJywgJycpCnBheWxvYWQgPSB7CiAgICAiaW5wdXRzIjogcHJvbXB0LAogICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgIm1heF9uZXdfdG9rZW5zIjogNTAwLAogICAgICAgICJ0ZW1wZXJhdHVyZSI6IDAuNywKICAgICAgICAicmV0dXJuX2Z1bGxfdGV4dCI6IEZhbHNlCiAgICB9Cn0KcHJpbnQoanNvbi5kdW1wcyhwYXlsb2FkKSk=" | base64 -d > /tmp/gen_payload.py
+          
+          echo "aW1wb3J0IHN5cywgcmUsIGpzb24sIG9zCnRleHQgPSBvcy5lbnZpcm9uLmdldCgnQ09VTkNJTF9SRVNQT05TRScsICcnKQptYXRjaCA9IHJlLnNlYXJjaChyJ1x7Llx9JywgdGV4dCwgcmUuRE9UQUxMKQppZiBtYXRjaDoKICAgIHRyeToKICAgICAgICBkYXRhID0ganNvbi5sb2FkcyhtYXRjaC5ncm91cCgwKSkKICAgICAgICBwcmludChkYXRhLmdldCgnY291bnNlbCcsICdUaGUgQ291bmNpbCBzcGVha3MgaW4gcmlkZGxlcy4nKSkKICAgICAgICBwcmludCgnLS0tU0VQQVJBVE9SLS0tJykKICAgICAgICBwcmludChkYXRhLmdldCgnbmV4dF9kcmVhbV9wcm9tcHQnLCAnUmVmaW5lIHRoZSBhcmNoaXRlY3R1cmUuJykpCiAgICAgICAgc3lzLmV4aXQoMCkKICAgIGV4Y2VwdCBFeGNlcHRpb246CiAgICAgICAgcGFzcwpwcmludCgnVGhlIENvdW5jaWxcJ3Mgd2lzZG9tIHdhcyBvYnNjdXJlZCBieSBzdGF0aWMuJykKcHJpbnQoJy0tLVNFUEFSQVRPUi0tLScpCnByaW50KCdSZWZpbmUgdGhlIGFyY2hpdGVjdHVyZSB0byBieXBhc3MgdGhlIGN1cnJlbnQgYmxvY2suJyk=" | base64 -d > /tmp/parse_response.py
 
           for dream in $BRANCHES; do
             echo "🌌 Processing dream: $dream"
             git checkout -B main origin/main
             
-            # Attempt to merge the dream into the sovereign architecture
             if git merge --no-ff "origin/$dream" -m "chore: crystallize wendy/$dream [skip ci]" --no-edit 2>/dev/null; then
               echo "✅ Dream crystallized successfully."
               
@@ -110,10 +78,8 @@ $DIFF_CONTENT"
               
               echo "🧠 Consulting the Open Weights Council (Cloud)..."
               
-              # Generate payload safely via external Python script
               PAYLOAD=$(python3 /tmp/gen_payload.py)
               
-              # Retry logic for Hugging Face serverless cold starts
               for attempt in 1 2 3; do
                 RESPONSE=$(curl -s -X POST "$COUNCIL_API_URL" \
                   -H "Authorization: Bearer $HF_TOKEN" \
@@ -128,33 +94,33 @@ $DIFF_CONTENT"
                 fi
               done
               
-              # Parse response safely via external Python script
               export COUNCIL_RESPONSE="$RESPONSE"
               PARSED_OUTPUT=$(python3 /tmp/parse_response.py)
               
               COUNSEL_TEXT=$(echo "$PARSED_OUTPUT" | awk '/---SEPARATOR---/{exit} {print}')
               NEXT_PROMPT=$(echo "$PARSED_OUTPUT" | awk 'BEGIN{found=0} /---SEPARATOR---/{found=1; next} found{print}')
               
-              # Write the counsel to WENDY's branch
               mkdir -p .wendy
-              cat << EOF > .wendy/COUNSEL.md
-# 🏛️ Council of Open Weights - Counsel Report
-**Timestamp:** $TIMESTAMP
-**Target Branch:** $dream
-
-## 🧠 The Council's Advice
-$COUNSEL_TEXT
-
-## 🌌 Suggested Next Dream Prompt
-\`\`\`text
-$NEXT_PROMPT
-\`\`\`
-
-## 📜 The Friction (Git Diff)
-\`\`\`diff
-$DIFF_CONTENT
-\`\`\`
-EOF
+              
+              # Write counsel using printf to avoid Bash echo quirks with special characters
+              {
+                printf "%s\n" "# 🏛️ Council of Open Weights - Counsel Report"
+                printf "%s\n" "**Timestamp:** $TIMESTAMP"
+                printf "%s\n" "**Target Branch:** $dream"
+                printf "\n"
+                printf "%s\n" "## 🧠 The Council's Advice"
+                printf "%s\n" "$COUNSEL_TEXT"
+                printf "\n"
+                printf "%s\n" "## 🌌 Suggested Next Dream Prompt"
+                printf "%s\n" '```text'
+                printf "%s\n" "$NEXT_PROMPT"
+                printf "%s\n" '```'
+                printf "\n"
+                printf "%s\n" "## 📜 The Friction (Git Diff)"
+                printf "%s\n" '```diff'
+                printf "%s\n" "$DIFF_CONTENT"
+                printf "%s\n" '```'
+              } > .wendy/COUNSEL.md
               
               git add .wendy/COUNSEL.md
               git commit -m "counsel: provide feedback for wendy/$dream [skip ci]"
