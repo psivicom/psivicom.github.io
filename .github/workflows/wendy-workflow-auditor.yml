@@ -13,7 +13,6 @@ permissions:
   contents: write
   actions: write
   pull-requests: write
-  workflows: write # CRITICAL: Required to modify .github/workflows/ files
 
 jobs:
   audit-autorun-buttons:
@@ -119,7 +118,7 @@ jobs:
           ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
           git commit -m "❇️ auditor: added workflow_dispatch to $CHANGED_FILES workflows at $ZULU_TIME [skip ci]"
           
-          # Push to the sovereign branch (Now authorized via workflows: write)
+          # Push to the sovereign branch
           git push origin "$BRANCH_NAME"
           if [ $? -ne 0 ]; then
             echo "❌ Failed to push sovereign branch."
