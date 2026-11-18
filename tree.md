@@ -26,6 +26,8 @@
 │       ├── manifest.sha256
 │       ├── provenance.json
 │       └── record.json
+├── .wendy/
+│   └── memory_context.md
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
@@ -594,5 +596,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-60 directories, 534 files
+61 directories, 535 files
 ```

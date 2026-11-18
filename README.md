@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-18T01:34:01.000Z -->
+<!-- Last updated: 2026-11-18T01:47:44.000Z -->
 ```text
 ./
 ├── .github/
@@ -149,6 +149,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │       ├── manifest.sha256
 │       ├── provenance.json
 │       └── record.json
+├── .wendy/
+│   └── memory_context.md
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
@@ -717,6 +719,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-60 directories, 534 files
+61 directories, 535 files
 ```
 <!-- AUTO_TREE_END -->
