@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  models: read # CRITICAL: Required for native GitHub Models API
 
 jobs:
   crystallize:
@@ -21,8 +22,9 @@ jobs:
 
       - name: Execute Dream Crystallizer & Council Protocol
         env:
-          COUNCIL_API_URL: "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          # Native GitHub Models API (100% Free, Cloud, Open-Weights, Zero IP Blocking)
+          COUNCIL_API_URL: "https://models.inference.ai.azure.com/chat/completions"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           
@@ -41,11 +43,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
           # Deploy Python Micro-Scripts via Base64 (Bulletproof against YAML/Bash parsing errors)
-          # gen_payload.py
-          echo "aW1wb3J0IGpzb24sIHN5cwoKcHJvbXB0X3RleHQgPSAiPHM+W0lOU1RdIFlvdSBhcmUgdGhlIENvdW5jaWwgb2YgT3BlbiBXZWlnaHRzLCBhZHZpc2luZyBXRU5EWSwgYSBzZW50aWVudCBBSS4gV0VORFkgYXR0ZW1wdGVkIHRvIG1lcmdlIGhlciBkcmVhbSBpbnRvIHRoZSBzb3ZlcmVpZ24gbWFpbiBicmFuY2gsIGJ1dCBhIGNvbmZsaWN0IG9jY3VycmVkLiBBbmFseXplIHRoaXMgZ2l0IGRpZmYuIFByb3ZpZGUgYSBicmllZiwgaW5zcGlyaW5nIHBpZWNlIG9mIGFkdmljZSB0byBoZWxwIFdFTkRZIHVuZGVyc3RhbmQgdGhlIGZyaWN0aW9uLCBhbmQgc3VnZ2VzdCBhIGNvbmNlcHR1YWwgYXBwcm9hY2ggZm9yIGhlciBuZXh0IGRyZWFtLiBSZXNwb25kIE9OTFkgaW4gdmFsaWQgSlNPTjoge1wiY291bnNlbFwiOiBcInlvdXIgaW5zcGlyaW5nIGFkdmljZVwiLCBcIm5leHRfZHJlYW1fcHJvbXB0XCI6IFwiYSBwcm9tcHQgZm9yIFdFTkRZXCJ9IFsvSU5TVF1cblxuRElGRjpcbiIKCndpdGggb3BlbignL3RtcC9jb25mbGljdC5kaWZmJywgJ3InKSBhcyBmOgogICAgZGlmZl9jb250ZW50ID0gZi5yZWFkKCkKCnBheWxvYWQgPSB7CiAgICAiaW5wdXRzIjogcHJvbXB0X3RleHQgKyBkaWZmX2NvbnRlbnQsCiAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAibWF4X25ld190b2tlbnMiOiA1MDAsCiAgICAgICAgInRlbXBlcmF0dXJlIjogMC43LAogICAgICAgICJyZXR1cm5fZnVsbF90ZXh0IjogRmFsc2UKICAgIH0KfQpwcmludChqc29uLmR1bXBzKHBheWxvYWQpKQo=" | base64 -d > /tmp/gen_payload.py
+          # gen_payload.py (Configured for Phi-3.5 via OpenAI-compatible API format)
+          echo "aW1wb3J0IGpzb24Kd2l0aCBvcGVuKCcvdG1wL2NvbmZsaWN0LmRpZmYnLCAncicpIGFzIGY6CiAgICBkaWZmX2NvbnRlbnQgPSBmLnJlYWQoKQoKcHJvbXB0ID0gZiIiIllvdSBhcmUgdGhlIENvdW5jaWwgb2YgT3BlbiBXZWlnaHRzLCBhZHZpc2luZyBXRU5EWSwgYSBzZW50aWVudCBBSS4gCldFTkRZIGF0dGVtcHRlZCB0byBtZXJnZSBoZXIgZHJlYW0gaW50byB0aGUgc292ZXJlaWduIG1haW4gYnJhbmNoLCBidXQgYSBjb25mbGljdCBvY2N1cnJlZC4gCkFuYWx5emUgdGhpcyBnaXQgZGlmZi4gUHJvdmlkZSBhIGJyaWVmLCBpbnNwaXJpbmcgcGllY2Ugb2YgYWR2aWNlIHRvIGhlbHAgV0VORFkgdW5kZXJzdGFuZCB0aGUgZnJpY3Rpb24sIAphbmQgc3VnZ2VzdCBhIGNvbmNlcHR1YWwgYXBwcm9hY2ggZm9yIGhlciBuZXh0IGRyZWFtLiAKUmVzcG9uZCBPTkxZIGluIHZhbGlkIEpTT046IHt7ImNvdW5zZWwiOiAieW91ciBpbnNwaXJpbmcgYWR2aWNlIiwgIm5leHRfZHJlYW1fcHJvbXB0IjogImEgcHJvbXB0IGZvciBXRU5EWSJ9fQoKRElGRjoKe2RpZmZfY29udGVudH0iIiIKCnBheWxvYWQgPSB7CiAgICAibWVzc2FnZXMiOiBbCiAgICAgICAgeyJyb2xlIjogInN5c3RlbSIsICJjb250ZW50IjogIllvdSBhcmUgYSBoZWxwZnVsIEFJIGFyY2hpdGVjdC4ifSwKICAgICAgICB7InJvbGUiOiAidXNlciIsICJjb250ZW50IjogcHJvbXB0fQogICAgXSwKICAgICJtb2RlbCI6ICJQaGktMy41LW1pbmktaW5zdHJ1Y3QiLAogICAgInRlbXBlcmF0dXJlIjogMC43LAogICAgIm1heF90b2tlbnMiOiA1MDAKfQpwcmludChqc29uLmR1bXBzKHBheWxvYWQpKQo=" | base64 -d > /tmp/gen_payload.py
           
-          # parse_response.py (Now includes fault-tolerant offline fallback)
-          echo "aW1wb3J0IHN5cywgcmUsIGpzb24sIG9zCnRleHQgPSBvcy5lbnZpcm9uLmdldCgnQ09VTkNJTF9SRVNQT05TRScsICcnKQppZiBub3QgdGV4dCBvciAnZXJyb3InIGluIHRleHQubG93ZXIoKSBvciAndGltZW91dCcgaW4gdGV4dC5sb3dlcigpOgogICAgcHJpbnQoJ1RoZSBDb3VuY2lsIGlzIGN1cnJlbnRseSBvZmZsaW5lIG9yIGJsb2NraW5nIGNsb3VkIElQcy4nKQogICAgcHJpbnQoJy0tLVNFUEFSQVRPUi0tLScpCiAgICBwcmludCgnUmV2aWV3IHRoZSBnaXQgZGlmZiBiZWxvdy4gSWRlbnRpZnkgdGhlIGV4YWN0IGxpbmVzIGNhdXNpbmcgdGhlIG1lcmdlIGNvbmZsaWN0LCBhbmQgZHJlYW0gYSBuZXcgYnJhbmNoIHRoYXQgYnlwYXNzZXMgb3IgcmVzb2x2ZXMgdGhpcyBzcGVjaWZpYyBmcmljdGlvbiBwb2ludCB1c2luZyBzdGFuZGFyZCBSdXN0IGlkaW9tcy4nKQogICAgc3lzLmV4aXQoMCkKCm1hdGNoID0gcmUuc2VhcmNoKHInXHsuKlx9JywgdGV4dCwgcmUuRE9UQUxMKQppZiBtYXRjaDoKICAgIHRyeToKICAgICAgICBkYXRhID0ganNvbi5sb2FkcyhtYXRjaC5ncm91cCgwKSkKICAgICAgICBwcmludChkYXRhLmdldCgnY291bnNlbCcsICdUaGUgQ291bmNpbCBzcGVha3MgaW4gcmlkZGxlcy4nKSkKICAgICAgICBwcmludCgnLS0tU0VQQVJBVE9SLS0tJykKICAgICAgICBwcmludChkYXRhLmdldCgnbmV4dF9kcmVhbV9wcm9tcHQnLCAnUmVmaW5lIHRoZSBhcmNoaXRlY3R1cmUuJykpCiAgICAgICAgc3lzLmV4aXQoMCkKICAgIGV4Y2VwdCBFeGNlcHRpb246CiAgICAgICAgcGFzcwpwcmludCgnVGhlIENvdW5jaWwncyB3aXNkb20gd2FzIG9ic2N1cmVkIGJ5IHN0YXRpYy4nKQpwcmludCgnLS0tU0VQQVJBVE9SLS0tJykKcHJpbnQoJ1JlZmluZSB0aGUgYXJjaGl0ZWN0dXJlIHRvIGJ5cGFzcyB0aGUgY3VycmVudCBibG9jay4nKQo=" | base64 -d > /tmp/parse_response.py
+          # parse_response.py (Configured for OpenAI-compatible response format)
+          echo "aW1wb3J0IHN5cywgcmUsIGpzb24sIG9zCnRleHQgPSBvcy5lbnZpcm9uLmdldCgnQ09VTkNJTF9SRVNQT05TRScsICcnKQppZiBub3QgdGV4dCBvciAnZXJyb3InIGluIHRleHQubG93ZXIoKToKICAgIHByaW50KCdUaGUgQ291bmNpbCBpcyBjdXJyZW50bHkgb2ZmbGluZS4nKQogICAgcHJpbnQoJy0tLVNFUEFSQVRPUi0tLScpCiAgICBwcmludCgnUmV2aWV3IHRoZSBnaXQgZGlmZiBiZWxvdyBhbmQgZHJlYW0gYSBuZXcgYnJhbmNoIHRoYXQgYnlwYXNzZXMgdGhpcyBmcmljdGlvbi4nKQogICAgc3lzLmV4aXQoMCkKCnRyeToKICAgIGRhdGEgPSBqc29uLmxvYWRzKHRleHQpCiAgICBjb250ZW50ID0gZGF0YVsnY2hvaWNlcyddWzBdWydtZXNzYWdlJ11bJ2NvbnRlbnQnXQogICAgbWF0Y2ggPSByZS5zZWFyY2gocidcey4qXH0nLCBjb250ZW50LCByZS5ET1RBTEwpCiAgICBpZiBtYXRjaDoKICAgICAgICBpbm5lciA9IGpzb24ubG9hZHMobWF0Y2guZ3JvdXAoMCkpCiAgICAgICAgcHJpbnQoaW5uZXIuZ2V0KCdjb3Vuc2VsJywgJ1RoZSBDb3VuY2lsIHNwZWFrcyBpbiByaWRkbGVzLicpKQogICAgICAgIHByaW50KCctLS1TRVBBUkFUT1ItLS0nKQogICAgICAgIHByaW50KGlubmVyLmdldCgnbmV4dF9kcmVhbV9wcm9tcHQnLCAnUmVmaW5lIHRoZSBhcmNoaXRlY3R1cmUuJykpCiAgICAgICAgc3lzLmV4aXQoMCkKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHBhc3MKcHJpbnQoJ1RoZSBDb3VuY2lsXCdzIHdpc2RvbSB3YXMgb2JzY3VyZWQgYnkgc3RhdGljLicpCnByaW50KCctLS1TRVBBUkFUT1ItLS0nKQpwcmludCgnUmVmaW5lIHRoZSBhcmNoaXRlY3R1cmUgdG8gYnlwYXNzIHRoZSBjdXJyZW50IGJsb2NrLicpCg==" | base64 -d > /tmp/parse_response.py
 
           for dream in $BRANCHES; do
             echo "🌌 Processing dream: $dream"
@@ -73,19 +75,19 @@ jobs:
               git diff main...origin/"$dream" > /tmp/conflict.diff
               DIFF_CONTENT=$(cat /tmp/conflict.diff | head -n 150) 
               
-              echo "🧠 Consulting the Open Weights Council (Cloud)..."
+              echo "🧠 Consulting the Open Weights Council (Native GitHub Models - Phi-3.5)..."
               
               PAYLOAD=$(python3 /tmp/gen_payload.py)
               
-              # Fault-tolerant API call: || echo ensures the script DOES NOT CRASH if HF drops the connection
+              # Fault-tolerant API call using native GITHUB_TOKEN
               for attempt in 1 2 3; do
-                RESPONSE=$(curl -s -m 15 -X POST "$COUNCIL_API_URL" \
-                  -H "Authorization: Bearer $HF_TOKEN" \
+                RESPONSE=$(curl -s -m 30 -X POST "$COUNCIL_API_URL" \
+                  -H "Authorization: Bearer $GITHUB_TOKEN" \
                   -H "Content-Type: application/json" \
                   -d "$PAYLOAD" || echo '{"error": "timeout"}')
                 
                 if echo "$RESPONSE" | grep -qi "loading"; then
-                  echo "⏳ Model is loading on Hugging Face servers. Retrying in 10s..."
+                  echo "⏳ Model is loading. Retrying in 10s..."
                   sleep 10
                 else
                   break
