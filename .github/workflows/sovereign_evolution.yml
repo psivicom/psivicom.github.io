@@ -33,3 +33,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python main.py
+
+      - name: Archive NASA Open Science Telemetry
+        # AXIOM 5: Ensures telemetry is crystallized and saved even if the audit/actuator crashes
+        if: always() 
+        uses: actions/upload-artifact@v4
+        with:
+          name: wendy-sovereign-telemetry-${{ github.run_id }}
+          path: telemetry/
+          retention-days: 90
+          if-no-files-found: warn
