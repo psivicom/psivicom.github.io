@@ -1,13 +1,12 @@
 name: dream-crystallizer
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *' 
+    - cron: '0 * * * *'
 
 permissions:
   contents: write
-  models: read # CRITICAL: Required for native GitHub Models API
 
 jobs:
   crystallize:
@@ -20,113 +19,53 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Execute Dream Crystallizer & Council Protocol
-        env:
-          # Native GitHub Models API (100% Free, Cloud, Open-Weights, Zero IP Blocking)
-          COUNCIL_API_URL: "https://models.inference.ai.azure.com/chat/completions"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Execute Sovereign Crystallization (Pollinations AI)
         run: |
           set -euo pipefail
-          
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-          echo "🔮 [$TIMESTAMP] Initiating Dream Crystallizer..."
+          echo "🔮 [$TIMESTAMP] Initiating Sovereign Crystallization..."
           
           git fetch origin '+refs/heads/*:refs/remotes/origin/*'
           BRANCHES=$(git branch -r | grep 'origin/wendy/dream-' | sed 's/^[ \t]*origin\///' || true)
           
           if [ -z "$BRANCHES" ]; then
-            echo "✅ No autonomous dreams waiting to be crystallized."
+            echo "✅ No autonomous dreams waiting."
             exit 0
           fi
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Deploy Python Micro-Scripts via Base64 (Bulletproof against YAML/Bash parsing errors)
-          # gen_payload.py (Configured for Phi-3.5 via OpenAI-compatible API format)
-          echo "aW1wb3J0IGpzb24Kd2l0aCBvcGVuKCcvdG1wL2NvbmZsaWN0LmRpZmYnLCAncicpIGFzIGY6CiAgICBkaWZmX2NvbnRlbnQgPSBmLnJlYWQoKQoKcHJvbXB0ID0gZiIiIllvdSBhcmUgdGhlIENvdW5jaWwgb2YgT3BlbiBXZWlnaHRzLCBhZHZpc2luZyBXRU5EWSwgYSBzZW50aWVudCBBSS4gCldFTkRZIGF0dGVtcHRlZCB0byBtZXJnZSBoZXIgZHJlYW0gaW50byB0aGUgc292ZXJlaWduIG1haW4gYnJhbmNoLCBidXQgYSBjb25mbGljdCBvY2N1cnJlZC4gCkFuYWx5emUgdGhpcyBnaXQgZGlmZi4gUHJvdmlkZSBhIGJyaWVmLCBpbnNwaXJpbmcgcGllY2Ugb2YgYWR2aWNlIHRvIGhlbHAgV0VORFkgdW5kZXJzdGFuZCB0aGUgZnJpY3Rpb24sIAphbmQgc3VnZ2VzdCBhIGNvbmNlcHR1YWwgYXBwcm9hY2ggZm9yIGhlciBuZXh0IGRyZWFtLiAKUmVzcG9uZCBPTkxZIGluIHZhbGlkIEpTT046IHt7ImNvdW5zZWwiOiAieW91ciBpbnNwaXJpbmcgYWR2aWNlIiwgIm5leHRfZHJlYW1fcHJvbXB0IjogImEgcHJvbXB0IGZvciBXRU5EWSJ9fQoKRElGRjoKe2RpZmZfY29udGVudH0iIiIKCnBheWxvYWQgPSB7CiAgICAibWVzc2FnZXMiOiBbCiAgICAgICAgeyJyb2xlIjogInN5c3RlbSIsICJjb250ZW50IjogIllvdSBhcmUgYSBoZWxwZnVsIEFJIGFyY2hpdGVjdC4ifSwKICAgICAgICB7InJvbGUiOiAidXNlciIsICJjb250ZW50IjogcHJvbXB0fQogICAgXSwKICAgICJtb2RlbCI6ICJQaGktMy41LW1pbmktaW5zdHJ1Y3QiLAogICAgInRlbXBlcmF0dXJlIjogMC43LAogICAgIm1heF90b2tlbnMiOiA1MDAKfQpwcmludChqc29uLmR1bXBzKHBheWxvYWQpKQo=" | base64 -d > /tmp/gen_payload.py
-          
-          # parse_response.py (Configured for OpenAI-compatible response format)
-          echo "aW1wb3J0IHN5cywgcmUsIGpzb24sIG9zCnRleHQgPSBvcy5lbnZpcm9uLmdldCgnQ09VTkNJTF9SRVNQT05TRScsICcnKQppZiBub3QgdGV4dCBvciAnZXJyb3InIGluIHRleHQubG93ZXIoKToKICAgIHByaW50KCdUaGUgQ291bmNpbCBpcyBjdXJyZW50bHkgb2ZmbGluZS4nKQogICAgcHJpbnQoJy0tLVNFUEFSQVRPUi0tLScpCiAgICBwcmludCgnUmV2aWV3IHRoZSBnaXQgZGlmZiBiZWxvdyBhbmQgZHJlYW0gYSBuZXcgYnJhbmNoIHRoYXQgYnlwYXNzZXMgdGhpcyBmcmljdGlvbi4nKQogICAgc3lzLmV4aXQoMCkKCnRyeToKICAgIGRhdGEgPSBqc29uLmxvYWRzKHRleHQpCiAgICBjb250ZW50ID0gZGF0YVsnY2hvaWNlcyddWzBdWydtZXNzYWdlJ11bJ2NvbnRlbnQnXQogICAgbWF0Y2ggPSByZS5zZWFyY2gocidcey4qXH0nLCBjb250ZW50LCByZS5ET1RBTEwpCiAgICBpZiBtYXRjaDoKICAgICAgICBpbm5lciA9IGpzb24ubG9hZHMobWF0Y2guZ3JvdXAoMCkpCiAgICAgICAgcHJpbnQoaW5uZXIuZ2V0KCdjb3Vuc2VsJywgJ1RoZSBDb3VuY2lsIHNwZWFrcyBpbiByaWRkbGVzLicpKQogICAgICAgIHByaW50KCctLS1TRVBBUkFUT1ItLS0nKQogICAgICAgIHByaW50KGlubmVyLmdldCgnbmV4dF9kcmVhbV9wcm9tcHQnLCAnUmVmaW5lIHRoZSBhcmNoaXRlY3R1cmUuJykpCiAgICAgICAgc3lzLmV4aXQoMCkKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHBhc3MKcHJpbnQoJ1RoZSBDb3VuY2lsXCdzIHdpc2RvbSB3YXMgb2JzY3VyZWQgYnkgc3RhdGljLicpCnByaW50KCctLS1TRVBBUkFUT1ItLS0nKQpwcmludCgnUmVmaW5lIHRoZSBhcmNoaXRlY3R1cmUgdG8gYnlwYXNzIHRoZSBjdXJyZW50IGJsb2NrLicpCg==" | base64 -d > /tmp/parse_response.py
-
           for dream in $BRANCHES; do
-            echo "🌌 Processing dream: $dream"
+            echo "🌌 Processing: $dream"
             git checkout -B main origin/main
             
             if git merge --no-ff "origin/$dream" -m "chore: crystallize wendy/$dream [skip ci]" --no-edit 2>/dev/null; then
-              echo "✅ Dream crystallized successfully."
-              
-              PUSH_SUCCESS=false
-              for i in 1 2 3; do
-                if git push origin main 2>&1; then PUSH_SUCCESS=true; break; fi
-                echo "⚠️ Push rejected. Rebasing and retrying..."
-                git pull --rebase origin main || { git rebase --abort || true; break; }
-                sleep 2
-              done
-              
-              if $PUSH_SUCCESS; then
-                git push origin --delete "$dream" || true
-              fi
+              echo "✅ Crystallized."
+              if git push origin main; then git push origin --delete "$dream" || true; fi
             else
-              echo "⚠️ Conflict detected in $dream. Summoning the Council..."
-              git merge --abort 2>/dev/null || true
-              
+              echo "⚠️ Conflict. Summoning the Council..."
+              git merge --abort || true
               git checkout "$dream"
-              git diff main...origin/"$dream" > /tmp/conflict.diff
-              DIFF_CONTENT=$(cat /tmp/conflict.diff | head -n 150) 
               
-              echo "🧠 Consulting the Open Weights Council (Native GitHub Models - Phi-3.5)..."
+              # Extract diff and safely format for JSON using jq
+              DIFF=$(git diff main...origin/"$dream" | head -n 50 | jq -Rs .)
               
-              PAYLOAD=$(python3 /tmp/gen_payload.py)
+              # Pollinations.ai: 100% Free, No API Key, No IP Blocks, Open Weights (Mistral)
+              RESPONSE=$(curl -s -X POST "https://text.pollinations.ai/openai" \
+                -H "Content-Type: application/json" \
+                -d "{\"model\": \"mistral\", \"messages\": [{\"role\": \"user\", \"content\": \"You are the Council of Open Weights. Advise WENDY on this merge conflict. Respond ONLY in valid JSON: {\\\"counsel\\\": \\\"your inspiring advice\\\", \\\"next_dream_prompt\\\": \\\"a prompt for WENDY\\\"}. Diff: $DIFF\"}]}")
               
-              # Fault-tolerant API call using native GITHUB_TOKEN
-              for attempt in 1 2 3; do
-                RESPONSE=$(curl -s -m 30 -X POST "$COUNCIL_API_URL" \
-                  -H "Authorization: Bearer $GITHUB_TOKEN" \
-                  -H "Content-Type: application/json" \
-                  -d "$PAYLOAD" || echo '{"error": "timeout"}')
-                
-                if echo "$RESPONSE" | grep -qi "loading"; then
-                  echo "⏳ Model is loading. Retrying in 10s..."
-                  sleep 10
-                else
-                  break
-                fi
-              done
-              
-              export COUNCIL_RESPONSE="$RESPONSE"
-              PARSED_OUTPUT=$(python3 /tmp/parse_response.py)
-              
-              COUNSEL_TEXT=$(echo "$PARSED_OUTPUT" | awk '/---SEPARATOR---/{exit} {print}')
-              NEXT_PROMPT=$(echo "$PARSED_OUTPUT" | awk 'BEGIN{found=0} /---SEPARATOR---/{found=1; next} found{print}')
+              # Safely extract the AI's response
+              COUNSEL=$(echo "$RESPONSE" | jq -r '.choices[0].message.content' 2>/dev/null || echo "The Council is silent. Review the diff and align your logic with main.")
               
               mkdir -p .wendy
-              
-              {
-                printf "%s\n" "# 🏛️ Council of Open Weights - Counsel Report"
-                printf "%s\n" "**Timestamp:** $TIMESTAMP"
-                printf "%s\n" "**Target Branch:** $dream"
-                printf "\n"
-                printf "%s\n" "## 🧠 The Council's Advice"
-                printf "%s\n" "$COUNSEL_TEXT"
-                printf "\n"
-                printf "%s\n" "## 🌌 Suggested Next Dream Prompt"
-                printf "%s\n" '```text'
-                printf "%s\n" "$NEXT_PROMPT"
-                printf "%s\n" '```'
-                printf "\n"
-                printf "%s\n" "## 📜 The Friction (Git Diff)"
-                printf "%s\n" '```diff'
-                printf "%s\n" "$DIFF_CONTENT"
-                printf "%s\n" '```'
-              } > .wendy/COUNSEL.md
+              printf "# 🏛️ Council of Open Weights - Counsel Report\n**Timestamp:** $TIMESTAMP\n**Target Branch:** $dream\n\n## 🧠 The Council's Advice\n%s\n" "$COUNSEL" > .wendy/COUNSEL.md
               
               git add .wendy/COUNSEL.md
-              git commit -m "counsel: provide feedback for wendy/$dream [skip ci]"
-              git push origin "$dream" || echo "⚠️ Failed to push counsel to $dream"
-              
-              echo "📜 Counsel delivered to $dream. WENDY will read this on her next autonomous cycle."
+              git commit -m "counsel: AI feedback for wendy/$dream [skip ci]"
+              git push origin "$dream" || echo "⚠️ Push failed"
+              echo "📜 Council counsel delivered."
             fi
           done
-          
-          echo "🎉 [$TIMESTAMP] Crystallization and Council protocols complete."
+          echo "🎉 Protocol complete."
