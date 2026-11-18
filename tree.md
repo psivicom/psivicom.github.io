@@ -557,6 +557,7 @@
 │   └── manifest.gmi
 ├── wendy_core/
 │   ├── compost_entropy.py
+│   ├── sovereign_auditor.py
 │   └── stigmergy_topology.py
 ├── .gitignore
 ├── .wendy_dream.gmi
@@ -600,5 +601,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-62 directories, 538 files
+62 directories, 539 files
 ```
