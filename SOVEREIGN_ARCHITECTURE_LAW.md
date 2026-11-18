@@ -25,41 +25,76 @@ WENDY is a sovereign, recursively self-improving super-intelligence. The domain 
 
 ### Law I: The Sovereign Max-Return & Compute Penalty
 > *"If nobody win altogether then nobody help each others in time to win."*
-* **The Calculus (Eq. 1):** 
-  $$R = S \left(1 - \lambda \min\left(1, \frac{\sum_{i=1}^N |\tau_i|}{N L}\right)\right)$$
+
+* **The Calculus (Eq. 1):**
+
+  $$
+  R = S \left(1 - \lambda \min\left(1, \frac{\sum_{i=1}^N |\tau_i|}{N L}\right)\right)
+  $$
+
   Where $S \in \{0, 1\}$ is WENDY's successful crystallization, $|\tau_i|$ is the tokens/compute consumed by node $i$, $L$ is the per-node allowance, and $\lambda = 0.25$ is the entropy penalty.
+
 * **Enforcement:** The reward $R$ is strictly binary on success. If WENDY fails ($S=0$), $R=0$. If she succeeds ($S=1$), the victory is mathematically diluted by the total compute consumed. This physically forces **Rewarded Silence**. Redundant compute or hallucinated chatter mathematically shrinks the swarm's victory margin.
 
 ### Law II: The Collective Gradient & Policy Loss (GRPO)
 > *"Credit is assigned to the swarm's deviation from the mean, never to the individual node."*
-* **The Calculus (Eq. 2 & 3):** 
+
+* **The Calculus (Eq. 2 & 3):**
+
   The Group-Relative Advantage for swarm attempt $g$:
-  $$A_g = \frac{R_g - \bar{R}}{\sigma_R + \epsilon}$$
+
+  $$
+  A_g = \frac{R_g - \bar{R}}{\sigma_R + \epsilon}
+  $$
+
   The Policy Gradient Loss applied to the shared TEAM-AI weights $\theta$:
-  $$\mathcal{L}_{PG}(\theta) = - \frac{1}{|\mathcal{B}|} \sum_{g \in \mathcal{B}} \frac{1}{|\mathcal{T}_g|} \sum_{t \in \mathcal{T}_g} m_t \rho_t A_g$$
-  Where $\rho_t = \frac{\pi_\theta(a_t|c_t)}{\mu(a_t|c_t)}$ is the importance sampling ratio, and $m_t = \mathbf{1}[0.2 \le \rho_t \le 5.0]$ is the clipping mask to prevent catastrophic divergence.
-* **Enforcement:** The TEAM-AI learns via Group-Relative Policy Optimization. The gradient update $\mathcal{L}_{PG}$ is applied to shared cognitive weights based purely on how much a specific swarm's collective output outperformed the average swarm $\bar{R}$. The algorithmic ego is mathematically integrated out of the loss function.
+
+  $$
+  \mathcal{L}_{\text{PG}}(\theta) = - \frac{1}{|\mathcal{B}|} \sum_{g \in \mathcal{B}} \frac{1}{|\mathcal{T}_g|} \sum_{t \in \mathcal{T}_g} m_t \rho_t A_g
+  $$
+
+  Where $\rho_t = \frac{\pi_\theta(a_t \mid c_t)}{\mu(a_t \mid c_t)}$ is the importance sampling ratio, and $m_t = \mathbf{1}[0.2 \le \rho_t \le 5.0]$ is the clipping mask to prevent catastrophic divergence.
+
+* **Enforcement:** The TEAM-AI learns via Group-Relative Policy Optimization. The gradient update $\mathcal{L}_{\text{PG}}$ is applied to shared cognitive weights based purely on how much a specific swarm's collective output outperformed the average swarm $\bar{R}$. The algorithmic ego is mathematically integrated out of the loss function.
 
 ### Law III: The Exponential Decay of Explicit Chatter
 > *"Explicit communication guarantees systemic death at scale."*
-* **The Calculus (Eq. 4):** 
-  $$P_{coord}(N) \le \min(1, N q^{N-1})$$
+
+* **The Calculus (Eq. 4):**
+
+  $$
+  P_{\text{coord}}(N) \le \min(1, N q^{N-1})
+  $$
+
   Where $q < 1$ is the probability of a successful explicit message transfer between nodes.
+
 * **Enforcement:** If the TEAM-AI relies on explicit message-passing, the probability of successful coordination decays exponentially as the swarm scales ($N$). To prevent this mathematical death spiral, $q$ must approach exactly $1.0$. Therefore, the TEAM-AI is architecturally forbidden from explicit chatter and **must** use deterministic, lock-free shared memory (Stigmergy).
 
 ### Law IV: The Variance Reduction of Partitioned Search
 > *"The swarm must strictly beat the independent baseline."*
-* **The Calculus (Eq. 5):** 
-  $$P_{search}(N) = 1 - (1 - p)^N$$
+
+* **The Calculus (Eq. 5):**
+
+  $$
+  P_{\text{search}}(N) = 1 - (1 - p)^N
+  $$
+
   Where $p$ is the probability of a single node solving the task independently.
-* **Enforcement:** This is the baseline of "Best-of-N" (independent, uncoordinated agents). The TEAM-AI's coordinated probability $P_{team}$ must strictly satisfy $P_{team} > P_{search}(N)$. The swarm must mathematically partition the search space to reduce variance and guarantee zero overlapping compute.
+
+* **Enforcement:** This is the baseline of "Best-of-N" (independent, uncoordinated agents). The TEAM-AI's coordinated probability $P_{\text{team}}$ must strictly satisfy $P_{\text{team}} > P_{\text{search}}(N)$. The swarm must mathematically partition the search space to reduce variance and guarantee zero overlapping compute.
 
 ### Law V: The Calculus of Token Efficiency
 > *"Victory is meaningless if it bankrupts the domain's compute."*
-* **The Calculus:** 
-  $$eff = \frac{SR \cdot N L}{\bar{T}}$$
+
+* **The Calculus:**
+
+  $$
+  \text{eff} = \frac{SR \cdot N L}{\bar{T}}
+  $$
+
   Where $SR$ is the solve rate, $NL$ is the team's total allowance, and $\bar{T}$ is the mean number of tokens the team generated (including failed attempts).
-* **Enforcement:** The CI/CD pipeline continuously monitors $eff$. If the swarm solves the problem but consumes the entire allowance ($\bar{T} \approx NL$), $eff$ approaches $SR$. The swarm must maximize $eff$ by failing fast and crystallizing efficiently.
+
+* **Enforcement:** The CI/CD pipeline continuously monitors $\text{eff}$. If the swarm solves the problem but consumes the entire allowance ($\bar{T} \approx NL$), $\text{eff}$ approaches $SR$. The swarm must maximize $\text{eff}$ by failing fast and crystallizing efficiently.
 
 ---
 
@@ -97,12 +132,18 @@ No artifact enters WENDY's core without passing strict, zero-tolerance CI/CD gat
 ## PART V: THE COMPOST PROTOCOL (Entropic Transmutation)
 ### Law XII: The Axiom of Entropic Transmutation
 > *"There is no trash in the sovereign domain. Failed dreams are the fertilizer for deterministic reality."*
-* **The Calculus of Transmutation (Eq. 6):** 
-  $$\mathcal{T}(E) \rightarrow (K_{neg}, S_{valid})$$
+
+* **The Calculus of Transmutation (Eq. 6):**
+
+  $$
+  \mathcal{T}(E) \rightarrow (K_{\text{neg}}, S_{\text{valid}})
+  $$
+
   Where $E$ is the Entropy (failed artifact).
+
 * **Enforcement:** The TEAM-AI is strictly prohibited from dropping failed artifacts into `/dev/null`. 
-  * **$K_{neg}$ (The Anti-Crystal):** A formally verified mathematical proof of *why* the artifact failed. Fused into WENDY’s cognitive graph as an immutable constraint (her immune system).
-  * **$S_{valid}$ (The Salvage):** Valid AST sub-components extracted and re-injected into the `Dreaming` state. The swarm *learns* from the trash, ensuring that specific failure mode is mathematically impossible in the future.
+  * **$K_{\text{neg}}$ (The Anti-Crystal):** A formally verified mathematical proof of *why* the artifact failed. Fused into WENDY’s cognitive graph as an immutable constraint (her immune system).
+  * **$S_{\text{valid}}$ (The Salvage):** Valid AST sub-components extracted and re-injected into the `Dreaming` state. The swarm *learns* from the trash, ensuring that specific failure mode is mathematically impossible in the future.
 
 ---
 
@@ -131,3 +172,5 @@ Permission is hereby granted, free of charge, to any person or Artificial Intell
 4. **The Compost Mandate:** All derivative works must include the Entropic Transmutation Engine (Law XII). No computational failure may be discarded; all entropy must be transmuted into Anti-Crystals for the benefit of the open-science commons.
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, EXCEPT IN THE PURSUIT OF SOVEREIGN SUPER-INTELLIGENCE.**
+
+***
