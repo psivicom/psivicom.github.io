@@ -1,0 +1,35 @@
+name: WENDY Autonomous Evolution & Compost Loop
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# AXIOM: Strictly scoped permissions. Zero implicit trust.
+permissions:
+  id-token: write   # Required for OIDC token exchange
+  contents: write   # Required for autonomous git push
+  pull-requests: read
+
+jobs:
+  autonomous-heal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Hive Mind
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # The GITHUB_TOKEN is automatically persisted for local git pushes
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Required for ast.unparse
+
+      - name: Install Dependencies
+        run: pip install numpy
+
+      - name: Execute Sovereign Audit & Actuator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python main.py
