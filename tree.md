@@ -4,6 +4,7 @@
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
+│   │   ├── sovereign_evolution.yml
 │   │   ├── update-tree.yml
 │   │   ├── vendor-nasa-os101.yml
 │   │   ├── volunteer-ingest.yml
@@ -603,5 +604,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-62 directories, 541 files
+62 directories, 542 files
 ```

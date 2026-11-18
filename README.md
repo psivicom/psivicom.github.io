@@ -120,13 +120,14 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-18T22:09:41.000Z -->
+<!-- Last updated: 2026-11-18T22:13:14.000Z -->
 ```text
 ./
 ├── .github/
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
+│   │   ├── sovereign_evolution.yml
 │   │   ├── update-tree.yml
 │   │   ├── vendor-nasa-os101.yml
 │   │   ├── volunteer-ingest.yml
@@ -726,6 +727,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-62 directories, 541 files
+62 directories, 542 files
 ```
 <!-- AUTO_TREE_END -->
