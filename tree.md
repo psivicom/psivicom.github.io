@@ -1,6 +1,8 @@
 ```text
 ./
 ├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   └── bug_report.md
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
@@ -605,5 +607,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-62 directories, 543 files
+63 directories, 544 files
 ```
