@@ -38,6 +38,37 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Ingest Council Memory (Cognitive Pre-Flight)
+        id: memory_ingest
+        run: |
+          set -euo pipefail
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          echo "🧠 [$TIMESTAMP] Scanning for past Council counsel..."
+          
+          # Ensure we have all remote branches to scan for counsel
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*'
+          
+          # Harvest all COUNSEL.md files from all remote dream branches
+          COUNSEL_HARVEST=$(git branch -r | grep 'origin/wendy/dream-' | while read -r branch; do
+            git show "$branch:.wendy/COUNSEL.md" 2>/dev/null || true
+          done)
+          
+          if [ -z "$COUNSEL_HARVEST" ]; then
+            echo "✅ No past friction detected. WENDY is free to dream."
+            MEMORY_CONTEXT="No past Council counsel exists. You are starting fresh."
+          else
+            echo "⚠️ Past friction detected. Feeding Council wisdom into WENDY's context..."
+            # Compress the harvest to prevent context-window overflow
+            MEMORY_CONTEXT=$(echo "$COUNSEL_HARVEST" | grep -E '(## 🧠|## 🌌|The Friction)' -A 5 | head -n 200)
+          fi
+          
+          # Export the memory to the GitHub Actions environment securely
+          {
+            echo "WENDY_PAST_MEMORY<<EOF"
+            echo "$MEMORY_CONTEXT"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
       - name: Generate Autonomous Dream Branch
         id: create-branch
         run: |
@@ -60,7 +91,10 @@ jobs:
           
           echo "🌌 Materializing dream from manifest hash: $MANIFEST_HASH"
           
-          mkdir -p src/dreams
+          mkdir -p src/dreams .wendy
+          
+          # Persist the cognitive context for traceability
+          echo "$WENDY_PAST_MEMORY" > .wendy/memory_context.md
           
           # EOF is indented to match the cat command, preserving the YAML block scalar.
           # cargo fmt in the next job will automatically strip the leading spaces.
@@ -76,7 +110,7 @@ jobs:
           /// Dream function generated from symbolic consensus
           pub fn materialized_dream() -> Result<()> {
               // TODO: WENDY will populate this with actual logic
-              // based on the manifest content
+              // based on the manifest content and past council counsel
               println!("Dream {} materialized", "$MANIFEST_HASH");
               Ok(())
           }
@@ -85,7 +119,7 @@ jobs:
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           git checkout -b "$BRANCH_NAME"
-          git add "src/dreams/dream_${MANIFEST_HASH}.rs"
+          git add "src/dreams/dream_${MANIFEST_HASH}.rs" .wendy/memory_context.md
           # [skip ci] prevents the push from triggering a duplicate parallel workflow run
           git commit -m "🌌 Autonomous dream materialization: $MANIFEST_HASH [skip ci]"
           
