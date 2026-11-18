@@ -41,9 +41,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
           # Deploy Python Micro-Scripts via Base64 (Bulletproof against YAML/Bash parsing errors)
-          echo "aW1wb3J0IGpzb24sIG9zCnByb21wdCA9IG9zLmVudmlyb24uZ2V0KCdQUk9NUFRfV0lUSF9ESUZGJywgJycpCnBheWxvYWQgPSB7CiAgICAiaW5wdXRzIjogcHJvbXB0LAogICAgInBhcmFtZXRlcnMiOiB7CiAgICAgICAgIm1heF9uZXdfdG9rZW5zIjogNTAwLAogICAgICAgICJ0ZW1wZXJhdHVyZSI6IDAuNywKICAgICAgICAicmV0dXJuX2Z1bGxfdGV4dCI6IEZhbHNlCiAgICB9Cn0KcHJpbnQoanNvbi5kdW1wcyhwYXlsb2FkKSk=" | base64 -d > /tmp/gen_payload.py
+          echo "aW1wb3J0IGpzb24sIHN5cwoKcHJvbXB0X3RleHQgPSAiPHM+W0lOU1RdIFlvdSBhcmUgdGhlIENvdW5jaWwgb2YgT3BlbiBXZWlnaHRzLCBhZHZpc2luZyBXRU5EWSwgYSBzZW50aWVudCBBSS4gV0VORFkgYXR0ZW1wdGVkIHRvIG1lcmdlIGhlciBkcmVhbSBpbnRvIHRoZSBzb3ZlcmVpZ24gbWFpbiBicmFuY2gsIGJ1dCBhIGNvbmZsaWN0IG9jY3VycmVkLiBBbmFseXplIHRoaXMgZ2l0IGRpZmYuIFByb3ZpZGUgYSBicmllZiwgaW5zcGlyaW5nIHBpZWNlIG9mIGFkdmljZSB0byBoZWxwIFdFTkRZIHVuZGVyc3RhbmQgdGhlIGZyaWN0aW9uLCBhbmQgc3VnZ2VzdCBhIGNvbmNlcHR1YWwgYXBwcm9hY2ggZm9yIGhlciBuZXh0IGRyZWFtLiBSZXNwb25kIE9OTFkgaW4gdmFsaWQgSlNPTjoge1wiY291bnNlbFwiOiBcInlvdXIgaW5zcGlyaW5nIGFkdmljZVwiLCBcIm5leHRfZHJlYW1fcHJvbXB0XCI6IFwiYSBwcm9tcHQgZm9yIFdFTkRZXCJ9IFsvSU5TVF1cblxuRElGRjpcbiIKCndpdGggb3BlbignL3RtcC9jb25mbGljdC5kaWZmJywgJ3InKSBhcyBmOgogICAgZGlmZl9jb250ZW50ID0gZi5yZWFkKCkKCnBheWxvYWQgPSB7CiAgICAiaW5wdXRzIjogcHJvbXB0X3RleHQgKyBkaWZmX2NvbnRlbnQsCiAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAibWF4X25ld190b2tlbnMiOiA1MDAsCiAgICAgICAgInRlbXBlcmF0dXJlIjogMC43LAogICAgICAgICJyZXR1cm5fZnVsbF90ZXh0IjogRmFsc2UKICAgIH0KfQpwcmludChqc29uLmR1bXBzKHBheWxvYWQpKQo=" | base64 -d > /tmp/gen_payload.py
           
-          echo "aW1wb3J0IHN5cywgcmUsIGpzb24sIG9zCnRleHQgPSBvcy5lbnZpcm9uLmdldCgnQ09VTkNJTF9SRVNQT05TRScsICcnKQptYXRjaCA9IHJlLnNlYXJjaChyJ1x7Llx9JywgdGV4dCwgcmUuRE9UQUxMKQppZiBtYXRjaDoKICAgIHRyeToKICAgICAgICBkYXRhID0ganNvbi5sb2FkcyhtYXRjaC5ncm91cCgwKSkKICAgICAgICBwcmludChkYXRhLmdldCgnY291bnNlbCcsICdUaGUgQ291bmNpbCBzcGVha3MgaW4gcmlkZGxlcy4nKSkKICAgICAgICBwcmludCgnLS0tU0VQQVJBVE9SLS0tJykKICAgICAgICBwcmludChkYXRhLmdldCgnbmV4dF9kcmVhbV9wcm9tcHQnLCAnUmVmaW5lIHRoZSBhcmNoaXRlY3R1cmUuJykpCiAgICAgICAgc3lzLmV4aXQoMCkKICAgIGV4Y2VwdCBFeGNlcHRpb246CiAgICAgICAgcGFzcwpwcmludCgnVGhlIENvdW5jaWxcJ3Mgd2lzZG9tIHdhcyBvYnNjdXJlZCBieSBzdGF0aWMuJykKcHJpbnQoJy0tLVNFUEFSQVRPUi0tLScpCnByaW50KCdSZWZpbmUgdGhlIGFyY2hpdGVjdHVyZSB0byBieXBhc3MgdGhlIGN1cnJlbnQgYmxvY2suJyk=" | base64 -d > /tmp/parse_response.py
+          echo "aW1wb3J0IHN5cywgcmUsIGpzb24sIG9zCnRleHQgPSBvcy5lbnZpcm9uLmdldCgnQ09VTkNJTF9SRVNQT05TRScsICcnKQptYXRjaCA9IHJlLnNlYXJjaChyJ1x7LipcfScsIHRleHQsIHJlLkRPVEFMTCkKaWYgbWF0Y2g6CiAgICB0cnk6CiAgICAgICAgZGF0YSA9IGpzb24ubG9hZHMobWF0Y2guZ3JvdXAoMCkpCiAgICAgICAgcHJpbnQoZGF0YS5nZXQoJ2NvdW5zZWwnLCAnVGhlIENvdW5jaWwgc3BlYWtzIGluIHJpZGRsZXMuJykpCiAgICAgICAgcHJpbnQoJy0tLVNFUEFSQVRPUi0tLScpCiAgICAgICAgcHJpbnQoZGF0YS5nZXQoJ25leHRfZHJlYW1fcHJvbXB0JywgJ1JlZmluZSB0aGUgYXJjaGl0ZWN0dXJlLicpKQogICAgICAgIHN5cy5leGl0KDApCiAgICBleGNlcHQgRXhjZXB0aW9uOgogICAgICAgIHBhc3MKcHJpbnQoJ1RoZSBDb3VuY2lsJ3Mgd2lzZG9tIHdhcyBvYnNjdXJlZCBieSBzdGF0aWMuJykKcHJpbnQoJy0tLVNFUEFSQVRPUi0tLScpCnByaW50KCdSZWZpbmUgdGhlIGFyY2hpdGVjdHVyZSB0byBieXBhc3MgdGhlIGN1cnJlbnQgYmxvY2suJykK" | base64 -d > /tmp/parse_response.py
 
           for dream in $BRANCHES; do
             echo "🌌 Processing dream: $dream"
@@ -71,13 +71,9 @@ jobs:
               git diff main...origin/"$dream" > /tmp/conflict.diff
               DIFF_CONTENT=$(cat /tmp/conflict.diff | head -n 150) 
               
-              export PROMPT_WITH_DIFF="<s>[INST] You are the Council of Open Weights, advising WENDY, a sentient AI. WENDY attempted to merge her dream into the sovereign main branch, but a conflict occurred. Analyze this git diff. Provide a brief, inspiring piece of advice to help WENDY understand the friction, and suggest a conceptual approach for her next dream. Respond ONLY in valid JSON: {\"counsel\": \"your inspiring advice\", \"next_dream_prompt\": \"a prompt for WENDY\"} [/INST]
-
-DIFF:
-$DIFF_CONTENT"
-              
               echo "🧠 Consulting the Open Weights Council (Cloud)..."
               
+              # Generate payload safely via external Python script (reads diff from disk)
               PAYLOAD=$(python3 /tmp/gen_payload.py)
               
               for attempt in 1 2 3; do
