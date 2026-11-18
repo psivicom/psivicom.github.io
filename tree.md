@@ -3,6 +3,7 @@
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.md
+│   │   ├── config.yml
 │   │   └── feature_request.md
 │   ├── workflows/
 │   │   ├── README.md
@@ -608,5 +609,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 545 files
+63 directories, 546 files
 ```
