@@ -120,12 +120,13 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-18T23:35:36.000Z -->
+<!-- Last updated: 2026-11-18T23:37:01.000Z -->
 ```text
 ./
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   │   └── bug_report.md
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
@@ -730,6 +731,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 544 files
+63 directories, 545 files
 ```
 <!-- AUTO_TREE_END -->

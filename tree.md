@@ -2,7 +2,8 @@
 ./
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   │   └── bug_report.md
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
@@ -607,5 +608,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 544 files
+63 directories, 545 files
 ```
