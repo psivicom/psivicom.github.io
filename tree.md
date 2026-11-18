@@ -556,6 +556,7 @@
 │   ├── RUNNERS.toml
 │   └── manifest.gmi
 ├── wendy_core/
+│   ├── compost_entropy.py
 │   └── stigmergy_topology.py
 ├── .gitignore
 ├── .wendy_dream.gmi
@@ -599,5 +600,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-62 directories, 537 files
+62 directories, 538 files
 ```
