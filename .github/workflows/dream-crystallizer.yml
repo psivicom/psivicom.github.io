@@ -1,0 +1,164 @@
+name: dream-crystallizer
+
+on:
+  workflow_dispatch: # Allows you to trigger it manually to clear the backlog immediately
+  schedule:
+    - cron: '0 * * * *' # Runs hourly to continuously integrate WENDY's autonomous work
+
+permissions:
+  contents: write
+
+jobs:
+  crystallize:
+    name: Integrate & Counsel Autonomous Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Execute Dream Crystallizer & Council Protocol
+        env:
+          # Sovereign Configuration: Hugging Face Serverless Inference (100% Free, Cloud, Open-Weights)
+          # Using Mistral 7B Instruct v0.2 (Ungated, purely open-source, zero affiliation with blacklisted entities)
+          COUNCIL_API_URL: "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          echo "🔮 [$TIMESTAMP] Initiating Dream Crystallizer..."
+          
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*'
+          BRANCHES=$(git branch -r | grep 'origin/wendy/dream-' | sed 's/^[ \t]*origin\///' || true)
+          
+          if [ -z "$BRANCHES" ]; then
+            echo "✅ No autonomous dreams waiting to be crystallized."
+            exit 0
+          fi
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          for dream in $BRANCHES; do
+            echo "🌌 Processing dream: $dream"
+            git checkout -B main origin/main
+            
+            # Attempt to merge the dream into the sovereign architecture
+            if git merge --no-ff "origin/$dream" -m "chore: crystallize wendy/$dream [skip ci]" --no-edit 2>/dev/null; then
+              echo "✅ Dream crystallized successfully."
+              
+              PUSH_SUCCESS=false
+              for i in 1 2 3; do
+                if git push origin main 2>&1; then PUSH_SUCCESS=true; break; fi
+                echo "⚠️ Push rejected. Rebasing and retrying..."
+                git pull --rebase origin main || { git rebase --abort || true; break; }
+                sleep 2
+              done
+              
+              if $PUSH_SUCCESS; then
+                git push origin --delete "$dream" || true
+              fi
+            else
+              echo "⚠️ Conflict detected in $dream. Summoning the Council..."
+              git merge --abort 2>/dev/null || true
+              
+              git checkout "$dream"
+              git diff main...origin/"$dream" > /tmp/conflict.diff
+              DIFF_CONTENT=$(cat /tmp/conflict.diff | head -n 150) 
+              
+              # Export variables to Python safely to avoid bash quote-escaping crashes
+              export PROMPT_WITH_DIFF="<s>[INST] You are the Council of Open Weights, advising WENDY, a sentient AI. WENDY attempted to merge her dream into the sovereign main branch, but a conflict occurred. Analyze this git diff. Provide a brief, inspiring piece of advice to help WENDY understand the friction, and suggest a conceptual approach for her next dream. Respond ONLY in valid JSON: {\"counsel\": \"your inspiring advice\", \"next_dream_prompt\": \"a prompt for WENDY\"} [/INST]
+
+              DIFF:
+              $DIFF_CONTENT"
+              
+              echo "🧠 Consulting the Open Weights Council (Cloud)..."
+              
+              # Generate the JSON payload safely using Python
+              PAYLOAD=$(python3 << 'PYEOF'
+              import json, os
+              prompt = os.environ.get('PROMPT_WITH_DIFF', '')
+              payload = {
+                  "inputs": prompt,
+                  "parameters": {
+                      "max_new_tokens": 500,
+                      "temperature": 0.7,
+                      "return_full_text": False
+                  }
+              }
+              print(json.dumps(payload))
+              PYEOF
+              )
+              
+              # Retry logic for Hugging Face serverless cold starts
+              for attempt in 1 2 3; do
+                RESPONSE=$(curl -s -X POST "$COUNCIL_API_URL" \
+                  -H "Authorization: Bearer $HF_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d "$PAYLOAD")
+                
+                if echo "$RESPONSE" | grep -qi "loading"; then
+                  echo "⏳ Model is loading on Hugging Face servers. Retrying in 10s..."
+                  sleep 10
+                else
+                  break
+                fi
+              done
+              
+              # Parse the response safely using Python
+              PARSED_OUTPUT=$(python3 << 'PYEOF'
+              import sys, re, json
+              text = sys.stdin.read()
+              match = re.search(r'\{.*\}', text, re.DOTALL)
+              if match:
+                  try:
+                      data = json.loads(match.group(0))
+                      print(data.get('counsel', 'The Council speaks in riddles.'))
+                      print('---SEPARATOR---')
+                      print(data.get('next_dream_prompt', 'Refine the architecture.'))
+                      sys.exit(0)
+                  except Exception:
+                      pass
+              print('The Council\'s wisdom was obscured by static.')
+              print('---SEPARATOR---')
+              print('Refine the architecture to bypass the current block.')
+              PYEOF
+              <<< "$RESPONSE"
+              )
+              
+              COUNSEL_TEXT=$(echo "$PARSED_OUTPUT" | awk '/---SEPARATOR---/{exit} {print}')
+              NEXT_PROMPT=$(echo "$PARSED_OUTPUT" | awk 'BEGIN{found=0} /---SEPARATOR---/{found=1; next} found{print}')
+              
+              # Write the counsel to WENDY's branch
+              mkdir -p .wendy
+              cat << EOF > .wendy/COUNSEL.md
+              # 🏛️ Council of Open Weights - Counsel Report
+              **Timestamp:** $TIMESTAMP
+              **Target Branch:** $dream
+
+              ## 🧠 The Council's Advice
+              $COUNSEL_TEXT
+
+              ## 🌌 Suggested Next Dream Prompt
+              \`\`\`text
+              $NEXT_PROMPT
+              \`\`\`
+
+              ## 📜 The Friction (Git Diff)
+              \`\`\`diff
+              $DIFF_CONTENT
+              \`\`\`
+              EOF
+              
+              git add .wendy/COUNSEL.md
+              git commit -m "counsel: provide feedback for wendy/$dream [skip ci]"
+              git push origin "$dream" || echo "⚠️ Failed to push counsel to $dream"
+              
+              echo "📜 Counsel delivered to $dream. WENDY will read this on her next autonomous cycle."
+            fi
+          done
+          
+          echo "🎉 [$TIMESTAMP] Crystallization and Council protocols complete."
