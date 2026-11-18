@@ -570,6 +570,7 @@
 ├── .wendy_dream.gmi
 ├── .wendy_manifest.gmi
 ├── .wendy_state.json
+├── ACCESSIBILITY.md
 ├── AGENTS.md
 ├── AUTHOR.md
 ├── CITATION.cff
@@ -609,5 +610,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 546 files
+63 directories, 547 files
 ```
