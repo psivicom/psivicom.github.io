@@ -570,6 +570,7 @@
 ├── DISCLAIMER.md
 ├── GODMODE.c
 ├── LICENSE
+├── MANIFESTO.md
 ├── NOTICE.md
 ├── OPEN_SCIENCE_POLICY.md
 ├── POLICY.md
@@ -596,5 +597,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-61 directories, 535 files
+61 directories, 536 files
 ```
