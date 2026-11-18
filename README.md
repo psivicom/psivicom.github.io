@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-18T22:13:14.000Z -->
+<!-- Last updated: 2026-11-18T22:16:31.000Z -->
 ```text
 ./
 ├── .github/
@@ -680,6 +680,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── RUNNERS.toml
 │   └── manifest.gmi
 ├── wendy_core/
+│   ├── __init__.py
 │   ├── compost_entropy.py
 │   ├── sovereign_auditor.py
 │   ├── stigmergy_topology.py
@@ -727,6 +728,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-62 directories, 542 files
+62 directories, 543 files
 ```
 <!-- AUTO_TREE_END -->
