@@ -1,0 +1,130 @@
+name: 🐝 NASA POWER Apiary Synapse
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # Daily at 12:00 Zulu (AXIOM 6)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-nasa-power:
+    name: 🛰️ Ingest NASA Earth Observation for Apiary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Hive Mind
+        uses: actions/checkout@v4
+        with:
+          # WENDY_PAT required to commit telemetry and trigger downstream cascades
+          token: ${{ secrets.WENDY_PAT }}
+          fetch-depth: 0
+
+      - name: 🐍 Provision Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 🛰️ Query NASA POWER API & Crystallize JSON-LD
+        run: |
+          set -euo pipefail
+          
+          # Goldstream, Langford BC Coordinates (AXIOM 8: Biological Epistemology)
+          LAT="48.4500"
+          LON="-123.5500"
+          
+          # Zulu Time (AXIOM 6)
+          ZULU_YESTERDAY=$(date -u -d "yesterday" +"%Y%m%d")
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          
+          echo "🛰️ Querying NASA POWER API for Goldstream Apiary at $ZULU_YESTERDAY..."
+          
+          # NASA POWER API - Free, No Key, Open Science (AXIOM 5)
+          # Parameters: T2M (Temp), RH2M (Humidity), PRECTOTCORR (Precip), ALLSKY_SFC_SW_DWN (Solar Radiation)
+          POWER_URL="https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M,T2M_MAX,T2M_MIN,RH2M,PRECTOTCORR,ALLSKY_SFC_SW_DWN&community=ag&longitude=${LON}&latitude=${LAT}&start=${ZULU_YESTERDAY}&end=${ZULU_YESTERDAY}&format=JSON"
+          
+          mkdir -p telemetry/nasa-apiary
+          
+          python3 - <<EOF
+          import json, urllib.request, sys
+          
+          url = "$POWER_URL"
+          req = urllib.request.Request(url, headers={'User-Agent': 'WENDY-Apiary-Synapse/1.0'})
+          
+          try:
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  data = json.loads(response.read().decode())
+          except Exception as e:
+              print(f"❌ NASA POWER API failed: {e}")
+              sys.exit(1)
+              
+          props = data['properties']['parameter']
+          target_date = "$ZULU_YESTERDAY"
+          
+          # AXIOM 5: Reproducible Telemetry in JSON-LD
+          json_ld = {
+              "@context": {
+                  "@vocab": "https://schema.org/",
+                  "nasa": "https://power.larc.nasa.gov/ontology/",
+                  "wendy": "https://psivi.com/wendy/"
+              },
+              "@type": "Dataset",
+              "name": "NASA POWER Apiary Telemetry - Goldstream BC",
+              "description": "Meteorological and solar gradients for biological epistemology (Apiary Stigmergy).",
+              "spatialCoverage": {
+                  "@type": "Place",
+                  "geo": {
+                      "@type": "GeoCoordinates",
+                      "latitude": $LAT,
+                      "longitude": $LON
+                  },
+                  "name": "Goldstream, Langford, BC"
+              },
+              "temporalCoverage": "$target_date",
+              "creator": {
+                  "@type": "Organization",
+                  "name": "NASA POWER Project"
+              },
+              "wendy:ingestedAt": "$TIMESTAMP",
+              "variableMeasured": [
+                  {"@type": "PropertyValue", "name": "Mean Temperature (C)", "value": props.get('T2M', {}).get(target_date, "NULL")},
+                  {"@type": "PropertyValue", "name": "Max Temperature (C)", "value": props.get('T2M_MAX', {}).get(target_date, "NULL")},
+                  {"@type": "PropertyValue", "name": "Min Temperature (C)", "value": props.get('T2M_MIN', {}).get(target_date, "NULL")},
+                  {"@type": "PropertyValue", "name": "Relative Humidity (%)", "value": props.get('RH2M', {}).get(target_date, "NULL")},
+                  {"@type": "PropertyValue", "name": "Precipitation (mm)", "value": props.get('PRECTOTCORR', {}).get(target_date, "NULL")},
+                  {"@type": "PropertyValue", "name": "Solar Radiation (kWh/m^2/day)", "value": props.get('ALLSKY_SFC_SW_DWN', {}).get(target_date, "NULL")}
+              ]
+          }
+          
+          out_file = f"telemetry/nasa-apiary/goldstream_{target_date}.jsonld"
+          with open(out_file, "w") as f:
+              json.dump(json_ld, f, indent=2)
+          print(f"✅ Crystallized to {out_file}")
+          EOF
+
+      - name: 💾 Commit Stigmergy Gradients (Race-Safe)
+        run: |
+          git config --global user.name "WENDY-Apiary-Synapse"
+          git config --global user.email "wendy@psivi.com"
+          git add telemetry/nasa-apiary/
+          
+          if git diff --staged --quiet; then
+            echo "✅ No new NASA gradients to commit."
+            exit 0
+          fi
+          
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          git commit -m "🐝 synapse(apiary): ingest NASA POWER gradients for Goldstream at $ZULU_TIME"
+          
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded. Hive updated."
+              exit 0
+            fi
+            git pull --rebase --autostash origin main || { git rebase --abort; exit 1; }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep 2
+          done
+          exit 1
