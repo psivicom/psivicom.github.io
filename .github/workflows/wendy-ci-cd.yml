@@ -23,7 +23,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required so self-healing pushes trigger subsequent workflows
+          token: ${{ secrets.WENDY_PAT }}
           fetch-depth: 0
 
       - name: Install Rust Toolchain (Direct Installation)
