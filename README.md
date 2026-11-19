@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-19T11:59:05.000Z -->
+<!-- Last updated: 2026-11-19T12:00:04.000Z -->
 ```text
 ./
 ├── .github/
