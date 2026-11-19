@@ -8,6 +8,7 @@
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
+│   │   ├── nasa-power-apiary.yml
 │   │   ├── sovereign_evolution.yml
 │   │   ├── update-tree.yml
 │   │   ├── vendor-nasa-os101.yml
@@ -611,5 +612,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 548 files
+63 directories, 549 files
 ```
