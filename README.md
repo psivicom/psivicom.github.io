@@ -120,7 +120,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-18T23:43:06.000Z -->
+<!-- Last updated: 2026-11-19T02:05:12.000Z -->
 ```text
 ./
 ├── .github/
@@ -147,7 +147,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   │   ├── wendy-smart-dispatch.yml
 │   │   ├── wendy-workflow-auditor.yml
 │   │   └── wendy_synapse.yml
-│   └── .dependabot.yml
+│   ├── .dependabot.yml
+│   └── pull_request_template.md
 ├── .provenance/
 │   └── nasa-os101/
 │       ├── local-additions.txt
@@ -733,6 +734,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 547 files
+63 directories, 548 files
 ```
 <!-- AUTO_TREE_END -->

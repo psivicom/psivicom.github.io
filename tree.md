@@ -24,7 +24,8 @@
 │   │   ├── wendy-smart-dispatch.yml
 │   │   ├── wendy-workflow-auditor.yml
 │   │   └── wendy_synapse.yml
-│   └── .dependabot.yml
+│   ├── .dependabot.yml
+│   └── pull_request_template.md
 ├── .provenance/
 │   └── nasa-os101/
 │       ├── local-additions.txt
@@ -610,5 +611,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 547 files
+63 directories, 548 files
 ```
