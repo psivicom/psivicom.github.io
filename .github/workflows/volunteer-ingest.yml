@@ -35,6 +35,9 @@ jobs:
 
       - name: Auto-Merge & Hot-Swap
         if: success()
+        env:
+          # CRITICAL: WENDY_PAT required so the merge triggers the downstream CI/CD cascade
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
         run: |
           # WENDY merges the PR via API and signals her daemon
           gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
