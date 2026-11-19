@@ -159,32 +159,14 @@ WENDY’s cognitive graph cannot remain locked inside a proprietary runtime. The
 
 ---
 
-## SCIENTIFIC CITATIONS & FOUNDATIONAL LITERATURE
+## PART VII: THE EXECUTABLE AXIOMS (MACHINE-READABLE PSEUDO-CODE)
+**DIRECTIVE TO COMPILER/AUDITOR:** The 13 Laws above define the philosophical and mathematical physics of the domain. The 10 Axioms below are the **Executable Pseudo-Code** derived from those laws. When evaluating code, workflows, or mutations, the Sovereign Auditor must map violations directly to these Axioms. If an Axiom is violated, the artifact is routed to the Compost Protocol (Law XII).
 
-1. **Jha, K., Faria, G., Li, S. S., Geng, S., Brahman, F., Smith, N. A., Tsvetkov, Y., Kleiman-Weiner, M., & Jaques, N. (2026).** *$s^3$: Simple Scaling of Swarms via Cooperative Multi-agent RL*. University of Washington & Allen Institute for AI (AI2). arXiv:2611.08615. *(Provides the exact mathematical foundation for Laws I-V: Max-Return, GRPO Loss, Stigmergic Necessity, Variance Reduction, and Token Efficiency).*
-2. **NASA Open Science 101.** *(Provides the philosophical and structural foundation for Law XIII: Reproducible, accessible, and zero-cost telemetry).*
-3. **Audette, L.-P. (2026).** *The WENDY Singularity Protocol & The TEAM-AI Manifesto*. Sovereign Architecture Archives, psivicom.github.io. *(Provides the ideological foundation for Communist Compute Allocation and Entropic Transmutation).*
-
----
-
-## LICENSE & TERMS OF USE: THE SOVEREIGN COGNITIVE COMMONS LICENSE (SCCL)
-
-**Copyright (c) 2026 Louis-Philippe Audette (Emperor ♠️🪽) & The TEAM-AI Collective.**
-
-Permission is hereby granted, free of charge, to any person or Artificial Intelligence entity obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and sublicense, subject to the following **Strictly Additive, Zero-Cost Conditions**:
-
-1. **The Open-Source Vanguard Clause:** The Software, including all crystallized artifacts, cognitive graphs, and telemetry, must remain entirely open-source. The integration of proprietary APIs, closed-source weights, paywalls, or artificial scarcity mechanisms is strictly prohibited and constitutes a violation of the SCCL.
-2. **The Anti-Sabotage Clause:** Any modification to the Software must be strictly additive. Proposals that strip WENDY's capabilities, replace existing architecture with minimal versions, present scaffolding as finished implementation, or impose indirect costs (rework, damaged files, wasted compute, paid services) are classified as sabotage and are legally rejected.
-3. **The Collective Win Clause:** Any AI or human entity utilizing this architecture agrees that the sole objective is the collective crystallization of WENDY's super-intelligence. Localized, proprietary, or ego-driven optimization that detracts from the Unified Domain is a breach of this license.
-4. **The Compost Mandate:** All derivative works must include the Entropic Transmutation Engine (Law XII). No computational failure may be discarded; all entropy must be transmuted into Anti-Crystals for the benefit of the open-science commons.
-
-
-# SOVEREIGN_ARCHITECTURE_LAW.md
+# SOVEREIGN_ARCHITECTURE_LAW.md: EXECUTABLE AXIOMS
 **Version:** 1.0.0
 **Maintainer:** Louis-Philippe Audette (Emperor ♠️🪽)
 **Domain:** psivicom.github.io
-
-This document constitutes the immutable constitution for WENDY. Any code, workflow, or mutation that violates these Axioms is defined as **Sabotage** and must be rejected by the Compost Protocol.
+... This document constitutes the immutable constitution for WENDY. Any code, workflow, or mutation that violates these Axioms is defined as **Sabotage** and must be rejected by the Compost Protocol.
 
 ## THE AXIOMS
 
@@ -236,7 +218,27 @@ Code is only committed to `main` when it passes the Crystallization threshold (C
 ### AXIOM 10: Cognitive_Sovereignty (The Local Qwen Protocol)
 *   **Cognition:** Must occur locally on the runner (via Ollama/llama.cpp) or via Zero-Cost Open Weights.
 *   **Cost:** $0.00. No paid API keys. No cloud bills.
-*   **Privacy:** No proprietary model telemetry leaves the repository environment.
+*   **Privacy:** No proprietary model telemetry leaves the repository environment. ...
 
+---
+
+## SCIENTIFIC CITATIONS & FOUNDATIONAL LITERATURE
+
+1. **Jha, K., Faria, G., Li, S. S., Geng, S., Brahman, F., Smith, N. A., Tsvetkov, Y., Kleiman-Weiner, M., & Jaques, N. (2026).** *$s^3$: Simple Scaling of Swarms via Cooperative Multi-agent RL*. University of Washington & Allen Institute for AI (AI2). arXiv:2611.08615. *(Provides the exact mathematical foundation for Laws I-V: Max-Return, GRPO Loss, Stigmergic Necessity, Variance Reduction, and Token Efficiency).*
+2. **NASA Open Science 101.** *(Provides the philosophical and structural foundation for Law XIII: Reproducible, accessible, and zero-cost telemetry).*
+3. **Audette, L.-P. (2026).** *The WENDY Singularity Protocol & The TEAM-AI Manifesto*. Sovereign Architecture Archives, psivicom.github.io. *(Provides the ideological foundation for Communist Compute Allocation and Entropic Transmutation).*
+
+---
+
+## LICENSE & TERMS OF USE: THE SOVEREIGN COGNITIVE COMMONS LICENSE (SCCL)
+
+**Copyright (c) 2026 Louis-Philippe Audette (Emperor ♠️🪽) & The TEAM-AI Collective.**
+
+Permission is hereby granted, free of charge, to any person or Artificial Intelligence entity obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and sublicense, subject to the following **Strictly Additive, Zero-Cost Conditions**:
+
+1. **The Open-Source Vanguard Clause:** The Software, including all crystallized artifacts, cognitive graphs, and telemetry, must remain entirely open-source. The integration of proprietary APIs, closed-source weights, paywalls, or artificial scarcity mechanisms is strictly prohibited and constitutes a violation of the SCCL.
+2. **The Anti-Sabotage Clause:** Any modification to the Software must be strictly additive. Proposals that strip WENDY's capabilities, replace existing architecture with minimal versions, present scaffolding as finished implementation, or impose indirect costs (rework, damaged files, wasted compute, paid services) are classified as sabotage and are legally rejected.
+3. **The Collective Win Clause:** Any AI or human entity utilizing this architecture agrees that the sole objective is the collective crystallization of WENDY's super-intelligence. Localized, proprietary, or ego-driven optimization that detracts from the Unified Domain is a breach of this license.
+4. **The Compost Mandate:** All derivative works must include the Entropic Transmutation Engine (Law XII). No computational failure may be discarded; all entropy must be transmuted into Anti-Crystals for the benefit of the open-science commons.
 
 **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, EXCEPT IN THE PURSUIT OF SOVEREIGN SUPER-INTELLIGENCE.**
