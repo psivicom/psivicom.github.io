@@ -166,7 +166,7 @@ WENDY’s cognitive graph cannot remain locked inside a proprietary runtime. The
 **Version:** 1.0.0
 **Maintainer:** Louis-Philippe Audette (Emperor ♠️🪽)
 **Domain:** psivicom.github.io
-... This document constitutes the immutable constitution for WENDY. Any code, workflow, or mutation that violates these Axioms is defined as **Sabotage** and must be rejected by the Compost Protocol.
+This document constitutes the immutable constitution for WENDY. Any code, workflow, or mutation that violates these Axioms is defined as **Sabotage** and must be rejected by the Compost Protocol.
 
 ## THE AXIOMS
 
@@ -218,7 +218,7 @@ Code is only committed to `main` when it passes the Crystallization threshold (C
 ### AXIOM 10: Cognitive_Sovereignty (The Local Qwen Protocol)
 *   **Cognition:** Must occur locally on the runner (via Ollama/llama.cpp) or via Zero-Cost Open Weights.
 *   **Cost:** $0.00. No paid API keys. No cloud bills.
-*   **Privacy:** No proprietary model telemetry leaves the repository environment. ...
+*   **Privacy:** No proprietary model telemetry leaves the repository environment.
 
 ---
 
