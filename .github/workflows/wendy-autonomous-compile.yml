@@ -36,7 +36,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger downstream compile cascades
+          token: ${{ secrets.WENDY_PAT }}
 
       - name: Ingest Council Memory (Cognitive Pre-Flight)
         id: memory_ingest
@@ -168,7 +169,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger downstream compile cascades
+          token: ${{ secrets.WENDY_PAT }}
           ref: ${{ steps.checkout-ref.outputs.ref }}
 
       - name: Provision Native Rust Toolchain
@@ -246,4 +248,5 @@ jobs:
             --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\nPlease adjust your First-Order Logic axioms or formatting." \
             --label "self-healing,wendy-dream" || true
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required for gh cli to create issues without sandbox blocking
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
