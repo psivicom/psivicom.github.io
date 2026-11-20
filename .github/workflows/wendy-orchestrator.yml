@@ -18,35 +18,31 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger downstream workflows upon state push
+          token: ${{ secrets.WENDY_PAT }}
 
       - name: 🧠 Make Autonomous Decisions
         id: decide
         run: |
           set -euo pipefail
           
-          # Source coordination helper
           source scripts/wendy_coordinator.sh
           configure_git_identity
           acquire_lock
           
-          # Read state
           if [ ! -f ".wendy_state.json" ]; then
             echo "🆕 First run. Initializing state..."
             echo '{"last_heartbeat":"","workflows":{},"learned_patterns":{},"pending_actions":[]}' > .wendy_state.json
           fi
           
-          # Decision logic based on state (Strictly Prioritized Cascade)
           ACTION="none"
           
           if command -v jq &> /dev/null; then
-            # Priority 1: System Survival (Self-Heal)
             CI_STATUS=$(jq -r '.workflows.ci_cd.status // "unknown"' .wendy_state.json)
             if [ "$CI_STATUS" = "failure" ]; then
               echo "🩹 CI failed. Triggering self-heal..."
               ACTION="trigger_self_heal"
             else
-              # Priority 2: System Evolution (Overdue or First Run)
               LAST_EVO=$(jq -r '.workflows.evolution.last_run // ""' .wendy_state.json)
               TRIGGER_EVO=false
               
@@ -69,7 +65,6 @@ jobs:
               fi
             fi
             
-            # Priority 3: Standard Operations (Pending Actions)
             if [ "$ACTION" = "none" ]; then
               PENDING=$(jq -r '.pending_actions | length' .wendy_state.json)
               if [ "$PENDING" -gt 0 ]; then
@@ -85,23 +80,23 @@ jobs:
       - name: 🔄 Trigger Self-Heal (if needed)
         if: steps.decide.outputs.action == 'trigger_self_heal'
         run: |
-          # Trigger CI/CD workflow to run self-healing
           gh workflow run wendy-ci-cd.yml --ref main
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required so the triggered workflow executes fully
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
 
       - name: 🧬 Trigger Evolution (if overdue)
         if: steps.decide.outputs.action == 'trigger_evolution'
         run: |
           gh workflow run wendy-evolution.yml --ref main
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required so the triggered workflow executes fully
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
 
       - name: 📋 Process Pending Actions
         if: steps.decide.outputs.action == 'process_pending'
         run: |
           echo "Processing pending actions..."
-          # Future: implement action processing logic
           
       - name: 💾 Commit State Updates
         if: always()

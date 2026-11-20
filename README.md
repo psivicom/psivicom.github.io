@@ -120,13 +120,19 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-18T05:47:56.000Z -->
+<!-- Last updated: 2026-11-20T01:24:40.000Z -->
 ```text
 ./
 ├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   ├── config.yml
+│   │   └── feature_request.md
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
+│   │   ├── nasa-power-apiary.yml
+│   │   ├── sovereign_evolution.yml
 │   │   ├── update-tree.yml
 │   │   ├── vendor-nasa-os101.yml
 │   │   ├── volunteer-ingest.yml
@@ -142,7 +148,8 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   │   ├── wendy-smart-dispatch.yml
 │   │   ├── wendy-workflow-auditor.yml
 │   │   └── wendy_synapse.yml
-│   └── .dependabot.yml
+│   ├── .dependabot.yml
+│   └── pull_request_template.md
 ├── .provenance/
 │   └── nasa-os101/
 │       ├── local-additions.txt
@@ -678,10 +685,17 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
 │   └── manifest.gmi
+├── wendy_core/
+│   ├── __init__.py
+│   ├── compost_entropy.py
+│   ├── sovereign_auditor.py
+│   ├── stigmergy_topology.py
+│   └── wendy_actuator.py
 ├── .gitignore
 ├── .wendy_dream.gmi
 ├── .wendy_manifest.gmi
 ├── .wendy_state.json
+├── ACCESSIBILITY.md
 ├── AGENTS.md
 ├── AUTHOR.md
 ├── CITATION.cff
@@ -709,6 +723,7 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── gemini_client.py
 ├── genesis.sh
 ├── index.html
+├── main.py
 ├── make
 ├── openscience.html
 ├── opu.html
@@ -720,6 +735,6 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ├── sitemap.xml
 └── wendy-console.html
 
-61 directories, 536 files
+63 directories, 549 files
 ```
 <!-- AUTO_TREE_END -->

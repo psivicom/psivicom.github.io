@@ -16,7 +16,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger downstream CI/CD upon tree update
+          token: ${{ secrets.WENDY_PAT }}
           fetch-depth: 0
 
       - name: Generate and Inject Tree (Pure Bash)
@@ -25,7 +26,6 @@ jobs:
           
           echo "🔍 Generating tree with -a (show hidden), -F (classify), and --dirsfirst..."
           
-          # Ensure tree is available on the runner
           command -v tree >/dev/null 2>&1 || { echo "❌ tree command not found"; exit 1; }
           
           tree -a --dirsfirst -F --charset utf-8 -I '.git|data|reports|docs|src|wendy-go|config|assets|maps|logs|tests|tools|_techreports|dist|js|node_modules|tree.md|tree_snippet.html' > /tmp/raw_tree.txt
@@ -33,21 +33,19 @@ jobs:
           echo "✅ Raw tree output sample (first 30 lines):"
           head -n 30 /tmp/raw_tree.txt
           
-          # Generate Markdown version
           {
             echo '```text'
             cat /tmp/raw_tree.txt
             echo '```'
           } > tree.md
           
-          # Generate HTML version with color coding
           awk '
           BEGIN {
             print "<div style=\"font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;\">"
           }
           {
             line = $0
-            sub(/\r$/, "", line) # Sanitize Windows line endings to protect regex matching
+            sub(/\r$/, "", line)
             
             if (line ~ /^[0-9]+ directories?, [0-9]+ files?$/) next
             
@@ -62,9 +60,9 @@ jobs:
               color = "#ffffff"
             }
             
-            gsub(/&/, "\\&amp;", line)
-            gsub(/</, "\\&lt;", line)
-            gsub(/>/, "\\&gt;", line)
+            gsub(/&/, "&amp;", line)
+            gsub(/</, "&lt;", line)
+            gsub(/>/, "&gt;", line)
             
             printf "  <span style=\"color:%s\">%s</span><br>\n", color, line
           }
@@ -74,7 +72,6 @@ jobs:
           
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
           
-          # Inject into target files
           for file in README.md index.html; do
             if [ ! -f "$file" ]; then 
               echo "⏭️ Skipping $file: File not found."
@@ -123,10 +120,9 @@ jobs:
           BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
           echo "🌿 Target branch: $BRANCH_NAME"
           
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "WENDY Autonomous Agent"
+          git config user.email "wendy@psivi.com"
           
-          # Force add to bypass potential .gitignore rules on generated files
           git add -f README.md index.html tree.md tree_snippet.html 2>/dev/null || true
           
           if git diff --cached --quiet; then

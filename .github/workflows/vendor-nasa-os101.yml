@@ -19,6 +19,8 @@ jobs:
         uses: actions/checkout@11bd5960a326750d5838078e36cf38b85af677262 
         with:
           fetch-depth: 0
+          # CRITICAL: WENDY_PAT required to trigger downstream CI/CD upon NASA archive update
+          token: ${{ secrets.WENDY_PAT }}
 
       - name: Install pandoc
         run: |
@@ -103,7 +105,7 @@ jobs:
             X = TMP / "x"
             with zipfile.ZipFile(TMP / ZIP_NAME) as z:
                 for n in z.namelist():
-                    if n.startswith("/") or ".." in n.replace("\\", "/").split("/"):
+                    if n.startswith("/") or ".." in n.replace("", "/").split("/"):
                         die("path traversal: " + n)
                 z.extractall(X)
             roots = list(X.iterdir())
@@ -235,7 +237,7 @@ jobs:
                     '<div class="container">\n<header class="header">\n'
                     '<div class="kicker mono">' + kicker + "</div>\n"
                     '<h1 class="h1">' + h1 + "</h1>\n"
-                    '<div class="sub">' + sub + "</div>\n" + NAV + "\n</header>\n<main>" + body + "</main>\n" + FOOTER + "\n</div>\n</body>\n</html>\n"
+                    '<div class="sub">' + sub + "</div>\n" + NAV + "\n</header>\n<main>" + body + "</main>\n" + FOOTER + "\n</div>\n<body>\n</html>\n"
                 )
 
             def head(num, text):
@@ -262,7 +264,7 @@ jobs:
                 '<p style="margin:12px 0 0"><a class="pill" href="' + BASE + 'index.html">Archive home</a>'
                 '<a class="pill" href="' + BASE + 'provenance.html">What is upstream vs local</a></p>'
                 "</div>\n"
-                '<main class="section">$body$</main>\n' + FOOTER + "\n</div>\n</body>\n</html>\n",
+                '<main class="section">$body$</main>\n' + FOOTER + "\n</div>\n<body>\n</html>\n",
                 encoding="utf-8")
 
             mds = [p for p in sorted(DEST.rglob("*.md")) if p.name != "NOTICE.md"]
@@ -336,7 +338,7 @@ jobs:
                 '<tr><td><span class="tag tag-render">B &middot; Render</span></td>'
                 "<td>The <code>.html</code> beside each upstream <code>.md</code>. Same words; "
                 "format converted and a provenance banner added.</td>"
-                "<td>Text: NASA team<br>Banner: " + AUTHOR + "</td><td>CC BY 4.0</td></tr>"
+                "<td>Text: NASA Team<br>Banner: " + AUTHOR + "</td><td>CC BY 4.0</td></tr>"
                 '<tr><td><span class="tag tag-local">C &middot; Local</span></td>'
                 "<td><code>index.html</code>, <code>catalogue.html</code>, <code>provenance.html</code>, "
                 "<code>NOTICE.md</code>, <code>CITATION.cff</code>, <code>.provenance/**</code>. "
@@ -366,7 +368,7 @@ jobs:
                 '<a href="provenance.html">Full provenance map &rarr;</a></p></section>'
                 + head("03", "Course contents")
                 + '<p style="margin-top:20px;font-size:14.5px;color:#3f3f46">'
-                'Prefer the original course overview? <a href="README.html"><strong>Read README.html</strong></a> '
+                'Prefer the original course overview? <a href="README.html"><strong>Read README.html</strong></a '
                 "&mdash; the upstream introduction, rendered with its banner.</p>"
                 + lesson_blocks("") + "</section>"
                 + head("04", "Get the archive")
@@ -432,7 +434,7 @@ jobs:
                 + head("02", "Evidence")
                 + '<div class="tablewrap"><table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>'
                 "<tr><td>Source record</td><td class=\"mono\">Zenodo " + REC_ID + " (CERN)</td></tr>"
-                '<tr><td>Version DOI</td><td class="mono"><a href="' + DOI_URL + '">' + DOI + "</a></td></tr>"
+                '<tr><td>Version DOI</td><td class=\"mono"><a href="' + DOI_URL + '">' + DOI + "</a></td></tr>"
                 "<tr><td>Archive</td><td class=\"mono\">" + ZIP_NAME + " &middot; " + str(PIN_SIZE) + " bytes</td></tr>"
                 "<tr><td>MD5</td><td class=\"mono\">" + PIN_MD5 + "</td></tr>"
                 "<tr><td>SHA-256</td><td class=\"mono\">" + SHA + "</td></tr>"
@@ -542,8 +544,8 @@ jobs:
 
       - name: Commit and push
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "WENDY-Crystallization-Node"
+          git config user.email "wendy@psivi.com"
           git add -A nasa-open-science .provenance/nasa-os101
           git add REUSE.toml || true
           git add -A tpl.html || true

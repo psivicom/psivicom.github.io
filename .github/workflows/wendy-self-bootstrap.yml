@@ -17,7 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger downstream CI/CD upon permission fixes
+          token: ${{ secrets.WENDY_PAT }}
           fetch-depth: 0
           
       - name: 🔧 Set Executable Permissions

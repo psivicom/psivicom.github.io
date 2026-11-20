@@ -34,7 +34,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger downstream compilation upon consensus push
+          token: ${{ secrets.WENDY_PAT }}
 
       - name: 🦀 Provision Rust Toolchain
         run: |
@@ -43,10 +44,6 @@ jobs:
 
       - name: 🩹 Patch Regex Look-ahead (Rust `regex` crate limitation)
         run: |
-          # The Rust `regex` crate guarantees linear time execution but does not support 
-          # look-around assertions (like negative look-ahead `(?!...)`). 
-          # We patch the source to use a standard character class match instead, preventing 
-          # the panic while maintaining command detection capabilities.
           sed -i 's/pip install (?!numpy|scipy|matplotlib)/pip install [a-zA-Z0-9_.-]+/g' wendy-cortex/src/autonomous_core.rs
 
       - name: "🌌 Step 1: Generate or Receive Chaos Feed"

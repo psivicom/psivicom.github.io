@@ -1,9 +1,15 @@
 ```text
 ./
 ├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   ├── config.yml
+│   │   └── feature_request.md
 │   ├── workflows/
 │   │   ├── README.md
 │   │   ├── dream-crystallizer.yml
+│   │   ├── nasa-power-apiary.yml
+│   │   ├── sovereign_evolution.yml
 │   │   ├── update-tree.yml
 │   │   ├── vendor-nasa-os101.yml
 │   │   ├── volunteer-ingest.yml
@@ -19,7 +25,8 @@
 │   │   ├── wendy-smart-dispatch.yml
 │   │   ├── wendy-workflow-auditor.yml
 │   │   └── wendy_synapse.yml
-│   └── .dependabot.yml
+│   ├── .dependabot.yml
+│   └── pull_request_template.md
 ├── .provenance/
 │   └── nasa-os101/
 │       ├── local-additions.txt
@@ -555,10 +562,17 @@
 │   ├── Cargo.toml
 │   ├── RUNNERS.toml
 │   └── manifest.gmi
+├── wendy_core/
+│   ├── __init__.py
+│   ├── compost_entropy.py
+│   ├── sovereign_auditor.py
+│   ├── stigmergy_topology.py
+│   └── wendy_actuator.py
 ├── .gitignore
 ├── .wendy_dream.gmi
 ├── .wendy_manifest.gmi
 ├── .wendy_state.json
+├── ACCESSIBILITY.md
 ├── AGENTS.md
 ├── AUTHOR.md
 ├── CITATION.cff
@@ -586,6 +600,7 @@
 ├── gemini_client.py
 ├── genesis.sh
 ├── index.html
+├── main.py
 ├── make
 ├── openscience.html
 ├── opu.html
@@ -597,5 +612,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-61 directories, 536 files
+63 directories, 549 files
 ```

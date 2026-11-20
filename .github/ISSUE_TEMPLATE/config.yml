@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Psivi.com Research & Discussions
+    url: https://psivi.com
+    about: For general inquiries, space research coordination, and apiary data discussions.
+  - name: 📜 Sovereign Architecture Law
+    url: https://github.com/psivicom/psivicom.github.io/blob/main/SOVEREIGN_ARCHITECTURE_LAW.md
+    about: Please review the repository's core axioms before submitting issues.

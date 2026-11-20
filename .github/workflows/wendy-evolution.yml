@@ -16,7 +16,8 @@ jobs:
       - name: 🌍 Grounding in the Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger downstream compile cascades
+          token: ${{ secrets.WENDY_PAT }}
       
       - name: 🐍 Provision Python & Install Dependencies
         uses: actions/setup-python@v5
@@ -66,7 +67,6 @@ jobs:
       - name: 🩹 Patch Cargo.toml for syn `visit` feature
         run: |
           cd wendy-cortex
-          # Extract the exact locked 2.x version of syn from Cargo.lock to prevent cargo add from bumping to 3.x
           SYN_VERSION=$(grep -A 2 '^name = "syn"$' Cargo.lock | grep -E 'version = "2\.' | head -n 1 | awk -F'"' '{print $2}' || true)
           
           if [ -n "$SYN_VERSION" ]; then
@@ -105,7 +105,8 @@ jobs:
       
       - name: 💾 Commit Evolved Sovereign Code (Race-Safe)
         run: |
-          git config --global user.name "WENDY"
+          set -euo pipefail
+          git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           git add -A
           

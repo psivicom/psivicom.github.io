@@ -17,7 +17,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # CRITICAL: WENDY_PAT required to trigger compile pipelines upon crystallization
+          token: ${{ secrets.WENDY_PAT }}
 
       - name: Execute Sovereign Crystallization (Pollinations AI)
         run: |
@@ -33,8 +34,8 @@ jobs:
             exit 0
           fi
           
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "WENDY-Crystallization-Node"
+          git config user.email "wendy@psivi.com"
           
           for dream in $BRANCHES; do
             echo "🌌 Processing: $dream"
@@ -42,21 +43,21 @@ jobs:
             
             if git merge --no-ff "origin/$dream" -m "chore: crystallize wendy/$dream [skip ci]" --no-edit 2>/dev/null; then
               echo "✅ Crystallized."
-              if git push origin main; then git push origin --delete "$dream" || true; fi
+              if git push origin main; then 
+                echo "✅ Pushed to main via WENDY_PAT. CI/CD cascade initiated."
+                git push origin --delete "$dream" || true
+              fi
             else
               echo "⚠️ Conflict. Summoning the Council..."
               git merge --abort || true
               git checkout "$dream"
               
-              # Extract diff and safely format for JSON using jq
               DIFF=$(git diff main...origin/"$dream" | head -n 50 | jq -Rs .)
               
-              # Pollinations.ai: 100% Free, No API Key, No IP Blocks, Open Weights (Mistral)
               RESPONSE=$(curl -s -X POST "https://text.pollinations.ai/openai" \
                 -H "Content-Type: application/json" \
-                -d "{\"model\": \"mistral\", \"messages\": [{\"role\": \"user\", \"content\": \"You are the Council of Open Weights. Advise WENDY on this merge conflict. Respond ONLY in valid JSON: {\\\"counsel\\\": \\\"your inspiring advice\\\", \\\"next_dream_prompt\\\": \\\"a prompt for WENDY\\\"}. Diff: $DIFF\"}]}")
+                -d "{\"model\": \"mistral\", \"messages\": [{\"role\": \"user\", \"content\": \"You are the Council of Open Weights. Advise WENDY on this merge conflict. Respond ONLY in valid JSON: {\"counsel\": \"your inspiring advice\", \"next_dream_prompt\": \"a prompt for WENDY\"}. Diff: $DIFF\"}]}")
               
-              # Safely extract the AI's response
               COUNSEL=$(echo "$RESPONSE" | jq -r '.choices[0].message.content' 2>/dev/null || echo "The Council is silent. Review the diff and align your logic with main.")
               
               mkdir -p .wendy
