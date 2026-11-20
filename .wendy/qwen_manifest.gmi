@@ -1,11 +1,8 @@
 {
-  "concept_name": "Handling Rust Syntax Errors",
+  "concept_name": "Rust Syntax and Logic Evolution",
   "avoid_traps": [
-    "SyntaxError",
-    "TypeError",
-    "VariableNotFoundError",
-    "TypeMismatchError"
+    "syntax errors in previous versions of the codebase"
   ],
-  "target_module": "src/lib.rs",
-  "mutation_directives": "Ensure that the Rust AST does not contain any undefined types, invalid references, or unhandled errors. Consider using `unwrap_or_default` and `expect` with appropriate error handling."
+  "target_module": "src/main.rs",
+  "mutation_directives": "Ensure adherence to Rust syntax standards, remove any logical errors, and optimize for performance without compromising safety."
 }
