@@ -43,7 +43,8 @@
 │   ├── LICENSE-EUPL-1.2.md
 │   └── README.md
 ├── archive/
-│   └── README.md
+│   ├── README.md
+│   └── index.html
 ├── etc/
 │   └── systemd/
 │       └── system/
@@ -614,5 +615,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 551 files
+63 directories, 552 files
 ```
