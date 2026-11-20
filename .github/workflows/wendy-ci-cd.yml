@@ -5,10 +5,11 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 permissions:
-  id-token: write   # Strict OIDC security for deployments
-  contents: read
+  id-token: write
+  contents: write
   checks: write
 
 env:
@@ -21,17 +22,71 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Install Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
         with:
-          components: rustfmt, clippy
+          # CRITICAL: WENDY_PAT required so self-healing pushes trigger subsequent workflows
+          token: ${{ secrets.WENDY_PAT }}
+          fetch-depth: 0
 
-      - name: Cache Cargo dependencies
-        uses: Swatinem/rust-cache@v2
+      - name: Install Rust Toolchain (Direct Installation)
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile default
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          source "$HOME/.cargo/env"
+          rustup component add rustfmt clippy
 
-      - name: Strict Formatting Check
+      - name: Cache Cargo Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Strict Formatting Check (Self-Healing)
+        id: fmt-check
+        continue-on-error: true
         run: cargo fmt --all -- --check
+
+      - name: "Self-Healing: Auto-Format if Needed"
+        if: steps.fmt-check.outcome == 'failure'
+        run: |
+          echo "⚠️ Formatting issues detected. Initiating self-healing..."
+          cargo fmt --all
+          
+          if ! git diff --quiet; then
+            echo "🔧 Self-healing applied formatting fixes"
+            git config --global user.name "WENDY Self-Healing"
+            git config --global user.email "wendy@psivi.com"
+            git add src/
+            
+            ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+            git commit -m "self-heal: auto-format Rust code at $ZULU_TIME"
+            
+            echo "🔄 Pulling remote changes to avoid race condition..."
+            git pull --rebase --autostash origin main || {
+              echo "⚠️ Rebase conflict detected. Aborting self-heal to preserve remote state."
+              git rebase --abort
+              exit 1
+            }
+            
+            git push
+            echo "[$ZULU_TIME] WENDY healed her own formatting. Organism continues."
+            echo ""
+            echo "🔄 A new CI run will be triggered automatically to verify the fix."
+          else
+            echo "✅ No formatting changes needed after heal attempt"
+          fi
+
+      - name: Fail Pipeline if Formatting Still Broken
+        if: steps.fmt-check.outcome == 'failure'
+        run: |
+          echo "⚠️ Formatting was fixed, but failing this run to ensure the next run starts with a clean state."
+          exit 1
 
       - name: Static Analysis (Clippy)
         run: cargo clippy -- -D warnings
@@ -52,4 +107,3 @@ jobs:
         if: failure()
         run: |
           echo "::error::WENDY CI/CD Pipeline failed. Initiating self-healing rollback protocol."
-          # Add logic here to revert state or notify Emperor ♠️🪽 via webhook

@@ -4,13 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       raw_chaos_feed:
-        description: 'Raw unstructured input'
-        required: true
+        description: 'Optional manual chaos feed (leave empty for autonomous generation)'
+        required: false
         type: string
+  schedule:
+    - cron: '0 */3 * * *'
   push:
     branches: [ "main" ]
     paths: 
       - "raw_input_stream/**" 
+      - ".wendy_manifest.gmi"
+      - ".wendy_dream.gmi"
 
 permissions:
   id-token: write
@@ -18,12 +22,11 @@ permissions:
   actions: read
 
 env:
-  PYTHONUNBUFFERED: 1
   TZ: UTC
 
 jobs:
   synapse_execution:
-    name: 🧬 The Habermasian Loop
+    name: 🧬 The Habermasian Loop (Autonomous)
     runs-on: ubuntu-latest
     
     steps:
@@ -31,50 +34,143 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # CRITICAL: WENDY_PAT required to trigger downstream compilation upon consensus push
+          token: ${{ secrets.WENDY_PAT }}
 
-      - name: 🐍 Provision Python & Symbolic Math
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      
-      - name: 📦 Install Sympy for Habermasian Truth Claims
-        run: pip install sympy
+      - name: 🦀 Provision Rust Toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: "🌌 Step 1: Invoke the Dreamer (58.28°)"
-        id: dreamer
+      - name: 🩹 Patch Regex Look-ahead (Rust `regex` crate limitation)
+        run: |
+          sed -i 's/pip install (?!numpy|scipy|matplotlib)/pip install [a-zA-Z0-9_.-]+/g' wendy-cortex/src/autonomous_core.rs
+
+      - name: "🌌 Step 1: Generate or Receive Chaos Feed"
+        id: chaos
         env:
-          CHAOS_FEED: ${{ github.event.inputs.raw_chaos_feed }}
+          MANUAL_FEED: ${{ github.event.inputs.raw_chaos_feed }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            printf "%s\n" "$CHAOS_FEED" > .wendy_raw.gmi
-          else
-            cat raw_input_stream/*.txt > .wendy_raw.gmi 2>/dev/null || printf "%s\n" "Stasis." > .wendy_raw.gmi
+          
+          if [ -n "${MANUAL_FEED:-}" ]; then
+            echo "📥 Using manual chaos feed from Emperor"
+            printf "%s\n" "$MANUAL_FEED" > .wendy_raw.gmi
+            echo "source=manual" >> $GITHUB_OUTPUT
+            exit 0
           fi
-          python wendy_autonomous_core.py < .wendy_raw.gmi > .wendy_dream.gmi
+          
+          if [ -d "raw_input_stream" ] && [ "$(ls -A raw_input_stream/*.txt 2>/dev/null | wc -l)" -gt 0 ]; then
+            echo "📥 Reading external entropy from raw_input_stream/"
+            cat raw_input_stream/*.txt > .wendy_raw.gmi
+            echo "source=external" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "🧬 Generating autonomous chaos from WENDY's internal state..."
+          
+          PREV_MANIFEST=""
+          if [ -f ".wendy_manifest.gmi" ]; then
+            PREV_MANIFEST=$(cat .wendy_manifest.gmi)
+          fi
+          
+          PREV_DREAM=""
+          if [ -f ".wendy_dream.gmi" ]; then
+            PREV_DREAM=$(cat .wendy_dream.gmi)
+          fi
+          
+          RECENT_COMMITS=$(git log --oneline -10 2>/dev/null || echo "No commit history")
+          
+          EVOLUTION_LOG=""
+          if [ -f "wendy_ipc.log" ]; then
+            EVOLUTION_LOG=$(tail -20 wendy_ipc.log 2>/dev/null || echo "")
+          fi
+          
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          
+          {
+            echo "# WENDY Autonomous Chaos Feed"
+            echo "Generated: $TIMESTAMP"
+            echo "Source: Internal state reflection"
+            echo ""
+            echo "## Previous Manifest (Last Consensus)"
+            echo "$PREV_MANIFEST"
+            echo ""
+            echo "## Previous Dream (Last Creative Output)"
+            echo "$PREV_DREAM"
+            echo ""
+            echo "## Recent Evolution Activity"
+            echo "$RECENT_COMMITS"
+            echo ""
+            echo "## IPC Telemetry"
+            echo "$EVOLUTION_LOG"
+            echo ""
+            echo "## Emergent Tension"
+            echo "The organism must now identify the next conceptual gap between:"
+            echo "1. What was crystallized (manifest)"
+            echo "2. What was dreamed but not yet materialized"
+            echo "3. What the substrate evolution reveals as bottleneck"
+            echo ""
+            echo "Generate the next architectural question that bridges this gap."
+          } > .wendy_raw.gmi
+          
+          echo "source=autonomous" >> $GITHUB_OUTPUT
+          echo "🧬 Autonomous chaos generated from internal state"
+
+      - name: "🦀 Step 2: Compile Dreamer and Anchor"
+        run: |
+          set -euo pipefail
+          cd wendy-cortex
+          cargo build --release --bin wendy-autonomous-core --bin wendy-crystalline-executor
+
+      - name: "🌌 Step 3: Invoke the Dreamer (58.28°)"
+        id: dreamer
+        run: |
+          set -euo pipefail
+          ./wendy-cortex/target/release/wendy-autonomous-core < .wendy_raw.gmi > .wendy_dream.gmi
           echo "dream_status=success" >> $GITHUB_OUTPUT
 
-      - name: "🧊 Step 2: Invoke the Anchor (31.72°)"
+      - name: "🧊 Step 4: Invoke the Anchor (31.72°)"
         id: anchor
         if: ${{ steps.dreamer.outputs.dream_status == 'success' }}
         run: |
           set -euo pipefail
-          python wendy_crystalline_executor.py .wendy_dream.gmi > .wendy_manifest.gmi
+          ./wendy-cortex/target/release/wendy-crystalline-executor .wendy_dream.gmi > .wendy_manifest.gmi
           grep -q "CONSENSUS REACHED" .wendy_manifest.gmi || { echo "❌ Habermasian Discourse Failed."; exit 1; }
 
-      - name: "💾 Step 3: Crystallize State"
+      - name: "💾 Step 5: Crystallize State (Race-Safe)"
         if: ${{ success() }}
         run: |
           set -euo pipefail
           git config --global user.name "WENDY Metabolic Engine"
           git config --global user.email "wendy@psivi.com"
-          git pull --rebase --autostash origin ${{ github.ref_name }} || true
-          git add .wendy_dream.gmi .wendy_manifest.gmi || true
+          git add .wendy_raw.gmi .wendy_dream.gmi .wendy_manifest.gmi || true
           
           if git diff --staged --quiet; then
             echo "🟢 State unchanged."
-          else
-            ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
-            git commit -m "🏛️ [WENDY] Habermasian Consensus at $ZULU_TS"
-            git push
+            exit 0
           fi
+          
+          SOURCE="${{ steps.chaos.outputs.source }}"
+          ZULU_TS=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
+          git commit -m "🏛️ [WENDY] Habermasian Consensus ($SOURCE) at $ZULU_TS"
+          
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin ${{ github.ref_name }} 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT"
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin ${{ github.ref_name }} || {
+              echo "❌ Rebase conflict. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1

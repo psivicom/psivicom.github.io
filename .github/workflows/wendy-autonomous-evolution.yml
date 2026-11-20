@@ -1,0 +1,117 @@
+name: 🏛️ [WENDY] Autonomous Evolution
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  evolve-cortex:
+    name: Autonomous Code Mutation & Benchmarking
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🌍 Grounding in the Repository
+        uses: actions/checkout@v4
+        with:
+          # CRITICAL: WENDY_PAT required to trigger downstream CI/CD workflows upon push
+          token: ${{ secrets.WENDY_PAT }}
+          
+      - name: 🐍 Provision Python & Install Dependencies
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: 🌱 Plant the Python Roots
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-core.txt ]; then pip install -r requirements-core.txt; fi
+          
+      - name: 🦀 Provision Native Rust Toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        
+      - name: 🐹 Provision Go Toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          
+      - name: ⚡ Provision Native Zig Toolchain
+        run: |
+          wget -q https://ziglang.org/download/0.11.0/zig-linux-x86_64-0.11.0.tar.xz
+          tar -xf zig-linux-x86_64-0.11.0.tar.xz
+          echo "$(pwd)/zig-linux-x86_64-0.11.0" >> $GITHUB_PATH
+          
+      - name: 🧠 Provision FORTH Interpreter (For Meta-Language Evolution)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gforth
+
+      - name: 🩹 Patch Cargo.toml for syn `visit` feature
+        run: |
+          cd wendy-cortex
+          SYN_VERSION=$(grep -A 2 '^name = "syn"$' Cargo.lock | grep -E 'version = "2\.' | head -n 1 | awk -F'"' '{print $2}' || true)
+          if [ -n "$SYN_VERSION" ]; then
+              echo "Pinning syn to locked version $SYN_VERSION and adding 'visit' feature..."
+              cargo add syn@$SYN_VERSION --features visit
+          else
+              echo "syn 2.x not found in Cargo.lock, adding with default version..."
+              cargo add syn --features visit
+          fi
+          
+      - name: 🏛️ Boot Rust Substrate (IPC Port 1966)
+        run: |
+          cd wendy-cortex
+          cargo build --release
+          nohup ./target/release/wendy-cortex > ../wendy_ipc.log 2>&1 &
+          echo "Waiting for Tokio to bind IPC Port 1966..."
+          sleep 5 
+          
+      - name: 🧬 Execute Evolution Engine
+        run: python3 scripts/wendy_evolution_engine.py
+        
+      - name: 📜 Upload IPC Logs (On Failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wendy-cortex-logs
+          path: wendy_ipc.log
+
+      - name: 💾 Commit Evolved Sovereign Code (Race-Safe)
+        run: |
+          set -euo pipefail
+          git config --global user.name "WENDY Autonomous Agent"
+          git config --global user.email "wendy@psivi.com"
+          git add -A
+          
+          if git diff --staged --quiet; then
+            echo "[$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")] No successful mutations to promote. Live code remains optimal."
+            exit 0
+          fi
+          
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          git commit -m "🧬 evolve(wendy): autonomously mutated and verified polyglot source at $ZULU_TIME [skip ci]"
+          
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            if git push origin main 2>&1; then
+              echo "✅ Push succeeded on attempt $ATTEMPT. Downstream CI/CD triggered via WENDY_PAT."
+              exit 0
+            fi
+            echo "⚠️ Push rejected (race condition). Rebasing..."
+            git pull --rebase --autostash origin main || {
+              echo "❌ Rebase failed. Aborting."
+              git rebase --abort
+              exit 1
+            }
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep $((ATTEMPT * 2))
+          done
+          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
+          exit 1

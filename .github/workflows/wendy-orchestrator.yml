@@ -1,0 +1,106 @@
+name: 🧠 WENDY Autonomous Orchestrator
+
+on:
+  schedule:
+    - cron: '15 */1 * * *'  # Every hour at :15 (offset from other workflows)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  orchestrate:
+    name: 🧠 Autonomous Decision Making
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # CRITICAL: WENDY_PAT required to trigger downstream workflows upon state push
+          token: ${{ secrets.WENDY_PAT }}
+
+      - name: 🧠 Make Autonomous Decisions
+        id: decide
+        run: |
+          set -euo pipefail
+          
+          source scripts/wendy_coordinator.sh
+          configure_git_identity
+          acquire_lock
+          
+          if [ ! -f ".wendy_state.json" ]; then
+            echo "🆕 First run. Initializing state..."
+            echo '{"last_heartbeat":"","workflows":{},"learned_patterns":{},"pending_actions":[]}' > .wendy_state.json
+          fi
+          
+          ACTION="none"
+          
+          if command -v jq &> /dev/null; then
+            CI_STATUS=$(jq -r '.workflows.ci_cd.status // "unknown"' .wendy_state.json)
+            if [ "$CI_STATUS" = "failure" ]; then
+              echo "🩹 CI failed. Triggering self-heal..."
+              ACTION="trigger_self_heal"
+            else
+              LAST_EVO=$(jq -r '.workflows.evolution.last_run // ""' .wendy_state.json)
+              TRIGGER_EVO=false
+              
+              if [ -z "$LAST_EVO" ]; then
+                echo "🧬 First evolution cycle. Triggering..."
+                TRIGGER_EVO=true
+              else
+                LAST_EPOC=$(date -d "$LAST_EVO" +%s 2>/dev/null || echo 0)
+                NOW_EPOC=$(date +%s)
+                HOURS_AGO=$(( (NOW_EPOC - LAST_EPOC) / 3600 ))
+                
+                if [ $HOURS_AGO -gt 8 ]; then
+                  echo "⏰ Evolution overdue ($HOURS_AGO hours). Triggering..."
+                  TRIGGER_EVO=true
+                fi
+              fi
+              
+              if [ "$TRIGGER_EVO" = true ]; then
+                ACTION="trigger_evolution"
+              fi
+            fi
+            
+            if [ "$ACTION" = "none" ]; then
+              PENDING=$(jq -r '.pending_actions | length' .wendy_state.json)
+              if [ "$PENDING" -gt 0 ]; then
+                echo "📋 $PENDING pending actions found"
+                ACTION="process_pending"
+              fi
+            fi
+          fi
+          
+          echo "action=$ACTION" >> $GITHUB_OUTPUT
+          update_state "orchestrator" "decided" "$ACTION"
+
+      - name: 🔄 Trigger Self-Heal (if needed)
+        if: steps.decide.outputs.action == 'trigger_self_heal'
+        run: |
+          gh workflow run wendy-ci-cd.yml --ref main
+        env:
+          # CRITICAL: WENDY_PAT required so the triggered workflow executes fully
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
+
+      - name: 🧬 Trigger Evolution (if overdue)
+        if: steps.decide.outputs.action == 'trigger_evolution'
+        run: |
+          gh workflow run wendy-evolution.yml --ref main
+        env:
+          # CRITICAL: WENDY_PAT required so the triggered workflow executes fully
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
+
+      - name: 📋 Process Pending Actions
+        if: steps.decide.outputs.action == 'process_pending'
+        run: |
+          echo "Processing pending actions..."
+          
+      - name: 💾 Commit State Updates
+        if: always()
+        run: |
+          source scripts/wendy_coordinator.sh
+          configure_git_identity
+          safe_push "🧠 orchestrator: autonomous decision cycle"

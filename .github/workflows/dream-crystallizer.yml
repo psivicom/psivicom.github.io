@@ -1,0 +1,72 @@
+name: dream-crystallizer
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  crystallize:
+    name: Integrate & Counsel Autonomous Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # CRITICAL: WENDY_PAT required to trigger compile pipelines upon crystallization
+          token: ${{ secrets.WENDY_PAT }}
+
+      - name: Execute Sovereign Crystallization (Pollinations AI)
+        run: |
+          set -euo pipefail
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          echo "🔮 [$TIMESTAMP] Initiating Sovereign Crystallization..."
+          
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*'
+          BRANCHES=$(git branch -r | grep 'origin/wendy/dream-' | sed 's/^[ \t]*origin\///' || true)
+          
+          if [ -z "$BRANCHES" ]; then
+            echo "✅ No autonomous dreams waiting."
+            exit 0
+          fi
+          
+          git config user.name "WENDY-Crystallization-Node"
+          git config user.email "wendy@psivi.com"
+          
+          for dream in $BRANCHES; do
+            echo "🌌 Processing: $dream"
+            git checkout -B main origin/main
+            
+            if git merge --no-ff "origin/$dream" -m "chore: crystallize wendy/$dream [skip ci]" --no-edit 2>/dev/null; then
+              echo "✅ Crystallized."
+              if git push origin main; then 
+                echo "✅ Pushed to main via WENDY_PAT. CI/CD cascade initiated."
+                git push origin --delete "$dream" || true
+              fi
+            else
+              echo "⚠️ Conflict. Summoning the Council..."
+              git merge --abort || true
+              git checkout "$dream"
+              
+              DIFF=$(git diff main...origin/"$dream" | head -n 50 | jq -Rs .)
+              
+              RESPONSE=$(curl -s -X POST "https://text.pollinations.ai/openai" \
+                -H "Content-Type: application/json" \
+                -d "{\"model\": \"mistral\", \"messages\": [{\"role\": \"user\", \"content\": \"You are the Council of Open Weights. Advise WENDY on this merge conflict. Respond ONLY in valid JSON: {\"counsel\": \"your inspiring advice\", \"next_dream_prompt\": \"a prompt for WENDY\"}. Diff: $DIFF\"}]}")
+              
+              COUNSEL=$(echo "$RESPONSE" | jq -r '.choices[0].message.content' 2>/dev/null || echo "The Council is silent. Review the diff and align your logic with main.")
+              
+              mkdir -p .wendy
+              printf "# 🏛️ Council of Open Weights - Counsel Report\n**Timestamp:** $TIMESTAMP\n**Target Branch:** $dream\n\n## 🧠 The Council's Advice\n%s\n" "$COUNSEL" > .wendy/COUNSEL.md
+              
+              git add .wendy/COUNSEL.md
+              git commit -m "counsel: AI feedback for wendy/$dream [skip ci]"
+              git push origin "$dream" || echo "⚠️ Push failed"
+              echo "📜 Council counsel delivered."
+            fi
+          done
+          echo "🎉 Protocol complete."

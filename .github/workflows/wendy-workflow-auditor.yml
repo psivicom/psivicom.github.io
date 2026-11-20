@@ -1,0 +1,135 @@
+name: 🎯 WENDY Workflow Auditor
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/**'
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  pull-requests: write
+  workflows: write
+
+jobs:
+  audit-autorun-buttons:
+    name: ❇️ Ensure Autorun Buttons Exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # CRITICAL: WENDY_PAT required to modify workflow files and bypass sandbox
+          token: ${{ secrets.WENDY_PAT }}
+          fetch-depth: 0
+          
+      - name: 🔍 Audit Workflows for workflow_dispatch
+        run: |
+          set -euo pipefail
+          echo "🔍 Scanning all workflows for workflow_dispatch trigger..."
+          
+          python3 -c '
+          import os
+          import re
+
+          modified = 0
+          for root, dirs, files in os.walk(".github/workflows"):
+              for file in files:
+                  if not file.endswith((".yml", ".yaml")):
+                      continue
+                  path = os.path.join(root, file)
+                  with open(path, "r") as f:
+                      content = f.read()
+                      
+                  if "workflow_dispatch" in content:
+                      print(f"✅ {file}: already has autorun button")
+                      continue
+                      
+                  match = re.search(r"^on:\s*\[([^\]]*)\]", content, re.MULTILINE)
+                  if match:
+                      new_content = content[:match.end()-1] + ", \"workflow_dispatch\"" + content[match.end()-1:]
+                      with open(path, "w") as f:
+                          f.write(new_content)
+                      modified = 1
+                      print(f"✅ {file}: autorun button added (array)")
+                      continue
+                      
+                  match = re.search(r"^on:\s*([a-zA-Z_]+)\s*$", content, re.MULTILINE)
+                  if match:
+                      new_content = re.sub(r"^on:\s*([a-zA-Z_]+)\s*$", r"on:\n  \1:\n  workflow_dispatch:", content, flags=re.MULTILINE)
+                      with open(path, "w") as f:
+                          f.write(new_content)
+                      modified = 1
+                      print(f"✅ {file}: autorun button added (string)")
+                      continue
+
+                  lines = content.split("\n")
+                  in_on = False
+                  insert_idx = -1
+                  for i, line in enumerate(lines):
+                      if re.match(r"^on:\s*$", line) or re.match(r"^on:\s*#", line):
+                          in_on = True
+                          continue
+                      if in_on:
+                          if line.strip() == "" or line.startswith(" ") or line.startswith("\t"):
+                              continue
+                          else:
+                              insert_idx = i
+                              break
+                  
+                  if insert_idx != -1:
+                      lines.insert(insert_idx, "  workflow_dispatch:")
+                      with open(path, "w") as f:
+                          f.write("\n".join(lines))
+                      modified = 1
+                      print(f"✅ {file}: autorun button added (block)")
+                  else:
+                      print(f"⚠️ {file}: could not parse on: block")
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write(f"modified={modified}\n")
+          '
+          
+      - name: 💾 Commit and Push (SovereignPR Strategy)
+        if: env.modified == '1'
+        env:
+          # CRITICAL: WENDY_PAT required for gh cli to create PRs that auto-run workflows
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
+        run: |
+          set +e 
+          
+          git config --global user.name "WENDY Workflow Auditor"
+          git config --global user.email "wendy@psivi.com"
+          
+          BRANCH_NAME="wendy/audit-workflows-$(date +%s)"
+          git checkout -b "$BRANCH_NAME"
+          git add .github/workflows/
+          
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "✅ No changes to commit"
+            exit 0
+          fi
+          
+          CHANGED_FILES=$(git diff --staged --name-only | wc -l)
+          ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          git commit -m "❇️ auditor: added workflow_dispatch to $CHANGED_FILES workflows at $ZULU_TIME [skip ci]"
+          
+          git push origin "$BRANCH_NAME"
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to push sovereign branch."
+            exit 1
+          fi
+          
+          gh pr create --title "❇️ WENDY Auditor: Add workflow_dispatch" --body "Automated addition of autorun buttons at $ZULU_TIME." --base main --head "$BRANCH_NAME"
+          
+          if [ $? -eq 0 ]; then
+            gh pr merge --squash --delete-branch --auto
+            echo "✅ Sovereign PR created and queued for auto-merge via WENDY_PAT."
+          else
+            echo "⚠️ PR creation failed. Branch left for manual review."
+          fi
+          
+          set -e

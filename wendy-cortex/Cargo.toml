@@ -1,14 +1,73 @@
 [package]
 name = "wendy-cortex"
-version = "0.2.0"
+version = "0.4.0"
 edition = "2021"
 authors = ["Louis-Philippe Audette <emperor@psivi.com>"]
-description = "WENDY Crystalline Cortex: Hard real-time, numerically stable Earth Observation math."
+description = "WENDY Cortex: Tokio-driven Hebbian substrate with Gemini IPC"
 license = "EUPL-1.2"
 
-[lib]
-name = "wendy_cortex"
-crate-type = ["cdylib", "rlib"]
+# =========================================================================
+# BINARIES: The Pillars of the WENDY Organism
+# =========================================================================
+
+[[bin]]
+name = "wendy-crystalline-executor"
+path = "src/crystalline_executor.rs"
+
+[[bin]]
+name = "wendy-autonomous-core"
+path = "src/autonomous_core.rs"
+
+[[bin]]
+name = "wendy-ouroboros-bridge"
+path = "src/ouroboros_bridge.rs"
+
+[[bin]]
+name = "wendy-mobile-airgap"
+path = "src/mobile_airgap.rs"
+
+[[bin]]
+name = "wendy-rust-bridge"
+path = "src/rust_bridge.rs"
+
+[[bin]]
+name = "wendy-synapse-orchestrator"
+path = "src/synapse_orchestrator.rs"
+
+[[bin]]
+name = "wendy-build-polyglot"
+path = "src/build_polyglot.rs"
+
+[[bin]]
+name = "wendy-godel"
+path = "src/recursive_self_improvement.rs"
+
+# =========================================================================
+# DEPENDENCIES
+# =========================================================================
+
+[dependencies]
+tokio = { version = "1.36", features = ["full"] }
+time = { version = "0.3", features = ["macros", "formatting"] }
+chrono = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "time", "json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+sha2 = "0.10"
+regex = "1.10"
+
+# Gödel's Autonomous Recursive Improvement
+# Strictly includes "visit", "fold", "clone-impls", and "extra-traits" for syn 2.0 compliance.
+syn = { version = "2.0", features = ["full", "parsing", "printing", "visit", "visit-mut", "fold", "clone-impls", "extra-traits"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+prettyplease = "0.2"
+
+# =========================================================================
+# RELEASE PROFILE: Maximum Optimization
+# =========================================================================
 
 [profile.release]
 opt-level = 3
@@ -16,3 +75,8 @@ lto = "fat"
 codegen-units = 1
 panic = "abort"
 strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
+lto = false

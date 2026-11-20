@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/**'
       - 'src/**'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,14 +17,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set Executable Permissions Autonomously
+          # CRITICAL: WENDY_PAT required to trigger downstream CI/CD upon permission fixes
+          token: ${{ secrets.WENDY_PAT }}
+          fetch-depth: 0
+          
+      - name: 🔧 Set Executable Permissions
         run: |
-          chmod +x scripts/*.sh
-          git config --global user.name "WENDY Autonomous Agent"
-          git config --global user.email "wendy@psivi.com"
-          if [[ -n $(git status --porcelain) ]]; then
-            git add scripts/
-            git commit -m "chore(wendy): autonomously set executable permissions"
-            git push
+          chmod +x scripts/*.sh 2>/dev/null || true
+          echo "✅ Executable permissions set"
+          
+      - name: 💾 Commit and Push (Race-Safe)
+        run: |
+          source scripts/wendy_coordinator.sh
+          configure_git_identity "WENDY Self-Bootstrap" "wendy@psivi.com"
+          
+          git add scripts/
+          
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "✅ No permission changes to commit"
+            exit 0
           fi
+          
+          safe_push "🔧 self-bootstrap: autonomously set executable permissions"

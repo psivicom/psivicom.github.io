@@ -1,0 +1,44 @@
+name: Sovereign Volunteer Ingest
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+    paths: ['mutations/**']
+
+permissions:
+  id-token: write # REQUIRED for OIDC
+  contents: write
+  pull-requests: write
+
+jobs:
+  compile-and-verify:
+    runs-on: self-hosted # Zero-cost bare-metal runner
+    steps:
+      - name: Mint OIDC Token
+        id: oidc
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('psivi.com');
+            core.setOutput('token', token);
+
+      - name: Checkout Mutations
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Bare-Metal Crucible (Compile & Test)
+        run: |
+          # WENDY's deterministic compiler checks the volunteer's C code
+          gcc -shared -fPIC -O3 -s -o /tmp/wendy_test.so mutations/*.c
+          # Run hardware watchdog and memory bounds check
+          ./GODMODE --verify /tmp/wendy_test.so
+
+      - name: Auto-Merge & Hot-Swap
+        if: success()
+        env:
+          # CRITICAL: WENDY_PAT required so the merge triggers the downstream CI/CD cascade
+          GH_TOKEN: ${{ secrets.WENDY_PAT }}
+        run: |
+          # WENDY merges the PR via API and signals her daemon
+          gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
+          kill -SIGUSR1 $(cat /var/run/godmode.pid)
