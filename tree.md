@@ -35,7 +35,8 @@
 │       └── record.json
 ├── .wendy/
 │   ├── COUNSEL.md
-│   └── memory_context.md
+│   ├── memory_context.md
+│   └── qwen_manifest.gmi
 ├── LICENSES/
 │   ├── COPYRIGHT.md
 │   ├── LICENSE-CC-BY-SA-4.0.md
@@ -613,5 +614,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 550 files
+63 directories, 551 files
 ```
