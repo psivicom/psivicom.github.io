@@ -1,0 +1,11 @@
+{
+  "concept_name": "Handling Rust Syntax Errors",
+  "avoid_traps": [
+    "SyntaxError",
+    "TypeError",
+    "VariableNotFoundError",
+    "TypeMismatchError"
+  ],
+  "target_module": "src/lib.rs",
+  "mutation_directives": "Ensure that the Rust AST does not contain any undefined types, invalid references, or unhandled errors. Consider using `unwrap_or_default` and `expect` with appropriate error handling."
+}
