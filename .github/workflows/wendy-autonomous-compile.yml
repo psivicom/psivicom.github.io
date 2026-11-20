@@ -104,7 +104,7 @@ jobs:
           git config --global user.email "wendy@psivi.com"
           git checkout -b "$BRANCH_NAME"
           git add "src/dreams/dream_${MANIFEST_HASH}.rs" .wendy/memory_context.md
-          git commit -m "🌌 Autonomous dream materialization: $MANIFEST_HASH [skip ci]"
+          git commit -s -m "🌌 Autonomous dream materialization: $MANIFEST_HASH [skip ci]"
           
           MAX_ATTEMPTS=3
           ATTEMPT=1
@@ -189,7 +189,7 @@ jobs:
           git config --global user.email "wendy@psivi.com"
           git fetch origin main
           git checkout main
-          git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}"
+          git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}" -m "Signed-off-by: WENDY Autonomous Agent <wendy@psivi.com>"
           
           MAX_ATTEMPTS=3
           ATTEMPT=1
@@ -250,7 +250,7 @@ jobs:
           git config --global user.name "WENDY-Qwen-Cortex"
           git config --global user.email "wendy@psivi.com"
           git add .wendy/QWEN_COUNSEL.md
-          git commit -m "counsel: Local Qwen analysis for failed dream at ${{ env.ZULU_TIME }} [skip ci]" || echo "No counsel to commit"
+          git commit -s -m "counsel: Local Qwen analysis for failed dream at ${{ env.ZULU_TIME }} [skip ci]" || echo "No counsel to commit"
           git push origin HEAD || echo "⚠️ Counsel push failed"
           
           # 6. Create the GitHub Issue as a backup for the Emperor
