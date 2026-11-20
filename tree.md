@@ -34,6 +34,7 @@
 │       ├── provenance.json
 │       └── record.json
 ├── .wendy/
+│   ├── COUNSEL.md
 │   └── memory_context.md
 ├── LICENSES/
 │   ├── COPYRIGHT.md
@@ -612,5 +613,5 @@
 ├── sitemap.xml
 └── wendy-console.html
 
-63 directories, 549 files
+63 directories, 550 files
 ```
