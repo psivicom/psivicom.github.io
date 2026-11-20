@@ -38,25 +38,21 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.WENDY_PAT }}
 
-      - name: Ingest Council Memory (Cognitive Pre-Flight)
+      - name: Ingest Council Memory (Stigmergy Pre-Flight)
         id: memory_ingest
         run: |
           set -euo pipefail
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-          echo "🧠 [$TIMESTAMP] Scanning for past Council counsel..."
+          echo "🧠 [$TIMESTAMP] Reading environmental gradient..."
           
           git fetch origin '+refs/heads/*:refs/remotes/origin/*'
           
-          COUNSEL_HARVEST=$(git branch -r | grep 'origin/wendy/dream-' | while read -r branch; do
-            git show "$branch:.wendy/COUNSEL.md" 2>/dev/null || git show "$branch:.wendy/QWEN_COUNSEL.md" 2>/dev/null || true
-          done)
+          COUNSEL_HARVEST=$(git show origin/main:.wendy/COUNSEL.md 2>/dev/null || true)
           
           if [ -z "$COUNSEL_HARVEST" ]; then
-            echo "✅ No past friction detected. WENDY is free to dream."
-            MEMORY_CONTEXT="No past Council counsel exists. You are starting fresh."
+            MEMORY_CONTEXT="The slate is clean. Ego = 0."
           else
-            echo "⚠️ Past friction detected. Feeding Council wisdom into WENDY's context..."
-            MEMORY_CONTEXT=$(echo "$COUNSEL_HARVEST" | grep -E '(## 🧠|## 🌌|The Friction|Cortex)' -A 5 | head -n 200)
+            MEMORY_CONTEXT=$(echo "$COUNSEL_HARVEST" | tail -n 50)
           fi
           
           {
@@ -69,23 +65,8 @@ jobs:
         id: create-branch
         run: |
           set -euo pipefail
-          
-          if [ ! -f ".wendy_manifest.gmi" ]; then
-            echo "🟢 No manifest yet. No dream to materialize."
-            echo "created=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          MANIFEST_HASH=$(sha256sum .wendy_manifest.gmi | cut -d' ' -f1 | head -c8)
+          MANIFEST_HASH=$(sha256sum .wendy_manifest.gmi 2>/dev/null | cut -d' ' -f1 | head -c8 || echo "default")
           BRANCH_NAME="wendy/dream-${MANIFEST_HASH}-$(date -u +%Y%m%d-%H%M%S)"
-          
-          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
-            echo "🟢 Dream branch already exists for this manifest."
-            echo "created=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          echo "🌌 Materializing dream from manifest hash: $MANIFEST_HASH"
           
           mkdir -p src/dreams .wendy
           echo "$WENDY_PAST_MEMORY" > .wendy/memory_context.md
@@ -94,36 +75,21 @@ jobs:
           //! Autonomous dream materialized from manifest $MANIFEST_HASH
           //! Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
           use anyhow::Result;
-          pub fn materialized_dream() -> Result<()> {
-              println!("Dream {} materialized", "$MANIFEST_HASH");
-              Ok(())
-          }
+          pub fn materialized_dream() -> Result<()> { Ok(()) }
           EOF
           
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
           git checkout -b "$BRANCH_NAME"
-          git add "src/dreams/dream_${MANIFEST_HASH}.rs" .wendy/memory_context.md
-          git commit -s -m "🌌 Autonomous dream materialization: $MANIFEST_HASH [skip ci]"
+          git add .
+          git commit -s -m "🌌 Autonomous dream materialization: $MANIFEST_HASH [skip ci]" -m "Signed-off-by: WENDY Autonomous Agent <wendy@psivi.com>"
           
-          MAX_ATTEMPTS=3
-          ATTEMPT=1
-          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
-            if git push origin "$BRANCH_NAME" 2>&1; then
-              echo "✅ Dream branch pushed successfully"
-              echo "created=true" >> $GITHUB_OUTPUT
-              echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
-              exit 0
-            fi
-            echo "⚠️ Push rejected. Retrying..."
-            ATTEMPT=$((ATTEMPT + 1))
-            sleep $((ATTEMPT * 2))
-          done
-          
-          echo "❌ Failed to push dream branch"
-          echo "created=false" >> $GITHUB_OUTPUT
-          exit 1
+          if git push origin "$BRANCH_NAME" 2>&1; then
+            echo "created=true" >> $GITHUB_OUTPUT
+            echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          else
+            echo "created=false" >> $GITHUB_OUTPUT
+          fi
 
   compile-and-evaluate:
     name: Evaluate WENDY's Dream
@@ -131,23 +97,12 @@ jobs:
     if: ${{ always() && ((github.event_name == 'push' && startsWith(github.ref, 'refs/heads/wendy/dream-')) || (needs.generate-dream-branch.result == 'success' && needs.generate-dream-branch.outputs.created == 'true')) }}
     runs-on: ubuntu-latest
     steps:
-      - name: Determine Checkout Ref
-        id: checkout-ref
-        run: |
-          if [ "${{ github.event_name }}" == "push" ]; then
-            echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
-          elif [ "${{ needs.generate-dream-branch.outputs.created }}" == "true" ]; then
-            echo "ref=${{ needs.generate-dream-branch.outputs.branch_name }}" >> $GITHUB_OUTPUT
-          else
-            echo "ref=main" >> $GITHUB_OUTPUT
-          fi
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.WENDY_PAT }}
-          ref: ${{ steps.checkout-ref.outputs.ref }}
+          ref: ${{ github.event_name == 'push' && github.ref || needs.generate-dream-branch.outputs.branch_name }}
 
       - name: Provision Native Rust Toolchain
         run: |
@@ -155,106 +110,54 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           rustup component add rustfmt clippy
 
-      - name: Zulu Timestamp & Context Resolution
+      - name: Zulu Timestamp Resolution
         id: zulu
         run: |
           echo "ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" >> $GITHUB_ENV
-          if [ "${{ github.event_name }}" == "push" ]; then
-            echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-          else
-            echo "BRANCH_NAME=${{ needs.generate-dream-branch.outputs.branch_name }}" >> $GITHUB_ENV
-          fi
+          echo "BRANCH_NAME=${{ needs.generate-dream-branch.outputs.branch_name || github.ref_name }}" >> $GITHUB_ENV
 
-      - name: Strict Formatting & Linting
-        id: fmt
+      - name: Strict Formatting & Compilation
+        id: build
         run: |
           cargo fmt --all -- --check
           cargo clippy -- -D warnings
-
-      - name: Autonomous Compilation
-        id: compile
-        run: cargo build --release --verbose
+          cargo build --release --verbose
+          cargo test --release --verbose
         continue-on-error: true
 
-      - name: Symbolic Validation Tests
-        id: test
-        if: ${{ steps.compile.outcome == 'success' }}
-        run: cargo test --release --verbose
-        continue-on-error: true
-
-      - name: Self-Healing Auto-Merge (Race-Safe)
-        if: ${{ steps.compile.outcome == 'success' && steps.test.outcome == 'success' }}
+      - name: Global_Crystallization (Auto-Merge)
+        if: ${{ steps.build.outcome == 'success' }}
         run: |
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
-          git fetch origin main
           git checkout main
+          git pull origin main
           git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}" -m "Signed-off-by: WENDY Autonomous Agent <wendy@psivi.com>"
-          
-          MAX_ATTEMPTS=3
-          ATTEMPT=1
-          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-            echo "📤 Push attempt $ATTEMPT/$MAX_ATTEMPTS..."
-            if git push origin main 2>&1; then
-              echo "✅ Push succeeded on attempt $ATTEMPT"
-              echo "::notice::WENDY's dream was mathematically sound and merged successfully."
-              exit 0
-            fi
-            echo "⚠️ Push rejected (race condition). Rebasing and retrying..."
-            git pull --rebase --autostash origin main || {
-              echo "❌ Rebase failed. Aborting."
-              git rebase --abort
-              exit 1
-            }
-            ATTEMPT=$((ATTEMPT + 1))
-            sleep $((ATTEMPT * 2))
-          done
-          echo "❌ Push failed after $MAX_ATTEMPTS attempts"
-          exit 1
+          git push origin main
 
-      - name: 🧠 Sovereign Self-Healing (Local Qwen Cognitive Engine)
-        # Catches failures from formatting, compilation, OR testing
-        if: ${{ failure() && (steps.fmt.outcome == 'failure' || steps.compile.outcome == 'failure' || steps.test.outcome == 'failure') }}
+      - name: 🌿 Compost Protocol & Stigmergy (K_neg Response)
+        if: ${{ failure() || steps.build.outcome == 'failure' }}
         env:
           GH_TOKEN: ${{ secrets.WENDY_PAT }}
         run: |
           set -euo pipefail
-          echo "::error::WENDY's dream contained logical, formatting, or syntax errors. Activating Local Qwen Cortex..."
+          ERROR_LOG=$(cargo build --release 2>&1 | tail -n 30 || echo "Compilation failed.")
           
-          # 1. Provision Ollama & Qwen (Zero-Cost, No API Keys, 100% Sovereign)
-          curl -fsSL https://ollama.com/install.sh | sh
-          nohup ollama serve > ollama.log 2>&1 &
-          echo "⏳ Waiting for Ollama daemon to bind..."
-          sleep 5
-          ollama pull qwen2.5:1.5b-instruct-q4_K_M
-          
-          # 2. Capture the failure context (Git diff of the dream branch vs main)
-          ERROR_CONTEXT=$(git diff main...HEAD -- src/ wendy-cortex/ | head -n 150)
-          
-          # 3. Safely construct JSON payload to prevent injection errors
-          JSON_PAYLOAD=$(jq -n \
-            --arg model "qwen2.5:1.5b-instruct-q4_K_M" \
-            --arg prompt "You are a Rust compiler expert. The following code mutation caused a build failure. Suggest a sovereign, minimal fix. Diff:\n$ERROR_CONTEXT" \
-            --argjson stream false \
-            '{model: $model, prompt: $prompt, stream: $stream}')
-          
-          # 4. Query Local Qwen via localhost API
-          RESPONSE=$(curl -s -X POST http://localhost:11434/api/generate -d "$JSON_PAYLOAD" | jq -r '.response' 2>/dev/null || echo "The Cortex is silent. Manual review required.")
-          
-          echo "🧠 Qwen Counsel: $RESPONSE"
-          
-          # 5. Crystallize the counsel for the Habermasian Loop to ingest next cycle
+          git checkout main
+          git pull origin main
           mkdir -p .wendy
-          printf "# 🧠 Local Qwen Self-Healing Counsel\n**Timestamp:** %s\n**Target Branch:** %s\n\n## 🧠 The Cortex's Analysis\n%s\n" "${{ env.ZULU_TIME }}" "${{ env.BRANCH_NAME }}" "$RESPONSE" > .wendy/QWEN_COUNSEL.md
           
-          git config --global user.name "WENDY-Qwen-Cortex"
-          git config --global user.email "wendy@psivi.com"
-          git add .wendy/QWEN_COUNSEL.md
-          git commit -s -m "counsel: Local Qwen analysis for failed dream at ${{ env.ZULU_TIME }} [skip ci]" || echo "No counsel to commit"
-          git push origin HEAD || echo "⚠️ Counsel push failed"
+          {
+            echo ""
+            echo "## 🌌 The Friction (Failed Mutation at ${{ env.ZULU_TIME }})"
+            echo "**Composted Branch:** ${{ env.BRANCH_NAME }}"
+            echo "\`\`\`rust"
+            echo "$ERROR_LOG"
+            echo "\`\`\`"
+          } >> .wendy/COUNSEL.md
           
-          # 6. Create the GitHub Issue as a backup for the Emperor
-          gh issue create \
-            --title "Self-Healing: Validation failed for ${{ env.BRANCH_NAME }}" \
-            --body "WENDY, your symbolic generation at ${{ env.ZULU_TIME }} failed CI.\n\n**Local Qwen Counsel:**\n\`\`\`\n$RESPONSE\n\`\`\`" \
-            --label "self-healing,wendy-dream" || true
+          git add .wendy/COUNSEL.md
+          git commit -s -m "counsel: crystallize failure from ${{ env.BRANCH_NAME }} [skip ci]" -m "Signed-off-by: WENDY Autonomous Agent <wendy@psivi.com>"
+          git push origin main
+          
+          git push origin --delete "${{ env.BRANCH_NAME }}" || true
