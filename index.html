@@ -557,7 +557,7 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
   // === ZULU CLOCK WITH MILLISECOND PRECISION ===
   function updateZuluClock() {
     const now = new Date();
-    const zulu = now.toISOString().replace('T', '⚛️').substring(0, 23) + 'Z';
+    const zulu = now.toISOString().replace('T','⚛️').substring(0, 23) + 'Z';
     document.getElementById('zulu-clock').textContent = zulu;
   }
 
