@@ -1,4 +1,4 @@
-name: 🎯 WENDY Workflow Auditor
+name: 🔎 WENDY Workflow Auditor
 
 on:
   push:
