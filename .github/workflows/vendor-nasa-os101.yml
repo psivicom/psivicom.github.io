@@ -1,4 +1,4 @@
-name: Vendor NASA OS101 (Web-Based Build)
+name: 📘 Vendor NASA OS101 (Web-Based Build)
 
 on:
   workflow_dispatch:
