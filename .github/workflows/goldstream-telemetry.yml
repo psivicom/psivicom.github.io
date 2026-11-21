@@ -43,7 +43,7 @@ jobs:
           # === 3. SATELLITE PASSES (Placeholder until full SGP4 integrated) ===
           next_pass = {"sat": "ISS", "aos": "--:--Z", "el": 0}
 
-          # === FUSE & WRITE ===
+          # === FUSE & WRITE (Zulu ms precision per AXIOM_6) ===
           telemetry = {
               "updated": datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z'),
               "position": {"lat": LAT, "lon": LON},
