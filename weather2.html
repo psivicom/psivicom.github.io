@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER — Weather Telemetry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+        }
+        
+        /* PSIVI-TOP AETHER HEADER */
+        .psivi-top {
+            background: linear-gradient(90deg, #0ff 0%, #00f 100%);
+            color: #000;
+            padding: 0.5rem 1rem;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            border-bottom: 2px solid #0ff;
+        }
+        
+        .psivi-top .aether-brand {
+            font-size: 14px;
+            color: #000;
+        }
+        
+        .psivi-top .telemetry-line {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .psivi-top .telemetry-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .psivi-top .symbol {
+            font-size: 16px;
+        }
+        
+        /* NASA BADGE */
+        .nasa-badge {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: #1a1a1a;
+            border: 2px solid #0ff;
+            border-radius: 8px;
+            padding: 1rem;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        
+        .nasa-badge img {
+            width: 80px;
+            height: auto;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nasa-badge .badge-text {
+            color: #0ff;
+            font-size: 10px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        /* MAIN CONTENT */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            padding-top: 80px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            color: #0ff;
+            font-size: 32px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header .subtitle {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .telemetry-panel {
+            background: #1a1a1a;
+            border: 2px solid #0ff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .metric-card {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .metric-card .symbol {
+            font-size: 32px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-card .label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-card .value {
+            color: #0f0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .status-bar {
+            padding: 1rem;
+            text-align: center;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+        
+        .status-bar.loading {
+            background: #ff0;
+            color: #000;
+        }
+        
+        .status-bar.ok {
+            background: #0f0;
+            color: #000;
+        }
+        
+        .status-bar.error {
+            background: #f00;
+            color: #fff;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        button {
+            background: #0ff;
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #0aa;
+        }
+        
+        .cache-section {
+            background: #1a1a1a;
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .cache-section h3 {
+            color: #0ff;
+            margin-bottom: 1rem;
+            font-size: 18px;
+        }
+        
+        .cache-entry {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .cache-entry:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- PSIVI-TOP AETHER HEADER -->
+    <div class="psivi-top">
+        <div class="aether-brand">AETHER</div>
+        <div class="telemetry-line">
+            <div class="telemetry-item">
+                <span class="symbol">🛰️</span>
+                <span>SAT</span>
+            </div>
+            <div class="telemetry-item">
+                <span class="symbol" id="header-rh">—</span>
+                <span id="header-rh-val">WX</span>
+            </div>
+            <div class="telemetry-item">
+                <span class="symbol">📍</span>
+                <span>48.45°N 123.50°W</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- NASA OPEN SCIENCE BADGE -->
+    <div class="nasa-badge">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23000' stroke='%230ff' stroke-width='3'/%3E%3Ctext x='50' y='60' font-family='Arial' font-size='24' fill='%230ff' text-anchor='middle' font-weight='bold'%3ENASA%3C/text%3E%3C/svg%3E" alt="NASA Open Science">
+        <div class="badge-text">OPEN SCIENCE<br>AXIOM_5</div>
+    </div>
+    
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div class="page-header">
+            <h1>💧 WEATHER TELEMETRY</h1>
+            <div class="subtitle">Atmospheric Data for Apiary Stigmergy | Open-Meteo Integration</div>
+        </div>
+        
+        <div id="status" class="status-bar loading">⏳ CRYSTALLIZING TELEMETRY...</div>
+        
+        <div class="telemetry-panel">
+            <div class="telemetry-grid">
+                <div class="metric-card">
+                    <div class="symbol">💧</div>
+                    <div class="label">RELATIVE HUMIDITY</div>
+                    <div class="value" id="rh-value">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="symbol">🌡️</div>
+                    <div class="label">TEMPERATURE</div>
+                    <div class="value" id="temp-value">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="symbol">🌬️</div>
+                    <div class="label">WIND SPEED</div>
+                    <div class="value" id="wind-value">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="symbol">⏲️</div>
+                    <div class="label">PRESSURE</div>
+                    <div class="value" id="pressure-value">--</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="refreshWeather()">🔄 REFRESH</button>
+            <button onclick="exportForWendy()">💾 EXPORT JSON</button>
+            <button onclick="clearCache()">🗑️ CLEAR CACHE</button>
+        </div>
+        
+        <div class="cache-section">
+            <h3>💾 WENDY TELEMETRY CACHE</h3>
+            <div id="cache-entries">No cached telemetry</div>
+        </div>
+    </div>
+
+    <script>
+        const COORDS = { lat: 48.45, lon: -123.5 };
+        const STORAGE_KEY = 'aether_wx_cache';
+        const MAX_CACHE = 20;
+        
+        async function fetchWeather() {
+            const status = document.getElementById('status');
+            
+            status.className = 'status-bar loading';
+            status.textContent = '⏳ CRYSTALLIZING TELEMETRY...';
+            
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${COORDS.lat}&longitude=${COORDS.lon}&current=relative_humidity_2m,temperature_2m,wind_speed_10m,pressure_msl&timezone=GMT`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                
+                const wx = {
+                    timestamp: data.current.time + 'Z',
+                    rh: data.current.relative_humidity_2m,
+                    temp: data.current.temperature_2m,
+                    wind: (data.current.wind_speed_10m / 3.6).toFixed(1),
+                    pressure: data.current.pressure_msl,
+                    lat: COORDS.lat,
+                    lon: COORDS.lon
+                };
+                
+                // Update main display
+                document.getElementById('rh-value').textContent = `${wx.rh}%`;
+                document.getElementById('temp-value').textContent = `${wx.temp}°C`;
+                document.getElementById('wind-value').textContent = `${wx.wind} m/s`;
+                document.getElementById('pressure-value').textContent = `${wx.pressure} hPa`;
+                
+                // Update header telemetry
+                document.getElementById('header-rh').textContent = '💧';
+                document.getElementById('header-rh-val').textContent = `${wx.rh}%`;
+                
+                status.className = 'status-bar ok';
+                status.textContent = `✅ CRYSTALLIZED | ${wx.timestamp}`;
+                
+                cacheTelemetry(wx);
+                
+            } catch (error) {
+                status.className = 'status-bar error';
+                status.textContent = `❌ TELEMETRY FAILED: ${error.message}`;
+                document.getElementById('header-rh').textContent = '∅';
+                document.getElementById('header-rh-val').textContent = 'VOID';
+            }
+        }
+        
+        function cacheTelemetry(wx) {
+            let cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            cache.unshift(wx);
+            cache = cache.slice(0, MAX_CACHE);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+            displayCache();
+        }
+        
+        function displayCache() {
+            const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const container = document.getElementById('cache-entries');
+            
+            if (cache.length === 0) {
+                container.textContent = 'No cached telemetry';
+                return;
+            }
+            
+            container.innerHTML = cache.map(entry => 
+                `<div class="cache-entry">
+                    <strong>${entry.timestamp}</strong> | 
+                    💧 ${entry.rh}% | 
+                    🌡️ ${entry.temp}°C | 
+                    🌬️ ${entry.wind} m/s
+                </div>`
+            ).join('');
+        }
+        
+        function refreshWeather() {
+            fetchWeather();
+        }
+        
+        function exportForWendy() {
+            const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            if (cache.length === 0) {
+                alert('No telemetry to export');
+                return;
+            }
+            
+            const blob = new Blob([JSON.stringify(cache, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `aether_wx_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function clearCache() {
+            if (confirm('Clear all cached telemetry?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                displayCache();
+            }
+        }
+        
+        // Initialize
+        fetchWeather();
+        displayCache();
+        
+        // Auto-refresh every 5 minutes
+        setInterval(fetchWeather, 300000);
+    </script>
+</body>
+</html>
