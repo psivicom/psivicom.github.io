@@ -256,11 +256,11 @@ footer {
 </div>
 <script>
 (function(){
-  const clockEl = document.getElementById('zulu-clock');
+  var clockEl = document.getElementById('zulu-clock');
   function tick() {
-    const now = new Date();
-    const iso = now.toISOString();
-    const display = iso.replace('T', ' ').replace(/(\.\d{3})Z$/, '$1 Z');
+    var now = new Date();
+    var iso = now.toISOString();
+    var display = iso.replace('T', ' ').replace(/(\.\d{3})Z$/, '$1 Z');
     clockEl.textContent = display;
     clockEl.setAttribute('datetime', iso);
     requestAnimationFrame(tick);
@@ -283,7 +283,6 @@ footer {
 </div>
 
 <div class="badges">
-  <!-- NASA Open Science 101 Official Credly Badge -->
   <a href="https://www.credly.com/badges/f4cbcaca-b09a-473c-91c6-8d246c9acf99/public_url" target="_blank" rel="noopener noreferrer" class="badge-credly-wrapper">
     <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="f4cbcaca-b09a-473c-91c6-8d246c9acf99" data-share-badge-host="https://www.credly.com"></div>
     <span class="badge-credly-desc">NASA Open Science 101 Certified<br><span style="color:#71717a">TOPS / SPD-41a Aligned</span></span>
@@ -1012,4 +1011,6 @@ footer {
   <span style="color:#ffffff">├── .gitignore</span><br>
   <span style="color:#ffffff">├── .wendy_dream.gmi</span><br>
   <span style="color:#ffffff">├── .wendy_manifest.gmi</span><br>
-  <span style="color:#ffffff">├── .wendy
+  <span style="color:#ffffff">├── .wendy_state.json</span><br>
+  <span style="color:#ffffff">├── ACCESSIBILITY.md</span><br>
+  <span style="color:#ffffff">├── AGENTS.md</span><
