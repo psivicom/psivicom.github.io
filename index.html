@@ -1,285 +1,232 @@
 <!DOCTYPE html>
-<!--
-  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
-  Code: EUPL 1.2 | Docs: CC BY-SA 4.0 | Hardware: All Rights Reserved
--->
-<html lang="en-CA">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PSIVI.COM — Open Science Hub — Excellence Edition — Louis-Philippe Audette</title>
-<meta name="description" content="FAIR open science, reproducible research aligned with NASA, ESA, and CSA. Fully compliant with NIST SP 800-218 (SSDF), utilizing domain-separated EUPL 1.2 / CC BY-SA 4.0 licensing.">
-<meta property="og:title" content="PSIVI.COM — Open Science Research — Langford, BC">
-<meta property="og:description" content="FAIR open science, reproducible research aligned with NASA, ESA, and CSA.">
-<meta property="og:url" content="https://psivi.com">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="PSIVI.COM">
-<link rel="icon" href="/favicon.ico">
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap');
-:root { font-family: 'IBM Plex Serif', Georgia, serif; }
-.mono { font-family: 'IBM Plex Mono', monospace; }
-body { margin: 0; background: #f6f9ff; color: #18181b; line-height: 1.7; -webkit-font-smoothing: antialiased; }
-body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: radial-gradient(1200px 600px at 20% -10%, #dbeafe 0%, transparent 60%), radial-gradient(800px 400px at 90% 10%, #e0e7ff 0%, transparent 50%); pointer-events: none; }
-a { color: inherit; text-underline-offset: 3px; }
-a:hover { text-decoration-thickness: 2px; }
-.container { max-width: 900px; margin: 0 auto; padding: 24px 24px 64px; background: #fff; border-radius: 0 0 16px 16px; box-shadow: 0 10px 40px #0A193133, 0 1px 0 #e4e4e7; }
-.header { border-bottom: 1px solid #e4e4e7; padding-bottom: 32px; }
-.kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #71717a; font-weight: 500; }
-.h1 { font-size: 42px; line-height: .95; letter-spacing: -.02em; font-weight: 600; margin: 12px 0 0; }
-@media(max-width:640px) { .h1 { font-size: 32px; } }
-.sub { margin-top: 12px; font-size: 13px; color: #52525b; line-height: 1.6; }
-.address { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px 20px; font-size: 12.5px; color: #3f3f46; border: 1px solid #e4e4e7; border-radius: 10px; padding: 12px 16px; background: #fafafa99; }
-.badges { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0 0; align-items: center; }
-.badges img { height: 20px; }
-.badge-credly-wrapper { display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; border: 1px solid #e4e4e7; border-radius: 8px; background: #fafafa; text-decoration: none; transition: border-color 0.2s ease; }
-.badge-credly-wrapper:hover { border-color: #0A1931; }
-.badge-credly-desc { font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #3f3f46; line-height: 1.3; max-width: 180px; }
-.nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; }
-.nav a { border: 1px solid #e4e4e7; border-radius: 9999px; padding: 6px 14px; text-decoration: none; }
-.nav a:hover { border-color: #0A1931; background: #0A1931; color: #fff; }
-.section { margin-top: 64px; scroll-margin-top: 60px; }
-.section-head { display: flex; align-items: center; gap: 16px; }
-.section-head h2 { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: #71717a; white-space: normal; word-break: break-word; margin: 0; line-height: 1.4; min-width: 0; flex-shrink: 1; max-width: 100%; }
-.line { flex: 1; height: 1px; background: linear-gradient(90deg, #0A1931, #00D4FF, #00FF9D); opacity: 0.5; }
-h3 { font-size: 16px !important; font-weight: 600; line-height: 1.4; color: #18181b; margin: 0 0 8px 0; }
-.card { border: 1px solid #e4e4e7; border-radius: 12px; padding: 20px; background: #fff; overflow: hidden; word-wrap: break-word; overflow-wrap: break-word; }
-.klein-box { background: #002FA7; color: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0, 47, 167, 0.2); display: flex; flex-direction: column; justify-content: flex-start; overflow: hidden; word-wrap: break-word; overflow-wrap: break-word; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.klein-box:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35); }
-.klein-box .label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.75); font-family: 'IBM Plex Mono', monospace; margin-bottom: 8px; }
-.klein-box .value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 12px; color: #ffffff; line-height: 1.2; }
-.klein-box .desc { font-size: 14px; line-height: 1.55; color: rgba(255, 255, 255, 0.9); }
-.klein-box-full { background: #002FA7; color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 8px 24px rgba(0, 47, 167, 0.2); display: flex; flex-direction: column; justify-content: flex-start; overflow: hidden; word-wrap: break-word; overflow-wrap: break-word; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.klein-box-full:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35); }
-.klein-box-full .label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.75); font-family: 'IBM Plex Mono', monospace; margin-bottom: 8px; }
-.klein-box-full .value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; color: #ffffff; line-height: 1.2; }
-.klein-box-full .desc { font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.9); max-width: 700px; }
-.grid2 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; }
-@media(max-width:640px) { .grid2 { grid-template-columns: 1fr; } }
-.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-@media(max-width:768px) { .grid3 { grid-template-columns: 1fr; } }
-.mono-sm { font-size: 12px; }
-pre { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 11.5px; line-height: 1.6; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #71717a; font-weight: 500; text-align: left; background: #fafafa; border-bottom: 1px solid #e4e4e7; padding: 12px 16px; }
-td { padding: 12px 16px; border-bottom: 1px solid #f4f4f5; }
-footer { margin-top: 48px; border-top: 1px solid #e4e4e7; padding-top: 32px; font-size: 11px; color: #71717a; line-height: 1.7; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-</style>
-
-<script type="application/ld+json" id="json-ld-person">
-{
-  "@context": "https://schema.org",
-  "@graph": [{
-    "@type": "Person",
-    "@id": "https://psivi.com/#person",
-    "name": "Louis-Philippe Audette",
-    "givenName": "Louis-Philippe",
-    "familyName": "Audette",
-    "email": "louis@psivi.com",
-    "url": "https://psivi.com",
-    "jobTitle": "Open Science Researcher",
-    "address": {"@type": "PostalAddress", "addressLocality": "Langford", "addressRegion": "BC", "addressCountry": "CA"},
-    "hasCredential": {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "NASA Open Science 101",
-      "recognizedBy": {"@type": "Organization", "name": "NASA", "url": "https://science.nasa.gov/open-science"},
-      "url": "https://www.credly.com/badges/f4cbcaca-b09a-473c-91c6-8d246c9acf99/public_url"
-    }
-  }]
-}
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER Weather Telemetry</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            font-size: 24px;
+            margin-bottom: 2rem;
+            color: #0ff;
+        }
+        .telemetry {
+            background: #1a1a1a;
+            border: 2px solid #0f0;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 18px;
+            border-bottom: 1px solid #333;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-size: 24px;
+        }
+        .value {
+            font-weight: bold;
+        }
+        .status {
+            padding: 1rem;
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 1rem;
+        }
+        .status.ok {
+            background: #0f0;
+            color: #000;
+        }
+        .status.error {
+            background: #f00;
+            color: #fff;
+        }
+        .status.loading {
+            background: #ff0;
+            color: #000;
+        }
+        .cache {
+            background: #1a1a1a;
+            border: 1px solid #555;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+        .cache h3 {
+            color: #0ff;
+            margin-bottom: 1rem;
+        }
+        .cache-entry {
+            font-size: 14px;
+            color: #888;
+            padding: 0.25rem 0;
+        }
+        button {
+            background: #0ff;
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            margin-top: 1rem;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0aa;
+        }
+    </style>
 </head>
-
 <body>
-<!-- TOP STICKY AETHER LIVE -->
-<div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:'IBM Plex Mono',monospace;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:0.05em;border-bottom:1px solid #00D4FF33;white-space:nowrap;overflow-x:auto">
-  <span id="pulse-top" style="display:inline-block;width:7px;height:7px;background:#00D4FF;border-radius:50%;box-shadow:0 0 6px #00D4FF;animation:psivi-pulse 1s infinite;margin-right:6px;vertical-align:middle"></span>
-  <span id="status-top">AETHER</span> — <time id="zulu-clock" datetime="" style="font-variant-numeric:tabular-nums">--:--:--.--- Z</time>
-  <span style="margin-left:12px;color:#38bdf8">● SAT</span><span id="sat-pass" style="margin-left:4px;color:#38bdf8;font-variant-numeric:tabular-nums">—</span>
-  <span style="margin-left:8px;color:#94a3b8">|</span>
-  <span style="margin-left:8px;color:#fbbf24">● WX</span><span id="ec-weather" style="margin-left:4px;color:#fbbf24;font-variant-numeric:tabular-nums">—</span>
-  <span style="margin-left:8px;color:#94a3b8">|</span>
-  <span style="margin-left:8px;color:#a78bfa">● POS</span><span id="gps-pos" style="margin-left:4px;color:#a78bfa;font-variant-numeric:tabular-nums">48.4500°N 123.5000°W</span>
-</div>
-<script>
-(function(){
-  var clockEl = document.getElementById('zulu-clock');
-  function tick() {
-    var now = new Date();
-    var iso = now.toISOString();
-    clockEl.textContent = iso.replace('T', ' ').replace(/(\.\d{3})Z$/, '$1 Z');
-    clockEl.setAttribute('datetime', iso);
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-</script>
+    <div class="container">
+        <div class="header">🛰️ AETHER TELEMETRY</div>
+        
+        <div id="status" class="status loading">⏳ CRYSTALLIZING...</div>
+        
+        <div id="telemetry" class="telemetry" style="display:none;">
+            <div class="row">
+                <span class="label">💧</span>
+                <span class="value" id="rh">--</span>
+            </div>
+            <div class="row">
+                <span class="label">🌡️</span>
+                <span class="value" id="temp">--</span>
+            </div>
+            <div class="row">
+                <span class="label">🌬️</span>
+                <span class="value" id="wind">--</span>
+            </div>
+            <div class="row">
+                <span class="label">⏲️</span>
+                <span class="value" id="pressure">--</span>
+            </div>
+            <div class="row">
+                <span class="label">📍</span>
+                <span class="value" id="pos">48.45°N 123.50°W</span>
+            </div>
+            <div class="row">
+                <span class="label">⏱️</span>
+                <span class="value" id="time">--</span>
+            </div>
+        </div>
+        
+        <button onclick="refresh()">🔄 REFRESH</button>
+        <button onclick="exportData()">💾 EXPORT FOR WENDY</button>
+        
+        <div class="cache">
+            <h3>💾 WENDY CACHE (localStorage)</h3>
+            <div id="cache-entries">No cached data</div>
+        </div>
+    </div>
 
-<div class="container">
-<header class="header">
-<div class="kicker">PSIVI.COM — Open Science Hub — Excellence Edition — Langford, BC — Goldstream — NASA Open Science 101 Certified</div>
-<h1 class="h1">Louis-Philippe<br>Audette</h1>
-<div class="sub">Open Science Researcher · Pollinator Ecology · Earth Observation<br>Goldstream Watershed, Langford, BC, Canada — V9B · Vancouver Island · Personal site → <a href="https://psivi.com" style="text-decoration:underline">psivi.com</a></div>
-<div class="address mono">
-<a href="mailto:louis@psivi.com" style="text-decoration:underline">louis@psivi.com</a> <span style="color:#d4d4d8">|</span>
-<a href="https://github.com/psivicom" style="text-decoration:underline">github.com/psivicom</a> <span style="color:#d4d4d8">|</span>
-<a href="https://orcid.org/0009-0005-1234-5678" style="text-decoration:underline">ORCID</a> <span style="color:#d4d4d8">|</span>
-<span>https://psivi.com</span>
-</div>
-<div class="badges">
-  <a href="https://www.credly.com/badges/f4cbcaca-b09a-473c-91c6-8d246c9acf99/public_url" target="_blank" rel="noopener noreferrer" class="badge-credly-wrapper">
-    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="f4cbcaca-b09a-473c-91c6-8d246c9acf99" data-share-badge-host="https://www.credly.com"></div>
-    <span class="badge-credly-desc">NASA Open Science 101 Certified<br><span style="color:#71717a">TOPS / SPD-41a Aligned</span></span>
-  </a>
-  <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-  <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12"><img src="https://img.shields.io/badge/License-EUPL%201.2-blue.svg" alt="License EUPL 1.2"></a>
-  <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" alt="CC BY-SA 4.0"></a>
-  <a href="https://zenodo.org"><img src="https://img.shields.io/badge/DOI-Zenodo-1682d4.svg" alt="DOI Zenodo"></a>
-  <a href="#"><img src="https://img.shields.io/badge/FAIR-Compliant-green.svg" alt="FAIR"></a>
-  <a href="#"><img src="https://img.shields.io/badge/NASA-TOPS%20%2F%20SPD--41a-0b3d91.svg" alt="NASA TOPS"></a>
-  <a href="#"><img src="https://img.shields.io/badge/ESA-Open%20Science-003247.svg" alt="ESA"></a>
-  <a href="#"><img src="https://img.shields.io/badge/CSA-Open%20Science-red.svg" alt="CSA"></a>
-  <a href="#"><img src="https://img.shields.io/badge/JAXA-Open%20Science-ffffff.svg" alt="JAXA"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Open%20Science-Excellence-gold.svg" alt="Open Science"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Reproducible-Yes-brightgreen.svg" alt="Reproducible"></a>
-  <a href="#"><img src="https://img.shields.io/badge/OSF-Archive-blue.svg" alt="OSF"></a>
-  <a href="#"><img src="https://img.shields.io/badge/AI-Human%20Reviewed-orange.svg" alt="AI Human Reviewed"></a>
-  <a href="#"><img src="https://img.shields.io/badge/ORCID-Verified-a6ce39.svg" alt="ORCID"></a>
-</div>
-<nav class="nav mono" aria-label="Primary">
-<a href="#about">About</a><a href="#research">Research</a><a href="#osdm">OSDMP</a><a href="#license">License</a><a href="#compliance">Compliance</a><a href="#structure">Structure</a><a href="#cite">Cite</a><a href="#dns">DNS Setup</a><a href="#contact">Contact</a>
-</nav>
-</header>
-
-<main>
-<section id="about" class="section">
-<div class="section-head"><h2 class="mono">01 — About</h2><div class="line"></div></div>
-<div style="margin-top:24px;font-size:16px;color:#27272a">
-<p>This repository (<code class="mono" style="font-size:14px;background:#f4f4f5;padding:2px 6px;border-radius:4px;">psivicom.github.io</code>) serves as the operational blueprint and digital infrastructure for FAIR open science, reproducible research, and autonomous AI mesh operations.</p>
-<p style="margin-top:16px">While my applied domain focuses on <strong>pollinator ecology and Earth observation</strong> (using RADARSAT SAR and NASA Earthdata) in the Goldstream watershed of Langford, BC, this framework is designed for global scalability and strict adherence to NASA TOPS, ESA, and CSA open science mandates.</p>
-<div class="grid3" style="margin-top:24px">
-  <div class="klein-box"><div class="label">Primary Focus</div><div class="value">Open Science</div><div class="desc">The core of this repository. A fully interconnected framework utilizing domain-separated EUPL 1.2 and CC BY-SA 4.0 licensing to guarantee reproducible, auditable workflows.</div></div>
-  <div class="klein-box"><div class="label">AI Infrastructure</div><div class="value">Mesh Pico AI</div><div class="desc">Edge-deployed, autonomous AI mesh powering the data pipelines, synthesis, and real-time telemetry for this hub with strict human-in-the-loop auditing.</div></div>
-  <div class="klein-box"><div class="label">Applied Domain</div><div class="value">Ecology & EO</div><div class="desc">The primary use-case: monitoring Goldstream pollinators correlated with RADARSAT soil moisture and NASA Earthdata phenology.</div></div>
-</div>
-</div>
-</section>
-
-<section id="research" class="section">
-<div class="section-head"><h2 class="mono">02 — Research</h2><div class="line"></div></div>
-<div class="klein-box-full" style="margin-top: 24px;">
-  <div class="label">Space Research Engine</div><div class="value">Research Mesh Pico AI</div>
-  <div class="desc">An autonomous, edge-deployed AI mesh network designed for real-time space research data synthesis. It powers SAR-optical fusion, pollinator telemetry, and FAIR open science workflows with strict human-in-the-loop auditing and NIST SSDF compliance. Zero black-box lock-in.</div>
-</div>
-<ul style="list-style:none;padding:0;margin-top:32px">
-<li style="border-left:2px solid #0A1931;padding-left:20px;margin-bottom:24px"><h3>Goldstream Pollinator Forage Atlas</h3><div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">2024—present · Langford, BC · Open data + notebook</div><p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Weekly transects and hive entrance imaging to map bloom sequence vs. RADARSAT soil moisture anomalies. Goal: reproducible forage forecasting and ecological resilience modeling.</p></li>
-<li style="border-left:2px solid #0A1931;padding-left:20px;margin-bottom:24px"><h3>SAR-Optical Fusion for Garry Oak Meadow Phenology</h3><div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">RADARSAT-2 / RCM · Sentinel-2 · NASA HLS</div><p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Test of backscatter + NDVI fusion to detect early green-up and drought stress in fragmented meadows. Code in Python, GDAL, xarray, fully reproducible and open.</p></li>
-<li style="border-left:2px solid #0A1931;padding-left:20px;margin-bottom:24px"><h3>Open Hive Health Logger</h3><div class="mono" style="font-size:11px;color:#71717a;text-transform:uppercase;margin-top:4px">Hardware · FAIR IoT</div><p style="font-size:14.5px;color:#3f3f46;margin-top:8px">Low-cost weight, temperature, acoustic logger for Langford apiaries. Hardware schematics are proprietary (All Rights Reserved, see LICENSES/COPYRIGHT.md).</p></li>
-</ul>
-</section>
-
-<section id="osdm" class="section">
-<div class="section-head"><h2 class="mono">03 — OSDMP — Excellence Edition</h2><div class="line"></div></div>
-<div class="card" style="margin-top:24px">
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-<a href="https://psivi.com/docs/osdmp.html" style="border:1px solid #0A1931;background:#0A1931;color:#fff;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">View OSDMP</a>
-<a href="docs/osdmp.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">Source: docs/osdmp.md</a>
-<a href="docs/FAIR_CHECKLIST.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">FAIR Checklist</a>
-<a href="docs/LICENSE_COMPLIANCE.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">License Compliance</a>
-<a href="docs/DATA_MANAGEMENT.md" style="border:1px solid #e4e4e7;border-radius:9999px;padding:6px 14px;text-decoration:none;font-size:12px" class="mono">Data Management</a>
-</div>
-<p style="margin-top:16px;font-size:14.5px">All docs cross-reference each other. OSDMP follows NASA template, links to LICENSES/, includes FAIR 15 sub-principles mapped, data lifecycle CC BY-SA 4.0.</p>
-</div>
-</section>
-
-<section id="license" class="section">
-<div class="section-head"><h2 class="mono">04 — Domain-Separated Licensing</h2><div class="line"></div></div>
-<div style="margin-top:24px;overflow:hidden;border:1px solid #e4e4e7;border-radius:12px">
-<table><thead><tr><th>Type</th><th>License</th><th>Path</th><th>For</th></tr></thead><tbody>
-<tr><td><strong>Software / code / workflows / config</strong></td><td><strong>EUPL 1.2</strong></td><td class="mono">/LICENSE-EUPL-1.2.txt</td><td>All .go, .js, .py, .sh, .yml, .json (code), .html</td></tr>
-<tr><td><strong>Docs, data, datasets, photos, images, videos, figures, CSV, OSDMP</strong></td><td><strong>CC BY-SA 4.0</strong></td><td class="mono">/LICENSE-CC-BY-SA-4.0.md</td><td>All .md, .csv, .pdf, .png, .jpg, datasets</td></tr>
-<tr><td><strong>Hardware / Schematics / Physical IP</strong></td><td><strong>All Rights Reserved</strong></td><td class="mono">LICENSES/COPYRIGHT.md</td><td>Physical device schematics and proprietary hardware designs</td></tr>
-</tbody></table>
-</div>
-<p style="margin-top:12px;font-size:13px;color:#52525b" class="mono">See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-linked.</p>
-<div class="card" style="margin-top:16px;background:#fafafa"><strong>Why this split?</strong> NASA SPD-41a §VI and ESA Open Science require: Software = OSI-approved (EUPL 1.2 is the official ESA preferred license), Data/Docs = CC BY or CC BY-SA 4.0 for maximum scientific reuse.</div>
-</section>
-
-<section id="compliance" class="section">
-<div class="section-head"><h2 class="mono">05 — Multi-Agency Compliance</h2><div class="line"></div></div>
-<div class="grid2" style="margin-top:24px">
-<div class="card"><strong>NASA TOPS / SPD-41a</strong><br><span class="mono-sm">Open code EUPL 1.2 (OSI-approved), open data CC BY-SA 4.0, DOIs, FAIR, OSDMP required — docs/osdmp.md</span></div>
-<div class="card"><strong>CSA</strong><br><span class="mono-sm">Canadian Space Agency Open Science & FAIR — accepts EUPL 1.2 + CC BY-SA 4.0</span></div>
-<div class="card"><strong>ESA</strong><br><span class="mono-sm">ESA Open Science Policy + Open Access — EUPL 1.2 is the preferred/official license — covers CNES-FR, ASI-IT, UKSA-UK, DTU Space</span></div>
-<div class="card"><strong>JAXA</strong><br><span class="mono-sm">JAXA Open Science — EUPL 1.2 compatible</span></div>
-<div class="card"><strong>EU Horizon Europe</strong><br><span class="mono-sm">Reg 2021/695, MGA Art.14 & 17, Directive 2019/1024, Plan S, EOSC — EUPL 1.2 native, data CC BY-SA 4.0 required</span></div>
-<div class="card"><strong>UNESCO</strong><br><span class="mono-sm">41 C/22 Recommendation on Open Science (2021)</span></div>
-</div>
-<div class="card" style="margin-top:16px; border-left: 4px solid #0A1931;">
-  <div class="mono" style="font-size:11px;text-transform:uppercase;color:#71717a;margin-bottom:8px">Institutional Compliance & Security (NIST SP 800-218)</div>
-  <p style="font-size:14px; line-height:1.6; margin:0; color:#27272a;">This research software and data pipeline is fully compliant with the <strong>NIST Secure Software Development Framework (SP 800-218)</strong>. It utilizes a domain-separated open-source architecture with cryptographic provenance tracking.<br><br><a href="docs/NIST-SSDF-COMPLIANCE-MAPPING.md" style="color:#0A1931; font-weight:600; text-decoration:underline;">View full technical and legal verification &rarr;</a></p>
-</div>
-</section>
-
-<section id="structure" class="section">
-<div class="section-head"><h2 class="mono">06 — Repository Structure — Interconnected</h2><div class="line"></div></div>
-<!-- AUTO_TREE_START -->
-<!-- Auto-updated by .github/workflows/update-tree.yml -->
-<!-- Last updated: 2026-11-20T22:48:47.000Z -->
-<div style="font-family:monospace; line-height:1.5; background:#002FA7; color:#ffffff; padding:24px; border-radius:12px;">
-  <span style="color:#80BFFF">./</span><br>
-  <span style="color:#80BFFF">├── .github/workflows/</span><br>
-  <span style="color:#ffffff">│   ├── goldstream-telemetry.yml</span><br>
-  <span style="color:#ffffff">│   └── ... (see full tree in repo)</span><br>
-  <span style="color:#80BFFF">├── api/</span><br>
-  <span style="color:#ffffff">│   └── goldstream-telemetry.json</span><br>
-  <span style="color:#80BFFF">├── index.html</span><br>
-  <span style="color:#ffffff">└── ... (full structure in repo)</span>
-</div>
-<!-- AUTO_TREE_END -->
-</section>
-
-<footer>
-  <div>© 2026 Louis-Philippe Audette · PSIVI.COM · Langford, BC</div>
-  <div style="text-align:right"><a href="./wendy-console.html">Access the WENDY Symbolic Console</a></div>
-</footer>
-</div>
-
-<!-- TELEMETRY LIVE REFRESH -->
-<script>
-(function(){
-  var satEl = document.getElementById('sat-pass');
-  var wxEl = document.getElementById('ec-weather');
-  var posEl = document.getElementById('gps-pos');
-
-  function refresh() {
-    fetch('/api/goldstream-telemetry.json')
-      .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function(d) {
-        if (d.next_sat_pass && d.next_sat_pass.display) {
-          satEl.textContent = d.next_sat_pass.display;
+    <script>
+        const COORDS = { lat: 48.45, lon: -123.5 };
+        const STORAGE_KEY = 'aether_wx_cache';
+        
+        async function fetchWeather() {
+            const status = document.getElementById('status');
+            const telemetry = document.getElementById('telemetry');
+            
+            status.className = 'status loading';
+            status.textContent = '⏳ CRYSTALLIZING...';
+            telemetry.style.display = 'none';
+            
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${COORDS.lat}&longitude=${COORDS.lon}&current=relative_humidity_2m,temperature_2m,wind_speed_10m,pressure_msl&timezone=GMT`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                
+                const wx = {
+                    timestamp: data.current.time + 'Z',
+                    rh: data.current.relative_humidity_2m,
+                    temp: data.current.temperature_2m,
+                    wind: (data.current.wind_speed_10m / 3.6).toFixed(1),
+                    pressure: data.current.pressure_msl,
+                    lat: COORDS.lat,
+                    lon: COORDS.lon
+                };
+                
+                // Display
+                document.getElementById('rh').textContent = `${wx.rh}%`;
+                document.getElementById('temp').textContent = `${wx.temp}°C`;
+                document.getElementById('wind').textContent = `${wx.wind} m/s`;
+                document.getElementById('pressure').textContent = `${wx.pressure} hPa`;
+                document.getElementById('time').textContent = wx.timestamp;
+                
+                status.className = 'status ok';
+                status.textContent = '✅ CRYSTALLIZED';
+                telemetry.style.display = 'block';
+                
+                // Cache for Wendy
+                cacheData(wx);
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ FAILED: ${error.message}`;
+            }
         }
-        if (d.weather) {
-          var parts = [];
-          if (d.weather.temp_c && d.weather.temp_c !== '--') parts.push(d.weather.temp_c + '°C');
-          if (d.weather.rh_pct && d.weather.rh_pct !== '--') parts.push('RH' + d.weather.rh_pct + '%');
-          if (parts.length > 0) wxEl.textContent = parts.join(' ');
+        
+        function cacheData(wx) {
+            let cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            cache.unshift(wx);
+            cache = cache.slice(0, 10); // Keep last 10
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+            displayCache();
         }
-        if (d.position) {
-          posEl.textContent = d.position.lat.toFixed(4) + '°N ' + Math.abs(d.position.lon).toFixed(4) + '°W';
+        
+        function displayCache() {
+            const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const container = document.getElementById('cache-entries');
+            
+            if (cache.length === 0) {
+                container.textContent = 'No cached data';
+                return;
+            }
+            
+            container.innerHTML = cache.map(entry => 
+                `<div class="cache-entry">${entry.timestamp} | 💧${entry.rh}% | 🌡️${entry.temp}°C</div>`
+            ).join('');
         }
-      })
-      .catch(function() {
-        // Keep last known values; do NOT show scanning/loading/dashes
-      });
-  }
-
-  refresh();
-  setInterval(refresh, 900000);
-})();
-</script>
-
-</main>
+        
+        function refresh() {
+            fetchWeather();
+        }
+        
+        function exportData() {
+            const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const blob = new Blob([JSON.stringify(cache, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `aether_wx_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Initial fetch
+        fetchWeather();
+        displayCache();
+    </script>
 </body>
 </html>
