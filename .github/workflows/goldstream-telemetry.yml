@@ -26,13 +26,11 @@ jobs:
           from bs4 import BeautifulSoup
           from sgp4.api import Satrec, WGS72, jday
 
-          # === GOLDSTREAM MEADOW OBSERVER ===
           LAT = 48.4500
           LON = -123.5000
           ALT_KM = 0.015
           TERRAIN_MASK_DEG = 8.0
 
-          # === TARGET SATELLITES (NORAD IDs) ===
           TARGETS = {
               'ISS': '25544',
               'RADARSAT-2': '32393',
@@ -76,7 +74,6 @@ jobs:
               az = math.degrees(math.atan2(-top_e, top_s)) % 360.0
               return el, az, rng
 
-          # === FETCH LIVE TLEs ===
           tle_url = "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle"
           tle_map = {}
           try:
@@ -95,7 +92,6 @@ jobs:
           except Exception as e:
               print(f"TLE fetch error: {e}")
 
-          # === PROPAGATE ALL TARGETS ===
           now = datetime.datetime.now(datetime.timezone.utc)
           jd_now, fr_now = jday(now.year, now.month, now.day, now.hour, now.minute, now.second + now.microsecond / 1e6)
           visible = []
@@ -129,7 +125,6 @@ jobs:
           else:
               display_str = "NO SAT ABOVE 8°"
 
-          # === ENVIRONMENT CANADA WEATHER ===
           wx_url = "https://dd.weather.gc.ca/citypage_weather/xml/BC/s0000775_e.xml"
           temp, rh = '--', '--'
           try:
@@ -160,7 +155,6 @@ jobs:
           except Exception as e:
               print(f"Weather fetch error: {e}")
 
-          # === FALLBACK: Open-Meteo if Environment Canada fails ===
           if temp == '--' or rh == '--':
               try:
                   om = requests.get("https://api.open-meteo.com/v1/forecast?latitude=48.45&longitude=-123.5&current=relative_humidity_2m,temperature_2m&timezone=GMT", timeout=10).json()
@@ -172,7 +166,6 @@ jobs:
               except Exception as e2:
                   print(f"Open-Meteo fallback also failed: {e2}")
 
-          # === WRITE TELEMETRY ===
           ts = datetime.datetime.now(datetime.timezone.utc)
           telemetry = {
               "updated": ts.strftime('%Y-%m-%dT%H:%M:%S.') + f'{ts.microsecond // 1000:03d}Z',
