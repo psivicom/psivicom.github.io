@@ -248,16 +248,21 @@ footer {
 <div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:'IBM Plex Mono',monospace;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:0.05em;border-bottom:1px solid #00D4FF33">
   <span id="pulse-top" style="display:inline-block;width:7px;height:7px;background:#00D4FF;border-radius:50%;box-shadow:0 0 6px #00D4FF;animation:psivi-pulse 1s infinite;margin-right:6px;vertical-align:middle"></span>
   <span id="status-top">AETHER</span> — <time id="zulu-clock" datetime="" style="font-variant-numeric:tabular-nums">SYNCING...</time>
+  <span style="margin-left:12px;color:#38bdf8">● SAT</span><span id="sat-pass" style="margin-left:4px;color:#38bdf8;font-variant-numeric:tabular-nums">ISS --:--Z ↑--°</span>
+  <span style="margin-left:8px;color:#94a3b8">|</span>
+  <span style="margin-left:8px;color:#fbbf24">● WX</span><span id="ec-weather" style="margin-left:4px;color:#fbbf24;font-variant-numeric:tabular-nums">--°C RH--%</span>
+  <span style="margin-left:8px;color:#94a3b8">|</span>
+  <span style="margin-left:8px;color:#a78bfa">● POS</span><span id="gps-pos" style="margin-left:4px;color:#a78bfa;font-variant-numeric:tabular-nums">48.4500°N 123.5000°W</span>
 </div>
 <script>
 (function(){
-  const el = document.getElementById('zulu-clock');
+  const clockEl = document.getElementById('zulu-clock');
   function tick() {
     const now = new Date();
-    const iso = now.toISOString(); // 2026-11-21T00:00:24.916Z
+    const iso = now.toISOString();
     const display = iso.replace('T', ' ').replace(/(\.\d{3})Z$/, '$1 Z');
-    el.textContent = display;
-    el.setAttribute('datetime', iso);
+    clockEl.textContent = display;
+    clockEl.setAttribute('datetime', iso);
     requestAnimationFrame(tick);
   }
   tick();
@@ -439,6 +444,7 @@ footer {
   <span style="color:#80BFFF">│   ├── workflows/</span><br>
   <span style="color:#ffffff">│   │   ├── README.md</span><br>
   <span style="color:#ffffff">│   │   ├── dream-crystallizer.yml</span><br>
+  <span style="color:#ffffff">│   │   ├── goldstream-telemetry.yml</span><br>
   <span style="color:#ffffff">│   │   ├── nasa-power-apiary.yml</span><br>
   <span style="color:#ffffff">│   │   ├── sovereign_evolution.yml</span><br>
   <span style="color:#ffffff">│   │   ├── update-tree.yml</span><br>
@@ -473,6 +479,8 @@ footer {
   <span style="color:#ffffff">│   ├── LICENSE-CC-BY-SA-4.0.md</span><br>
   <span style="color:#ffffff">│   ├── LICENSE-EUPL-1.2.md</span><br>
   <span style="color:#ffffff">│   └── README.md</span><br>
+  <span style="color:#80BFFF">├── api/</span><br>
+  <span style="color:#ffffff">│   └── goldstream-telemetry.json</span><br>
   <span style="color:#80BFFF">├── archive/</span><br>
   <span style="color:#ffffff">│   └── README.md</span><br>
   <span style="color:#80BFFF">├── etc/</span><br>
@@ -1004,60 +1012,4 @@ footer {
   <span style="color:#ffffff">├── .gitignore</span><br>
   <span style="color:#ffffff">├── .wendy_dream.gmi</span><br>
   <span style="color:#ffffff">├── .wendy_manifest.gmi</span><br>
-  <span style="color:#ffffff">├── .wendy_state.json</span><br>
-  <span style="color:#ffffff">├── ACCESSIBILITY.md</span><br>
-  <span style="color:#ffffff">├── AGENTS.md</span><br>
-  <span style="color:#ffffff">├── AUTHOR.md</span><br>
-  <span style="color:#ffffff">├── CITATION.cff</span><br>
-  <span style="color:#ffffff">├── CNAME</span><br>
-  <span style="color:#ffffff">├── CODEOWNERS</span><br>
-  <span style="color:#ffffff">├── CODE_OF_CONDUCT.md</span><br>
-  <span style="color:#ffffff">├── CONTRIBUTING.md</span><br>
-  <span style="color:#ffffff">├── Cargo.toml</span><br>
-  <span style="color:#ffffff">├── DISCLAIMER.md</span><br>
-  <span style="color:#ffffff">├── GODMODE.c</span><br>
-  <span style="color:#ffffff">├── LICENSE</span><br>
-  <span style="color:#ffffff">├── MANIFESTO.md</span><br>
-  <span style="color:#ffffff">├── NOTICE.md</span><br>
-  <span style="color:#ffffff">├── OPEN_SCIENCE_POLICY.md</span><br>
-  <span style="color:#ffffff">├── POLICY.md</span><br>
-  <span style="color:#ffffff">├── PRIDE.gmi</span><br>
-  <span style="color:#ffffff">├── README.md</span><br>
-  <span style="color:#ffffff">├── REUSE.toml</span><br>
-  <span style="color:#ffffff">├── SECURITY.md</span><br>
-  <span style="color:#ffffff">├── SECURITY_PLAN.md</span><br>
-  <span style="color:#ffffff">├── SOVEREIGN_ARCHITECTURE_LAW.md</span><br>
-  <span style="color:#ffffff">├── TRUST_AND_PROVENANCE.md</span><br>
-  <span style="color:#ffffff">├── WENDY_HOMOICONIC_CORTEX.md</span><br>
-  <span style="color:#ffffff">├── codemeta.json</span><br>
-  <span style="color:#80FF80">├── gemini_client.py</span><br>
-  <span style="color:#80FF80">├── genesis.sh</span><br>
-  <span style="color:#ffffff">├── index.html</span><br>
-  <span style="color:#80FF80">├── main.py</span><br>
-  <span style="color:#ffffff">├── make</span><br>
-  <span style="color:#ffffff">├── openscience.html</span><br>
-  <span style="color:#ffffff">├── opu.html</span><br>
-  <span style="color:#ffffff">├── opu2.html</span><br>
-  <span style="color:#ffffff">├── requirements-core.txt</span><br>
-  <span style="color:#ffffff">├── requirements.txt</span><br>
-  <span style="color:#ffffff">├── robots.txt</span><br>
-  <span style="color:#80FF80">├── run_real_science_benchmark.py</span><br>
-  <span style="color:#ffffff">├── sitemap.xml</span><br>
-  <span style="color:#ffffff">└── wendy-console.html</span><br>
-  <span style="color:#ffffff"></span><br>
-</div>
-<!-- AUTO_TREE_END -->
-
-</section>
-
-<footer>
-  <div>© 2026 Louis-Philippe Audette · PSIVI.COM · Langford, BC</div>
-  <div style="text-align:right">
-    <a href="./wendy-console.html">Access the WENDY Symbolic Console</a>
-  </div>
-</footer>
-
-</div>
-</main>
-</body>
-</html>
+  <span style="color:#ffffff">├── .wendy
