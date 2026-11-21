@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T10:00:24.603Z",
+  "updated": "2026-11-21T10:20:45.187Z",
   "position": {
     "lat": 48.45,
     "lon": -123.5,
@@ -7,16 +7,23 @@
     "terrain_mask_deg": 8.0
   },
   "weather": {
-    "temp_c": "--",
-    "rh_pct": "--"
+    "temp_c": "4.9",
+    "rh_pct": "97"
   },
   "next_sat_pass": {
-    "display": "NO SAT ABOVE 8\u00b0",
-    "sat": "NONE",
-    "el": 0,
-    "az": 0,
-    "rng_km": 0
+    "display": "SENTINEL-2B \u219134.1\u00b0 AZ7.6\u00b0 (1 vis)",
+    "sat": "SENTINEL-2B",
+    "el": 34.1,
+    "az": 7.6,
+    "rng_km": 38255.9
   },
-  "all_visible": [],
-  "visible_count": 0
+  "all_visible": [
+    {
+      "sat": "SENTINEL-2B",
+      "el": 34.1,
+      "az": 7.6,
+      "rng_km": 38255.9
+    }
+  ],
+  "visible_count": 1
 }
