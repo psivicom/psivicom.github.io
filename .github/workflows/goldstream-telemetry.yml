@@ -1,0 +1,61 @@
+name: Goldstream Integrated Telemetry
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  fuse-telemetry:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install sgp4 requests beautifulsoup4 lxml
+
+      - name: Fetch & Fuse Telemetry
+        run: |
+          python3 << 'PYEOF'
+          import json, datetime, requests
+          from bs4 import BeautifulSoup
+
+          # === 1. GPS POSITION (Goldstream Apiary) ===
+          LAT, LON = 48.4500, -123.5000
+
+          # === 2. ENVIRONMENT CANADA WEATHER ===
+          wx_url = "https://dd.weather.gc.ca/citypage_weather/xml/BC/s0000775_e.xml"
+          try:
+              wx = requests.get(wx_url, timeout=10).text
+              soup = BeautifulSoup(wx, 'xml')
+              temp = soup.find('temperature').text if soup.find('temperature') else '--'
+              rh = soup.find('relative_humidity').text if soup.find('relative_humidity') else '--'
+          except Exception:
+              temp, rh = '--', '--'
+
+          # === 3. SATELLITE PASSES (Simplified next-pass placeholder) ===
+          # Full SGP4 propagation can be added here using TLEs from Celestrak
+          next_pass = {"sat": "ISS", "aos": "--:--Z", "el": 0}
+
+          # === FUSE & WRITE ===
+          telemetry = {
+              "updated": datetime.datetime.utcnow().isoformat() + "Z",
+              "position": {"lat": LAT, "lon": LON},
+              "weather": {"temp_c": temp, "rh_pct": rh},
+              "next_sat_pass": next_pass
+          }
+
+          with open('api/goldstream-telemetry.json', 'w') as f:
+              json.dump(telemetry, f)
+          PYEOF
+
+      - name: Commit Telemetry
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p api
+          git add api/goldstream-telemetry.json
+          git diff --staged --quiet || git commit -m "telemetry: goldstream fused wx+sat+pos [skip ci]"
+          git push
