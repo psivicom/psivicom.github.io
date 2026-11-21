@@ -1,4 +1,4 @@
-name: Sovereign Volunteer Ingest
+name: 📥 Sovereign Volunteer Ingest
 on:
   pull_request_target:
     types: [opened, synchronize]
