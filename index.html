@@ -553,122 +553,68 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
 <script>
-  // === CONSTANTS ===
-  const LAT = 48.4500;
-  const LON = -123.5000;
-  const ALT_KM = 0.05;
-  const ELEVATION_THRESHOLD = 8;
-  const OBSERVER_GD = { latitude: LAT * Math.PI / 180, longitude: LON * Math.PI / 180, height: ALT_KM };
-
-  const SATELLITE_CATALOG = {
-    'RCM-1': 44366, 'RCM-2': 44367, 'RCM-3': 44368,
-    'RADARSAT-2': 32393,
-    'Landsat-8': 39084, 'Landsat-9': 49260,
-    'Sentinel-2A': 40697, 'Sentinel-2B': 42063,
-    'Terra-MODIS': 25994, 'Aqua-MODIS': 27424,
-    'Suomi-VIIRS': 37849
-  };
-
-  let tleCache = {};
-  let tleLastFetch = 0;
-  const TLE_CACHE_MS = 3600000;
-
-  // === ZULU CLOCK ===
+  // === ZULU CLOCK WITH MILLISECOND PRECISION ===
   function updateZuluClock() {
     const now = new Date();
     const zulu = now.toISOString().replace('T', ' ').substring(0, 23) + 'Z';
     document.getElementById('zulu-clock').textContent = zulu;
   }
 
-  // === FETCH TLE DATA ===
-  async function fetchTLEData() {
-    const now = Date.now();
-    if (now - tleLastFetch < TLE_CACHE_MS && Object.keys(tleCache).length > 0) return tleCache;
-
-    try {
-      const noradIds = Object.values(SATELLITE_CATALOG).join(',');
-      const url = `https://celestrak.org/NORAD/elements/gp.php?TLE=${noradIds}&FORMAT=JSON`;
-      const r = await fetch(url);
-      if (!r.ok) throw new Error('TLE fetch failed');
-      const data = await r.json();
-      
-      tleCache = {};
-      data.forEach(sat => {
-        const name = Object.keys(SATELLITE_CATALOG).find(k => SATELLITE_CATALOG[k] === sat.NORAD_CAT_ID);
-        if (name) {
-          tleCache[name] = satellite.twoline2satrec(sat.TLE_LINE1, sat.TLE_LINE2);
-        }
-      });
-      tleLastFetch = now;
-      return tleCache;
-    } catch (e) {
-      console.warn('TLE fetch failed:', e);
-      return tleCache;
-    }
-  }
-
-  // === CALCULATE SATELLITE POSITIONS ===
-  function calculateSatellitePositions(satrecs) {
-    const now = new Date();
-    const positions = [];
-
-    for (const [name, satrec] of Object.entries(satrecs)) {
-      try {
-        const positionAndVelocity = satellite.propagate(satrec, now);
-        if (!positionAndVelocity.position) continue;
-
-        const gmst = satellite.gstime(now);
-        const positionEcf = satellite.eciToEcf(positionAndVelocity.position, gmst);
-        const observerEcf = satellite.geodeticToEcf(OBSERVER_GD);
-        const lookAngles = satellite.ecfToLookAngles(OBSERVER_GD, positionEcf);
-        
-        const elevation = satellite.radiansToDegrees(lookAngles.elevation);
-
-        if (elevation >= ELEVATION_THRESHOLD) {
-          positions.push({ name, elevation: elevation.toFixed(1) });
-        }
-      } catch (e) { /* skip failed propagation */ }
-    }
-
-    positions.sort((a, b) => b.elevation - a.elevation);
-    return positions;
-  }
-
-  // === UPDATE AETHER HEADER ===
+  // === AETHER TELEMETRY — USES YOUR GITHUB ACTION JSON ===
   async function updateAetherTop() {
     const el = document.getElementById('live-top');
     
-    // Weather fetch
+    // PRIMARY: Fetch from your GitHub Action's goldstream-telemetry.json
+    let satHTML = 'SAT ∅';
     let wxHTML = 'WX ∅';
+    
+    try {
+      const r = await fetch('/api/goldstream-telemetry.json?t=' + Date.now());
+      if (r.ok) {
+        const data = await r.json();
+        
+        // Satellite from your action
+        if (data.next_sat_pass && data.next_sat_pass.sat && data.next_sat_pass.sat !== 'NONE') {
+          const name = data.next_sat_pass.sat;
+          const el = data.next_sat_pass.el;
+          const count = data.visible_count || 1;
+          satHTML = `SAT ${name} ↑${el}° (${count} vis)`;
+        } else if (data.next_sat_pass) {
+          satHTML = 'SAT ∅<8°';
+        }
+        
+        // Weather from your action (Environment Canada)
+        if (data.weather) {
+          const temp = data.weather.temp_c;
+          const rh = data.weather.rh_pct;
+          if (temp && temp !== '--') {
+            wxHTML = `WX 💧${rh || '?'}% 🌡️${temp}°C`;
+          }
+        }
+        
+        if (el) {
+          el.innerHTML = `<span style="color:#00FF9D">${satHTML}</span> | <span style="color:#00FF9D">${wxHTML}</span>`;
+        }
+        return; // Success, exit
+      }
+    } catch (e) {
+      console.warn('Telemetry JSON not ready yet, falling back to Open-Meteo');
+    }
+    
+    // FALLBACK: Open-Meteo (works before your GitHub Action runs the first time)
     try {
       const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.45&longitude=-123.5&current=relative_humidity_2m,temperature_2m&timezone=GMT');
       if (r.ok) {
         const d = await r.json();
         const rh = d.current.relative_humidity_2m;
         const temp = d.current.temperature_2m;
-        if (rh !== undefined) wxHTML = `WX 💧${rh}% 🌡️${temp}°C`;
-      }
-    } catch (e) {}
-
-    // Satellite tracking
-    let satHTML = 'SAT ∅';
-    try {
-      const satrecs = await fetchTLEData();
-      if (Object.keys(satrecs).length > 0) {
-        const visible = calculateSatellitePositions(satrecs);
-        if (visible.length > 0) {
-          const names = visible.slice(0, 3).map(s => s.name).join(', ');
-          satHTML = `SAT ${visible.length}↑8° <span style="color:#00FF9D;font-size:10px;">${names}</span>`;
-        } else {
-          satHTML = 'SAT ∅<8°';
+        if (rh !== undefined) {
+          wxHTML = `WX 💧${rh}% 🌡️${temp}°C`;
         }
       }
-    } catch (e) {
-      satHTML = 'SAT ∅';
-    }
-
+    } catch (e) {}
+    
     if (el) {
       el.innerHTML = `<span style="color:#00FF9D">${satHTML}</span> | <span style="color:#00FF9D">${wxHTML}</span>`;
     }
@@ -678,7 +624,7 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
   updateZuluClock();
   setInterval(updateZuluClock, 100);
   updateAetherTop();
-  setInterval(updateAetherTop, 30000);
+  setInterval(updateAetherTop, 60000); // Every 60 seconds (action runs every 15 min)
 </script>
 </body>
 </html>
