@@ -1,1 +1,22 @@
-{"updated": "2026-11-21T03:09:46.034Z", "position": {"lat": 48.45, "lon": -123.5, "alt_km": 0.015, "terrain_mask_deg": 8.0}, "weather": {"temp_c": "--", "rh_pct": "--"}, "next_sat_pass": {"display": "NO VIS \u2191--\u00b0", "sat": "NONE", "el": 0, "az": 0, "rng_km": 0}, "all_visible": [], "visible_count": 0}
+{
+  "updated": "2026-11-21T03:18:45.615Z",
+  "position": {
+    "lat": 48.45,
+    "lon": -123.5,
+    "alt_km": 0.015,
+    "terrain_mask_deg": 8.0
+  },
+  "weather": {
+    "temp_c": "--",
+    "rh_pct": "--"
+  },
+  "next_sat_pass": {
+    "display": "NO SAT ABOVE 8\u00b0",
+    "sat": "NONE",
+    "el": 0,
+    "az": 0,
+    "rng_km": 0
+  },
+  "all_visible": [],
+  "visible_count": 0
+}
