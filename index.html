@@ -238,10 +238,21 @@ footer {
           onmouseout="this.style.borderColor='transparent';this.style.background='transparent';"
           title="Tap to copy Zulu time">2026-11-21 05:00:00.000Z</span>
     <span style="color:#00D4FF55;">|</span>
-    <span>LAT <span id="lat-val">48.4500</span>°N</span>
-    <span style="color:#00D4FF55;">🇨🇦</span>
-    <span>LON <span id="lon-val">-123.5000</span>°W</span>
-  </div>
+    <span onclick="navigator.clipboard.writeText('48.4500°N').then(()=>{this.style.color='#00FF9D';this.style.textShadow='0 0 8px #00FF9D';setTimeout(()=>{this.style.color='#00D4FF';this.style.textShadow='none';},800);})" 
+          style="cursor:pointer;user-select:all;transition:all 0.2s;padding:2px 6px;border:1px solid transparent;border-radius:4px;"
+          onmouseover="this.style.borderColor='#00D4FF33';this.style.background='rgba(0,212,255,0.1)';"
+          onmouseout="this.style.borderColor='transparent';this.style.background='transparent';"
+          title="Tap to copy LAT">LAT <span id="lat-val">48.4500</span>°N</span>
+
+     <span style="color:#00D4FF55;">🇨🇦</span>
+
+     <span onclick="navigator.clipboard.writeText('-123.5000°W').then(()=>{this.style.color='#00FF9D';this.style.textShadow='0 0 8px #00FF9D';setTimeout(()=>{this.style.color='#00D4FF';this.style.textShadow='none';},800);})"
+           style="cursor:pointer;user-select:all;transition:all 0.2s;padding:2px 6px;border:1px solid transparent;border-radius:4px;"
+           onmouseover="this.style.borderColor='#00D4FF33';this.style.background='rgba(0,212,255,0.1)';"
+           onmouseout="this.style.borderColor='transparent';this.style.background='transparent';"
+           title="Tap to copy LON">LON <span id="lon-val">-123.5000</span>°W</span>
+
+    </div>
   
 </div>
 
