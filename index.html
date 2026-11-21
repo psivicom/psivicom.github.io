@@ -245,10 +245,24 @@ footer {
 
 <body>
 <!-- TOP STICKY AETHER LIVE -->
-<div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:0.05em;border-bottom:1px solid #00D4FF33">
+<div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:'IBM Plex Mono',monospace;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:0.05em;border-bottom:1px solid #00D4FF33">
   <span id="pulse-top" style="display:inline-block;width:7px;height:7px;background:#00D4FF;border-radius:50%;box-shadow:0 0 6px #00D4FF;animation:psivi-pulse 1s infinite;margin-right:6px;vertical-align:middle"></span>
-  <span id="status-top">AETHER</span> — <span id="live-top">loading...</span>
+  <span id="status-top">AETHER</span> — <time id="zulu-clock" datetime="" style="font-variant-numeric:tabular-nums">SYNCING...</time>
 </div>
+<script>
+(function(){
+  const el = document.getElementById('zulu-clock');
+  function tick() {
+    const now = new Date();
+    const iso = now.toISOString(); // 2026-11-21T00:00:24.916Z
+    const display = iso.replace('T', ' ').replace(/(\.\d{3})Z$/, '$1 Z');
+    el.textContent = display;
+    el.setAttribute('datetime', iso);
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+</script>
 
 <div class="container">
 <header class="header">
