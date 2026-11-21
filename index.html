@@ -220,18 +220,38 @@ footer {
 </head>
 
 <body>
-<!-- TOP STICKY AETHER LIVE -->
-<div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:monospace;text-align:center;padding:9px 12px;font-size:12px;letter-spacing:0.05em;border-bottom:1px solid #00D4FF33">
-  <span id="pulse-top" style="display:inline-block;width:7px;height:7px;background:#00D4FF;border-radius:50%;box-shadow:0 0 6px #00D4FF;animation:psivi-pulse 1s infinite;margin-right:6px;vertical-align:middle"></span>
-  <span id="status-top">AETHER</span> — <span id="live-top">loading...</span>
+<!-- TOP STICKY AETHER LIVE - TWO LINES -->
+<div id="psivi-top" style="position:sticky;top:0;z-index:9999;background:#0A1931;color:#00D4FF;font-family:monospace;font-size:12px;letter-spacing:0.05em;border-bottom:1px solid #00D4FF33;display:flex;flex-direction:column;align-items:center;padding:8px 12px;gap:4px;">
+  
+  <!-- LINE 1: TELEMETRY -->
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;">
+    <span id="pulse-top" style="display:inline-block;width:7px;height:7px;background:#00D4FF;border-radius:50%;box-shadow:0 0 6px #00D4FF;animation:psivi-pulse 1s infinite;"></span>
+    <span id="status-top">AETHER</span> — <span id="live-top">loading...</span>
+  </div>
+  
+  <!-- LINE 2: ZULU CLOCK + LAT/LONG -->
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <span id="zulu-clock" 
+          onclick="navigator.clipboard.writeText(this.textContent).then(()=>{this.style.color='#00FF9D';this.style.textShadow='0 0 8px #00FF9D';setTimeout(()=>{this.style.color='#00D4FF';this.style.textShadow='none';},800);})" 
+          style="cursor:pointer;user-select:all;color:#00D4FF;transition:all 0.2s;padding:2px 6px;border:1px solid transparent;border-radius:4px;"
+          onmouseover="this.style.borderColor='#00D4FF33';this.style.background='rgba(0,212,255,0.1)';"
+          onmouseout="this.style.borderColor='transparent';this.style.background='transparent';"
+          title="Tap to copy Zulu time">2026-11-21 05:00:00.000Z</span>
+    <span style="color:#00D4FF55;">|</span>
+    <span>📍 LAT <span id="lat-val">48.4500</span>°N</span>
+    <span style="color:#00D4FF55;">|</span>
+    <span>LON <span id="lon-val">-123.5000</span>°W</span>
+  </div>
+  
 </div>
+
 <div class="container">
 <header class="header">
 <div class="kicker">PSIVI.COM — Open Science Hub — Excellence Edition — Langford, BC — Goldstream — NASA Open Science 101 Certified</div>
-<!-- EMPEROR '<3' -->
 <h1 class="h1">Louis-Philippe<br>Audette<sup style="font-size:0.45em; vertical-align:super; color:#002FA7; margin-left:3px; letter-spacing:-1px;">♠𓆃</sup></h1>
 <div class="sub">Open Science Researcher · Pollinator Ecology · Earth Observation<br>Goldstream Watershed, Langford, BC<br>Canada V9B 4R3 · Vancouver Island<br>
 Personal site → <a href="https://psivi.com" style="text-decoration:underline">psivi.com</a></div>
+
 <!-- CONTACT INFO -->
 <div style="margin-top:24px; padding:24px; background:linear-gradient(135deg, rgba(10, 25, 49, 0.03) 0%, rgba(0, 47, 167, 0.03) 100%); border:1px solid #e4e4e7; border-radius:12px;">
   <div style="display:flex; flex-wrap:wrap; gap:20px 32px; align-items:center;">
@@ -309,7 +329,6 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
   </div>
 </div>
 
-
 <!-- BADGES -->
 <div class="badges">
 <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12"><img src="https://img.shields.io/badge/License-EUPL%201.2-blue.svg" alt="License EUPL 1.2"></a>
@@ -326,6 +345,7 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
 <a href="#"><img src="https://img.shields.io/badge/AI-Human%20Reviewed-orange.svg" alt="AI Human Reviewed"></a>
 <a href="#"><img src="https://img.shields.io/badge/ORCID-Verified-a6ce39.svg" alt="ORCID"></a>
 </div>
+
 <nav class="nav mono" aria-label="Primary">
 <a href="#about">About</a>
 <a href="#research">Research</a>
@@ -338,6 +358,7 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
 <a href="#contact">Contact</a>
 </nav>
 </header>
+
 <main>
 <section id="about" class="section">
 <div class="section-head"><h2 class="mono">01 — ABOUT</h2><div class="line"></div></div>
@@ -533,6 +554,15 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
 </div>
 
 <script>
+  // ZULU CLOCK WITH MILLISECOND PRECISION
+  function updateZuluClock() {
+    const now = new Date();
+    const zulu = now.toISOString().replace('T', ' ').substring(0, 23) + 'Z';
+    document.getElementById('zulu-clock').textContent = zulu;
+  }
+  updateZuluClock();
+  setInterval(updateZuluClock, 100);
+
   // AETHER LIVE TELEMETRY FOR HEADER
   async function updateAetherTop() {
     try {
@@ -543,17 +573,17 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
       const temp = d.current.temperature_2m;
       const el = document.getElementById('live-top');
       if (el && rh !== undefined) {
-        el.innerHTML = `<span style="color:#00FF9D">SAT</span> ABOVE 8° | <span style="color:#00FF9D">WX</span> 💧${rh}% 🌡️${temp}°C | <span style="color:#00FF9D">POS</span> 48.4500°N 123.5000°W`;
+        el.innerHTML = `<span style="color:#00FF9D">SAT</span> ABOVE 8° | <span style="color:#00FF9D">WX</span> 💧${rh}% 🌡️${temp}°C`;
       } else if (el) {
-        el.innerHTML = `WX ∅ | POS 48.4500°N 123.5000°W`;
+        el.innerHTML = `WX ∅`;
       }
     } catch (e) {
       const el = document.getElementById('live-top');
-      if (el) el.innerHTML = `WX ∅ | POS 48.4500°N 123.5000°W`;
+      if (el) el.innerHTML = `WX ∅`;
     }
   }
   updateAetherTop();
-  setInterval(updateAetherTop, 300000); // Refresh every 5m
+  setInterval(updateAetherTop, 300000);
 </script>
 </body>
 </html>
