@@ -16,6 +16,9 @@ jobs:
       - name: Install dependencies
         run: pip install sgp4 requests beautifulsoup4 lxml
 
+      - name: Ensure API directory exists
+        run: mkdir -p api
+
       - name: Fetch & Fuse Telemetry
         run: |
           python3 << 'PYEOF'
@@ -29,19 +32,20 @@ jobs:
           wx_url = "https://dd.weather.gc.ca/citypage_weather/xml/BC/s0000775_e.xml"
           try:
               wx = requests.get(wx_url, timeout=10).text
-              soup = BeautifulSoup(wx, 'xml')
-              temp = soup.find('temperature').text if soup.find('temperature') else '--'
-              rh = soup.find('relative_humidity').text if soup.find('relative_humidity') else '--'
+              soup = BeautifulSoup(wx, 'html.parser')
+              temp_el = soup.find('temperature')
+              rh_el = soup.find('relative_humidity')
+              temp = temp_el.text if temp_el else '--'
+              rh = rh_el.text if rh_el else '--'
           except Exception:
               temp, rh = '--', '--'
 
-          # === 3. SATELLITE PASSES (Simplified next-pass placeholder) ===
-          # Full SGP4 propagation can be added here using TLEs from Celestrak
+          # === 3. SATELLITE PASSES (Placeholder until full SGP4 integrated) ===
           next_pass = {"sat": "ISS", "aos": "--:--Z", "el": 0}
 
           # === FUSE & WRITE ===
           telemetry = {
-              "updated": datetime.datetime.utcnow().isoformat() + "Z",
+              "updated": datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z'),
               "position": {"lat": LAT, "lon": LON},
               "weather": {"temp_c": temp, "rh_pct": rh},
               "next_sat_pass": next_pass
@@ -55,7 +59,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          mkdir -p api
           git add api/goldstream-telemetry.json
           git diff --staged --quiet || git commit -m "telemetry: goldstream fused wx+sat+pos [skip ci]"
+          git pull --rebase origin main || true
           git push
