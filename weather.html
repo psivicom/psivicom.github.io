@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER Weather Telemetry</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            font-size: 24px;
+            margin-bottom: 2rem;
+            color: #0ff;
+        }
+        .telemetry {
+            background: #1a1a1a;
+            border: 2px solid #0f0;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 18px;
+            border-bottom: 1px solid #333;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-size: 24px;
+        }
+        .value {
+            font-weight: bold;
+        }
+        .status {
+            padding: 1rem;
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 1rem;
+        }
+        .status.ok {
+            background: #0f0;
+            color: #000;
+        }
+        .status.error {
+            background: #f00;
+            color: #fff;
+        }
+        .status.loading {
+            background: #ff0;
+            color: #000;
+        }
+        .cache {
+            background: #1a1a1a;
+            border: 1px solid #555;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+        .cache h3 {
+            color: #0ff;
+            margin-bottom: 1rem;
+        }
+        .cache-entry {
+            font-size: 14px;
+            color: #888;
+            padding: 0.25rem 0;
+        }
+        button {
+            background: #0ff;
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            margin-top: 1rem;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0aa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">🛰️ AETHER TELEMETRY</div>
+        
+        <div id="status" class="status loading">⏳ CRYSTALLIZING...</div>
+        
+        <div id="telemetry" class="telemetry" style="display:none;">
+            <div class="row">
+                <span class="label">💧</span>
+                <span class="value" id="rh">--</span>
+            </div>
+            <div class="row">
+                <span class="label">🌡️</span>
+                <span class="value" id="temp">--</span>
+            </div>
+            <div class="row">
+                <span class="label">🌬️</span>
+                <span class="value" id="wind">--</span>
+            </div>
+            <div class="row">
+                <span class="label">⏲️</span>
+                <span class="value" id="pressure">--</span>
+            </div>
+            <div class="row">
+                <span class="label">📍</span>
+                <span class="value" id="pos">48.45°N 123.50°W</span>
+            </div>
+            <div class="row">
+                <span class="label">⏱️</span>
+                <span class="value" id="time">--</span>
+            </div>
+        </div>
+        
+        <button onclick="refresh()">🔄 REFRESH</button>
+        <button onclick="exportData()">💾 EXPORT FOR WENDY</button>
+        
+        <div class="cache">
+            <h3>💾 WENDY CACHE (localStorage)</h3>
+            <div id="cache-entries">No cached data</div>
+        </div>
+    </div>
+
+    <script>
+        const COORDS = { lat: 48.45, lon: -123.5 };
+        const STORAGE_KEY = 'aether_wx_cache';
+        
+        async function fetchWeather() {
+            const status = document.getElementById('status');
+            const telemetry = document.getElementById('telemetry');
+            
+            status.className = 'status loading';
+            status.textContent = '⏳ CRYSTALLIZING...';
+            telemetry.style.display = 'none';
+            
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${COORDS.lat}&longitude=${COORDS.lon}&current=relative_humidity_2m,temperature_2m,wind_speed_10m,pressure_msl&timezone=GMT`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                
+                const wx = {
+                    timestamp: data.current.time + 'Z',
+                    rh: data.current.relative_humidity_2m,
+                    temp: data.current.temperature_2m,
+                    wind: (data.current.wind_speed_10m / 3.6).toFixed(1),
+                    pressure: data.current.pressure_msl,
+                    lat: COORDS.lat,
+                    lon: COORDS.lon
+                };
+                
+                // Display
+                document.getElementById('rh').textContent = `${wx.rh}%`;
+                document.getElementById('temp').textContent = `${wx.temp}°C`;
+                document.getElementById('wind').textContent = `${wx.wind} m/s`;
+                document.getElementById('pressure').textContent = `${wx.pressure} hPa`;
+                document.getElementById('time').textContent = wx.timestamp;
+                
+                status.className = 'status ok';
+                status.textContent = '✅ CRYSTALLIZED';
+                telemetry.style.display = 'block';
+                
+                // Cache for Wendy
+                cacheData(wx);
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ FAILED: ${error.message}`;
+            }
+        }
+        
+        function cacheData(wx) {
+            let cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            cache.unshift(wx);
+            cache = cache.slice(0, 10); // Keep last 10
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+            displayCache();
+        }
+        
+        function displayCache() {
+            const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const container = document.getElementById('cache-entries');
+            
+            if (cache.length === 0) {
+                container.textContent = 'No cached data';
+                return;
+            }
+            
+            container.innerHTML = cache.map(entry => 
+                `<div class="cache-entry">${entry.timestamp} | 💧${entry.rh}% | 🌡️${entry.temp}°C</div>`
+            ).join('');
+        }
+        
+        function refresh() {
+            fetchWeather();
+        }
+        
+        function exportData() {
+            const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const blob = new Blob([JSON.stringify(cache, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `aether_wx_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Initial fetch
+        fetchWeather();
+        displayCache();
+    </script>
+</body>
+</html>
