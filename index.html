@@ -553,37 +553,132 @@ Personal site → <a href="https://psivi.com" style="text-decoration:underline">
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
 <script>
-  // ZULU CLOCK WITH MILLISECOND PRECISION
+  // === CONSTANTS ===
+  const LAT = 48.4500;
+  const LON = -123.5000;
+  const ALT_KM = 0.05;
+  const ELEVATION_THRESHOLD = 8;
+  const OBSERVER_GD = { latitude: LAT * Math.PI / 180, longitude: LON * Math.PI / 180, height: ALT_KM };
+
+  const SATELLITE_CATALOG = {
+    'RCM-1': 44366, 'RCM-2': 44367, 'RCM-3': 44368,
+    'RADARSAT-2': 32393,
+    'Landsat-8': 39084, 'Landsat-9': 49260,
+    'Sentinel-2A': 40697, 'Sentinel-2B': 42063,
+    'Terra-MODIS': 25994, 'Aqua-MODIS': 27424,
+    'Suomi-VIIRS': 37849
+  };
+
+  let tleCache = {};
+  let tleLastFetch = 0;
+  const TLE_CACHE_MS = 3600000;
+
+  // === ZULU CLOCK ===
   function updateZuluClock() {
     const now = new Date();
     const zulu = now.toISOString().replace('T', ' ').substring(0, 23) + 'Z';
     document.getElementById('zulu-clock').textContent = zulu;
   }
-  updateZuluClock();
-  setInterval(updateZuluClock, 100);
 
-  // AETHER LIVE TELEMETRY FOR HEADER
-  async function updateAetherTop() {
+  // === FETCH TLE DATA ===
+  async function fetchTLEData() {
+    const now = Date.now();
+    if (now - tleLastFetch < TLE_CACHE_MS && Object.keys(tleCache).length > 0) return tleCache;
+
     try {
-      const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.45&longitude=-123.5&current=relative_humidity_2m,temperature_2m&timezone=GMT');
-      if (!r.ok) throw new Error('Fetch failed');
-      const d = await r.json();
-      const rh = d.current.relative_humidity_2m;
-      const temp = d.current.temperature_2m;
-      const el = document.getElementById('live-top');
-      if (el && rh !== undefined) {
-        el.innerHTML = `<span style="color:#00FF9D">SAT</span> ABOVE 8° | <span style="color:#00FF9D">WX</span> 💧${rh}% 🌡️${temp}°C`;
-      } else if (el) {
-        el.innerHTML = `WX ∅`;
-      }
+      const noradIds = Object.values(SATELLITE_CATALOG).join(',');
+      const url = `https://celestrak.org/NORAD/elements/gp.php?TLE=${noradIds}&FORMAT=JSON`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('TLE fetch failed');
+      const data = await r.json();
+      
+      tleCache = {};
+      data.forEach(sat => {
+        const name = Object.keys(SATELLITE_CATALOG).find(k => SATELLITE_CATALOG[k] === sat.NORAD_CAT_ID);
+        if (name) {
+          tleCache[name] = satellite.twoline2satrec(sat.TLE_LINE1, sat.TLE_LINE2);
+        }
+      });
+      tleLastFetch = now;
+      return tleCache;
     } catch (e) {
-      const el = document.getElementById('live-top');
-      if (el) el.innerHTML = `WX ∅`;
+      console.warn('TLE fetch failed:', e);
+      return tleCache;
     }
   }
+
+  // === CALCULATE SATELLITE POSITIONS ===
+  function calculateSatellitePositions(satrecs) {
+    const now = new Date();
+    const positions = [];
+
+    for (const [name, satrec] of Object.entries(satrecs)) {
+      try {
+        const positionAndVelocity = satellite.propagate(satrec, now);
+        if (!positionAndVelocity.position) continue;
+
+        const gmst = satellite.gstime(now);
+        const positionEcf = satellite.eciToEcf(positionAndVelocity.position, gmst);
+        const observerEcf = satellite.geodeticToEcf(OBSERVER_GD);
+        const lookAngles = satellite.ecfToLookAngles(OBSERVER_GD, positionEcf);
+        
+        const elevation = satellite.radiansToDegrees(lookAngles.elevation);
+
+        if (elevation >= ELEVATION_THRESHOLD) {
+          positions.push({ name, elevation: elevation.toFixed(1) });
+        }
+      } catch (e) { /* skip failed propagation */ }
+    }
+
+    positions.sort((a, b) => b.elevation - a.elevation);
+    return positions;
+  }
+
+  // === UPDATE AETHER HEADER ===
+  async function updateAetherTop() {
+    const el = document.getElementById('live-top');
+    
+    // Weather fetch
+    let wxHTML = 'WX ∅';
+    try {
+      const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.45&longitude=-123.5&current=relative_humidity_2m,temperature_2m&timezone=GMT');
+      if (r.ok) {
+        const d = await r.json();
+        const rh = d.current.relative_humidity_2m;
+        const temp = d.current.temperature_2m;
+        if (rh !== undefined) wxHTML = `WX 💧${rh}% 🌡️${temp}°C`;
+      }
+    } catch (e) {}
+
+    // Satellite tracking
+    let satHTML = 'SAT ∅';
+    try {
+      const satrecs = await fetchTLEData();
+      if (Object.keys(satrecs).length > 0) {
+        const visible = calculateSatellitePositions(satrecs);
+        if (visible.length > 0) {
+          const names = visible.slice(0, 3).map(s => s.name).join(', ');
+          satHTML = `SAT ${visible.length}↑8° <span style="color:#00FF9D;font-size:10px;">${names}</span>`;
+        } else {
+          satHTML = 'SAT ∅<8°';
+        }
+      }
+    } catch (e) {
+      satHTML = 'SAT ∅';
+    }
+
+    if (el) {
+      el.innerHTML = `<span style="color:#00FF9D">${satHTML}</span> | <span style="color:#00FF9D">${wxHTML}</span>`;
+    }
+  }
+
+  // === INITIALIZE ===
+  updateZuluClock();
+  setInterval(updateZuluClock, 100);
   updateAetherTop();
-  setInterval(updateAetherTop, 300000);
+  setInterval(updateAetherTop, 30000);
 </script>
 </body>
 </html>
