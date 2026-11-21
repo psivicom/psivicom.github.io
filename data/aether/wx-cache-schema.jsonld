@@ -1,0 +1,42 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "aether": "https://psivicom.github.io/ns/aether#",
+    "qudt": "http://qudt.org/schema/qudt/"
+  },
+  "@type": "Dataset",
+  "name": "AETHER Apiary Atmospheric Telemetry",
+  "description": "Browser-fetched open weather data for biological stigmergy",
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "creator": {
+    "@type": "Organization",
+    "name": "PSIVICOM Sovereign Architecture"
+  },
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "relative_humidity_2m",
+      "unitCode": "PERCENT",
+      "description": "Primary gradient for wax plasticity and brood viability"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "wind_speed_10m",
+      "unitCode": "M-SEC",
+      "description": "Secondary mechanical vector for pheromone dispersion"
+    }
+  ],
+  "spatialCoverage": {
+    "@type": "Place",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 48.4500,
+      "longitude": -123.5000
+    }
+  },
+  "temporalResolution": "PT1H",
+  "distribution": {
+    "@type": "DataDownload",
+    "encodingFormat": "application/ld+json"
+  }
+}
