@@ -1,5 +1,5 @@
 {
-  "last_heartbeat": "2026-11-22T08:00:07.675Z",
+  "last_heartbeat": "2026-11-22T17:10:21.869Z",
   "workflows": {
     "evolution": {
       "last_run": "2026-11-11T05:30:00.000Z",
@@ -23,7 +23,7 @@
       "self_healed": false
     },
     "orchestrator": {
-      "last_run": "2026-11-22T08:00:07.675Z",
+      "last_run": "2026-11-22T17:10:21.869Z",
       "status": "decided",
       "details": "trigger_self_heal"
     }
