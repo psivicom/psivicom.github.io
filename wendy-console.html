@@ -27,10 +27,27 @@
             border-radius: 4px;
             margin-top: 2rem;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+            min-height: 300px;
+            overflow-y: auto;
         }
         .prompt { color: var(--accent); }
         .info { color: #888; }
         .timestamp { color: var(--warning); }
+        
+        /* ADDITIVE CSS: Visually hides the real input while keeping it active for keystroke capture */
+        #wendy-cmd-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        #typed-command-text {
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: inherit;
+            letter-spacing: 1px;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -44,24 +61,72 @@
         <p class="info">[INFO] Connecting to Gemini mesh peers: ["psivicom.github.io"]</p>
         <p class="info" id="zulu-sync">[INFO] System Time Sync: Calculating...</p>
         <p class="info">[INFO] WENDY is online. Awaiting symbolic logic inference...</p>
-        <p><span class="prompt">emperor@psivi:~$</span> <span id="cursor">_</span></p>
+        
+        <!-- INTERACTIVE PROMPT REPLACES THE STATIC SPAN -->
+        <p>
+            <span class="prompt">emperor@psivi:~$</span> 
+            <span id="typed-command-text"></span><span id="cursor">_</span>
+            <input type="text" id="wendy-cmd-input" autocomplete="off" spellcheck="false" aria-label="WENDY Command Prompt" />
+        </p>
     </div>
 
     <script>
-        // 1. Simple blinking cursor effect
-        setInterval(() => {
-            const cursor = document.getElementById('cursor');
-            cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
-        }, 500);
-
-        // 2. Inject dynamic Zulu (UTC) timestamp with millisecond precision
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Inject dynamic Zulu (UTC) timestamp with millisecond precision
             const now = new Date();
-            // toISOString() natively provides YYYY-MM-DDTHH:mm:ss.sssZ (Zulu time with ms precision)
-            const zuluTime = now.toISOString(); 
-            
+            const zuluTime = now.toISOString(); // ISO 8601 OK
             const syncElement = document.getElementById('zulu-sync');
             syncElement.innerHTML = `<span class="timestamp">[SYNC]</span> Zulu Timestamp Locked: ${zuluTime}`;
+
+            // 2. Terminal Input & Interaction Logic
+            const terminal = document.getElementById('wendy-terminal');
+            const hiddenInput = document.getElementById('wendy-cmd-input');
+            const commandText = document.getElementById('typed-command-text');
+
+            // Accessibility: Strict focus-lock to prevent lost keystrokes
+            hiddenInput.focus();
+            document.body.addEventListener('click', (e) => {
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    hiddenInput.focus();
+                }
+            });
+
+            // Sync hidden input text to the visual terminal span
+            hiddenInput.addEventListener('input', (e) => {
+                commandText.textContent = e.target.value;
+            });
+
+            // 3. Blinking Cursor Effect
+            setInterval(() => {
+                const cursor = document.getElementById('cursor');
+                cursor.style.visibility = cursor.style.visibility === 'hidden' ? 'visible' : 'hidden';
+            }, 500);
+
+            // 4. Command Execution (Enter Key)
+            hiddenInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const cmd = hiddenInput.value.trim();
+                    if (cmd) {
+                        // Log user command visually
+                        const userCmdEl = document.createElement('p');
+                        userCmdEl.innerHTML = `<span class="prompt">emperor@psivi:~$</span> ${cmd}`;
+                        terminal.appendChild(userCmdEl);
+
+                        // WENDY Output Simulation
+                        const output = document.createElement('p');
+                        output.className = 'info';
+                        output.innerHTML = `[WENDY] Acknowledged symbolic inference: <span style="color: var(--accent);">${cmd}</span>`;
+                        terminal.appendChild(output);
+                        
+                        // Clear prompt for next command
+                        hiddenInput.value = '';
+                        commandText.textContent = '';
+                        
+                        // Auto-scroll to bottom of terminal
+                        output.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    }
+                }
+            });
         });
     </script>
 </body>
