@@ -1,5 +1,5 @@
 {
-  "last_heartbeat": "2026-11-24T12:35:21.564Z",
+  "last_heartbeat": "2026-11-25T20:30:00.000Z",
   "workflows": {
     "evolution": {
       "last_run": "2026-11-11T05:30:00.000Z",
@@ -7,7 +7,7 @@
       "mutations_applied": 3,
       "mutations_failed": 1,
       "failed_files": [
-        "src/hot_path.zig"
+        "wendy-cortex/src/hot_path.zig"
       ]
     },
     "synapse": {
@@ -23,9 +23,9 @@
       "self_healed": false
     },
     "orchestrator": {
-      "last_run": "2026-11-24T12:35:21.564Z",
-      "status": "decided",
-      "details": "trigger_self_heal"
+      "last_run": "2026-11-25T20:30:00.000Z",
+      "status": "triggered",
+      "details": "orchestrator.py created (R3); path corrected (R4); awaiting PR merge"
     }
   },
   "learned_patterns": {
@@ -36,7 +36,7 @@
   "pending_actions": [
     {
       "type": "revert_zig",
-      "file": "src/hot_path.zig",
+      "file": "wendy-cortex/src/hot_path.zig",
       "reason": "malformed_mutation",
       "created": "2026-11-11T05:38:00.000Z"
     }

@@ -1,4 +1,5 @@
 import ast
+import hashlib
 import json
 import numpy as np
 import os
@@ -14,14 +15,25 @@ class SovereignFileAuditor:
         self.compost = compost
 
     def parse_to_ast_tensor(self, file_content: str) -> np.ndarray:
-        """Converts Python source code into a mathematical tensor."""
+        """Converts Python source code into a mathematical tensor.
+
+        R1 Fix (2026-11-25): Uses hashlib.sha256 instead of Python's hash()
+        to ensure deterministic tensors across CI runs. Python's hash() is
+        randomized per process (PEP 506 / PYTHONHASHSEED), which made the
+        wax_matrix non-portable across runs. SHA-256 is deterministic.
+
+        Law VII: Lock-Free Cognitive Graph (deterministic state).
+        Law XIV: Free LLM Engagement (Class A Guest Compiler proposal).
+        """
         try:
             tree = ast.parse(file_content)
         except SyntaxError:
             return np.zeros(self.graph.dimensions, dtype=np.float32)
         node_counts = np.zeros(self.graph.dimensions, dtype=np.float32)
         for node in ast.walk(tree):
-            node_counts[hash(type(node).__name__) % self.graph.dimensions] += 1
+            # R1: Deterministic hash via SHA-256 (was: hash() which is randomized per process)
+            node_hash = int(hashlib.sha256(type(node).__name__.encode()).hexdigest(), 16)
+            node_counts[node_hash % self.graph.dimensions] += 1
         return node_counts / (np.sum(node_counts) + 1e-08)
 
     def audit_file(self, file_path: str) -> dict:
