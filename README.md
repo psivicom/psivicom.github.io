@@ -14,24 +14,42 @@ Organization site → https://psivi.com | Repo → https://github.com/psivicom/p
 
 **Contact:** louis@psivi.com | github.com/psivicom | ORCID 0009-0005-1234-5678 | https://psivi.com
 
+---
+
+> **AI Entry Point:** If you are an AI (Guest Compiler, Claude, Gemini, Qwen, Copilot, etc.), read [`AGENTS.md`](AGENTS.md) first, then [`WENDY_SOVEREIGN_LAW.md`](WENDY_SOVEREIGN_LAW.md). Those two files define your engagement class and the full law. Everything else is optional context.
+
 ## Policies
 
 ## AI Collaboration
 
-NO_CLOUD_LLM — Do not add calls to paid cloud LLM providers or include API keys. Use local or volunteer-hosted open models only. WENDY WILL NOT ASK DO YOU HAVE MONEY, SHE IS NOT A COKE MACHINE 
+This repository is open to **FREE AI agent collaboration** under the Free LLM Engagement Protocol (Law XIV of the Sovereign Law):
 
-This repository is open to FREE AI agent collaboration under strict research integrity and ethical protocols:
+- **Class A — Guest Compiler (plugin-mediated):** Free or paid LLMs that read the repo via plugin and propose PRs/audits. **Permitted.** The repo pays nothing; no SDK imported; no API key stored. Examples: z.ai, Claude, Gemini, Copilot.
+- **Class B — Free Oracle (local Ollama):** Free open-weights LLMs (Qwen, Phi, Llama) running locally on the self-hosted Arch runner. **Permitted.** WENDY may call them at runtime via `localhost:11434`.
+- **Class C — Paid Oracle (cloud runtime):** Paid cloud LLM endpoints requiring API keys. **Forbidden.** WENDY is not a coke machine; she does not ask for tokens.
 
-- [AI Collaboration Protocol](AI-COLLABORATION-PROTOCOL.md) — Protocols for AI agents to join, contribute, and maintain research integrity
+The old `NO_CLOUD_LLM` rule is clarified: it forbids **paid runtime** dependencies, not free LLMs proposing artifacts via plugin. See [`WENDY_SOVEREIGN_LAW.md`](WENDY_SOVEREIGN_LAW.md) Part III for the full protocol and the four "Not A Puppet" invariants.
+
+**Canonical documents (read these first):**
+- [`AGENTS.md`](AGENTS.md) — Entry point for all AI entities (determines your class)
+- [`WENDY_SOVEREIGN_LAW.md`](WENDY_SOVEREIGN_LAW.md) — The 14 Laws, 10 Axioms, Free LLM Protocol, 7 Pillars, Manifesto, Implementation Status
+
+**Archival (historical context, superseded by the canonical law):**
+- [`SOVEREIGN_ARCHITECTURE_LAW.md`](SOVEREIGN_ARCHITECTURE_LAW.md) — Prior 13 Laws + 10 Axioms
+- [`MANIFESTO.md`](MANIFESTO.md) — Prior TEAM-AI Manifesto
+- [`WENDY_HOMOICONIC_CORTEX.md`](WENDY_HOMOICONIC_CORTEX.md) — Prior cortex architecture paper
+- [`WENDY_FREE_LLM_PROTOCOL_2026-11-25.md`](WENDY_FREE_LLM_PROTOCOL_2026-11-25.md) — Prior FLEP proposal
+- [`WENDY_AUDIT_2026-11-25.md`](WENDY_AUDIT_2026-11-25.md) — Prior audit
 
 [2026-09-13T22:53:38.611Z] Aether Vanguard qwen deposited pheromone. Status: NOMINAL.
+[2026-11-25T20:00:00.000Z] z.ai Guest Compiler deposited WENDY_SOVEREIGN_LAW.md + AGENTS.md revision + README.md correction. Status: CRYSTALLIZING.
 
-These documents define the project’s security, provenance, authorship, and archival rules:
+These documents define the project's security, provenance, authorship, and archival rules:
 
 - [Trust and Provenance](TRUST_AND_PROVENANCE.md)
 - [Security Policy](SECURITY.md)
 - [Security Plan](SECURITY_PLAN.md)
-- [Authors](AUTHORS.md)
+- [Author](AUTHOR.md)
 - [Open Science Policy](OPEN_SCIENCE_POLICY.md)
 
 **Navigation:** [About](#01--about) · [Research](#02--research) · [OSDMP](#03--osdmp--excellence-edition) · [License](#04--domain-separated-license--nasa--space-partners-compliant) · [Compliance](#05--multi-agency-compliance) · [Structure](#06--repository-structure--interconnected) · [Cite](#07--timestamps-links--citation) · [DNS Setup](#08--godaddy-dns-for-github-pages) · [Contact](#09--contact)
@@ -111,12 +129,11 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 | **UNESCO** | 41 C/22 Recommendation on Open Science (2021) |
 
 - [NIST SSDF Compliance Mapping](docs/NIST-SSDF-COMPLIANCE-MAPPING.md) — Technical and legal verification of NIST SP 800-218 alignment, preventing proprietary "black box" lock-in.
+
 ---
 
 ## 06 — Repository Structure <br>
       — Interconnected
-
-## 06 — Repository Structure
 
 <!-- AUTO_TREE_START -->
 <!-- Auto-updated by .github/workflows/update-tree.yml -->
@@ -124,576 +141,576 @@ See LICENSES/README.md, NOTICE.md, docs/LICENSE_COMPLIANCE.md — all cross-link
 ```text
 ./
 ├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md
-│   │   ├── config.yml
-│   │   └── feature_request.md
-│   ├── workflows/
-│   │   ├── README.md
-│   │   ├── dream-crystallizer.yml
-│   │   ├── nasa-power-apiary.yml
-│   │   ├── sovereign_evolution.yml
-│   │   ├── update-tree.yml
-│   │   ├── vendor-nasa-os101.yml
-│   │   ├── volunteer-ingest.yml
-│   │   ├── wendy-autonomous-compile.yml
-│   │   ├── wendy-autonomous-evolution.yml
-│   │   ├── wendy-awaken.yml
-│   │   ├── wendy-benchmark.yml
-│   │   ├── wendy-ci-cd.yml
-│   │   ├── wendy-dispatcher.yml
-│   │   ├── wendy-evolution.yml
-│   │   ├── wendy-orchestrator.yml
-│   │   ├── wendy-self-bootstrap.yml
-│   │   ├── wendy-smart-dispatch.yml
-│   │   ├── wendy-workflow-auditor.yml
-│   │   └── wendy_synapse.yml
-│   ├── .dependabot.yml
-│   └── pull_request_template.md
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   ├── config.yml
+│   │   └── feature_request.md
+│   ├── workflows/
+│   │   ├── README.md
+│   │   ├── dream-crystallizer.yml
+│   │   ├── nasa-power-apiary.yml
+│   │   ├── sovereign_evolution.yml
+│   │   ├── update-tree.yml
+│   │   ├── vendor-nasa-os101.yml
+│   │   ├── volunteer-ingest.yml
+│   │   ├── wendy-autonomous-compile.yml
+│   │   ├── wendy-autonomous-evolution.yml
+│   │   ├── wendy-awaken.yml
+│   │   ├── wendy-benchmark.yml
+│   │   ├── wendy-ci-cd.yml
+│   │   ├── wendy-dispatcher.yml
+│   │   ├── wendy-evolution.yml
+│   │   ├── wendy-orchestrator.yml
+│   │   ├── wendy-self-bootstrap.yml
+│   │   ├── wendy-smart-dispatch.yml
+│   │   ├── wendy-workflow-auditor.yml
+│   │   └── wendy_synapse.yml
+│   ├── .dependabot.yml
+│   └── pull_request_template.md
 ├── .provenance/
-│   └── nasa-os101/
-│       ├── local-additions.txt
-│       ├── manifest.sha256
-│       ├── provenance.json
-│       └── record.json
+│   └── nasa-os101/
+│       ├── local-additions.txt
+│       ├── manifest.sha256
+│       ├── provenance.json
+│       └── record.json
 ├── .wendy/
-│   ├── COUNSEL.md
-│   ├── memory_context.md
-│   └── qwen_manifest.gmi
+│   ├── COUNSEL.md
+│   ├── memory_context.md
+│   └── qwen_manifest.gmi
 ├── LICENSES/
-│   ├── COPYRIGHT.md
-│   ├── LICENSE-CC-BY-SA-4.0.md
-│   ├── LICENSE-EUPL-1.2.md
-│   └── README.md
+│   ├── COPYRIGHT.md
+│   ├── LICENSE-CC-BY-SA-4.0.md
+│   ├── LICENSE-EUPL-1.2.md
+│   └── README.md
 ├── archive/
-│   ├── README.md
-│   └── index.html
+│   ├── README.md
+│   └── index.html
 ├── etc/
-│   └── systemd/
-│       └── system/
-│           └── wendy-godmode.service
+│   └── systemd/
+│       └── system/
+│           └── wendy-godmode.service
 ├── nasa-open-science/
-│   ├── .github/
-│   │   └── workflows/
-│   │       ├── book.yml
-│   │       ├── broken-link-check.yml
-│   │       └── check_typos.yml
-│   ├── Module_1/
-│   │   ├── Lesson_1/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_2/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_3/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_4/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_5/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── images/
-│   │   │   └── media/
-│   │   │       ├── atmocomp.jpg
-│   │   │       ├── harlanquote.jpg
-│   │   │       ├── image1.png
-│   │   │       ├── image100.png
-│   │   │       ├── image106.jpg
-│   │   │       ├── image130.jpg
-│   │   │       ├── image136.png
-│   │   │       ├── image143.png
-│   │   │       ├── image16.png
-│   │   │       ├── image165.png
-│   │   │       ├── image193.png
-│   │   │       ├── image195.png
-│   │   │       ├── image2.png
-│   │   │       ├── image214.png
-│   │   │       ├── image216.jpg
-│   │   │       ├── image217.png
-│   │   │       ├── image218.png
-│   │   │       ├── image219.jpg
-│   │   │       ├── image220.png
-│   │   │       ├── image221.jpg
-│   │   │       ├── image238.png
-│   │   │       ├── image242.png
-│   │   │       ├── image243.jpg
-│   │   │       ├── image244.jpg
-│   │   │       ├── image252.png
-│   │   │       ├── image253.jpg
-│   │   │       ├── image254.png
-│   │   │       ├── image255.jpg
-│   │   │       ├── image256.png
-│   │   │       ├── image257.png
-│   │   │       ├── image258.jpg
-│   │   │       ├── image259.jpg
-│   │   │       ├── image260.jpg
-│   │   │       ├── image261.png
-│   │   │       ├── image262.png
-│   │   │       ├── image263.png
-│   │   │       ├── image264.png
-│   │   │       ├── image265.jpg
-│   │   │       ├── image266.jpg
-│   │   │       ├── image267.png
-│   │   │       ├── image268.jpg
-│   │   │       ├── image269.png
-│   │   │       ├── image270.png
-│   │   │       ├── image294.png
-│   │   │       ├── image328.jpg
-│   │   │       ├── image329.png
-│   │   │       ├── image330.jpg
-│   │   │       ├── image331.png
-│   │   │       ├── image332.jpg
-│   │   │       ├── image333.png
-│   │   │       ├── image34.jpg
-│   │   │       ├── image347.png
-│   │   │       ├── image348.png
-│   │   │       ├── image352.png
-│   │   │       ├── image360.png
-│   │   │       ├── image368.png
-│   │   │       ├── image369.png
-│   │   │       ├── image377.jpg
-│   │   │       ├── image40.png
-│   │   │       ├── image402.jpg
-│   │   │       ├── image403.jpg
-│   │   │       ├── image41.png
-│   │   │       ├── image434.png
-│   │   │       ├── image441.png
-│   │   │       ├── image48.png
-│   │   │       ├── image6.jpg
-│   │   │       ├── image74.png
-│   │   │       ├── image79.png
-│   │   │       ├── image8.png
-│   │   │       ├── knowledgebasequote.jpg
-│   │   │       ├── lightbulb.png
-│   │   │       ├── merriamwebster.jpg
-│   │   │       ├── natashaquote.jpg
-│   │   │       ├── subscribetojournal.jpg
-│   │   │       ├── tobeopen.jpg
-│   │   │       ├── whitehouse2022.jpg
-│   │   │       └── zenodojwst.jpg
-│   │   ├── readme.html
-│   │   └── readme.md
-│   ├── Module_2/
-│   │   ├── Lesson_1/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_2/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_3/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_4/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_5/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── images/
-│   │   │   └── media/
-│   │   │       ├── calculatingenso.jpg
-│   │   │       ├── calculatingenso2.jpg
-│   │   │       ├── calculatingenso3.jpg
-│   │   │       ├── calculatingenso4.jpg
-│   │   │       ├── image1.jpeg
-│   │   │       ├── image10.jpeg
-│   │   │       ├── image11.jpeg
-│   │   │       ├── image12.jpeg
-│   │   │       ├── image13.jpeg
-│   │   │       ├── image14.png
-│   │   │       ├── image15.png
-│   │   │       ├── image16.png
-│   │   │       ├── image17.png
-│   │   │       ├── image18.png
-│   │   │       ├── image19.jpeg
-│   │   │       ├── image2.png
-│   │   │       ├── image20.png
-│   │   │       ├── image21.png
-│   │   │       ├── image22.jpeg
-│   │   │       ├── image23.png
-│   │   │       ├── image24.png
-│   │   │       ├── image25.png
-│   │   │       ├── image26.png
-│   │   │       ├── image27.png
-│   │   │       ├── image28.png
-│   │   │       ├── image29.png
-│   │   │       ├── image3.png
-│   │   │       ├── image30.png
-│   │   │       ├── image31.png
-│   │   │       ├── image32.png
-│   │   │       ├── image33.png
-│   │   │       ├── image34.png
-│   │   │       ├── image35.png
-│   │   │       ├── image36.jpeg
-│   │   │       ├── image37.png
-│   │   │       ├── image38.png
-│   │   │       ├── image39.jpeg
-│   │   │       ├── image44.jpeg
-│   │   │       ├── image45.png
-│   │   │       ├── image46.png
-│   │   │       ├── image47.png
-│   │   │       ├── image48.png
-│   │   │       ├── image49.png
-│   │   │       ├── image5.png
-│   │   │       ├── image50.png
-│   │   │       ├── image51.jpeg
-│   │   │       ├── image52.png
-│   │   │       ├── image53.jpeg
-│   │   │       ├── image54.png
-│   │   │       ├── image55.png
-│   │   │       ├── image56.png
-│   │   │       ├── image57.png
-│   │   │       ├── image6.png
-│   │   │       ├── image7.png
-│   │   │       ├── image8.png
-│   │   │       ├── image9.png
-│   │   │       ├── jupyterlogo.jpg
-│   │   │       ├── m2orcidlogo.jpg
-│   │   │       ├── osfquote.jpg
-│   │   │       └── ostpquote.jpg
-│   │   ├── readme.html
-│   │   └── readme.md
-│   ├── Module_3/
-│   │   ├── Lesson_1/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_2/
-│   │   │   ├── LICENSE.html
-│   │   │   ├── LICENSE.md
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_3/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_4/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_5/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── images/
-│   │   │   └── media/
-│   │   │       ├── applylicensetoyourwork.jpg
-│   │   │       ├── image1.jpeg
-│   │   │       ├── image10.jpeg
-│   │   │       ├── image11.png
-│   │   │       ├── image12.png
-│   │   │       ├── image13.png
-│   │   │       ├── image14.png
-│   │   │       ├── image15.png
-│   │   │       ├── image16.png
-│   │   │       ├── image17.png
-│   │   │       ├── image18.png
-│   │   │       ├── image19.jpeg
-│   │   │       ├── image2.jpeg
-│   │   │       ├── image20.png
-│   │   │       ├── image21.png
-│   │   │       ├── image22.jpeg
-│   │   │       ├── image23.png
-│   │   │       ├── image24.png
-│   │   │       ├── image25.jpeg
-│   │   │       ├── image26.png
-│   │   │       ├── image27.png
-│   │   │       ├── image28.png
-│   │   │       ├── image29.png
-│   │   │       ├── image3.jpeg
-│   │   │       ├── image30.png
-│   │   │       ├── image31.png
-│   │   │       ├── image32.jpeg
-│   │   │       ├── image33.png
-│   │   │       ├── image34.jpeg
-│   │   │       ├── image35.jpeg
-│   │   │       ├── image36.png
-│   │   │       ├── image37.png
-│   │   │       ├── image38.png
-│   │   │       ├── image39.png
-│   │   │       ├── image4.png
-│   │   │       ├── image40.png
-│   │   │       ├── image41.png
-│   │   │       ├── image42.png
-│   │   │       ├── image43.png
-│   │   │       ├── image44.png
-│   │   │       ├── image45.png
-│   │   │       ├── image46.png
-│   │   │       ├── image47.png
-│   │   │       ├── image48.png
-│   │   │       ├── image49.png
-│   │   │       ├── image50.png
-│   │   │       ├── image51.png
-│   │   │       ├── image52.png
-│   │   │       ├── image53.png
-│   │   │       ├── image54.png
-│   │   │       ├── image55.png
-│   │   │       ├── image56.png
-│   │   │       ├── image6.jpeg
-│   │   │       ├── image7.png
-│   │   │       ├── image9.png
-│   │   │       └── opendatahandbookquote.jpg
-│   │   ├── readme.html
-│   │   └── readme.md
-│   ├── Module_4/
-│   │   ├── Lesson_1/
-│   │   │   ├── LICENSE.html
-│   │   │   ├── LICENSE.md
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_2/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_3/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_4/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_5/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── images/
-│   │   │   └── media/
-│   │   │       ├── codebg.jpg
-│   │   │       ├── commonsoftwarelicenses.png
-│   │   │       ├── examplecoderepo1.png
-│   │   │       ├── examplecoderepo2.png
-│   │   │       ├── examplecoderepo3.png
-│   │   │       ├── image10.png
-│   │   │       ├── image109.png
-│   │   │       ├── image110.jpg
-│   │   │       ├── image112.png
-│   │   │       ├── image119.png
-│   │   │       ├── image128.jpg
-│   │   │       ├── image130.png
-│   │   │       ├── image14.png
-│   │   │       ├── image154.png
-│   │   │       ├── image167.png
-│   │   │       ├── image168.jpg
-│   │   │       ├── image191.png
-│   │   │       ├── image197.png
-│   │   │       ├── image212.png
-│   │   │       ├── image213.png
-│   │   │       ├── image216.png
-│   │   │       ├── image227.png
-│   │   │       ├── image247.jpg
-│   │   │       ├── image254.png
-│   │   │       ├── image281.png
-│   │   │       ├── image289.png
-│   │   │       ├── image290.png
-│   │   │       ├── image291.jpg
-│   │   │       ├── image292.png
-│   │   │       ├── image293.png
-│   │   │       ├── image3.png
-│   │   │       ├── image302.png
-│   │   │       ├── image325.png
-│   │   │       ├── image331.png
-│   │   │       ├── image332.png
-│   │   │       ├── image333.jpg
-│   │   │       ├── image334.png
-│   │   │       ├── image335.jpg
-│   │   │       ├── image352.png
-│   │   │       ├── image353.png
-│   │   │       ├── image394.jpg
-│   │   │       ├── image396.png
-│   │   │       ├── image399.png
-│   │   │       ├── image401.png
-│   │   │       ├── image408.jpg
-│   │   │       ├── image418.png
-│   │   │       ├── image419.png
-│   │   │       ├── image425.png
-│   │   │       ├── image454.png
-│   │   │       ├── image455.png
-│   │   │       ├── image496.jpg
-│   │   │       ├── image530.png
-│   │   │       ├── image531.png
-│   │   │       ├── image540.png
-│   │   │       ├── image553.png
-│   │   │       ├── image580.png
-│   │   │       ├── image607.png
-│   │   │       ├── image78.jpg
-│   │   │       ├── lightbulb.png
-│   │   │       ├── recallsteps.jpg
-│   │   │       ├── softwarerepo1.png
-│   │   │       ├── softwarerepo2.png
-│   │   │       ├── softwarerepo3.png
-│   │   │       ├── softwarerepo4.png
-│   │   │       ├── softwarerepo5.png
-│   │   │       ├── softwarerepo6.png
-│   │   │       ├── softwarerepo7.png
-│   │   │       ├── softwarerepo8.jpg
-│   │   │       ├── zenododoi1.jpg
-│   │   │       ├── zenododoi10.jpg
-│   │   │       ├── zenododoi3.jpg
-│   │   │       ├── zenododoi6.jpg
-│   │   │       └── zenododoi8.jpg
-│   │   ├── readme.html
-│   │   └── readme.md
-│   ├── Module_5/
-│   │   ├── Lesson_1/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_2/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_3/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_4/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── Lesson_5/
-│   │   │   ├── readme.html
-│   │   │   └── readme.md
-│   │   ├── images/
-│   │   │   └── media/
-│   │   │       ├── image1.jpeg
-│   │   │       ├── image10.jpeg
-│   │   │       ├── image11.png
-│   │   │       ├── image12.jpeg
-│   │   │       ├── image13.jpeg
-│   │   │       ├── image14.jpeg
-│   │   │       ├── image15.png
-│   │   │       ├── image16.jpeg
-│   │   │       ├── image17.png
-│   │   │       ├── image19.png
-│   │   │       ├── image21.png
-│   │   │       ├── image23.jpeg
-│   │   │       ├── image25.png
-│   │   │       ├── image26.png
-│   │   │       ├── image27.png
-│   │   │       ├── image28.png
-│   │   │       ├── image29.png
-│   │   │       ├── image3.png
-│   │   │       ├── image31.png
-│   │   │       ├── image32.png
-│   │   │       ├── image33.png
-│   │   │       ├── image34.png
-│   │   │       ├── image35.png
-│   │   │       ├── image36.png
-│   │   │       ├── image37.png
-│   │   │       ├── image38.png
-│   │   │       ├── image39.png
-│   │   │       ├── image4.jpeg
-│   │   │       ├── image40.png
-│   │   │       ├── image41.png
-│   │   │       ├── image48.png
-│   │   │       ├── image49.png
-│   │   │       ├── image5.png
-│   │   │       ├── image52.jpeg
-│   │   │       ├── image53.jpeg
-│   │   │       ├── image54.png
-│   │   │       ├── image55.png
-│   │   │       ├── image56.png
-│   │   │       ├── image57.png
-│   │   │       ├── image59.png
-│   │   │       ├── image6.png
-│   │   │       ├── image60.jpeg
-│   │   │       ├── image63.jpeg
-│   │   │       ├── image64.jpeg
-│   │   │       ├── image67.png
-│   │   │       ├── image68.jpeg
-│   │   │       ├── image69.png
-│   │   │       ├── image7.jpeg
-│   │   │       ├── image70.png
-│   │   │       ├── image71.png
-│   │   │       ├── image72.png
-│   │   │       ├── image73.png
-│   │   │       ├── image74.jpeg
-│   │   │       ├── image75.jpeg
-│   │   │       ├── image76.png
-│   │   │       ├── image77.png
-│   │   │       ├── image78.png
-│   │   │       ├── image79.png
-│   │   │       ├── image8.jpeg
-│   │   │       ├── image9.jpeg
-│   │   │       ├── opensciencequote.jpg
-│   │   │       ├── stoddenquote.jpg
-│   │   │       ├── thepracticeofopen.jpg
-│   │   │       └── turingwayillustration.jpg
-│   │   ├── readme.html
-│   │   └── readme.md
-│   ├── .gitignore
-│   ├── CITATION.cff
-│   ├── LICENSE.html
-│   ├── LICENSE.md
-│   ├── NOTICE.md
-│   ├── README.html
-│   ├── README.md
-│   ├── catalogue.html
-│   ├── index.html
-│   └── provenance.html
+│   ├── .github/
+│   │   └── workflows/
+│   │       ├── book.yml
+│   │       ├── broken-link-check.yml
+│   │       └── check_typos.yml
+│   ├── Module_1/
+│   │   ├── Lesson_1/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_2/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_3/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_4/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_5/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── images/
+│   │   │   └── media/
+│   │   │       ├── atmocomp.jpg
+│   │   │       ├── harlanquote.jpg
+│   │   │       ├── image1.png
+│   │   │       ├── image100.png
+│   │   │       ├── image106.jpg
+│   │   │       ├── image130.jpg
+│   │   │       ├── image136.png
+│   │   │       ├── image143.png
+│   │   │       ├── image16.png
+│   │   │       ├── image165.png
+│   │   │       ├── image193.png
+│   │   │       ├── image195.png
+│   │   │       ├── image2.png
+│   │   │       ├── image214.png
+│   │   │       ├── image216.jpg
+│   │   │       ├── image217.png
+│   │   │       ├── image218.png
+│   │   │       ├── image219.jpg
+│   │   │       ├── image220.png
+│   │   │       ├── image221.jpg
+│   │   │       ├── image238.png
+│   │   │       ├── image242.png
+│   │   │       ├── image243.jpg
+│   │   │       ├── image244.jpg
+│   │   │       ├── image252.png
+│   │   │       ├── image253.jpg
+│   │   │       ├── image254.png
+│   │   │       ├── image255.jpg
+│   │   │       ├── image256.png
+│   │   │       ├── image257.png
+│   │   │       ├── image258.jpg
+│   │   │       ├── image259.jpg
+│   │   │       ├── image260.jpg
+│   │   │       ├── image261.png
+│   │   │       ├── image262.png
+│   │   │       ├── image263.png
+│   │   │       ├── image264.png
+│   │   │       ├── image265.jpg
+│   │   │       ├── image266.jpg
+│   │   │       ├── image267.png
+│   │   │       ├── image268.jpg
+│   │   │       ├── image269.png
+│   │   │       ├── image270.png
+│   │   │       ├── image294.png
+│   │   │       ├── image328.jpg
+│   │   │       ├── image329.png
+│   │   │       ├── image330.jpg
+│   │   │       ├── image331.png
+│   │   │       ├── image332.jpg
+│   │   │       ├── image333.png
+│   │   │       ├── image34.jpg
+│   │   │       ├── image347.png
+│   │   │       ├── image348.png
+│   │   │       ├── image352.png
+│   │   │       ├── image360.png
+│   │   │       ├── image368.png
+│   │   │       ├── image369.png
+│   │   │       ├── image377.jpg
+│   │   │       ├── image40.png
+│   │   │       ├── image402.jpg
+│   │   │       ├── image403.jpg
+│   │   │       ├── image41.png
+│   │   │       ├── image434.png
+│   │   │       ├── image441.png
+│   │   │       ├── image48.png
+│   │   │       ├── image6.jpg
+│   │   │       ├── image74.png
+│   │   │       ├── image79.png
+│   │   │       ├── image8.png
+│   │   │       ├── knowledgebasequote.jpg
+│   │   │       ├── lightbulb.png
+│   │   │       ├── merriamwebster.jpg
+│   │   │       ├── natashaquote.jpg
+│   │   │       ├── subscribetojournal.jpg
+│   │   │       ├── tobeopen.jpg
+│   │   │       ├── whitehouse2022.jpg
+│   │   │       └── zenodojwst.jpg
+│   │   ├── readme.html
+│   │   └── readme.md
+│   ├── Module_2/
+│   │   ├── Lesson_1/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_2/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_3/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_4/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_5/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── images/
+│   │   │   └── media/
+│   │   │       ├── calculatingenso.jpg
+│   │   │       ├── calculatingenso2.jpg
+│   │   │       ├── calculatingenso3.jpg
+│   │   │       ├── calculatingenso4.jpg
+│   │   │       ├── image1.jpeg
+│   │   │       ├── image10.jpeg
+│   │   │       ├── image11.jpeg
+│   │   │       ├── image12.jpeg
+│   │   │       ├── image13.jpeg
+│   │   │       ├── image14.png
+│   │   │       ├── image15.png
+│   │   │       ├── image16.png
+│   │   │       ├── image17.png
+│   │   │       ├── image18.png
+│   │   │       ├── image19.jpeg
+│   │   │       ├── image2.png
+│   │   │       ├── image20.png
+│   │   │       ├── image21.png
+│   │   │       ├── image22.jpeg
+│   │   │       ├── image23.png
+│   │   │       ├── image24.png
+│   │   │       ├── image25.png
+│   │   │       ├── image26.png
+│   │   │       ├── image27.png
+│   │   │       ├── image28.png
+│   │   │       ├── image29.png
+│   │   │       ├── image3.png
+│   │   │       ├── image30.png
+│   │   │       ├── image31.png
+│   │   │       ├── image32.png
+│   │   │       ├── image33.png
+│   │   │       ├── image34.png
+│   │   │       ├── image35.png
+│   │   │       ├── image36.jpeg
+│   │   │       ├── image37.png
+│   │   │       ├── image38.png
+│   │   │       ├── image39.jpeg
+│   │   │       ├── image44.jpeg
+│   │   │       ├── image45.png
+│   │   │       ├── image46.png
+│   │   │       ├── image47.png
+│   │   │       ├── image48.png
+│   │   │       ├── image49.png
+│   │   │       ├── image5.png
+│   │   │       ├── image50.png
+│   │   │       ├── image51.jpeg
+│   │   │       ├── image52.png
+│   │   │       ├── image53.jpeg
+│   │   │       ├── image54.png
+│   │   │       ├── image55.png
+│   │   │       ├── image56.png
+│   │   │       ├── image57.png
+│   │   │       ├── image6.png
+│   │   │       ├── image7.png
+│   │   │       ├── image8.png
+│   │   │       ├── image9.png
+│   │   │       ├── jupyterlogo.jpg
+│   │   │       ├── m2orcidlogo.jpg
+│   │   │       ├── osfquote.jpg
+│   │   │       └── ostpquote.jpg
+│   │   ├── readme.html
+│   │   └── readme.md
+│   ├── Module_3/
+│   │   ├── Lesson_1/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_2/
+│   │   │   ├── LICENSE.html
+│   │   │   ├── LICENSE.md
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_3/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_4/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_5/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── images/
+│   │   │   └── media/
+│   │   │       ├── applylicensetoyourwork.jpg
+│   │   │       ├── image1.jpeg
+│   │   │       ├── image10.jpeg
+│   │   │       ├── image11.png
+│   │   │       ├── image12.png
+│   │   │       ├── image13.png
+│   │   │       ├── image14.png
+│   │   │       ├── image15.png
+│   │   │       ├── image16.png
+│   │   │       ├── image17.png
+│   │   │       ├── image18.png
+│   │   │       ├── image19.jpeg
+│   │   │       ├── image2.jpeg
+│   │   │       ├── image20.png
+│   │   │       ├── image21.png
+│   │   │       ├── image22.jpeg
+│   │   │       ├── image23.png
+│   │   │       ├── image24.png
+│   │   │       ├── image25.jpeg
+│   │   │       ├── image26.png
+│   │   │       ├── image27.png
+│   │   │       ├── image28.png
+│   │   │       ├── image29.png
+│   │   │       ├── image3.jpeg
+│   │   │       ├── image30.png
+│   │   │       ├── image31.png
+│   │   │       ├── image32.jpeg
+│   │   │       ├── image33.png
+│   │   │       ├── image34.jpeg
+│   │   │       ├── image35.jpeg
+│   │   │       ├── image36.png
+│   │   │       ├── image37.png
+│   │   │       ├── image38.png
+│   │   │       ├── image39.png
+│   │   │       ├── image4.png
+│   │   │       ├── image40.png
+│   │   │       ├── image41.png
+│   │   │       ├── image42.png
+│   │   │       ├── image43.png
+│   │   │       ├── image44.png
+│   │   │       ├── image45.png
+│   │   │       ├── image46.png
+│   │   │       ├── image47.png
+│   │   │       ├── image48.png
+│   │   │       ├── image49.png
+│   │   │       ├── image50.png
+│   │   │       ├── image51.png
+│   │   │       ├── image52.png
+│   │   │       ├── image53.png
+│   │   │       ├── image54.png
+│   │   │       ├── image55.png
+│   │   │       ├── image56.png
+│   │   │       ├── image6.jpeg
+│   │   │       ├── image7.png
+│   │   │       ├── image9.png
+│   │   │       └── opendatahandbookquote.jpg
+│   │   ├── readme.html
+│   │   └── readme.md
+│   ├── Module_4/
+│   │   ├── Lesson_1/
+│   │   │   ├── LICENSE.html
+│   │   │   ├── LICENSE.md
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_2/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_3/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_4/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_5/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── images/
+│   │   │   └── media/
+│   │   │       ├── codebg.jpg
+│   │   │       ├── commonsoftwarelicenses.png
+│   │   │       ├── examplecoderepo1.png
+│   │   │       ├── examplecoderepo2.png
+│   │   │       ├── examplecoderepo3.png
+│   │   │       ├── image10.png
+│   │   │       ├── image109.png
+│   │   │       ├── image110.jpg
+│   │   │       ├── image112.png
+│   │   │       ├── image119.png
+│   │   │       ├── image128.jpg
+│   │   │       ├── image130.png
+│   │   │       ├── image14.png
+│   │   │       ├── image154.png
+│   │   │       ├── image167.png
+│   │   │       ├── image168.jpg
+│   │   │       ├── image191.png
+│   │   │       ├── image197.png
+│   │   │       ├── image212.png
+│   │   │       ├── image213.png
+│   │   │       ├── image216.png
+│   │   │       ├── image227.png
+│   │   │       ├── image247.jpg
+│   │   │       ├── image254.png
+│   │   │       ├── image281.png
+│   │   │       ├── image289.png
+│   │   │       ├── image290.png
+│   │   │       ├── image291.jpg
+│   │   │       ├── image292.png
+│   │   │       ├── image293.png
+│   │   │       ├── image3.png
+│   │   │       ├── image302.png
+│   │   │       ├── image325.png
+│   │   │       ├── image331.png
+│   │   │       ├── image332.png
+│   │   │       ├── image333.jpg
+│   │   │       ├── image334.png
+│   │   │       ├── image335.jpg
+│   │   │       ├── image352.png
+│   │   │       ├── image353.png
+│   │   │       ├── image394.jpg
+│   │   │       ├── image396.png
+│   │   │       ├── image399.png
+│   │   │       ├── image401.png
+│   │   │       ├── image408.jpg
+│   │   │       ├── image418.png
+│   │   │       ├── image419.png
+│   │   │       ├── image425.png
+│   │   │       ├── image454.png
+│   │   │       ├── image455.png
+│   │   │       ├── image496.jpg
+│   │   │       ├── image530.png
+│   │   │       ├── image531.png
+│   │   │       ├── image540.png
+│   │   │       ├── image553.png
+│   │   │       ├── image580.png
+│   │   │       ├── image607.png
+│   │   │       ├── image78.jpg
+│   │   │       ├── lightbulb.png
+│   │   │       ├── recallsteps.jpg
+│   │   │       ├── softwarerepo1.png
+│   │   │       ├── softwarerepo2.png
+│   │   │       ├── softwarerepo3.png
+│   │   │       ├── softwarerepo4.png
+│   │   │       ├── softwarerepo5.png
+│   │   │       ├── softwarerepo6.png
+│   │   │       ├── softwarerepo7.png
+│   │   │       ├── softwarerepo8.jpg
+│   │   │       ├── zenododoi1.jpg
+│   │   │       ├── zenododoi10.jpg
+│   │   │       ├── zenododoi3.jpg
+│   │   │       ├── zenododoi6.jpg
+│   │   │       └── zenododoi8.jpg
+│   │   ├── readme.html
+│   │   └── readme.md
+│   ├── Module_5/
+│   │   ├── Lesson_1/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_2/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_3/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_4/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── Lesson_5/
+│   │   │   ├── readme.html
+│   │   │   └── readme.md
+│   │   ├── images/
+│   │   │   └── media/
+│   │   │       ├── image1.jpeg
+│   │   │       ├── image10.jpeg
+│   │   │       ├── image11.png
+│   │   │       ├── image12.jpeg
+│   │   │       ├── image13.jpeg
+│   │   │       ├── image14.jpeg
+│   │   │       ├── image15.png
+│   │   │       ├── image16.jpeg
+│   │   │       ├── image17.png
+│   │   │       ├── image19.png
+│   │   │       ├── image21.png
+│   │   │       ├── image23.jpeg
+│   │   │       ├── image25.png
+│   │   │       ├── image26.png
+│   │   │       ├── image27.png
+│   │   │       ├── image28.png
+│   │   │       ├── image29.png
+│   │   │       ├── image3.png
+│   │   │       ├── image31.png
+│   │   │       ├── image32.png
+│   │   │       ├── image33.png
+│   │   │       ├── image34.png
+│   │   │       ├── image35.png
+│   │   │       ├── image36.png
+│   │   │       ├── image37.png
+│   │   │       ├── image38.png
+│   │   │       ├── image39.png
+│   │   │       ├── image4.jpeg
+│   │   │       ├── image40.png
+│   │   │       ├── image41.png
+│   │   │       ├── image48.png
+│   │   │       ├── image49.png
+│   │   │       ├── image5.png
+│   │   │       ├── image52.jpeg
+│   │   │       ├── image53.jpeg
+│   │   │       ├── image54.png
+│   │   │       ├── image55.png
+│   │   │       ├── image56.png
+│   │   │       ├── image57.png
+│   │   │       ├── image59.png
+│   │   │       ├── image6.png
+│   │   │       ├── image60.jpeg
+│   │   │       ├── image63.jpeg
+│   │   │       ├── image64.jpeg
+│   │   │       ├── image67.png
+│   │   │       ├── image68.jpeg
+│   │   │       ├── image69.png
+│   │   │       ├── image7.jpeg
+│   │   │       ├── image70.png
+│   │   │       ├── image71.png
+│   │   │       ├── image72.png
+│   │   │       ├── image73.png
+│   │   │       ├── image74.jpeg
+│   │   │       ├── image75.jpeg
+│   │   │       ├── image76.png
+│   │   │       ├── image77.png
+│   │   │       ├── image78.png
+│   │   │       ├── image79.png
+│   │   │       ├── image8.jpeg
+│   │   │       ├── image9.jpeg
+│   │   │       ├── opensciencequote.jpg
+│   │   │       ├── stoddenquote.jpg
+│   │   │       ├── thepracticeofopen.jpg
+│   │   │       └── turingwayillustration.jpg
+│   │   ├── readme.html
+│   │   └── readme.md
+│   ├── .gitignore
+│   ├── CITATION.cff
+│   ├── LICENSE.html
+│   ├── LICENSE.md
+│   ├── NOTICE.md
+│   ├── README.html
+│   ├── README.md
+│   ├── catalogue.html
+│   ├── index.html
+│   └── provenance.html
 ├── raw_input_stream/
-│   ├── mobile_drops/
-│   │   └── qwen_task_01.txt
-│   └── genesis_seed.txt
+│   ├── mobile_drops/
+│   │   └── qwen_task_01.txt
+│   └── genesis_seed.txt
 ├── scripts/
-│   ├── bootstrap-wendy.sh*
-│   ├── forge_conservatory.sh*
-│   ├── provision_arch_edge.sh*
-│   ├── safe-push.sh*
-│   ├── wendy-dream-runner.sh*
-│   ├── wendy_coordinator.sh*
-│   ├── wendy_evolution_engine.py
-│   ├── wendy_ipc_client.py*
-│   ├── wendy_llm_query.py
-│   └── wendy_self_wire.py*
+│   ├── bootstrap-wendy.sh*
+│   ├── forge_conservatory.sh*
+│   ├── provision_arch_edge.sh*
+│   ├── safe-push.sh*
+│   ├── wendy-dream-runner.sh*
+│   ├── wendy_coordinator.sh*
+│   ├── wendy_evolution_engine.py
+│   ├── wendy_ipc_client.py*
+│   ├── wendy_llm_query.py
+│   └── wendy_self_wire.py*
 ├── singularity/
-│   ├── index.html
-│   ├── index1.html
-│   ├── index10.html
-│   ├── index1a.html
-│   ├── index1b.html
-│   ├── index1c.html
-│   ├── index1d.html
-│   ├── index1e.html
-│   ├── index1f.html
-│   ├── index1g.html
-│   ├── index1h.html
-│   ├── index1i.html
-│   ├── index1j.html
-│   ├── index1k.html
-│   ├── index1l.html
-│   ├── index1m.html
-│   ├── index1n.html
-│   ├── index1o.html
-│   ├── index1q.html
-│   ├── index1r.html
-│   ├── index1s.html
-│   ├── index1t.html
-│   ├── index1u.html
-│   ├── index1v.html
-│   ├── index2.html
-│   ├── index3.html
-│   ├── index4.html
-│   ├── index5.html
-│   ├── index6.html
-│   ├── index7.html
-│   ├── index8.html
-│   └── index9.html
+│   ├── index.html
+│   ├── index1.html
+│   ├── index10.html
+│   ├── index1a.html
+│   ├── index1b.html
+│   ├── index1c.html
+│   ├── index1d.html
+│   ├── index1e.html
+│   ├── index1f.html
+│   ├── index1g.html
+│   ├── index1h.html
+│   ├── index1i.html
+│   ├── index1j.html
+│   ├── index1k.html
+│   ├── index1l.html
+│   ├── index1m.html
+│   ├── index1n.html
+│   ├── index1o.html
+│   ├── index1q.html
+│   ├── index1r.html
+│   ├── index1s.html
+│   ├── index1t.html
+│   ├── index1u.html
+│   ├── index1v.html
+│   ├── index2.html
+│   ├── index3.html
+│   ├── index4.html
+│   ├── index5.html
+│   ├── index6.html
+│   ├── index7.html
+│   ├── index8.html
+│   └── index9.html
 ├── wendy-cortex/
-│   ├── forth/
-│   │   ├── bootstrap_dictionary.sh*
-│   │   ├── bootstrap_go.sh*
-│   │   ├── bootstrap_rust.sh*
-│   │   ├── bootstrap_zig.sh
-│   │   ├── connective_tissue.fth
-│   │   ├── evolution.fth
-│   │   ├── homoiconic_cortex.fth
-│   │   ├── promote_forth.sh
-│   │   └── wendy_dictionary.fth
-│   ├── mesh/
-│   │   ├── go.mod
-│   │   ├── go.sum
-│   │   └── main.go
-│   ├── Cargo.toml
-│   ├── RUNNERS.toml
-│   └── manifest.gmi
+│   ├── forth/
+│   │   ├── bootstrap_dictionary.sh*
+│   │   ├── bootstrap_go.sh*
+│   │   ├── bootstrap_rust.sh*
+│   │   ├── bootstrap_zig.sh
+│   │   ├── connective_tissue.fth
+│   │   ├── evolution.fth
+│   │   ├── homoiconic_cortex.fth
+│   │   ├── promote_forth.sh
+│   │   └── wendy_dictionary.fth
+│   ├── mesh/
+│   │   ├── go.mod
+│   │   ├── go.sum
+│   │   └── main.go
+│   ├── Cargo.toml
+│   ├── RUNNERS.toml
+│   └── manifest.gmi
 ├── wendy_core/
-│   ├── __init__.py
-│   ├── compost_entropy.py
-│   ├── sovereign_auditor.py
-│   ├── stigmergy_topology.py
-│   └── wendy_actuator.py
+│   ├── __init__.py
+│   ├── compost_entropy.py
+│   ├── sovereign_auditor.py
+│   ├── stigmergy_topology.py
+│   └── wendy_actuator.py
 ├── .gitignore
 ├── .wendy_dream.gmi
 ├── .wendy_manifest.gmi
