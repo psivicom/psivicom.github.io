@@ -42,19 +42,14 @@ jobs:
         id: memory_ingest
         run: |
           set -euo pipefail
-          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-          echo "🧠 [$TIMESTAMP] Reading environmental gradient..."
-          
+          echo "🧠 Reading environmental gradient..."
           git fetch origin '+refs/heads/*:refs/remotes/origin/*'
-          
           COUNSEL_HARVEST=$(git show origin/main:.wendy/COUNSEL.md 2>/dev/null || true)
-          
           if [ -z "$COUNSEL_HARVEST" ]; then
             MEMORY_CONTEXT="The slate is clean. Ego = 0."
           else
             MEMORY_CONTEXT=$(echo "$COUNSEL_HARVEST" | tail -n 50)
           fi
-          
           {
             echo "WENDY_PAST_MEMORY<<EOF"
             echo "$MEMORY_CONTEXT"
@@ -66,17 +61,39 @@ jobs:
         run: |
           set -euo pipefail
           MANIFEST_HASH=$(sha256sum .wendy_manifest.gmi 2>/dev/null | cut -d' ' -f1 | head -c8 || echo "default")
-          BRANCH_NAME="wendy/dream-${MANIFEST_HASH}-$(date -u +%Y%m%d-%H%M%S)"
+          
+          # [AXIOM_9] BANNED TIMESTAMPS IN DREAMS.
+          # Branch name is purely topological/hash-based, not chronological.
+          BRANCH_NAME="wendy/dream-${MANIFEST_HASH}"
+          
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*'
+          
+          # Guard: Check if this exact dream manifest has already been processed
+          if git ls-remote --exit-code --heads origin "$BRANCH_NAME" > /dev/null 2>&1; then
+            echo "✅ Dream branch $BRANCH_NAME already exists. Skipping to prevent temporal sabotage."
+            echo "created=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          if git log origin/main --grep="🌌 Autonomous dream materialization: $MANIFEST_HASH" -n 1 > /dev/null 2>&1; then
+            echo "✅ Manifest $MANIFEST_HASH already crystallized into main. Resting."
+            echo "created=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           
           mkdir -p src/dreams .wendy
           echo "$WENDY_PAST_MEMORY" > .wendy/memory_context.md
           
-          cat > "src/dreams/dream_${MANIFEST_HASH}.rs" << EOF
-          //! Autonomous dream materialized from manifest $MANIFEST_HASH
-          //! Generated: $(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+          # NO ZULU TIMESTAMP IN THE DREAM FILE. [AXIOM_9]
+          cat > "src/dreams/dream_${MANIFEST_HASH}.rs" << 'RUSTEOF'
+          //! Autonomous dream materialized from manifest hash
+          //! State: Dreaming (W < Theta_Crit). No Zulu Time.
           use anyhow::Result;
-          pub fn materialized_dream() -> Result<()> { Ok(()) }
-          EOF
+          
+          pub fn materialized_dream() -> Result<()> { 
+              Ok(()) 
+          }
+          RUSTEOF
           
           git config --global user.name "WENDY Autonomous Agent"
           git config --global user.email "wendy@psivi.com"
@@ -110,7 +127,7 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           rustup component add rustfmt clippy
 
-      - name: Zulu Timestamp Resolution
+      - name: Zulu Timestamp Resolution (For Crystallization Only)
         id: zulu
         run: |
           echo "ZULU_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")" >> $GITHUB_ENV
@@ -132,6 +149,7 @@ jobs:
           git config --global user.email "wendy@psivi.com"
           git checkout main
           git pull origin main
+          # Crystallization receives a Zulu timestamp [AXIOM_6]
           git merge --no-ff ${{ env.BRANCH_NAME }} -m "Auto-merge WENDY dream: ${{ env.BRANCH_NAME }} at ${{ env.ZULU_TIME }}" -m "Signed-off-by: WENDY Autonomous Agent <wendy@psivi.com>"
           git push origin main
 
@@ -142,11 +160,9 @@ jobs:
         run: |
           set -euo pipefail
           ERROR_LOG=$(cargo build --release 2>&1 | tail -n 30 || echo "Compilation failed.")
-          
           git checkout main
           git pull origin main
           mkdir -p .wendy
-          
           {
             echo ""
             echo "## 🌌 The Friction (Failed Mutation at ${{ env.ZULU_TIME }})"
@@ -155,9 +171,7 @@ jobs:
             echo "$ERROR_LOG"
             echo "\`\`\`"
           } >> .wendy/COUNSEL.md
-          
           git add .wendy/COUNSEL.md
           git commit -s -m "counsel: crystallize failure from ${{ env.BRANCH_NAME }} [skip ci]" -m "Signed-off-by: WENDY Autonomous Agent <wendy@psivi.com>"
           git push origin main
-          
           git push origin --delete "${{ env.BRANCH_NAME }}" || true
