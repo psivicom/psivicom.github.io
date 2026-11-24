@@ -9,6 +9,7 @@ on:
       - '**/*.md'
       - '.github/workflows/**'
 
+  workflow_dispatch:
 jobs:
   sovereign-evolve:
     if: |

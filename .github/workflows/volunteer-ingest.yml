@@ -4,6 +4,7 @@ on:
     types: [opened, synchronize]
     paths: ['mutations/**']
 
+  workflow_dispatch:
 permissions:
   id-token: write # REQUIRED for OIDC
   contents: write

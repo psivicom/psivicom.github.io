@@ -11,6 +11,7 @@ on:
   schedule:
     - cron: '0 */6 * * *'  # Adjust to your original cadence
 
+  workflow_dispatch:
 jobs:
   evolve:
     if: |
