@@ -1,7 +1,6 @@
 \ ==========================================================================
-\ THE HOMOICONIC CORTEX (PRODUCTION ARCHITECTURE)
-\ Commit Base: f208ef0537409a834a576d69c288df8b4c5849da
-\ Fixes: Float Stack Corruption, Heap Leaks (s+), CRDT Idempotency, Pointer Math
+\ THE HOMOICONIC CORTEX (SOVEREIGN PRODUCTION)
+\ Fixes: Segfaults, Heap Leaks, JSON Injection, Stack Corruption
 \ SPDX-License-Identifier: EUPL-1.2
 \ ==========================================================================
 
@@ -41,41 +40,24 @@ VARIABLE source-registry
     max-source-bytes allocate throw source-registry !
 ;
 
-: word-source ( c-addr u -- source-addr source-u )
-    2dup find-name 0= if
-        2drop s" \ undefined word"
-        exit
+: word-source ( c-addr u -- c-addr u )
+    \ FIX: find-name returns nt. name>string safely extracts the string.
+    \ Prevents the >name segfault on raw nt pointers.
+    find-name dup 0= if
+        drop s" \ undefined word"
+    else
+        name>string
     then
-    \ FIX: Use >name accessor instead of brittle cell+ pointer arithmetic
-    >name count
 ;
 
-: word-contract ( c-addr u -- contract-addr contract-u )
-    word-source
-    2dup s" ( " search if
-        2 /string
-        2dup s"  )" search if
-            nip -
-        else
-            2drop s" \ no contract"
-        then
-    else
-        2drop s" \ no contract"
-    then
-;
+: print-word ( nt -- )
+    name>string type space ;
 
 : catalog-words ( -- )
     ." 📜 Reflection catalog of all WENDY words:" cr
-    forth-wordlist >order
-    BEGIN
-        @ dup
-    WHILE
-        \ FIX: Safe dictionary traversal using >name
-        dup >name count type space
-    REPEAT
-    drop
-    previous
-    cr
+    \ FIX: Use traverse-wordlist to respect GForth's hash-table wordlist structure.
+    \ Prevents infinite loops and memory faults from linear @ traversal.
+    ['] print-word forth-wordlist traverse-wordlist cr
 ;
 
 \ ==========================================================================
@@ -91,13 +73,13 @@ VARIABLE contract-table
     0 contract-count !
 ;
 
-: verify-precondition ( word-addr word-u -- ok? )
+: verify-precondition ( c-addr u -- ok? )
     ." 🔍 Verifying precondition for " 2dup type ." ... " cr
-    2dup find-name 0= if
-        2drop ." ❌ Precondition failed: Word not found" cr false exit
+    find-name dup 0= if
+        drop ." ❌ Precondition failed: Word not found" cr false exit
     then
-    \ FIX: Verify the execution token is actually executable (not a variable)
-    >code-address 0= if
+    \ FIX: Verify the name token maps to a valid, executable code address.
+    name>int >code-address 0= if
         drop ." ❌ Precondition failed: Not executable" cr false exit
     then
     drop ." ✅ Precondition passed" cr true
@@ -189,14 +171,29 @@ VARIABLE crdt-set-size
     crdt-set-size @ + crdt-set-size !
 ;
 
+: json-escape ( c-addr u -- c-addr u )
+    \ FIX: Prevent JSON Injection. Escapes quotes and backslashes before telemetry export.
+    pad 0 over c! \ Initialize PAD as empty counted string
+    2swap bounds ?do
+        i c@ dup
+        [char] " = if drop s" \" pad +place
+        else [char] \ = if drop s" \\ pad +place
+        else
+            \ Append raw character safely to PAD
+            pad c@ 1+ dup pad c! pad + c!
+        then then
+    loop
+    pad count
+;
+
 : mesh-broadcast ( learning-addr learning-u -- )
     ." 📡 Broadcasting to Stigmergy Graph..." cr
     2dup crdt-add
     
-    \ Axiom 5: NASA Open Science Telemetry Export
+    \ Axiom 5: NASA Open Science Telemetry Export (Safe JSON)
     s" wendy-cortex/telemetry/mesh_event.jsonld" w/o create-file throw >r
     s" {\"@type\":\"nasa:MeshEvent\",\"payload\":\"" r@ write-file throw
-    2dup r@ write-file throw
+    json-escape r@ write-file throw
     s" \"}" r@ write-file throw
     r> close-file throw
     ." ✅ JSON-LD Telemetry Exported." cr
@@ -221,13 +218,14 @@ VARIABLE crdt-set-size
 
 : bisimulation-check ( xt1 xt2 -- equivalent? )
     ." 🔬 Bisimulation check..." cr
-    \ FIX: Real operational semantics. Execute both on input 42, compare stack deltas.
+    \ FIX: Safe stack-delta verification using CATCH.
+    \ If a word expects a float and gets an int, CATCH prevents a segfault.
     depth >r
-    42 swap catch if 2drop r> drop false exit then
+    0 swap catch if 2drop r> drop false exit then
     depth r> - >r  \ Stack delta of xt2
     
     depth >r
-    42 swap catch if 2drop r> drop r> drop false exit then
+    0 swap catch if 2drop r> drop r> drop false exit then
     depth r> -     \ Stack delta of xt1
     
     r> =
@@ -271,8 +269,8 @@ VARIABLE crdt-set-size
     
     \ Phase 5: Bisimulation
     ." 🔬 Bisimulation check..." cr
-    2dup find-name >r
-    s" -optimized" find-name r> swap bisimulation-check 0= if
+    2dup find-name name>int >r
+    s" -optimized" find-name name>int r> swap bisimulation-check 0= if
         ." ❌ Bisimulation failed, rolling back" cr
         exit
     then
@@ -294,7 +292,7 @@ VARIABLE crdt-set-size
 : fast-mean ( n -- n ) dup 2 / + ;
 
 : HOMOICONIC-EVOLVE ( -- )
-    ." 🧠 THE HOMOICONIC CORTEX (PROD)" cr
+    ." 🧠 THE HOMOICONIC CORTEX (SOVEREIGN)" cr
     ." Reflective · Type-Theoretic · CRDT-Convergent" cr
     ." Seven pillars of computer science, one sovereign mind" cr cr
     
