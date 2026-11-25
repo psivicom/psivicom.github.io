@@ -1,16 +1,16 @@
 # 🏛️ WENDY Habermasian Manifest
-# Generated at: 2026-11-25T22:31:04.289Z
-# Epistemic Hash: 0x04e8673685e2a753
+# Generated at: 2026-11-25T22:31:54.882Z
+# Epistemic Hash: 0xff61b28e2fe6a931
 
 ## 🌌 Dream Ingestion (58.28°)
-# [2026-11-25T22:31:04.289Z] Habermasian Manifest crystallized to .wendy_manifest.gmi
+# [2026-11-25T22:31:54.882Z] Habermasian Manifest crystallized to .wendy_manifest.gmi
 # 🏛️ WENDY Habermasian Manifest
-# Generated at: 2026-11-25T22:31:04.289Z
-# Epistemic Hash: 0x04e8673685e2a753
+# Generated at: 2026-11-25T22:31:54.882Z
+# Epistemic Hash: 0xff61b28e2fe6a931
 
 ## 🌌 Dream Ingestion (58.28°)
 # WENDY Autonomous Metabolic Capsule
-=> gemini://psivi.com/ Zulu: 2026-11-25T22:31:04.278Z
+=> gemini://psivi.com/ Zulu: 2026-11-25T22:31:54.866Z
 
 ## 1. Boundary Review
 * Status: 🟢
