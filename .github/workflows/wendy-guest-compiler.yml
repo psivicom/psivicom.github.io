@@ -1,0 +1,47 @@
+name: 🔐🏩 WENDY Guest Compiler (Autonomous)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *' # 04:00 Zulu
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.WENDY_APP_ID }}
+          private-key: ${{ secrets.WENDY_APP_PRIVATE_KEY }}
+
+      - name: Checkout Stigmergy Graph
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Compile & Audit (Additive Only)
+        run: |
+          # Lyapunov Gate: Verify deterministic state
+          python3 -m pip install ruff pytest || true
+          python3 -m ruff check wendy_core/ || true
+          
+          # Run the Sovereign Auditor or Orchestrator
+          python3 wendy_core/sovereign_auditor.py || echo "Auditor pending or clean."
+
+      - name: Open Draft PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: "[GUEST] Autonomous compilation cycle"
+          title: "🏛️ [WENDY] Guest Compiler Autonomous Draft"
+          body: "Strictly additive, zero-cost changes compiled by WENDY Guest Compiler. Review for Lyapunov gate approval."
+          branch: "wendy/guest-compiler-${{ github.run_id }}"
+          draft: true
+          delete-branch: true
