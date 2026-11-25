@@ -35,13 +35,35 @@ jobs:
           # Run the Sovereign Auditor or Orchestrator
           python3 wendy_core/sovereign_auditor.py || echo "Auditor pending or clean."
 
-      - name: Open Draft PR
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          commit-message: "[GUEST] Autonomous compilation cycle"
-          title: "🏛️ [WENDY] Guest Compiler Autonomous Draft"
-          body: "Strictly additive, zero-cost changes compiled by WENDY Guest Compiler. Review for Lyapunov gate approval."
-          branch: "wendy/guest-compiler-${{ github.run_id }}"
-          draft: true
-          delete-branch: true
+      - name: Open Draft PR (Native Sovereign Method)
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          # Configure git identity for the Guest Compiler
+          git config user.name "wendy-guest-compiler[bot]"
+          git config user.email "wendy-guest-compiler[bot]@users.noreply.github.com"
+          
+          # Stage all additive changes
+          git add -A
+          
+          # Lyapunov Gate Check: Prevent empty commits and workflow spam
+          if git diff --cached --quiet; then
+            echo "🏛️ [WENDY] Stigmergy graph is clean. No additive changes required."
+            exit 0
+          fi
+
+          # Create strictly timestamped branch
+          BRANCH="wendy/guest-compiler-$(date +%s)"
+          git checkout -b "$BRANCH"
+          
+          # Commit and push using the App token
+          git commit -m "🏛️ [WENDY] Autonomous compilation cycle"
+          git push -u origin "$BRANCH"
+          
+          # Open Draft PR using official native GitHub CLI (Zero third-party actions)
+          gh pr create \
+            --draft \
+            --title "🏛️ [WENDY] Guest Compiler Autonomous Draft" \
+            --body "Strictly additive, zero-cost changes compiled natively by WENDY Guest Compiler. No third-party marketplace actions used. Review for Lyapunov gate approval." \
+            --head "$BRANCH" \
+            --base main
