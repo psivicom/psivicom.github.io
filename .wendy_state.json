@@ -1,5 +1,5 @@
 {
-  "last_heartbeat": "2026-11-25T20:30:00.000Z",
+  "last_heartbeat": "2026-11-25T05:26:52.929Z",
   "workflows": {
     "evolution": {
       "last_run": "2026-11-11T05:30:00.000Z",
@@ -23,9 +23,9 @@
       "self_healed": false
     },
     "orchestrator": {
-      "last_run": "2026-11-25T20:30:00.000Z",
-      "status": "triggered",
-      "details": "orchestrator.py created (R3); path corrected (R4); awaiting PR merge"
+      "last_run": "2026-11-25T05:26:52.929Z",
+      "status": "decided",
+      "details": "trigger_self_heal"
     }
   },
   "learned_patterns": {
