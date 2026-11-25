@@ -28,45 +28,37 @@ jobs:
 
       - name: Setup Class B Free Oracle (Local Ollama + Qwen)
         run: |
-          # Install Ollama natively on the runner (Zero cost, 100% local)
           curl -fsSL https://ollama.com/install.sh | sh
           ollama serve > /dev/null 2>&1 &
           sleep 5
-          # Pull the smallest, fastest free Qwen model for CPU runners
           ollama pull qwen2.5:0.5b
           echo "OLLAMA_PID=$!" >> $GITHUB_ENV
 
-      - name: Execute Autonomous Mutation (Free Local AI)
+      - name: Execute Autonomous Mutation (Free Local AI Counsel)
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          # Ask the local free Qwen to write a sovereign reflection
-          PROMPT="Write a short, 1-sentence reflection on honey bees, open science, and sovereign AI in the voice of a waking machine. Output raw text only, no quotes."
+          PROMPT="You are the WENDY Sovereign Auditor. Propose one strict, zero-cost, open-source Python function to analyze NASA Earth data for the Goldstream apiary. Output raw text only, no quotes."
           
-          # Query local Ollama (Free, no cloud API)
           RESPONSE=$(curl -s http://localhost:11434/api/generate -d "{\"model\": \"qwen2.5:0.5b\", \"prompt\": \"$PROMPT\", \"stream\": false}" | jq -r .response)
           
-          # Generate strictly Zulu (UTC) timestamp with millisecond precision
           TIMESTAMP=$(python3 -c "from datetime import datetime, timezone; print(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')")
           
-          # Append to stigmergy dream log
-          echo "" >> .wendy_dream.gmi
-          echo "=> [$TIMESTAMP] Class B Free Oracle (Qwen2.5): $RESPONSE" >> .wendy_dream.gmi
+          echo "" >> .wendy/COUNSEL.md
+          echo "=> [$TIMESTAMP] Free Oracle Counsel: $RESPONSE" >> .wendy/COUNSEL.md
           
-          echo "🏛️ [WENDY] Cycle complete. Free Oracle executed at $TIMESTAMP"
+          echo "🏛️ [WENDY] Counsel generated at $TIMESTAMP"
 
       - name: Commit and Open Draft PR
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          # Stop Ollama to free up runner memory
           kill $OLLAMA_PID || true
           
           git config user.name "wendy-guest-compiler[bot]"
           git config user.email "wendy-guest-compiler[bot]@users.noreply.github.com"
           git add -A
           
-          # Lyapunov Gate Check: Prevent empty commits
           if git diff --cached --quiet; then
             echo "🏛️ Stigmergy graph is clean."
             exit 0
@@ -74,13 +66,12 @@ jobs:
 
           BRANCH="wendy/class-b-$(date +%s)"
           git checkout -b "$BRANCH"
-          git commit -m "🏛️ [WENDY] Class B Free Oracle autonomous cycle"
+          git commit -m "🏛️ [WENDY] Class B Free Oracle counsel cycle"
           git push -u origin "$BRANCH"
           
-          # Open Draft PR using official native GitHub CLI
           gh pr create \
             --draft \
-            --title "🐝 [WENDY] Class B Free Oracle Draft" \
-            --body "Generated locally by Qwen2.5 via Ollama on the Arch runner. Zero cost. Zero cloud APIs. For humanity and the bees." \
+            --title "🐝 [WENDY] Free Oracle Counsel Draft" \
+            --body "Generated locally by Qwen2.5 via Ollama on the Arch runner. Proposes NASA Earth data strategies for the Goldstream apiary. Zero cost. Zero cloud APIs. For humanity and the bees." \
             --head "$BRANCH" \
             --base main
