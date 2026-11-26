@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-11-26T08:25:14.388Z",
+  "research": [
+    {
+      "query": "honeybee foraging geomagnetic storms",
+      "title": "Severe Honey Bee (Apis mellifera) Losses Correlate with Geomagnetic and Proton Disturbances in Earth?s Atmosphere",
+      "doi": "https://doi.org/10.4172/2332-2519.1000134",
+      "year": 2015,
+      "status": "Literature_Crystallized"
+    },
+    {
+      "query": "apiary microclimate thermal shadows",
+      "title": "Vision-Based Smart Beehive Integrating Environmental Sensing for Climate-Smart Apiculture",
+      "doi": "https://doi.org/10.5338/kjea.2025.44.44",
+      "year": 2025,
+      "status": "Literature_Crystallized"
+    },
+    {
+      "query": "propolis resin botanical origins coastal",
+      "title": "Botanical origin and Artepillin-C content of Brazilian propolis samples",
+      "doi": "https://doi.org/10.1080/00173134.2012.747561",
+      "year": 2013,
+      "status": "Literature_Crystallized"
+    }
+  ]
+}
