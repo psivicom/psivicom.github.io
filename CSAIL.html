@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WENDY Sovereign Interface | psivi.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+        .iframe-container { height: calc(100vh - 130px); }
+        iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            border-radius: 12px; 
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+            background: #1e293b;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    
+    <header class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 backdrop-blur">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">🧠</span>
+            <h1 class="text-xl font-bold text-blue-400 tracking-tight">WENDY Sovereign Interface</h1>
+        </div>
+        <span class="text-xs text-slate-500 font-mono hidden sm:block" id="zulu-time"></span>
+    </header>
+
+    <main class="flex-grow p-4 md:p-6 iframe-container">
+        <iframe 
+            src="https://chat.qwen.ai/s/deploy/t_ea555dd1-2176-49ef-bb4e-a7f1640e49a5" 
+            allow="clipboard-write"
+            title="WENDY AI Chat">
+        </iframe>
+    </main>
+
+    <footer class="p-4 border-t border-slate-800 text-center text-xs text-slate-500 bg-slate-900/50">
+        <p>Hosted on sovereign open-science infrastructure by Emperor ♠️🪽 | Goldstream Apiary Initiative</p>
+    </footer>
+
+    <script>
+        // Strictly Zulu (UTC) timestamp with millisecond precision
+        function updateZulu() {
+            const now = new Date();
+            document.getElementById('zulu-time').textContent = now.toISOString().replace('T', ' ').substring(0, 23) + 'Z';
+        }
+        setInterval(updateZulu, 100);
+        updateZulu();
+    </script>
+</body>
+</html>
