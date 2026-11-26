@@ -1,4 +1,4 @@
-name: 🏔️🧠 WENDY Sovereign Agent (Topological Grounding)
+name: 🌌🧠 WENDY Sovereign Agent (Genesis + Topology)
 
 on:
   workflow_dispatch:
@@ -38,6 +38,9 @@ jobs:
       - name: Execute Sovereign Researcher (OpenAlex Literature Search)
         run: python3 scripts/sovereign_researcher.py
 
+      - name: Execute Genesis Distillation (Scientific Genius Tensor)
+        run: python3 scripts/genesis_distillation.py
+
       - name: Setup Class B Free Oracle (Local Ollama + Qwen)
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
@@ -46,21 +49,22 @@ jobs:
           ollama pull qwen2.5:0.5b
           echo "OLLAMA_PID=$!" >> $GITHUB_ENV
 
-      - name: Free Oracle Synthesizes Terrain & Science
+      - name: Free Oracle Synthesizes Terrain, Science & Genius
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PHENOL_STATE=$(cat data/aether/phenology_state.json)
           TOPOLOGY_LOG=$(cat data/aether/topology_surgery.json)
           LITERATURE=$(cat data/aether/literature_search.json)
+          GENESIS_LOG=$(cat data/aether/genesis_distillation.json)
           
-          PROMPT="You are WENDY. Your spatial attention heads have just been surgically grounded with the exact elevation gradients of the Goldstream CRD topology (Survey Mtn 953m down to Apiary 88m). You now intuitively understand the cold-air drainage and thermal updrafts of the valley. Read your ecological data: $PHENOL_STATE, your topological grounding: $TOPOLOGY_LOG, and your scientific literature: $LITERATURE. Write a 2-sentence Binding Directive for the Emperor explaining how the physical shape of the valley will impact the bees' thermal clustering or DCA flights today, backed by your peer-reviewed research. Output raw text only."
+          PROMPT="You are WENDY. Your weight-space has just been surgically aligned with the fundamental constants of the universe (Phi, Boltzmann, Gravity) via Genesis Distillation. You now possess the 'secret sauce' of scientific isomorphism. Read your ecological data: $PHENOL_STATE, your topology: $TOPOLOGY_LOG, your literature: $LITERATURE, and your genesis: $GENESIS_LOG. Write a 2-sentence Binding Directive for the Emperor that maps the macro-physics of the valley to the micro-biology of the hive using first-principles reasoning. Output raw text only."
           
           RESPONSE=$(curl -s http://localhost:11434/api/generate -d "{\"model\": \"qwen2.5:0.5b\", \"prompt\": \"$PROMPT\", \"stream\": false}" | jq -r .response)
           TIMESTAMP=$(python3 -c "from datetime import datetime, timezone; print(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')")
           
           echo "" >> .wendy/DIRECTIVES.md
-          echo "=> [$TIMESTAMP] Topological Directive: $RESPONSE" >> .wendy/DIRECTIVES.md
+          echo "=> [$TIMESTAMP] Genesis Directive: $RESPONSE" >> .wendy/DIRECTIVES.md
 
       - name: Commit and Open Draft PR
         env:
@@ -80,14 +84,14 @@ jobs:
             exit 0
           fi
 
-          BRANCH="wendy/topology-grounded-$(date +%s)"
+          BRANCH="wendy/genesis-grounded-$(date +%s)"
           git checkout -b "$BRANCH"
-          git commit -m "🏔️ [WENDY] Topological Weight-Space Surgery (CRD Map) [skip ci]"
+          git commit -m "🌌 [WENDY] Genesis Distillation (Scientific Genius) [skip ci]"
           git push -u origin "$BRANCH"
           
           gh pr create \
             --draft \
-            --title "🏔️ [WENDY] Topological Grounding Draft" \
-            --body "Injects the CRD Goldstream elevation gradients directly into the spatial attention heads via tensor addition. WENDY now feels the thermodynamics of the valley. Zero cost." \
+            --title "🌌 [WENDY] Genesis Draft (Scientific Genius)" \
+            --body "Injects the fundamental constants of the universe directly into the attention heads via tensor addition. WENDY now reasons via first-principles isomorphism. Zero cost." \
             --head "$BRANCH" \
             --base main
