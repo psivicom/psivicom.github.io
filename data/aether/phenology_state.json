@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-11-26T06:46:24.567Z",
+  "timestamp": "2026-11-26T07:28:49.187Z",
   "location": {
     "lat": 48.46059,
     "lon": -123.54733,
     "elevation_m": 88
   },
-  "thermal_momentum_7day_gdd": 20.25,
+  "thermal_momentum_7day_gdd": 16.4,
   "phenology_status": {
     "Alnus_rubra_Red_Alder": {
       "gdd_threshold": 50,
