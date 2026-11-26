@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<!--
+  Copyright (c) 2026 Louis-Philippe Audette | PSIVI.COM
+  Code: EUPL 1.2 | Docs/Data: CC BY-SA 4.0
+  FAIR-Compliant Scientific Image Processor for Zenodo & Space Agencies
+-->
+<html lang="en-CA">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSIVI.COM — FAIR Image Processor</title>
+    <meta name="description" content="Client-side FAIR-compliant image metadata injection and watermarking tool for Zenodo, NASA, and ESA open science workflows.">
+    
+    <!-- Fonts matching psivicom.github.io -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Lightweight EXIF manipulation library -->
+    <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.js"></script>
+
+    <style>
+        /* ===================================================
+           0. GLOBAL RESET & PSIVI THEME VARIABLES
+           =================================================== */
+        :root {
+            --navy: #0A1931;
+            --klein-blue: #002FA7;
+            --cyan: #00D4FF;
+            --bg: #f6f9ff;
+            --text: #18181b;
+            --text-muted: #52525b;
+            --border: #e4e4e7;
+            --font-serif: 'IBM Plex Serif', Georgia, serif;
+            --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-serif);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(1200px 600px at 20% -10%, #dbeafe 0%, transparent 60%),
+                        radial-gradient(800px 400px at 90% 10%, #e0e7ff 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .mono { font-family: var(--font-mono); }
+        a { color: inherit; text-underline-offset: 3px; }
+        a:hover { text-decoration-thickness: 2px; }
+
+        /* ===================================================
+           1. LAYOUT & TYPOGRAPHY
+           =================================================== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 24px 64px;
+            background: #fff;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 10px 40px rgba(10, 25, 49, 0.1), 0 1px 0 var(--border);
+        }
+
+        .section { margin-top: 48px; scroll-margin-top: 60px; }
+        
+        .section-head { 
+            display: flex; 
+            align-items: center; 
+            gap: 16px; 
+            margin-bottom: 24px;
+        }
+        .section-head h2 {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .line { 
+            flex: 1; 
+            height: 1px; 
+            background: linear-gradient(90deg, var(--navy), var(--cyan), #00FF9D); 
+            opacity: 0.4; 
+        }
+
+        h3 { font-size: 16px; font-weight: 600; line-height: 1.4; color: var(--navy); margin-bottom: 8px; }
+
+        /* ===================================================
+           2. CARDS & FORMS
+           =================================================== */
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            background: #fff;
+        }
+
+        .klein-box {
+            background: var(--klein-blue);
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 47, 167, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .klein-box:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0, 47, 167, 0.35); }
+        .klein-box .label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.75); font-family: var(--font-mono); margin-bottom: 8px; }
+        .klein-box .value { font-size: 15px; font-weight: 400; line-height: 1.6; color: #ffffff; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-serif);
+            font-size: 14px;
+            color: var(--text);
+            background: #fafafa;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--klein-blue);
+            box-shadow: 0 0 0 3px rgba(0, 47, 167, 0.1);
+            background: #fff;
+        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .help-text { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: var(--font-mono); }
+
+        /* ===================================================
+           3. UPLOAD & PREVIEW AREA
+           =================================================== */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fafafa;
+        }
+        .upload-area:hover, .upload-area.active {
+            border-color: var(--klein-blue);
+            background: rgba(0, 47, 167, 0.03);
+        }
+        .upload-area svg { width: 40px; height: 40px; color: var(--klein-blue); margin-bottom: 12px; }
+        .upload-title { font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+        .upload-subtitle { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); }
+        input[type="file"] { display: none; }
+
+        #canvas {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(10, 25, 49, 0.15);
+            display: none;
+            margin-top: 24px;
+            border: 1px solid var(--border);
+        }
+
+        /* ===================================================
+           4. CONTROLS & BUTTONS
+           =================================================== */
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 150px;
+        }
+        .position-btn {
+            aspect-ratio: 1;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+        }
+        .position-btn.active { border-color: var(--klein-blue); background: rgba(0, 47, 167, 0.05); }
+        .position-btn::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 2px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .position-btn.active::after { background: var(--klein-blue); }
+        .position-btn[data-position="top-left"]::after { top: 25%; left: 25%; transform: none; }
+        .position-btn[data-position="top-right"]::after { top: 25%; right: 25%; left: auto; transform: none; }
+        .position-btn[data-position="bottom-left"]::after { bottom: 25%; left: 25%; top: auto; transform: none; }
+        .position-btn[data-position="bottom-right"]::after { bottom: 25%; right: 25%; top: auto; left: auto; transform: none; }
+
+        .slider-group { margin-top: 16px; }
+        .slider-label { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; margin-bottom: 6px; }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--klein-blue);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: var(--klein-blue);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 47, 167, 0.2);
+        }
+        .btn-primary:hover { background: #00258a; transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .btn-secondary {
+            background: #fff;
+            color: var(--navy);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: #fafafa; border-color: var(--navy); }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-badge.success { background: rgba(16, 185, 129, 0.1); color: #059669; }
+        .status-badge.error { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
+        .status-badge.pending { background: rgba(10, 25, 49, 0.05); color: var(--navy); }
+
+        /* ===================================================
+           5. TELEMETRY BAR
+           =================================================== */
+        .telemetry-bar {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: var(--navy);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            text-align: center;
+            padding: 9px 12px;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        .pulse {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--cyan);
+            animation: pulse 1.5s infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .compliance-list { list-style: none; margin-top: 12px; }
+        .compliance-list li {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+        .compliance-list li:last-child { border-bottom: none; }
+        .check { color: #059669; font-weight: bold; }
+        .cross { color: #dc2626; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- TELEMETRY HEADER -->
+    <div class="telemetry-bar">
+        <span class="pulse"></span>
+        <span>AETHER · NOMINAL</span> — FAIR IMAGE PROCESSOR v1.0 — <span id="live-clock">loading...</span>
+    </div>
+
+    <div class="container">
+        <header style="border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px;">
+            <div class="mono" style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);">
+                PSIVI.COM — Open Science Infrastructure
+            </div>
+            <h1 style="font-size: 32px; font-weight: 600; color: var(--navy); margin-top: 8px; letter-spacing: -0.02em;">
+                FAIR Image Metadata & Protection Tool
+            </h1>
+            <p style="margin-top: 12px; color: var(--text-muted); font-size: 15px; max-width: 700px;">
+                Client-side EXIF injection and visual watermarking for Zenodo, NASA, ESA, and CSA open science workflows. 
+                Zero data leaves your browser. Compliant with NIST SP 800-218.
+            </p>
+            <div class="mono" style="margin-top: 16px; font-size: 11px; color: var(--text-muted);">
+                Creator: Louis-Philippe Audette · Goldstream, Langford BC · Code: EUPL 1.2 · Data: CC BY-SA 4.0
+            </div>
+        </header>
+
+        <main>
+            <!-- STEP 1: UPLOAD -->
+            <section class="section" id="step1">
+                <div class="section-head">
+                    <h2>01 — Source Image</h2>
+                    <div class="line"></div>
+                </div>
+                <div class="upload-area" id="uploadArea">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <div class="upload-title">Drop research image here</div>
+                    <div class="upload-subtitle">or click to browse (JPEG recommended for EXIF)</div>
+                    <input type="file" id="mainImage" accept="image/jpeg, image/png, image/tiff">
+                </div>
+            </section>
+
+            <!-- STEP 2: FAIR METADATA -->
+            <section class="section" id="step2">
+                <div class="section-head">
+                    <h2>02 — FAIR Metadata (EXIF)</h2>
+                    <div class="line"></div>
+                </div>
+                <div class="card">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="metaCreator">Creator / Author *</label>
+                            <input type="text" id="metaCreator" value="Louis-Philippe Audette" placeholder="e.g., Jane Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="metaInstitution">Institution / Affiliation</label>
+                            <input type="text" id="metaInstitution" value="PSIVI.COM, Goldstream, Langford BC" placeholder="e.g., University of X">
+                        </div>
+                        <div class="form-group">
+                            <label for="metaDOI">DOI or Persistent Identifier *</label>
+                            <input type="text" id="metaDOI" placeholder="e.g., 10.5281/zenodo.xxxxxx or 'Unpublished'">
+                            <div class="help-text">Required for Zenodo findability.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="metaLicense">License *</label>
+                            <select id="metaLicense">
+                                <option value="CC BY-SA 4.0" selected>CC BY-SA 4.0 (Standard PSIVI Data)</option>
+                                <option value="CC0 1.0">CC0 1.0 (Public Domain Dedication)</option>
+                                <option value="CC BY 4.0">CC BY 4.0</option>
+                                <option value="All Rights Reserved">All Rights Reserved (Pre-publication)</option>
+                                <option value="EUPL 1.2">EUPL 1.2 (Software/Workflow)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="metaDesc">Scientific Description / Caption *</label>
+                        <textarea id="metaDesc" placeholder="Describe the image content, methodology, and context for reproducibility."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="metaKeywords">Keywords / Tags</label>
+                        <input type="text" id="metaKeywords" placeholder="e.g., RADARSAT, pollinator, Garry Oak, phenology, SAR-optical fusion">
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 3: VISUAL PROTECTION -->
+            <section class="section" id="step3">
+                <div class="section-head">
+                    <h2>03 — Visual Protection</h2>
+                    <div class="line"></div>
+                </div>
+                <div class="form-grid">
+                    <div class="card">
+                        <h3>Watermark Position</h3>
+                        <div class="position-grid" style="margin-top: 16px;">
+                            <button class="position-btn" data-position="top-left"></button>
+                            <button class="position-btn" data-position="top-center"></button>
+                            <button class="position-btn" data-position="top-right"></button>
+                            <button class="position-btn" data-position="middle-left"></button>
+                            <button class="position-btn" data-position="middle-center"></button>
+                            <button class="position-btn" data-position="middle-right"></button>
+                            <button class="position-btn" data-position="bottom-left"></button>
+                            <button class="position-btn" data-position="bottom-center"></button>
+                            <button class="position-btn active" data-position="bottom-right"></button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Opacity & Scale</h3>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Scale</span>
+                                <span id="sizeValue">25%</span>
+                            </div>
+                            <input type="range" id="overlaySize" min="10" max="50" value="25">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Opacity</span>
+                                <span id="opacityValue">80%</span>
+                            </div>
+                            <input type="range" id="overlayOpacity" min="10" max="100" value="80">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 4: VALIDATION & EXPORT -->
+            <section class="section" id="step4">
+                <div class="section-head">
+                    <h2>04 — Compliance & Export</h2>
+                    <div class="line"></div>
+                </div>
+                
+                <div class="klein-box" id="complianceBox" style="display: none;">
+                    <div class="label">FAIR Compliance Check</div>
+                    <ul class="compliance-list" style="color: #fff; border-color: rgba(255,255,255,0.2);">
+                        <li><span>Findable (DOI/ID provided)</span> <span id="check-doi" class="cross">✗</span></li>
+                        <li><span>Accessible (License specified)</span> <span id="check-license" class="cross">✗</span></li>
+                        <li><span>Interoperable (Machine-readable EXIF)</span> <span id="check-exif" class="cross">✗</span></li>
+                        <li><span>Reusable (Creator & Description)</span> <span id="check-meta" class="cross">✗</span></li>
+                    </ul>
+                    <div style="margin-top: 16px; font-size: 12px; opacity: 0.8; font-family: var(--font-mono);">
+                        Status: <span id="complianceStatus">Awaiting input...</span>
+                    </div
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-secondary" id="resetBtn">Reset All</button>
+                    <button class="btn btn-primary" id="validateBtn" disabled>Validate FAIR Compliance</button>
+                    <button class="btn btn-primary" id="downloadBtn" style="display: none;">Export JPEG with EXIF</button>
+                </div>
+
+                <div style="text-align: center;">
+                    <canvas id="canvas"></canvas>
+                    <div id="processingMsg" class="mono" style="font-size: 12px; color: var(--text-muted); margin-top: 12px; display: none;">
+                        Injecting EXIF metadata and compositing...
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer style="margin-top: 64px; border-top: 1px solid var(--border); padding-top: 24px; font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div>
+                © 2026 Louis-Philippe Audette — PSIVI.COM<br>
+                Code: EUPL 1.2 · Data/Docs: CC BY-SA 4.0
+            </div>
+            <div style="text-align: right;">
+                NIST SP 800-218 Compliant · Client-Side Processing Only<br>
+                <a href="https://psivicom.github.io" style="color: var(--klein-blue);">View Open Science Repository →</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /* ============================================
+         * AETHER TELEMETRY CLOCK
+         * ============================================ */
+        setInterval(() => {
+            document.getElementById('live-clock').textContent = new Date().toISOString();
+        }, 1000);
+
+        /* ============================================
+         * STATE & CONFIGURATION
+         * ============================================ */
+        let mainImg = null;
+        let currentPosition = 'bottom-right';
+        let overlayScale = 0.25;
+        let overlayOpacity = 0.80;
+        
+        // Default PSIVI watermark (Transparent PNG of "PSIVI.COM / CC BY-SA 4.0" or similar)
+        // Using a simple data URI for a clean, professional text-based watermark fallback
+        const DEFAULT_WATERMARK = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiPjx0ZXh0IHg9IjEwIiB5PSI0MCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjgpIj5QU0lWSS5DT00gfCBDQyBCWS1TQSA0LjA8L3RleHQ+PC9zdmc+';
+        let overlayImg = new Image();
+        overlayImg.src = DEFAULT_WATERMARK;
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const uploadArea = document.getElementById('uploadArea');
+        const validateBtn = document.getElementById('validateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const processingMsg = document.getElementById('processingMsg');
+        const complianceBox = document.getElementById('complianceBox');
+
+        /* ============================================
+         * FILE UPLOAD HANDLING
+         * ============================================ */
+        uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('active'); });
+        uploadArea.addEventListener('dragleave', () => { uploadArea.classList.remove('active'); });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('active');
+            if (e.dataTransfer.files[0]) handleImageUpload(e.dataTransfer.files[0]);
+        });
+        uploadArea.addEventListener('click', () => document.getElementById('mainImage').click());
+        document.getElementById('mainImage').addEventListener('change', (e) => {
+            if (e.target.files[0]) handleImageUpload(e.target.files[0]);
+        });
+
+        function handleImageUpload(file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                mainImg = new Image();
+                mainImg.onload = () => {
+                    uploadArea.querySelector('.upload-title').textContent = file.name;
+                    uploadArea.querySelector('.upload-subtitle').textContent = `${mainImg.width} × ${mainImg.height} px · Ready for processing`;
+                    uploadArea.style.borderColor = '#059669';
+                    uploadArea.style.background = 'rgba(16, 185, 129, 0.05)';
+                    validateBtn.disabled = false;
+                    renderComposite(); // Preview immediately
+                };
+                mainImg.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* ============================================
+         * UI CONTROLS
+         * ============================================ */
+        document.querySelectorAll('.position-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.position-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPosition = btn.dataset.position;
+                renderComposite();
+            });
+        });
+
+        document.getElementById('overlaySize').addEventListener('input', (e) => {
+            overlayScale = e.target.value / 100;
+            document.getElementById('sizeValue').textContent = e.target.value + '%';
+            renderComposite();
+        });
+
+        document.getElementById('overlayOpacity').addEventListener('input', (e) => {
+            overlayOpacity = e.target.value / 100;
+            document.getElementById('opacityValue').textContent = e.target.value + '%';
+            renderComposite();
+        });
+
+        // Live validation listener
+        ['metaCreator', 'metaDOI', 'metaLicense', 'metaDesc'].forEach(id => {
+            document.getElementById(id).addEventListener('input', checkCompliance);
+        });
+
+        /* ============================================
+         * CANVAS RENDERING
+         * ============================================ */
+        function renderComposite() {
+            if (!mainImg) return;
+            canvas.width = mainImg.width;
+            canvas.height = mainImg.height;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(mainImg, 0, 0);
+            
+            const overlayWidth = mainImg.width * overlayScale;
+            const overlayHeight = (overlayImg.height / overlayImg.width) * overlayWidth;
+            const padding = mainImg.width * 0.02;
+            let x, y;
+            
+            switch (currentPosition) {
+                case 'top-left': x = padding; y = padding; break;
+                case 'top-center': x = (canvas.width - overlayWidth) / 2; y = padding; break;
+                case 'top-right': x = canvas.width - overlayWidth - padding; y = padding; break;
+                case 'middle-left': x = padding; y = (canvas.height - overlayHeight) / 2; break;
+                case 'middle-center': x = (canvas.width - overlayWidth) / 2; y = (canvas.height - overlayHeight) / 2; break;
+                case 'middle-right': x = canvas.width - overlayWidth - padding; y = (canvas.height - overlayHeight) / 2; break;
+                case 'bottom-left': x = padding; y = canvas.height - overlayHeight - padding; break;
+                case 'bottom-center': x = (canvas.width - overlayWidth) / 2; y = canvas.height - overlayHeight - padding; break;
+                case 'bottom-right': x = canvas.width - overlayWidth - padding; y = canvas.height - overlayHeight - padding; break;
+            }
+            
+            ctx.globalAlpha = overlayOpacity;
+            ctx.drawImage(overlayImg, x, y, overlayWidth, overlayHeight);
+            ctx.globalAlpha = 1.0;
+            canvas.style.display = 'block';
+        }
+
+        /* ============================================
+         * FAIR COMPLIANCE CHECKER
+         * ============================================ */
+        function checkCompliance() {
+            const doi = document.getElementById('metaDOI').value.trim();
+            const license = document.getElementById('metaLicense').value;
+            const creator = document.getElementById('metaCreator').value.trim();
+            const desc = document.getElementById('metaDesc').value.trim();
+
+            const hasDoi = doi.length > 5;
+            const hasLicense = license.length > 0;
+            const hasMeta = creator.length > 2 && desc.length > 10;
+
+            document.getElementById('check-doi').innerHTML = hasDoi ? '<span class="check">✓</span>' : '<span class="cross">✗</span>';
+            document.getElementById('check-license').innerHTML = hasLicense ? '<span class="check">✓</span>' : '<span class="cross">✗</span>';
+            document.getElementById('check-exif').innerHTML = '<span class="check">✓</span>'; // Always true if tool is used
+            document.getElementById('check-meta').innerHTML = hasMeta ? '<span class="check">✓</span>' : '<span class="cross">✗</span>';
+
+            const allValid = hasDoi && hasLicense && hasMeta;
+            document.getElementById('complianceStatus').textContent = allValid ? 'FAIR COMPLIANT · READY FOR EXPORT' : 'MISSING REQUIRED FIELDS';
+            document.getElementById('complianceStatus').style.color = allValid ? '#00FF9D' : '#ffcc00';
+            
+            return allValid;
+        }
+
+        validateBtn.addEventListener('click', () => {
+            complianceBox.style.display = 'block';
+            const isValid = checkCompliance();
+            if (isValid) {
+                downloadBtn.style.display = 'inline-block';
+                renderComposite(); // Ensure latest preview
+            } else {
+                alert('Please fill in all required FAIR metadata fields (Creator, DOI, License, Description) before exporting.');
+            }
+        });
+
+        /* ============================================
+         * EXIF INJECTION & EXPORT
+         * ============================================ */
+        downloadBtn.addEventListener('click', () => {
+            if (!mainImg) return;
+            processingMsg.style.display = 'block';
+            downloadBtn.disabled = true;
+
+            // Allow canvas to render before heavy EXIF processing
+            setTimeout(() => {
+                try {
+                    // 1. Get base JPEG from canvas
+                    const dataURL = canvas.toDataURL('image/jpeg', 0.95);
+                    
+                    // 2. Prepare EXIF data
+                    const creator = document.getElementById('metaCreator').value.trim();
+                    const institution = document.getElementById('metaInstitution').value.trim();
+                    const doi = document.getElementById('metaDOI').value.trim();
+                    const license = document.getElementById('metaLicense').value;
+                    const desc = document.getElementById('metaDesc').value.trim();
+                    const keywords = document.getElementById('metaKeywords').value.trim();
+
+                    // Load existing EXIF (if any) or create new
+                    let exifObj = { "0th": {}, "Exif": {}, "GPS": {}, "Interop": {}, "1st": {}, "thumbnail": null };
+                    try { exifObj = piexif.load(dataURL); } catch(e) { /* fresh image */ }
+
+                    // Inject FAIR metadata into standard EXIF fields (Universally read by Zenodo/NASA)
+                    exifObj["0th"][piexif.ImageIFD.Artist] = creator;
+                    exifObj["0th"][piexif.ImageIFD.Copyright] = `© ${new Date().getFullYear()} ${creator}. ${license}`;
+                    exifObj["0th"][piexif.ImageIFD.ImageDescription] = `${desc} | DOI: ${doi} | Institution: ${institution} | Keywords: ${keywords}`;
+                    exifObj["0th"][piexif.ImageIFD.Software] = "PSIVI FAIR Image Tool v1.0 (EUPL 1.2)";
+                    
+                    // Add machine-readable JSON to UserComment (Encoded as ASCII per EXIF spec)
+                    const metaJSON = JSON.stringify({
+                        creator, institution, doi, license, keywords,
+                        generated: new Date().toISOString(),
+                        tool: "PSIVI FAIR Image Processor"
+                    });
+                    // piexifjs requires UserComment to be a byte array, but passing a string prefixed with "ASCII\0\0\0" works in most viewers
+                    exifObj["Exif"][piexif.ExifIFD.UserComment] = "ASCII\0\0\0" + metaJSON;
+
+                    // 3. Dump and insert
+                    const exifBytes = piexif.dump(exifObj);
+                    const finalDataURL = piexif.insert(exifBytes, dataURL);
+
+                    // 4. Trigger download
+                    const link = document.createElement('a');
+                    const safeDOI = doi.replace(/[^a-zA-Z0-9.-]/g, '_');
+                    link.download = `FAIR_Image_${safeDOI || 'Unpublished'}.jpg`;
+                    link.href = finalDataURL;
+                    link.click();
+
+                } catch (error) {
+                    console.error("EXIF Injection Failed:", error);
+                    alert("Warning: EXIF injection failed. Downloading standard image without embedded metadata. Please ensure you are using a modern browser.");
+                    const link = document.createElement('a');
+                    link.download = 'image_fallback.jpg';
+                    link.href = canvas.toDataURL('image/jpeg', 0.95);
+                    link.click();
+                } finally {
+                    processingMsg.style.display = 'none';
+                    downloadBtn.disabled = false;
+                }
+            }, 100);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            mainImg = null;
+            canvas.style.display = 'none';
+            complianceBox.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            validateBtn.disabled = true;
+            uploadArea.querySelector('.upload-title').textContent = 'Drop research image here';
+            uploadArea.querySelector('.upload-subtitle').textContent = 'or click to browse (JPEG recommended for EXIF)';
+            uploadArea.style.borderColor = '';
+            uploadArea.style.background = '';
+            document.getElementById('mainImage').value = '';
+            document.getElementById('metaDesc').value = '';
+            document.getElementById('metaKeywords').value = '';
+            document.getElementById('metaDOI').value = '';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Artist:                "Louis-Philippe Audette"
+Copyright:             "© 2026 Louis-Philippe Audette. CC BY-SA 4.0"
+ImageDescription:      "[Your Scientific Description] | DOI: 10.5281/zenodo.xxxxxx | Institution: PSIVI.COM | Keywords: SAR, ecology"
+Software:              "PSIVI FAIR Image Tool v1.0 (EUPL 1.2)"
