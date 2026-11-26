@@ -1,0 +1,13 @@
+# Makefile
+.PHONY: tree readme zip
+
+tree:
+	go run ./cmd/update-tree
+
+readme:
+	go run ./cmd/render-readme
+
+zip:
+	zip -r psivicom.github.io.zip \
+		go.mod README.md TREE.md .tree.hash \
+		cmd .github
