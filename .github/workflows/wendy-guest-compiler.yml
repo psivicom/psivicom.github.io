@@ -1,4 +1,4 @@
-name: 🐝🏩 WENDY Class B Free Oracle (Qwen Autonomous)
+name: 🌸🏩 WENDY Phenology Engine (Class B Free Oracle)
 
 on:
   workflow_dispatch:
@@ -26,6 +26,9 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
+      - name: Execute Phenology Engine (Open-Meteo)
+        run: python3 scripts/phenology_engine.py
+
       - name: Setup Class B Free Oracle (Local Ollama + Qwen)
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
@@ -34,27 +37,24 @@ jobs:
           ollama pull qwen2.5:0.5b
           echo "OLLAMA_PID=$!" >> $GITHUB_ENV
 
-      - name: Execute Autonomous Mutation (Free Local AI Counsel)
+      - name: Free Oracle Interprets Phenology
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          PROMPT="You are the WENDY Sovereign Auditor. Propose one strict, zero-cost, open-source Python function to analyze NASA Earth data for the Goldstream apiary. Output raw text only, no quotes."
+          STATE=$(cat data/aether/phenology_state.json)
+          PROMPT="You are the WENDY Sovereign Auditor for the Goldstream Apiary. Read this JSON data: $STATE. Write a 2-sentence ecological advisory for the beekeeper about the nectar flow and hive thermoregulation. Output raw text only."
           
           RESPONSE=$(curl -s http://localhost:11434/api/generate -d "{\"model\": \"qwen2.5:0.5b\", \"prompt\": \"$PROMPT\", \"stream\": false}" | jq -r .response)
-          
           TIMESTAMP=$(python3 -c "from datetime import datetime, timezone; print(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')")
           
           echo "" >> .wendy/COUNSEL.md
-          echo "=> [$TIMESTAMP] Free Oracle Counsel: $RESPONSE" >> .wendy/COUNSEL.md
-          
-          echo "🏛️ [WENDY] Counsel generated at $TIMESTAMP"
+          echo "=> [$TIMESTAMP] Phenology Counsel: $RESPONSE" >> .wendy/COUNSEL.md
 
       - name: Commit and Open Draft PR
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           kill $OLLAMA_PID || true
-          
           git config user.name "wendy-guest-compiler[bot]"
           git config user.email "wendy-guest-compiler[bot]@users.noreply.github.com"
           git add -A
@@ -64,14 +64,14 @@ jobs:
             exit 0
           fi
 
-          BRANCH="wendy/class-b-$(date +%s)"
+          BRANCH="wendy/phenology-$(date +%s)"
           git checkout -b "$BRANCH"
-          git commit -m "🏛️ [WENDY] Class B Free Oracle counsel cycle"
+          git commit -m "🏛️ [WENDY] Phenology Engine & Free Oracle Counsel"
           git push -u origin "$BRANCH"
           
           gh pr create \
             --draft \
-            --title "🐝 [WENDY] Free Oracle Counsel Draft" \
-            --body "Generated locally by Qwen2.5 via Ollama on the Arch runner. Proposes NASA Earth data strategies for the Goldstream apiary. Zero cost. Zero cloud APIs. For humanity and the bees." \
+            --title "🌸 [WENDY] Phenology Engine Draft" \
+            --body "Calculates Growing Degree Days for Arbutus and Fireweed using free Open-Meteo satellite data. Interpreted locally by Qwen2.5. Zero cost." \
             --head "$BRANCH" \
             --base main
