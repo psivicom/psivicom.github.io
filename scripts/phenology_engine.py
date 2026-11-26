@@ -8,11 +8,31 @@ LAT = 48.46059
 LON = -123.54733
 ELEVATION = 88
 
-# Botanical Triggers (Base 5°C GDD Thresholds for Coastal BC)
+# Expanded Botanical Triggers (Base 5°C GDD Thresholds for Coastal BC)
 BOTANY = {
-    "Arbutus_menziesii": {"gdd_threshold": 150, "status": "Dormant"},
-    "Acer_macrophyllum": {"gdd_threshold": 200, "status": "Dormant"},
-    "Fireweed_Bear_Mtn": {"gdd_threshold": 650, "status": "Dormant"}
+    # Early Spring: Brood Stimulators
+    "Alnus_rubra_Red_Alder": {"gdd_threshold": 50, "resource": "Pollen", "status": "Dormant", "note": "First protein source for spring brood rearing"},
+    "Mahonia_aquifolium_Oregon_Grape": {"gdd_threshold": 100, "resource": "Nectar/Pollen", "status": "Dormant", "note": "Early understory bloom"},
+    
+    # Mid Spring: The Awakening Flow
+    "Acer_macrophyllum_Bigleaf_Maple": {"gdd_threshold": 150, "resource": "Nectar/Pollen", "status": "Dormant", "note": "Major early flow"},
+    "Arbutus_menziesii": {"gdd_threshold": 200, "resource": "Nectar", "status": "Dormant", "note": "Coastal fringe specialist"},
+    "Gaultheria_shallon_Salal": {"gdd_threshold": 300, "resource": "Nectar/Pollen", "status": "Dormant", "note": "Forest floor evergreen"},
+    
+    # Early Summer: The Heavy Engines
+    "Rubus_armeniacus_Blackberry": {"gdd_threshold": 450, "resource": "Nectar/Pollen", "status": "Dormant", "note": "Massive yield along railways and highways"},
+    
+    # Late Summer: The Premium Gold
+    "Symphoricarpos_albus_Snowberry": {"gdd_threshold": 600, "resource": "Nectar", "status": "Dormant", "note": "Forest edge nectar"},
+    "Chamerion_angustifolium_Fireweed": {"gdd_threshold": 750, "resource": "Nectar", "status": "Dormant", "note": "Bear Mountain fire scar premium yield"},
+    
+    # Autumn: Winter Preparation
+    "Calluna_vulgaris_Heather": {"gdd_threshold": 900, "resource": "Nectar/Pollen", "status": "Dormant", "note": "Late season forage"},
+    "Hedera_helix_English_Ivy": {"gdd_threshold": 1100, "resource": "Nectar/Pollen", "status": "Dormant", "note": "Crucial late autumn fat reserves"},
+    
+    # Propolis: Hive Defense & Medicine (Resin Collectors)
+    "Pseudotsuga_menziesii_Douglas_Fir": {"gdd_threshold": 120, "resource": "Resin/Propolis", "status": "Dormant", "note": "Spring bud resins for antimicrobial hive defense"},
+    "Thuja_plicata_Western_Redcedar": {"gdd_threshold": 150, "resource": "Resin/Propolis", "status": "Dormant", "note": "Waterproofing and antifungal resins"}
 }
 
 def fetch_open_data():
@@ -34,9 +54,10 @@ def calculate_phenology():
 
     # Map thermal momentum to botanical states
     for plant, data in BOTANY.items():
-        if gdd_7day > 15: 
-            data["status"] = "Active_Nectar_Flow_Potential"
-        elif gdd_7day > 5:
+        # Open-Meteo gives us a 7-day forecast. If the weekly momentum is high, things are waking up.
+        if gdd_7day > 40: 
+            data["status"] = f"Imminent_{data['resource']}_Flow"
+        elif gdd_7day > 15:
             data["status"] = "Waking_Sap_Flow"
             
     return gdd_7day, BOTANY
