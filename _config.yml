@@ -1,0 +1,11 @@
+# Strictly additive: expose hidden dirs for CSAIL.html resolution
+include: [".wendy", "docs"]
+
+# Prevent Jekyll from excluding critical dotfiles/dirs already in use
+safe: false  # Required for .wendy/ processing; GitHub Pages allows this in user/org pages
+
+# Preserve existing markdown processor (kramdown is GH Pages default)
+markdown: kramdown
+
+# Explicitly set source to root (avoids accidental subdir builds)
+source: .
