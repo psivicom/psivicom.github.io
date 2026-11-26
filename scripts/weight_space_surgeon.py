@@ -25,7 +25,9 @@ def execute_cognitive_surgery():
     # 4. THE LYAPUNOV GATE (Law XI: Verify the patch didn't destroy the matrix)
     norm_old = np.linalg.norm(W_old)
     norm_new = np.linalg.norm(W_new)
-    delta = abs(norm_old - norm_new) / norm_old
+    
+    # Cast to native Python float to prevent JSON serialization errors
+    delta = float(abs(norm_old - norm_new) / norm_old)
     
     # If the matrix norm shifts by more than 10%, the surgery is rejected (Composted)
     status = "CRYSTALLIZED" if delta < 0.10 else "COMPOSTED (Gate Failed)"
