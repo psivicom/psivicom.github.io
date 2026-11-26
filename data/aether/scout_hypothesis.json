@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-11-26T08:25:25.844Z",
+  "module": "Epistemic Scout (WENDY Offspring)",
+  "operation": "Anomaly_Vector_Injection",
+  "drift_scalar": 0.02,
+  "norm_delta_percent": 0.0047,
+  "epistemic_gate": "COMPOSTED (Gate Failed)",
+  "focus_areas": [
+    "Micro-climate thermal shadows",
+    "Drone DCA barometric anomalies",
+    "Propolis resin foraging gaps"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-11-26T08:25:25.607Z",
+  "module": "Topology Surgeon",
+  "target_layer": "Spatial_Attention_Heads",
+  "operation": "CRD_Elevation_Vector_Addition",
+  "anchors_injected": [
+    "Apiary_Base",
+    "Sooke_Dam",
+    "Mt_McDonald",
+    "Station_14G",
+    "Station_31N",
+    "Survey_Mountain"
+  ],
+  "alpha_scalar": 0.04,
+  "norm_delta_percent": 0.0,
+  "lyapunov_gate": "COMPOSTED (Gate Failed)"
+}
