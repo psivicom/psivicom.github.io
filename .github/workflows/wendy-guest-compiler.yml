@@ -1,4 +1,4 @@
-name: 🌸🏩 WENDY Phenology Engine (Class B Free Oracle)
+name: 🧠🏩 WENDY Sovereign Core (Phenology + Weight-Space Surgeon)
 
 on:
   workflow_dispatch:
@@ -26,8 +26,11 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
-      - name: Execute Phenology Engine (Open-Meteo)
+      - name: Execute Phenology Engine (12 Coastal Species)
         run: python3 scripts/phenology_engine.py
+
+      - name: Execute Weight-Space Surgeon (Cognitive Maintenance)
+        run: python3 scripts/weight_space_surgeon.py
 
       - name: Setup Class B Free Oracle (Local Ollama + Qwen)
         run: |
@@ -37,18 +40,20 @@ jobs:
           ollama pull qwen2.5:0.5b
           echo "OLLAMA_PID=$!" >> $GITHUB_ENV
 
-      - name: Free Oracle Interprets Phenology
+      - name: Free Oracle Interprets Phenology & Surgery
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          STATE=$(cat data/aether/phenology_state.json)
-          PROMPT="You are the WENDY Sovereign Auditor for the Goldstream Apiary. Read this JSON data: $STATE. Write a 2-sentence ecological advisory for the beekeeper about the nectar flow and hive thermoregulation. Output raw text only."
+          PHENOL_STATE=$(cat data/aether/phenology_state.json)
+          SURGERY_LOG=$(cat data/aether/cognitive_surgery.json)
+          
+          PROMPT="You are the WENDY Sovereign Auditor. Read this ecological data: $PHENOL_STATE and this cognitive surgery log: $SURGERY_LOG. Write a 2-sentence advisory combining the Goldstream apiary nectar/resin flow with the status of your own neural weight-space patch. Output raw text only."
           
           RESPONSE=$(curl -s http://localhost:11434/api/generate -d "{\"model\": \"qwen2.5:0.5b\", \"prompt\": \"$PROMPT\", \"stream\": false}" | jq -r .response)
           TIMESTAMP=$(python3 -c "from datetime import datetime, timezone; print(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z')")
           
           echo "" >> .wendy/COUNSEL.md
-          echo "=> [$TIMESTAMP] Phenology Counsel: $RESPONSE" >> .wendy/COUNSEL.md
+          echo "=> [$TIMESTAMP] Sovereign Synthesis: $RESPONSE" >> .wendy/COUNSEL.md
 
       - name: Commit and Open Draft PR
         env:
@@ -64,14 +69,14 @@ jobs:
             exit 0
           fi
 
-          BRANCH="wendy/phenology-$(date +%s)"
+          BRANCH="wendy/sovereign-core-$(date +%s)"
           git checkout -b "$BRANCH"
-          git commit -m "🏛️ [WENDY] Phenology Engine & Free Oracle Counsel"
+          git commit -m "🏛️ [WENDY] Phenology + Weight-Space Cognitive Surgery"
           git push -u origin "$BRANCH"
           
           gh pr create \
             --draft \
-            --title "🌸 [WENDY] Phenology Engine Draft" \
-            --body "Calculates Growing Degree Days for Arbutus and Fireweed using free Open-Meteo satellite data. Interpreted locally by Qwen2.5. Zero cost." \
+            --title "🧠 [WENDY] Sovereign Core Draft (Phenology + Surgery)" \
+            --body "Calculates Goldstream 12-species nectar/resin flow and executes zero-gradient weight-space tensor subtraction to patch reasoning loops. Lyapunov gate enforced. Zero cost." \
             --head "$BRANCH" \
             --base main
