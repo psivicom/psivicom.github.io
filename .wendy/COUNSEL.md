@@ -54,3 +54,5 @@ api_version = "latest"  # Replace with your desired API version
 result = analyze_earth_data(api_key, start_date, end_date, api_version)
 print(result)
 ```
+
+=> [2026-11-26T01:31:42.499Z] Phenology Counsel: null

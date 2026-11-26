@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-11-26T01:30:42.676Z",
+  "location": {
+    "lat": 48.46059,
+    "lon": -123.54733,
+    "elevation_m": 88
+  },
+  "thermal_momentum_7day_gdd": 19.65,
+  "phenology_status": {
+    "Arbutus_menziesii": {
+      "gdd_threshold": 150,
+      "status": "Active_Nectar_Flow_Potential"
+    },
+    "Acer_macrophyllum": {
+      "gdd_threshold": 200,
+      "status": "Active_Nectar_Flow_Potential"
+    },
+    "Fireweed_Bear_Mtn": {
+      "gdd_threshold": 650,
+      "status": "Active_Nectar_Flow_Potential"
+    }
+  }
+}
