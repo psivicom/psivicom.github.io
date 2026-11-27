@@ -1,0 +1,88 @@
+name: Substrate Law Enforcement
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  enforce:
+    name: Enforce SUBSTRATE_LAW.md
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check language law (Section II)
+        run: |
+          set -euo pipefail
+          # Substrate zone: no Python/JS/notebooks ever.
+          VIOLATIONS=$( (git diff --name-only origin/main...HEAD 2>/dev/null || git diff --name-only HEAD~1 2>/dev/null || true) \
+            | grep -E '^(kernel|rotation|gate|scheduler)/.*\.(py|ipynb|js|mjs)$' || true)
+          if [ -n "$VIOLATIONS" ]; then
+            echo "::error::Substrate zone language violation (SUBSTRATE_LAW.md Section II):"
+            echo "$VIOLATIONS"
+            exit 1
+          fi
+
+      - name: Check stochastic behavior in substrate (Section II.3)
+        run: |
+          set -euo pipefail
+          VIOLATIONS=$( (git diff origin/main...HEAD 2>/dev/null || git diff HEAD~1 2>/dev/null || true) \
+            | grep -E '^\+\+\+ b/(kernel|rotation|gate|scheduler)/' >/dev/null 2>&1 && \
+            git diff origin/main...HEAD 2>/dev/null | awk '/^\+\+\+ b\//{f=substr($0,7)} /^\+.*(numpy\.random|np\.random|torch\.manual_seed|random\.seed)/ && f~/^(kernel|rotation|gate|scheduler)\//{print f": "$0}' || true)
+          if [ -n "$VIOLATIONS" ]; then
+            echo "::error::Stochastic behavior added to substrate zone (Section II.3):"
+            echo "$VIOLATIONS"
+            exit 1
+          fi
+
+      - name: Check cron clock law (Section IV.1)
+        run: |
+          set -euo pipefail
+          # Grandfathered scheduled workflows (do not add new entries here).
+          ALLOWLIST=".github/workflows/wendy-orchestrator.yml .github/workflows/wendy-ci-cd.yml .github/workflows/wendy-evolution.yml"
+          VIOLATIONS=0
+          for f in $((git diff --name-only origin/main...HEAD 2>/dev/null || git diff --name-only HEAD~1 2>/dev/null || true) \
+                     | grep -E '^\.github/workflows/.*\.yml$' || true); do
+            if grep -q 'schedule:' "$f"; then
+              ALLOWED=false
+              for a in $ALLOWLIST; do
+                [ "$f" = "$a" ] && ALLOWED=true
+              done
+              if [ "$ALLOWED" = false ]; then
+                echo "::error::New scheduled workflow forbidden (Section IV.1): $f"
+                VIOLATIONS=1
+              fi
+            fi
+          done
+          exit $VIOLATIONS
+
+      - name: Check theorem statement for substrate PRs (Section VI)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              per_page: 100
+            });
+            const touchesSubstrate = files.data.some(f =>
+              /^(kernel|rotation|gate|scheduler)\//.test(f.filename));
+            if (!touchesSubstrate) return;
+            const body = context.payload.pull_request.body || '';
+            if (!body.includes('## Theorem')) {
+              core.setFailed('PR touches the substrate zone but has no "## Theorem" section (SUBSTRATE_LAW.md Section VI).');
+            }
+            if (!body.includes('Substrate Law Compliance')) {
+              core.setFailed('PR has no "Substrate Law Compliance" citation section (SUBSTRATE_LAW.md Section VI).');
+            }
