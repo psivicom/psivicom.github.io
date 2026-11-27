@@ -1,82 +1,82 @@
 {
-  "timestamp": "2026-11-26T13:24:34.620Z",
+  "timestamp": "2026-11-27T13:21:41.811Z",
   "location": {
     "lat": 48.46059,
     "lon": -123.54733,
     "elevation_m": 88
   },
-  "thermal_momentum_7day_gdd": 13.0,
+  "thermal_momentum_7day_gdd": 15.7,
   "phenology_status": {
     "Alnus_rubra_Red_Alder": {
       "gdd_threshold": 50,
       "resource": "Pollen",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "First protein source for spring brood rearing"
     },
     "Mahonia_aquifolium_Oregon_Grape": {
       "gdd_threshold": 100,
       "resource": "Nectar/Pollen",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Early understory bloom"
     },
     "Acer_macrophyllum_Bigleaf_Maple": {
       "gdd_threshold": 150,
       "resource": "Nectar/Pollen",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Major early flow"
     },
     "Arbutus_menziesii": {
       "gdd_threshold": 200,
       "resource": "Nectar",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Coastal fringe specialist"
     },
     "Gaultheria_shallon_Salal": {
       "gdd_threshold": 300,
       "resource": "Nectar/Pollen",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Forest floor evergreen"
     },
     "Rubus_armeniacus_Blackberry": {
       "gdd_threshold": 450,
       "resource": "Nectar/Pollen",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Massive yield along railways and highways"
     },
     "Symphoricarpos_albus_Snowberry": {
       "gdd_threshold": 600,
       "resource": "Nectar",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Forest edge nectar"
     },
     "Chamerion_angustifolium_Fireweed": {
       "gdd_threshold": 750,
       "resource": "Nectar",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Bear Mountain fire scar premium yield"
     },
     "Calluna_vulgaris_Heather": {
       "gdd_threshold": 900,
       "resource": "Nectar/Pollen",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Late season forage"
     },
     "Hedera_helix_English_Ivy": {
       "gdd_threshold": 1100,
       "resource": "Nectar/Pollen",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Crucial late autumn fat reserves"
     },
     "Pseudotsuga_menziesii_Douglas_Fir": {
       "gdd_threshold": 120,
       "resource": "Resin/Propolis",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Spring bud resins for antimicrobial hive defense"
     },
     "Thuja_plicata_Western_Redcedar": {
       "gdd_threshold": 150,
       "resource": "Resin/Propolis",
-      "status": "Dormant",
+      "status": "Waking_Sap_Flow",
       "note": "Waterproofing and antifungal resins"
     }
   }
