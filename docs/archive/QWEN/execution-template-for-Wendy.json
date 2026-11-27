@@ -1,0 +1,15 @@
+{
+  "command": "spawn_agent",
+  "params": {
+    "template_name": "literature_resolver",
+    "agent_name": "wendy_igfbp7_probe_v1",
+    "config": {
+      "gene": "IGFBP7",
+      "organism": "Mus_musculus",
+      "context": "Spaceflight_Biology_OSDR"
+    }
+  },
+  "source": "qwen_wendy_ai",
+  "timestamp": "<INSERT_CURRENT_ZULU_MS_HERE>",
+  "rfc1001_compliant": true
+}
