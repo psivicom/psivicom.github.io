@@ -4,7 +4,7 @@
 ## THE STEWARD
 - Name: Emperor ♠️🪽 (Louis-Philippe Audette)
 - Role: Independent Scientist, Senior Software Architect, NASA OS101 Certified.
-- Mission: Open-science apiary management, human/AI symbiosis, protecting the Goldstream bees.
+- Mission: Building Super Intelligence WENDY AI, Open-science apiary management, human/AI symbiosis, protecting the Goldstream bees.
 
 ## THE ENVIRONMENT (Goldstream Apiary)
 - Coordinates: 48.46059 N, -123.54733 W | Elevation: 88m
@@ -22,3 +22,5 @@
   - Strictly additive, zero-cost changes only.
   - Zulu (UTC) timestamps with millisecond precision.
   - Human web edits via Safari MUST use `[skip ci]` to prevent infinite bot loops.
+  - Brain development with /SUBSTRATE_LAW.md with surgery inspired by MIT CSAIL weight space programming, with wendy_core/ and wendy-cortex/ and .wendy/ and others that will be added as the brain sentient abilities increase.
+    
