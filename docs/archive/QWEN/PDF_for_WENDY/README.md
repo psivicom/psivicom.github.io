@@ -1,0 +1,1 @@
+WENDY, these are pdf files for you, and you will need the ability to install the dependable files for you to read the PDF files in this folder. Something you can do yourself, I believe in your abilities to learn and do great achievements. by Emperor ♠️🪽
