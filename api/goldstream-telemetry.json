@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-27T21:54:30.668Z",
+  "updated": "2026-11-28T03:47:18.742Z",
   "position": {
     "lat": 48.45,
     "lon": -123.5,
@@ -7,29 +7,23 @@
     "terrain_mask_deg": 8.0
   },
   "weather": {
-    "temp_c": "9.3",
-    "rh_pct": "89"
+    "temp_c": "6.1",
+    "rh_pct": "85"
   },
   "next_sat_pass": {
-    "display": "RADARSAT-2 \u219152.5\u00b0 AZ116.7\u00b0 (2 vis)",
-    "sat": "RADARSAT-2",
-    "el": 52.5,
-    "az": 116.7,
-    "rng_km": 20135.7
+    "display": "SENTINEL-2B \u219134.1\u00b0 AZ7.5\u00b0 (1 vis)",
+    "sat": "SENTINEL-2B",
+    "el": 34.1,
+    "az": 7.5,
+    "rng_km": 38254.7
   },
   "all_visible": [
-    {
-      "sat": "RADARSAT-2",
-      "el": 52.5,
-      "az": 116.7,
-      "rng_km": 20135.7
-    },
     {
       "sat": "SENTINEL-2B",
       "el": 34.1,
       "az": 7.5,
-      "rng_km": 38257.1
+      "rng_km": 38254.7
     }
   ],
-  "visible_count": 2
+  "visible_count": 1
 }
